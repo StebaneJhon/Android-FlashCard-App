@@ -1,0 +1,12 @@
+package com.example.flashcard.backend
+
+import android.app.Application
+
+class FlashCardApplication: Application() {
+    private val database by lazy {
+        FlashCardDatabase.getDatabase(this)
+    }
+    val repository by lazy {
+        FlashCardRepository(database.flashCardDao())
+    }
+}

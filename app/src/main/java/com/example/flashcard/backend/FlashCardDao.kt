@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import com.example.flashcard.entities.Card
 import com.example.flashcard.entities.Deck
 import com.example.flashcard.entities.relations.DeckWithCards
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FlashCardDao {
@@ -25,7 +26,10 @@ interface FlashCardDao {
     @Delete()
     suspend fun deleteCard(card: Card)
 
+    @Query("SELECT * FROM deck")
+    fun getAllDecks(): Flow<List<Deck>>
+
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    suspend fun getDeckWithCards(deckId: String): List<DeckWithCards>
+    fun getDeckWithCards(deckId: String): Flow<List<DeckWithCards>>
 }
