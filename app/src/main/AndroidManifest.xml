@@ -14,7 +14,10 @@
         android:theme="@style/Theme.FlashCard"
         tools:targetApi="31">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".card.CardsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".deck.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

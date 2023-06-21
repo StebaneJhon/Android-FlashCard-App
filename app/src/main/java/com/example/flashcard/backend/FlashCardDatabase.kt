@@ -24,7 +24,7 @@ abstract class FlashCardDatabase : RoomDatabase() {
                 return INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     FlashCardDatabase::class.java,
-                    "flash_card_db"
+                    "flash_card_database"
                 ).build().also {
                     INSTANCE = it
                 }

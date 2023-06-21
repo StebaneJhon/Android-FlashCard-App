@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.example.flashcard.entities.Card
 import com.example.flashcard.entities.Deck
 import com.example.flashcard.entities.relations.DeckWithCards
@@ -31,5 +32,11 @@ interface FlashCardDao {
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    fun getDeckWithCards(deckId: String): Flow<List<DeckWithCards>>
+    fun getDeckWithCards(deckId: Int): Flow<List<DeckWithCards>>
+
+    @Update()
+    suspend fun updateDeck(deck: Deck)
+
+    @Update()
+    suspend fun updateCard(card: Card)
 }

@@ -11,7 +11,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     val allDecks: Flow<List<Deck>> = flashCardDao.getAllDecks()
 
     @WorkerThread
-    suspend fun getDeckWithCards(deckId: String): Flow<List<DeckWithCards>> {
+    fun getDeckWithCards(deckId: Int): Flow<List<DeckWithCards>> {
         return flashCardDao.getDeckWithCards(deckId)
     }
 
@@ -38,6 +38,16 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     @WorkerThread
     suspend fun insertCard(card: Card) {
         flashCardDao.insertCard(card)
+    }
+
+    @WorkerThread
+    suspend fun updateCard(card: Card) {
+        flashCardDao.updateCard(card)
+    }
+
+    @WorkerThread
+    suspend fun updateDeck(deck: Deck) {
+        flashCardDao.updateDeck(deck)
     }
 
 }

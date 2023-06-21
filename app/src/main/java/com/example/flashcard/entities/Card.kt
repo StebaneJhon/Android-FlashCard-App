@@ -8,6 +8,8 @@ import androidx.room.PrimaryKey
 data class Card (
     @PrimaryKey(autoGenerate = true) val cardId: Int?,
     @ColumnInfo(name = "card_content") val cardContent: String?,
-    @ColumnInfo(name = "card_definition") val cardDefinition: String?,
-    @ColumnInfo(name = "deckId") val deckId: Int?,
+    @ColumnInfo(name = "content_definition") val contentDescription: String?,
+    @ColumnInfo(name = "card_value") val cardDefinition: String?,
+    @ColumnInfo(name = "value_definition") val valueDefinition: String?,
+    @ColumnInfo(name = "deckId") var deckId: Int?,
 )
