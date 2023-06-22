@@ -7,18 +7,14 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.entities.Deck
-import com.example.flashcard.entities.relations.DeckWithCards
 import kotlinx.coroutines.launch
 
 class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     val allDecks: LiveData<List<Deck>> = repository.allDecks.asLiveData()
 
-    private var _deckWithAllCards: LiveData<List<DeckWithCards>>? = null
-    val deckWithAllCards: LiveData<List<DeckWithCards>>
-        get() = _deckWithAllCards !!
-    fun getDeckWithCards(deckId: Int) = viewModelScope.launch {
-        _deckWithAllCards = repository.getDeckWithCards(deckId).asLiveData()
+    fun searchDeck(searchQuery: String): LiveData<List<Deck>> {
+        return repository.searchDeck(searchQuery).asLiveData()
     }
 
     fun insertDeck(deck: Deck) = viewModelScope.launch {

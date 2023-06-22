@@ -3,8 +3,9 @@ package com.example.flashcard.deck
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.Menu
 import androidx.activity.viewModels
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -14,18 +15,24 @@ import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.entities.Deck
 
-class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener {
+class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener, SearchView.OnQueryTextListener {
 
     private lateinit var binding: ActivityMainBinding
 
     private val deckViewModel: DeckViewModel by viewModels {
         DeckViewModelFactory((application as FlashCardApplication).repository)
     }
+
+    private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        supportActionBar?.apply {
+            title = getString(R.string.deck_activity_title)
+        }
 
         deckViewModel.allDecks.observe(this, Observer { deckList ->
             deckList?.let { displayDecks(deckList) }
@@ -35,8 +42,19 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.deck_activity_menu, menu)
+        val search = menu?.findItem(R.id.search_deck_menu)
+        val searchView = search?.actionView as SearchView
+
+        searchView.isSubmitButtonEnabled = true
+        searchView.setOnQueryTextListener(this)
+
+        return true
+    }
+
     private fun displayDecks(listOfDecks: List<Deck>) {
-        val recyclerViewAdapter = DecksRecyclerViewAdapter(listOfDecks) {
+        recyclerViewAdapter = DecksRecyclerViewAdapter(listOfDecks, this) {
             val intent = Intent(this, CardsActivity::class.java)
             intent.putExtra(CardsActivity.DECK_KEY, it)
             startActivity(intent)
@@ -56,5 +74,22 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener {
 
     override fun getDeck(deck: Deck) {
         deckViewModel.insertDeck(deck)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (query != null) { searchDeck(query) }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText != null) { searchDeck(newText) }
+        return true
+    }
+
+    private fun searchDeck(query: String) {
+        val searchQuery = "%$query%"
+        deckViewModel.searchDeck(searchQuery).observe(this) { deckList ->
+            deckList?.let { displayDecks(it) }
+        }
     }
 }

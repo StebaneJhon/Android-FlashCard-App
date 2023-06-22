@@ -11,4 +11,9 @@
     <string name="card_content_definition_hint">Card Content Definition</string>
     <string name="card_definition">Card Definition</string>
     <string name="card_value_definition_hint">Card Value Definition</string>
+    <string name="deck_activity_title">Your Decks</string>
+    <string name="search_deck_title">Search Deck</string>
+    <string name="start_quiz_button_text">Quiz</string>
+    <string name="deck_languages">%1$s &amp; %2$s</string>
+    <string name="cards_sum">%1$s Cards</string>
 </resources>

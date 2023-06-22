@@ -39,4 +39,7 @@ interface FlashCardDao {
 
     @Update()
     suspend fun updateCard(card: Card)
+
+    @Query("SELECT * FROM deck WHERE deck_name LIKE :searchQuery OR deck_description LIKE :searchQuery OR deck_first_language LIKE :searchQuery OR deck_second_language LIKE :searchQuery OR deck_color_code LIKE :searchQuery")
+    fun searchDeck(searchQuery: String): Flow<List<Deck>>
 }

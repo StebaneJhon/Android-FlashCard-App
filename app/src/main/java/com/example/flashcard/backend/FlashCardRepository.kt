@@ -50,4 +50,9 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         flashCardDao.updateDeck(deck)
     }
 
+    @WorkerThread
+    fun searchDeck(searchQuery: String): Flow<List<Deck>> {
+        return flashCardDao.searchDeck(searchQuery)
+    }
+
 }
