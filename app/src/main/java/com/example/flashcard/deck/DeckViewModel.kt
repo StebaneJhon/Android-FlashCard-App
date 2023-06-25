@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
-import com.example.flashcard.entities.Deck
+import com.example.flashcard.backend.entities.Deck
 import kotlinx.coroutines.launch
 
 class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {

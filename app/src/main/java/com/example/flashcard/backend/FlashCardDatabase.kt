@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.flashcard.entities.Card
-import com.example.flashcard.entities.Deck
+import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.Deck
 
 @Database(
     entities = [Card::class, Deck::class],

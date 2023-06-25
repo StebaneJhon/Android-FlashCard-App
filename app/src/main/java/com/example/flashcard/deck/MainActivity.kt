@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
@@ -13,9 +14,10 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
-import com.example.flashcard.entities.Deck
+import com.example.flashcard.backend.entities.Deck
 
-class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener, SearchView.OnQueryTextListener {
+class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
+    SearchView.OnQueryTextListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -34,8 +36,18 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener, Searc
             title = getString(R.string.deck_activity_title)
         }
 
+        binding.mainActivityProgressBar.visibility = View.VISIBLE
         deckViewModel.allDecks.observe(this, Observer { deckList ->
-            deckList?.let { displayDecks(deckList) }
+            deckList?.let {
+                if (it.isEmpty()) {
+                    binding.mainActivityProgressBar.visibility = View.GONE
+                    binding.onNoDeckTextHint.visibility = View.VISIBLE
+                } else {
+                    displayDecks(deckList)
+                    binding.mainActivityProgressBar.visibility = View.GONE
+                    binding.onNoDeckTextHint.visibility = View.GONE
+                }
+            }
         })
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
@@ -77,12 +89,17 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener, Searc
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        if (query != null) { searchDeck(query) }
+        binding.mainActivityProgressBar.visibility = View.VISIBLE
+        if (query != null) {
+            searchDeck(query)
+        }
         return true
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) { searchDeck(newText) }
+        if (newText != null) {
+            searchDeck(newText)
+        }
         return true
     }
 

@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
-import com.example.flashcard.entities.Card
+import com.example.flashcard.backend.entities.Card
 import kotlin.ClassCastException
 
 class NewCardDialog: AppCompatDialogFragment() {

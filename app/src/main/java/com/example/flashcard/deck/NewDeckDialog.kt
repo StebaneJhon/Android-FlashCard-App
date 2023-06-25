@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.widget.EditText
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
-import com.example.flashcard.entities.Deck
+import com.example.flashcard.backend.entities.Deck
 
 class NewDeckDialog: AppCompatDialogFragment() {
 

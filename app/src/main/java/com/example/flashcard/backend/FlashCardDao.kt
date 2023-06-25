@@ -7,9 +7,9 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.flashcard.entities.Card
-import com.example.flashcard.entities.Deck
-import com.example.flashcard.entities.relations.DeckWithCards
+import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.relations.DeckWithCards
 import kotlinx.coroutines.flow.Flow
 
 @Dao

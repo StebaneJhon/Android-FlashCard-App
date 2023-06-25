@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
-import com.example.flashcard.entities.Card
+import com.example.flashcard.backend.entities.Card
 
 class CardsRecyclerViewAdapter(
     private val cardList: List<Card>

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.databinding.ActivityCardsBinding
-import com.example.flashcard.entities.Card
-import com.example.flashcard.entities.Deck
-import com.example.flashcard.entities.relations.DeckWithCards
+import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.relations.DeckWithCards
 
 class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
 
