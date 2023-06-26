@@ -28,9 +28,10 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
 
         deck = intent?.getParcelableExtra(DECK_KEY)
         deck?.let {
+            supportActionBar?.title = deck?.deckName
             cardViewModel.getDeckWithCards(it.deckId!!)
             cardViewModel.deckWithAllCards.observe(this, Observer { cardList ->
-                cardList?.let { displayCards(cardList[0].cards) }
+                cardList?.let { displayCards(cardList[0].cards, cardList[0].deck) }
             })
 
             binding.addNewCardBT.setOnClickListener {
@@ -39,8 +40,8 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
         }
     }
 
-    private fun displayCards(cardList: List<Card>) {
-        val recyclerViewAdapter = CardsRecyclerViewAdapter(cardList)
+    private fun displayCards(cardList: List<Card>, deck: Deck) {
+        val recyclerViewAdapter = CardsRecyclerViewAdapter(cardList, deck)
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)

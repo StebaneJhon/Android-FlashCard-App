@@ -7,9 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.Deck
 
 class CardsRecyclerViewAdapter(
-    private val cardList: List<Card>
+    private val cardList: List<Card>,
+    private val deck: Deck
 ): RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,15 +23,19 @@ class CardsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        return holder.bind(cardList[position])
+        return holder.bind(cardList[position], deck)
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         val onCardText = view.findViewById<TextView>(R.id.onCardTextTV)
         val onCardTextDescription = view.findViewById<TextView>(R.id.onCardTextDescriptionTV)
+        val languageHint = view.findViewById<TextView>(R.id.languageHint)
 
-        fun bind(card: Card) {
+        fun bind(card: Card,
+                 deck: Deck
+        ) {
+            languageHint.text = deck.deckFirstLanguage
             onCardText.text = card.cardContent
             onCardTextDescription.text = card.contentDescription
         }

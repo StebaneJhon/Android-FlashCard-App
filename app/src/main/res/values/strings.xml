@@ -17,4 +17,5 @@
     <string name="deck_languages">%1$s &amp; %2$s</string>
     <string name="cards_sum">%1$s Cards</string>
     <string name="on_no_deck_text_hint">You have no deck</string>
+    <string name="card_image_bg_hint">card image background</string>
 </resources>
