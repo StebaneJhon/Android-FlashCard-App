@@ -9,5 +9,11 @@
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
 
+    <item
+        android:id="@+id/settings_button_menu"
+        android:icon="@drawable/icon_settings"
+        app:showAsAction="ifRoom"
+        android:title="@string/settings_hint"/>
+
 
 </menu>

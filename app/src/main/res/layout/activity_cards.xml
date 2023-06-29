@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".card.CardsActivity">
 
+    <ProgressBar
+        android:id="@+id/cardsActivityProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cardRecyclerView"
         android:layout_width="match_parent"
@@ -19,7 +29,7 @@
         android:id="@+id/addNewCardBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/teal"
+        android:backgroundTint="?colorSecondary"
         android:background="@drawable/add_new_deck_button_background"
         android:src="@drawable/add_icon_button"
         app:layout_constraintBottom_toBottomOf="parent"

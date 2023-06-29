@@ -15,31 +15,39 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FlashCardDao {
 
+    // Deck Query
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertDeck(deck: Deck)
 
     @Delete()
     suspend fun deleteDeck(deck: Deck)
 
+    @Query("SELECT * FROM deck")
+    fun getAllDecks(): Flow<List<Deck>>
+
+    @Query("SELECT * FROM deck WHERE deck_name LIKE :searchQuery OR deck_description LIKE :searchQuery OR deck_first_language LIKE :searchQuery OR deck_second_language LIKE :searchQuery OR deck_color_code LIKE :searchQuery")
+    fun searchDeck(searchQuery: String): Flow<List<Deck>>
+
+    @Update()
+    suspend fun updateDeck(deck: Deck)
+
+    // Cards Query
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCard(card: Card)
 
     @Delete()
     suspend fun deleteCard(card: Card)
 
-    @Query("SELECT * FROM deck")
-    fun getAllDecks(): Flow<List<Deck>>
+    @Query("DELETE FROM card WHERE deckId = :deckId")
+    suspend fun deleteCards(deckId: Int)
+
+    @Query("SELECT * FROM deck WHERE deckId = :deckId")
+    fun getDeckById(deckId: Int): Deck
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
     fun getDeckWithCards(deckId: Int): Flow<List<DeckWithCards>>
 
     @Update()
-    suspend fun updateDeck(deck: Deck)
-
-    @Update()
     suspend fun updateCard(card: Card)
-
-    @Query("SELECT * FROM deck WHERE deck_name LIKE :searchQuery OR deck_description LIKE :searchQuery OR deck_first_language LIKE :searchQuery OR deck_second_language LIKE :searchQuery OR deck_color_code LIKE :searchQuery")
-    fun searchDeck(searchQuery: String): Flow<List<Deck>>
 }

@@ -45,7 +45,8 @@
                 android:textAlignment="center"
                 android:textSize="35sp"
                 android:textStyle="bold"
-                tools:text="Init Deck" />
+                tools:text="Init Deck"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/onCardTextDescriptionTV"
@@ -55,7 +56,8 @@
                 android:textAlignment="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                tools:text="Test deck description" />
+                tools:text="Test deck description"
+                android:textColor="@color/black"/>
 
         </LinearLayout>
 

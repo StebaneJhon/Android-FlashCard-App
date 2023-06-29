@@ -28,7 +28,7 @@
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/card_image_bg_hint"
             android:scaleType="centerCrop"
-            android:clipToOutline="true"/>
+            android:clipToOutline="true" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -47,7 +47,6 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/open_sans"
-                android:textColor="@color/black"
                 android:textSize="15sp"
                 tools:text="French" />
 

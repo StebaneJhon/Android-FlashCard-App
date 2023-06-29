@@ -7,11 +7,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="10dp"
     android:layout_margin="10dp"
+    android:backgroundTint="?colorPrimary"
     android:padding="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:backgroundTint="?colorPrimaryVariant">
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -29,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textColor="?colorPrimary"
+                android:textColor="?colorPrimaryDark"
                 android:textSize="15sp"
                 tools:text="French"
                 android:fontFamily="@font/open_sans"/>
@@ -56,7 +58,8 @@
                 android:textSize="35sp"
                 android:textStyle="bold"
                 tools:text="Init Deck"
-                android:fontFamily="@font/montserrat_bold"/>
+                android:fontFamily="@font/montserrat_bold"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/deckDescriptionTV"
@@ -66,21 +69,24 @@
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/open_sans_bold"
-                tools:text="Test deck description" />
+                tools:text="Test deck description"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/languages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
-                tools:text="@string/deck_languages" />
+                tools:text="@string/deck_languages"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/cardsSum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="@string/cards_sum"
-                android:fontFamily="@font/open_sans"/>
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorPrimaryDark"/>
 
         </LinearLayout>
 
@@ -90,7 +96,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/start_quiz_button_text"
-            android:textColor="?colorPrimaryDark"
+            android:textColor="?colorPrimary"
+            android:backgroundTint="?colorPrimaryVariant"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:fontFamily="@font/open_sans_bold"

@@ -2,10 +2,34 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.FlashCard" parent="Theme.Material3.DayNight">
         <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/black</item>
-        <item name="colorPrimaryVariant">@color/beige</item>
+        <item name="colorPrimaryDark">@color/white2</item>
+        <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorSecondary">@color/teal</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
+
+    <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/black2</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorPrimaryVariant">@color/white</item>
+        <item name="colorSecondary">@color/teal</item>
+        <item name="colorAccent">@color/black</item>
+        <item name="colorSurface">@color/black2</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+    </style>
+
+    <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
+
+    <!--Dialog theme-->
+    <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
+    </style>
+
+    <style name="Widget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">?colorPrimaryVariant</item>
+    </style>
 </resources>
