@@ -20,4 +20,5 @@
     <string name="card_image_bg_hint">card image background</string>
     <string name="settings_hint">Settings</string>
     <string name="themes_head_text">THEMES</string>
+    <string name="full_screen_button_description_text">Full screen button</string>
 </resources>

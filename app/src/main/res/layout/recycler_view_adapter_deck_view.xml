@@ -31,7 +31,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:textColor="?colorPrimaryDark"
+                android:textColor="?colorAccent"
                 android:textSize="15sp"
                 tools:text="French"
                 android:fontFamily="@font/open_sans"/>
@@ -59,7 +59,7 @@
                 android:textStyle="bold"
                 tools:text="Init Deck"
                 android:fontFamily="@font/montserrat_bold"
-                android:textColor="@color/black"/>
+                android:textColor="?colorAccent"/>
 
             <TextView
                 android:id="@+id/deckDescriptionTV"
@@ -70,7 +70,7 @@
                 android:textStyle="bold"
                 android:fontFamily="@font/open_sans_bold"
                 tools:text="Test deck description"
-                android:textColor="@color/black"/>
+                android:textColor="?colorAccent"/>
 
             <TextView
                 android:id="@+id/languages"
@@ -78,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 tools:text="@string/deck_languages"
-                android:textColor="@color/black"/>
+                android:textColor="?colorAccent"/>
 
             <TextView
                 android:id="@+id/cardsSum"
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 tools:text="@string/cards_sum"
                 android:fontFamily="@font/open_sans"
-                android:textColor="?colorPrimaryDark"/>
+                android:textColor="?colorAccent"/>
 
         </LinearLayout>
 

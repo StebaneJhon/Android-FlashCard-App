@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.widget.EditText
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.card.NewCardDialog
 
 class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
 
@@ -34,7 +36,6 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         deckFirstLangET = view?.findViewById(R.id.deckFirstLanguageET)
         deckDescriptionET = view?.findViewById(R.id.deckDescriptionET)
 
-        val aa = deck
         if (deck != null) {
             deckColorET?.setText(deck.deckColorCode)
             deckNameET?.setText(deck.deckName)
@@ -92,16 +93,14 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         return builder.create()
     }
 
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         try {
             listener = context as NewDialogListener
         } catch (e: ClassCastException) {
-            throw ClassCastException(context.toString() + "must implement NewDialogListener")
+            throw ClassCastException((context.toString() +
+                    " must implement NoticeDialogListener"))
         }
-
-
     }
 
     interface NewDialogListener {

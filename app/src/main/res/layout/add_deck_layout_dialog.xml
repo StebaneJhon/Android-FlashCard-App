@@ -5,15 +5,6 @@
     android:orientation="vertical"
     android:padding="10dp">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:text="@string/add_your_new_deck_text"
-        android:textAlignment="center"
-        android:layout_marginBottom="10dp"/>
-
     <EditText
         android:id="@+id/deckNameET"
         android:layout_width="match_parent"

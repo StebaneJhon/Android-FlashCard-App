@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/deckRoot"
+    android:id="@+id/cardRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -48,7 +48,8 @@
                 android:layout_marginTop="5dp"
                 android:fontFamily="@font/open_sans"
                 android:textSize="15sp"
-                tools:text="French" />
+                tools:text="French"
+                android:textColor="@color/black"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,7 +77,6 @@
                     android:id="@+id/onCardTextDescriptionTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/onCardTextTV"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/open_sans"
                     android:textAlignment="center"
@@ -85,6 +85,39 @@
                     tools:text="Test deck description" />
 
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/fullScreenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_full_screen"
+                android:contentDescription="@string/full_screen_button_description_text" />
+
+            <ImageButton
+                android:id="@+id/editCardButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:layout_toStartOf="@+id/fullScreenButton"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_edit_bold"
+                android:contentDescription="Edit card button" />
+
+            <ImageButton
+                android:id="@+id/deleteCardButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:layout_toStartOf="@+id/editCardButton"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_delete_bold"
+                android:contentDescription="Delete card button" />
 
         </RelativeLayout>
 

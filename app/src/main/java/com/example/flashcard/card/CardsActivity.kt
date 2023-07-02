@@ -1,5 +1,7 @@
 package com.example.flashcard.card
 
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -10,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.databinding.ActivityCardsBinding
@@ -22,6 +25,8 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
 
     private lateinit var binding: ActivityCardsBinding
     private var deck: ImmutableDeck? = null
+    var sharedPref: SharedPreferences? = null
+    var editor: SharedPreferences.Editor? = null
 
     private val cardViewModel: CardViewModel by viewModels {
         CardViewModelFactory((application as FlashCardApplication).repository)
@@ -29,6 +34,13 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        editor = sharedPref?.edit()
+        val appTheme = sharedPref?.getString("themName", "DARK THEM")
+        val themRef = getThem(appTheme)
+        setTheme(themRef)
+
         binding = ActivityCardsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -63,7 +75,21 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
     }
 
     private fun displayCards(cardList: List<Card>, deck: Deck) {
-        val recyclerViewAdapter = CardsRecyclerViewAdapter(cardList, deck)
+        val recyclerViewAdapter = CardsRecyclerViewAdapter(
+            cardList,
+            deck,
+            {
+                Toast.makeText(this, "Full Screen", Toast.LENGTH_LONG).show()
+                onFullScreen(it, deck)
+            },
+            {
+                Toast.makeText(this, "Edit", Toast.LENGTH_LONG).show()
+            },
+            {
+                Toast.makeText(this, "Delete", Toast.LENGTH_LONG).show()
+            }) {
+            Toast.makeText(this, "Flip", Toast.LENGTH_LONG).show()
+        }
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
@@ -76,9 +102,21 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
         newCardDialog.show(supportFragmentManager, "New Card Dialog")
     }
 
+    private fun onFullScreen(card: Card, deck: Deck) {
+        FullScreenCardDialog(card, deck)
+            .show(supportFragmentManager, "Full Screen Card")
+    }
+
     override fun getCard(card: Card) {
         card.deckId = deck?.deckId
         cardViewModel.insertCard(card, deck!!)
+    }
+
+    private fun getThem(themeName: String?): Int {
+        return when (themeName) {
+            "DARK THEME" -> R.style.DarkTheme_FlashCard
+            else -> R.style.Theme_FlashCard
+        }
     }
 
     companion object {

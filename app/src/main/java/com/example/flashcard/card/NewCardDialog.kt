@@ -35,7 +35,7 @@ class NewCardDialog: AppCompatDialogFragment() {
             .setTitle("New Card")
             .setNegativeButton("Cancel") { _, _ ->  }
             .setPositiveButton("Add"
-            ) { p0, p1 ->
+            ) { _, _ ->
                 val newCard = Card(
                     null,
                     cardContent?.text.toString(),

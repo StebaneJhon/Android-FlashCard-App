@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/deckRoot"
+    android:id="@+id/cardRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
@@ -26,40 +26,96 @@
             android:contentDescription="card_image_bg"
             android:scaleType="centerCrop" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="299dp"
             android:layout_margin="10dp"
-            android:gravity="center"
-            android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
-                android:id="@+id/onCardTextTV"
+                android:id="@+id/languageHint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textAlignment="center"
-                android:textSize="35sp"
-                android:textStyle="bold"
-                tools:text="Init Deck"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/open_sans"
+                android:textSize="15sp"
+                tools:text="French"
                 android:textColor="@color/black"/>
 
-            <TextView
-                android:id="@+id/onCardTextDescriptionTV"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                tools:text="Test deck description"
-                android:textColor="@color/black"/>
+                android:layout_height="299dp"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/onCardTextTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="center"
+                    android:textSize="35sp"
+                    android:textStyle="bold"
+                    tools:text="Init Deck"
+                    android:textColor="@color/black"/>
+
+                <TextView
+                    android:id="@+id/onCardTextDescriptionTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="Test deck description"
+                    android:textColor="@color/black"/>
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/fullScreenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_full_screen"
+                android:contentDescription="@string/full_screen_button_description_text" />
+
+            <ImageButton
+                android:id="@+id/editCardButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:layout_toStartOf="@+id/fullScreenButton"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_edit_bold"
+                android:contentDescription="Edit card button" />
+
+            <ImageButton
+                android:id="@+id/deleteCardButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="10dp"
+                android:layout_toStartOf="@+id/editCardButton"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_delete_bold"
+                android:contentDescription="Delete card button" />
+
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
