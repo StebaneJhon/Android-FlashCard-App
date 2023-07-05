@@ -54,8 +54,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun deleteCard(card: Card) {
-        flashCardDao.deleteCard(card)
+    suspend fun deleteCard(card: Card, deck: Deck) {
+        if (deck.cardSum!! > 0) {
+            deck.cardSum = deck.cardSum?.minus(1)
+            flashCardDao.updateDeck(deck)
+            flashCardDao.deleteCard(card)
+        }
     }
 
     @WorkerThread

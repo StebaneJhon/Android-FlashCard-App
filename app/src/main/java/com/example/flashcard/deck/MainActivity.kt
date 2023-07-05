@@ -24,7 +24,7 @@ import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.settings.SettingsActivity
-import com.example.flashcard.util.Async
+import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
@@ -65,14 +65,14 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
                 deckViewModel.allDecks
                     .collect {
                         when (it) {
-                            is Async.Loading -> {
+                            is UiState.Loading -> {
                                 binding.mainActivityProgressBar.isVisible = true
                             }
-                            is Async.Error -> {
+                            is UiState.Error -> {
                                 binding.mainActivityProgressBar.isVisible = false
                                 Toast.makeText(this@MainActivity, it.errorMessage, Toast.LENGTH_SHORT).show()
                             }
-                            is Async.Success -> {
+                            is UiState.Success -> {
                                 binding.mainActivityProgressBar.isVisible = false
                                 val aa = it.data.toList()
                                 displayDecks(it.data)

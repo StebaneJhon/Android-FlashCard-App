@@ -10,10 +10,13 @@ import android.view.Window
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class FullScreenCardDialog(private val card: Card, private val deck: Deck): AppCompatDialogFragment() {
+class FullScreenCardDialog(private val card: Card, private val deck: ImmutableDeck) :
+    AppCompatDialogFragment() {
 
     private var languageHint: TextView? = null
     private var onCardText: TextView? = null
@@ -21,7 +24,7 @@ class FullScreenCardDialog(private val card: Card, private val deck: Deck): AppC
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity)
+        val builder = MaterialAlertDialogBuilder(requireActivity(), R.style.MaterialAlertDialog_rounded)
         val inflater = activity?.layoutInflater
         val view = inflater?.inflate(R.layout.full_screan_card_layout, null)
 

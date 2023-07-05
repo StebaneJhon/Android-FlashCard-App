@@ -7,9 +7,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
-import com.example.flashcard.util.Async
+import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,21 +18,21 @@ import java.io.IOException
 
 class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
-    private var _allDecks = MutableStateFlow<Async<List<ImmutableDeck>>>(Async.Loading)
-    val allDecks: StateFlow<Async<List<ImmutableDeck>>> = _allDecks.asStateFlow()
+    private var _allDecks = MutableStateFlow<UiState<List<ImmutableDeck>>>(UiState.Loading)
+    val allDecks: StateFlow<UiState<List<ImmutableDeck>>> = _allDecks.asStateFlow()
 
     private var fetchJob: Job? = null
 
     fun getAllDecks() {
         fetchJob?.cancel()
-        _allDecks.value = Async.Loading
+        _allDecks.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
                 repository.allDecks().collect {
-                    _allDecks.value = Async.Success(it)
+                    _allDecks.value = UiState.Success(it)
                 }
             } catch (e: IOException) {
-                _allDecks.value = Async.Error(e.toString())
+                _allDecks.value = UiState.Error(e.toString())
             }
         }
     }

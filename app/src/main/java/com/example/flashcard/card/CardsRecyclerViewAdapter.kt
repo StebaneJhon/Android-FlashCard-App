@@ -8,16 +8,16 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
 
 class CardsRecyclerViewAdapter(
     private val cardList: List<Card>,
-    private val deck: Deck,
+    private val deck: ImmutableDeck,
     private val fullScreenClickListener: (Card) -> Unit,
     private val editCardClickListener: (Card) -> Unit,
-    private val deleteCardClickListener: (Card) -> Unit,
-    private val cardClickListener: (Card) -> Unit
+    private val deleteCardClickListener: (Card) -> Unit
 ) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -34,12 +34,13 @@ class CardsRecyclerViewAdapter(
             deck,
             fullScreenClickListener,
             editCardClickListener,
-            deleteCardClickListener,
-            cardClickListener
+            deleteCardClickListener
         )
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+
+        private var isCardRevealed = false
 
         val onCardText = view.findViewById<TextView>(R.id.onCardTextTV)
         val onCardTextDescription = view.findViewById<TextView>(R.id.onCardTextDescriptionTV)
@@ -51,11 +52,10 @@ class CardsRecyclerViewAdapter(
 
         fun bind(
             card: Card,
-            deck: Deck,
+            deck: ImmutableDeck,
             fullScreenClickListener: (Card) -> Unit,
             editCardClickListener: (Card) -> Unit,
-            deleteCardClickListener: (Card) -> Unit,
-            cardClickListener: (Card) -> Unit
+            deleteCardClickListener: (Card) -> Unit
         ) {
             languageHint.text = deck.deckFirstLanguage
             onCardText.text = card.cardContent
@@ -64,7 +64,23 @@ class CardsRecyclerViewAdapter(
             cardFullscreenButton.setOnClickListener { fullScreenClickListener(card) }
             cardEditButton.setOnClickListener { editCardClickListener(card) }
             cardDeleteButton.setOnClickListener { deleteCardClickListener(card) }
-            cardRoot.setOnClickListener { cardClickListener(card) }
+            cardRoot.setOnClickListener {
+                flipCard(card, deck)
+            }
+        }
+
+        private fun flipCard(card: Card, deck: ImmutableDeck) {
+            if (!isCardRevealed) {
+                languageHint.text = deck.deckSecondLanguage
+                onCardText.text = card.cardDefinition
+                onCardTextDescription.text = card.valueDefinition
+                isCardRevealed = true
+            } else {
+                languageHint.text = deck.deckFirstLanguage
+                onCardText.text = card.cardContent
+                onCardTextDescription.text = card.contentDescription
+                isCardRevealed = false
+            }
         }
 
         companion object {

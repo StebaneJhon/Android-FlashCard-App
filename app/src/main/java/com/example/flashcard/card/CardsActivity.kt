@@ -8,17 +8,17 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.databinding.ActivityCardsBinding
 import com.example.flashcard.backend.entities.Card
-import com.example.flashcard.backend.entities.Deck
-import com.example.flashcard.util.Async
+import com.example.flashcard.util.UiState
+import com.example.flashcard.util.Constant
 import kotlinx.coroutines.launch
 
 class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
@@ -52,16 +52,16 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
                     cardViewModel.getDeckWithCards(it.deckId!!)
                     cardViewModel.deckWithAllCards.collect { state ->
                         when (state) {
-                            is Async.Loading -> {
+                            is UiState.Loading -> {
                                 binding.cardsActivityProgressBar.isVisible = true
                             }
-                            is Async.Error -> {
+                            is UiState.Error -> {
                                 binding.cardsActivityProgressBar.isVisible = false
                                 Toast.makeText(this@CardsActivity, state.errorMessage, Toast.LENGTH_LONG).show()
                             }
-                            is Async.Success -> {
+                            is UiState.Success -> {
                                 binding.cardsActivityProgressBar.isVisible = false
-                                displayCards(state.data[0].cards, state.data[0].deck)
+                                displayCards(state.data[0].cards, state.data[0].deck.toExternal())
                             }
                         }
                     }
@@ -69,27 +69,24 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
             }
 
             binding.addNewCardBT.setOnClickListener {
-                onAddNewCard()
+                onAddNewCard(null)
             }
         }
     }
 
-    private fun displayCards(cardList: List<Card>, deck: Deck) {
+    private fun displayCards(cardList: List<Card>, deck: ImmutableDeck) {
         val recyclerViewAdapter = CardsRecyclerViewAdapter(
             cardList,
             deck,
             {
-                Toast.makeText(this, "Full Screen", Toast.LENGTH_LONG).show()
                 onFullScreen(it, deck)
             },
             {
-                Toast.makeText(this, "Edit", Toast.LENGTH_LONG).show()
+                onAddNewCard(it)
             },
             {
-                Toast.makeText(this, "Delete", Toast.LENGTH_LONG).show()
-            }) {
-            Toast.makeText(this, "Flip", Toast.LENGTH_LONG).show()
-        }
+                cardViewModel.deleteCard(it, deck)
+            })
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
@@ -97,19 +94,23 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener {
         }
     }
 
-    private fun onAddNewCard() {
-        val newCardDialog = NewCardDialog()
+    private fun onAddNewCard(card: Card?) {
+        val newCardDialog = NewCardDialog(card)
         newCardDialog.show(supportFragmentManager, "New Card Dialog")
     }
 
-    private fun onFullScreen(card: Card, deck: Deck) {
+    private fun onFullScreen(card: Card, deck: ImmutableDeck) {
         FullScreenCardDialog(card, deck)
             .show(supportFragmentManager, "Full Screen Card")
     }
 
-    override fun getCard(card: Card) {
-        card.deckId = deck?.deckId
-        cardViewModel.insertCard(card, deck!!)
+    override fun getCard(card: Card, action: String) {
+        if (action == Constant.ADD) {
+            card.deckId = deck?.deckId
+            cardViewModel.insertCard(card, deck!!)
+        } else {
+            cardViewModel.updateCard(card)
+        }
     }
 
     private fun getThem(themeName: String?): Int {
