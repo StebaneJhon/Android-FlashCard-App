@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -16,6 +17,7 @@ class DecksRecyclerViewAdapter(
     private val context: Context,
     private val editDeckClickListener: (ImmutableDeck) -> Unit,
     private val deleteDeckClickListener: (ImmutableDeck) -> Unit,
+    private val startQuizListener: (ImmutableDeck) -> Unit,
     private val deckClickListener: (ImmutableDeck) -> Unit
 ) : RecyclerView.Adapter<DecksRecyclerViewAdapter.ViewHolder>() {
 
@@ -33,6 +35,7 @@ class DecksRecyclerViewAdapter(
             context,
             editDeckClickListener,
             deleteDeckClickListener,
+            startQuizListener,
             deckClickListener
         )
     }
@@ -47,6 +50,7 @@ class DecksRecyclerViewAdapter(
         private val deckFirstLanguageHint: TextView? = view.findViewById(R.id.firstLanguageHint)
         private val editDeckButton: ImageButton? = view.findViewById(R.id.editDeckButton)
         private val deleteDeckButton: ImageButton? = view.findViewById(R.id.deleteDeckButton)
+        private val startQuizButton: Button? = view.findViewById(R.id.startGameButton)
 
 
         fun bind(
@@ -54,6 +58,7 @@ class DecksRecyclerViewAdapter(
             context: Context,
             editDeckClickListener: (ImmutableDeck) -> Unit,
             deleteDeckClickListener: (ImmutableDeck) -> Unit,
+            startQuizListener: (ImmutableDeck) -> Unit,
             deckClickListener: (ImmutableDeck) -> Unit
         ) {
             deckNameTV?.text = deck.deckName
@@ -68,6 +73,7 @@ class DecksRecyclerViewAdapter(
             deckFirstLanguageHint?.text = deck.deckFirstLanguage
             editDeckButton?.setOnClickListener { editDeckClickListener(deck) }
             deleteDeckButton?.setOnClickListener { deleteDeckClickListener(deck) }
+            startQuizButton?.setOnClickListener { startQuizListener(deck) }
         }
 
         companion object {

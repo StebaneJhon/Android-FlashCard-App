@@ -21,4 +21,6 @@
     <string name="settings_hint">Settings</string>
     <string name="themes_head_text">THEMES</string>
     <string name="full_screen_button_description_text">Full screen button</string>
+    <string name="exit_button_text_hint">Exit Button</string>
+    <string name="flash_card_button_text">Flash Card</string>
 </resources>

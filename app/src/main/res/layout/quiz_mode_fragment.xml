@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="375dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp"
+    android:backgroundTint="?colorPrimary"
+    android:id="@+id/quizModeDialogRoot">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/flashCardQuizButton"
+        android:layout_width="355dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="@string/flash_card_button_text"
+        android:textColor="?colorPrimary"
+        android:backgroundTint="?colorPrimaryVariant"
+        app:cornerRadius="15dp"/>
+
+</androidx.cardview.widget.CardView>

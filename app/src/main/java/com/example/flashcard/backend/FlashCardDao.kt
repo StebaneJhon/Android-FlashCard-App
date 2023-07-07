@@ -50,4 +50,7 @@ interface FlashCardDao {
 
     @Update()
     suspend fun updateCard(card: Card)
+
+    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR content_definition LIKE :searchQuery OR card_value LIKE :searchQuery OR value_definition LIKE :searchQuery)")
+    fun searchCard(searchQuery: String, deckId: Int): Flow<List<Card>>
 }

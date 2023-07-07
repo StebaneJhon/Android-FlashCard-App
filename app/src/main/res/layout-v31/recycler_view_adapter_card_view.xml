@@ -14,6 +14,7 @@
         android:layout_height="299dp"
         android:layout_margin="10dp"
         android:padding="3dp"
+        android:foreground="@drawable/fullscreen_card_dialog_background"
         android:background="@drawable/card_content_border">
 
         <ImageView

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fullScreenCardRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/teal"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
@@ -12,10 +14,14 @@
         android:contentDescription="@string/card_image_bg_hint"
         android:scaleType="centerCrop"
         android:src="@drawable/map_pattern"
+        android:layout_margin="10dp"
+        android:background="@drawable/card_content_border"
+        android:clipToOutline="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:foreground="@drawable/fullscreen_card_dialog_background"/>
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -34,6 +40,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
             android:fontFamily="@font/open_sans_bold"
             android:textColor="@color/black"
             android:textSize="20sp"
@@ -74,6 +81,18 @@
                 tools:text="Test deck description" />
 
         </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/exitFullscreenCardButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon_fullscreen_exit"
+            android:background="@color/transparent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:contentDescription="@string/exit_button_text_hint"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="10dp"/>
 
     </RelativeLayout>
 

@@ -1,9 +1,12 @@
 package com.example.flashcard.card
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
+import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
@@ -48,6 +51,10 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     fun deleteCard(card: Card, localDeck: ImmutableDeck) = viewModelScope.launch {
         val externalDeck = localDeck.toLocal()
         repository.deleteCard(card, externalDeck)
+    }
+
+    fun searchCard(searchQuery: String, deckId: Int): LiveData<List<ImmutableCard>> {
+        return repository.searchCard(searchQuery, deckId).asLiveData()
     }
 
 }

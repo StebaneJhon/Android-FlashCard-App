@@ -1,13 +1,18 @@
 package com.example.flashcard.deck
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -23,6 +28,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.quiz.BaseFlashCardGame
 import com.example.flashcard.settings.SettingsActivity
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -125,6 +131,8 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
 
         }, {deck ->
             onDeleteDeck(deck)
+        }, { deck ->
+            onStartQuiz()
         }) {
             val intent = Intent(this, CardsActivity::class.java)
             intent.putExtra(CardsActivity.DECK_KEY, it)
@@ -193,6 +201,26 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         return when (themeName) {
             "DARK THEME" -> R.style.DarkTheme_FlashCard
             else -> R.style.Theme_FlashCard
+        }
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun onStartQuiz() {
+        val viewGroup = binding.mainActivityRoot
+        val dialogBinding = layoutInflater.inflate(R.layout.quiz_mode_fragment, viewGroup, false)
+        val quizModeDialog = Dialog(this)
+
+        quizModeDialog.apply {
+            setContentView(dialogBinding)
+            setCancelable(true)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            show()
+        }
+
+        val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
+        flashCardQuiz.setOnClickListener {
+            val intent = Intent(this, BaseFlashCardGame::class.java)
+            startActivity(intent)
         }
     }
 }

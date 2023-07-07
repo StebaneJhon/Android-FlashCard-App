@@ -1,6 +1,7 @@
 package com.example.flashcard.backend
 
 import androidx.annotation.WorkerThread
+import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
@@ -77,6 +78,13 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     @WorkerThread
     suspend fun deleteCards(deckId: Int) {
         flashCardDao.deleteCards(deckId)
+    }
+
+    @WorkerThread
+    fun searchCard(searchQuery: String, deckId: Int): Flow<List<ImmutableCard>> {
+        return flashCardDao.searchCard(searchQuery, deckId).map {
+            it.toExternal()
+        }
     }
 
 }
