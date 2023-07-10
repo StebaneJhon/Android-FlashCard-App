@@ -28,7 +28,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
-import com.example.flashcard.quiz.BaseFlashCardGame
+import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.settings.SettingsActivity
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         }, {deck ->
             onDeleteDeck(deck)
         }, { deck ->
-            onStartQuiz()
+            onStartQuiz(deck.deckId!!)
         }) {
             val intent = Intent(this, CardsActivity::class.java)
             intent.putExtra(CardsActivity.DECK_KEY, it)
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun onStartQuiz() {
+    private fun onStartQuiz(deckId: Int) {
         val viewGroup = binding.mainActivityRoot
         val dialogBinding = layoutInflater.inflate(R.layout.quiz_mode_fragment, viewGroup, false)
         val quizModeDialog = Dialog(this)
@@ -220,6 +220,7 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
         flashCardQuiz.setOnClickListener {
             val intent = Intent(this, BaseFlashCardGame::class.java)
+            intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, deckId)
             startActivity(intent)
         }
     }

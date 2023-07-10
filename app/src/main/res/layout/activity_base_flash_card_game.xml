@@ -6,61 +6,76 @@
     android:layout_height="match_parent"
     android:padding="10dp"
     android:background="?colorPrimaryDark"
-    tools:context=".quiz.BaseFlashCardGame">
+    tools:context=".quiz.baseFlashCardGame.BaseFlashCardGame">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/card_content_border"
         android:backgroundTint="?colorPrimary"
-        android:gravity="center"
-        android:orientation="vertical"
+        app:cardCornerRadius="15dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/noButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/onCardText"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_bold"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            tools:text="Content" />
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
 
-        <TextView
-            android:id="@+id/onCardTextDefinition"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            tools:text="Content" />
+            <ProgressBar
+                android:id="@+id/cardProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/onCardText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="Content" />
 
-    <Button
+            <TextView
+                android:id="@+id/onCardTextDefinition"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textAlignment="center"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                tools:text="Content" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/noButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="?colorPrimary"
         android:text="No"
         android:textColor="@color/black"
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/yesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="?colorPrimary"
         android:text="Yes"
         android:textColor="@color/black"
+        app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"

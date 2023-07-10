@@ -87,4 +87,9 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         }
     }
 
+    @WorkerThread
+    fun getCards(deckId: Int): Flow<List<ImmutableCard>> {
+        return flashCardDao.getCards(deckId).map { it.toExternal() }
+    }
+
 }

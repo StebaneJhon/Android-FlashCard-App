@@ -14,7 +14,7 @@
         android:theme="@style/Theme.FlashCard"
         tools:targetApi="31">
         <activity
-            android:name=".quiz.BaseFlashCardGame"
+            android:name=".quiz.baseFlashCardGame.BaseFlashCardGame"
             android:exported="false" />
         <activity
             android:name=".settings.SettingsActivity"
