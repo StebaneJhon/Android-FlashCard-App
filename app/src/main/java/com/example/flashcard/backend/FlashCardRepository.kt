@@ -50,7 +50,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     // Cards
     @WorkerThread
-    fun getDeckWithCards(deckId: Int): Flow<List<DeckWithCards>> {
+    fun getDeckWithCards(deckId: Int): Flow<DeckWithCards> {
         return flashCardDao.getDeckWithCards(deckId)
     }
 

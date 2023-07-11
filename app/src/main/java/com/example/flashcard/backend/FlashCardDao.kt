@@ -46,7 +46,7 @@ interface FlashCardDao {
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    fun getDeckWithCards(deckId: Int): Flow<List<DeckWithCards>>
+    fun getDeckWithCards(deckId: Int): Flow<DeckWithCards>
 
     @Update()
     suspend fun updateCard(card: Card)

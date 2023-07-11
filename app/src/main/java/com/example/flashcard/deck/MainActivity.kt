@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
@@ -80,7 +81,6 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
                             }
                             is UiState.Success -> {
                                 binding.mainActivityProgressBar.isVisible = false
-                                val aa = it.data.toList()
                                 displayDecks(it.data)
                             }
                         }
@@ -219,9 +219,30 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
 
         val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
         flashCardQuiz.setOnClickListener {
-            val intent = Intent(this, BaseFlashCardGame::class.java)
-            intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, deckId)
-            startActivity(intent)
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    deckViewModel.getDeckWithCards(deckId)
+                    deckViewModel.deckWithAllCards.collect { state ->
+                        when (state) {
+                            is UiState.Loading -> {
+                                binding.mainActivityProgressBar.visibility = View.VISIBLE
+                            }
+                            is UiState.Error -> {
+                                binding.mainActivityProgressBar.visibility = View.GONE
+                                intent.putExtra(BaseFlashCardGame.DECK_ERROR_KEY, state.errorMessage)
+                            }
+                            is UiState.Success -> {
+                                binding.mainActivityProgressBar.visibility = View.GONE
+                                val intent = Intent(this@MainActivity, BaseFlashCardGame::class.java)
+                                val a = state.data
+                                intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
+                                startActivity(intent)
+                            }
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,6 +53,22 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     fun updateDeck(deck: Deck) = viewModelScope.launch {
         repository.updateDeck(deck)
+    }
+
+    private var _deckWithAllCards = MutableStateFlow<UiState<DeckWithCards>>(UiState.Loading)
+    val deckWithAllCards: StateFlow<UiState<DeckWithCards>> = _deckWithAllCards.asStateFlow()
+    fun getDeckWithCards(deckId: Int) {
+        fetchJob?.cancel()
+        _deckWithAllCards.value = UiState.Loading
+        fetchJob = viewModelScope.launch {
+            try {
+                repository.getDeckWithCards(deckId).collect {
+                    _deckWithAllCards.value = UiState.Success(it)
+                }
+            } catch (e: IOException) {
+                _deckWithAllCards.value = UiState.Error(e.toString())
+            }
+        }
     }
 
 }

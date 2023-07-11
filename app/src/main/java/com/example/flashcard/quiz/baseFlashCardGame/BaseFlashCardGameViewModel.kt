@@ -20,22 +20,8 @@ class BaseFlashCardGameViewModel(private val repository: FlashCardRepository) : 
     private var fetchJob: Job? = null
 
     private var cardPosition: Int = 0
-    private var _deckWithAllCards = MutableStateFlow<UiState<List<DeckWithCards>>>(UiState.Loading)
-    val deckWithAllCards: StateFlow<UiState<List<DeckWithCards>>> = _deckWithAllCards.asStateFlow()
-
-    fun getDeckWithCards(deckId: Int) {
-        fetchJob?.cancel()
-        _deckWithAllCards.value = UiState.Loading
-        fetchJob = viewModelScope.launch {
-            try {
-                repository.getDeckWithCards(deckId).collect {
-                    _deckWithAllCards.value = UiState.Success(it)
-                }
-            } catch (e: IOException) {
-                _deckWithAllCards.value = UiState.Error(e.toString())
-            }
-        }
-    }
+    private var knownCardsSum: Int = 0
+    private val unKnownCards: List<ImmutableCard> = mutableListOf()
 
     private val _actualCard = MutableStateFlow<UiState<ImmutableCard>>(UiState.Loading)
     val actualCard: StateFlow<UiState<ImmutableCard>> = _actualCard.asStateFlow()
@@ -54,6 +40,17 @@ class BaseFlashCardGameViewModel(private val repository: FlashCardRepository) : 
         }
     }
 
+    fun onCardKnown() {
+        knownCardsSum += 1
+    }
+
+    fun onCardUnknown(cardList: List<ImmutableCard>) {
+        knownCardsSum -= 1
+        unKnownCards.plus(cardList[cardPosition])
+    }
+
+    fun getKnownCardSum() = knownCardsSum
+    fun getUnknownCards() = unKnownCards
 }
 
 class BaseFlashCardGameViewModelFactory(private val repository: FlashCardRepository) :

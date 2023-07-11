@@ -70,7 +70,7 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
                             }
                             is UiState.Success -> {
                                 binding.cardsActivityProgressBar.isVisible = false
-                                displayCards(state.data[0].cards, state.data[0].deck.toExternal())
+                                displayCards(state.data.cards, state.data.deck.toExternal())
                             }
                         }
                     }

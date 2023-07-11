@@ -21,8 +21,8 @@ import java.io.IOException
 
 class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
-    private var _deckWithAllCards = MutableStateFlow<UiState<List<DeckWithCards>>>(UiState.Loading)
-    val deckWithAllCards: StateFlow<UiState<List<DeckWithCards>>> = _deckWithAllCards.asStateFlow()
+    private var _deckWithAllCards = MutableStateFlow<UiState<DeckWithCards>>(UiState.Loading)
+    val deckWithAllCards: StateFlow<UiState<DeckWithCards>> = _deckWithAllCards.asStateFlow()
     private var fetchJob: Job? = null
 
     fun getDeckWithCards(deckId: Int) {
