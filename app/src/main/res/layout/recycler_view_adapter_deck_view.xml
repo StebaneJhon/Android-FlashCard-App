@@ -38,10 +38,9 @@
 
         </LinearLayout>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="275dp"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
             android:elevation="10dp"
             android:backgroundTint="?colorPrimaryVariant"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -54,23 +53,24 @@
                 android:id="@+id/deckNameTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="35sp"
-                android:textStyle="bold"
-                tools:text="Init Deck"
+                android:layout_alignParentTop="true"
                 android:fontFamily="@font/montserrat_bold"
-                android:textColor="?colorAccent"/>
+                android:textColor="?colorAccent"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                tools:text="Init Deck" />
 
             <TextView
                 android:id="@+id/deckDescriptionTV"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:textSize="20sp"
+                android:layout_marginTop="5dp"
+                android:textSize="18sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/open_sans_bold"
                 tools:text="Test deck description"
-                android:textColor="?colorAccent"/>
+                android:textColor="?colorAccent"
+                android:layout_below="@+id/deckNameTV"/>
 
             <TextView
                 android:id="@+id/languages"
@@ -78,55 +78,59 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 tools:text="@string/deck_languages"
-                android:textColor="?colorAccent"/>
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:textColor="?colorAccent"
+                android:layout_below="@+id/deckDescriptionTV"/>
 
             <TextView
                 android:id="@+id/cardsSum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="@string/cards_sum"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/open_sans"
-                android:textColor="?colorAccent"/>
+                android:textColor="?colorAccent"
+                android:layout_below="@id/languages"/>
 
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/startGameButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/start_quiz_button_text"
-            android:textColor="?colorPrimary"
-            android:backgroundTint="?colorPrimaryVariant"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:fontFamily="@font/open_sans_bold"
-            android:textStyle="bold"/>
+            <Button
+                android:id="@+id/startGameButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardsSum"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorPrimaryVariant"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="@string/start_quiz_button_text"
+                android:textColor="?colorPrimary"
+                android:textStyle="bold" />
 
 
-        <ImageButton
-            android:id="@+id/deleteDeckButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:background="@color/transparent"
-            android:src="@drawable/icon_delete"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            <ImageButton
+                android:id="@+id/deleteDeckButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardsSum"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/editDeckButton"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_delete" />
 
-        <ImageButton
-            android:id="@+id/editDeckButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginEnd="10dp"
-            android:background="@color/transparent"
-            android:src="@drawable/icon_edit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/deleteDeckButton" />
+            <ImageButton
+                android:id="@+id/editDeckButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cardsSum"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="0dp"
+                android:background="@color/transparent"
+                android:src="@drawable/icon_edit" />
+
+        </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

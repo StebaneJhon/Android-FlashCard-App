@@ -1,28 +1,25 @@
 package com.example.flashcard.quiz.baseFlashCardGame
 
+
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
-import android.text.BoringLayout
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.IntentCompat.getParcelableExtra
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
-import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityBaseFlashCardGameBinding
+import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.util.UiState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.parcelize.parcelableCreator
 
 class BaseFlashCardGame : AppCompatActivity() {
 
@@ -47,27 +44,33 @@ class BaseFlashCardGame : AppCompatActivity() {
         deckWithCards?.let {
             cardList = it.cards.toExternal()
             deck = it.deck.toExternal()
-            lifecycleScope.launch {
-                displayNextCard(cardList!!, null)
-            }
-
-            binding.yesButton.setOnClickListener {
-                lifecycleScope.launch {
-                    displayNextCard(cardList!!, true)
-                }
-            }
-            binding.noButton.setOnClickListener {
-                lifecycleScope.launch {
-                    displayNextCard(cardList!!, false)
-                }
-            }
-            binding.card.setOnClickListener {
-                lifecycleScope.launch {
-                    flipCard()
-                }
-            }
+            startFlashCard(cardList!!)
         }
 
+    }
+
+    private fun startFlashCard(cardList: List<ImmutableCard>) {
+        lifecycleScope.launch {
+            displayNextCard(cardList)
+        }
+
+        binding.yesButton.setOnClickListener {
+            baseGameViewModel.onCardKnown()
+            lifecycleScope.launch {
+                displayNextCard(cardList)
+            }
+        }
+        binding.noButton.setOnClickListener {
+            baseGameViewModel.onCardUnknown(cardList)
+            lifecycleScope.launch {
+                displayNextCard(cardList)
+            }
+        }
+        binding.card.setOnClickListener {
+            lifecycleScope.launch {
+                flipCard()
+            }
+        }
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
@@ -75,12 +78,11 @@ class BaseFlashCardGame : AppCompatActivity() {
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
 
-    private suspend fun displayNextCard(cardList: List<ImmutableCard>, isActualCardKnown: Boolean?) {
-        if (isActualCardKnown == true) {
-            baseGameViewModel.onCardKnown()
-        } else if (isActualCardKnown == false) {
-            baseGameViewModel.onCardUnknown(cardList)
-        }
+    private suspend fun displayNextCard(
+        cardList: List<ImmutableCard>
+    ) {
+        binding.feedbackCard.visibility = View.GONE
+        binding.wordCard.visibility = View.VISIBLE
 
         cardFliped = false
         baseGameViewModel.getActualCard(cardList)
@@ -94,6 +96,7 @@ class BaseFlashCardGame : AppCompatActivity() {
                     binding.cardProgressBar.visibility = View.GONE
                     binding.onCardText.visibility = View.GONE
                     binding.onCardTextDefinition.text = state.errorMessage
+                    onQuizComplete(baseGameViewModel.getKnownCardSum(cardList), baseGameViewModel.getUnknownCards(), deck!!)
                 }
 
                 is UiState.Success -> {
@@ -142,6 +145,44 @@ class BaseFlashCardGame : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun onQuizComplete(
+        knownCardSum: Int,
+        missedCard: List<ImmutableCard>,
+        deck: ImmutableDeck
+    ) {
+        binding.feedbackCard.visibility = View.VISIBLE
+        binding.wordCard.visibility = View.GONE
+
+        binding.knownCardsTV.text = getString(R.string.known_cards_text, knownCardSum.toString())
+        binding.missedCardTV.text = getString(R.string.missed_cards_text, missedCard.size.toString())
+
+        if (missedCard.isEmpty()) {
+            binding.reviseMissedCardBT.visibility = View.GONE
+        } else {
+            binding.reviseMissedCardBT.visibility = View.VISIBLE
+        }
+
+        binding.reviseMissedCardBT.setOnClickListener {
+            val newCards = baseGameViewModel.getUnknownCards()
+            baseGameViewModel.initFlashCard()
+            startFlashCard(newCards)
+        }
+
+        binding.restartFlashCardBT.setOnClickListener {
+            baseGameViewModel.initFlashCard()
+            deckWithCards = intent?.parcelable(DECK_ID_KEY)
+            deckWithCards?.let {
+                cardList = it.cards.toExternal()
+                startFlashCard(cardList!!)
+            }
+        }
+
+        binding.backToDeckBT.setOnClickListener {
+            startActivity(Intent(this@BaseFlashCardGame, MainActivity::class.java))
+            finish()
+        }
     }
 
     companion object {

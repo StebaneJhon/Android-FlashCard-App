@@ -21,7 +21,7 @@ class BaseFlashCardGameViewModel(private val repository: FlashCardRepository) : 
 
     private var cardPosition: Int = 0
     private var knownCardsSum: Int = 0
-    private val unKnownCards: List<ImmutableCard> = mutableListOf()
+    private val unKnownCards: ArrayList<ImmutableCard> = arrayListOf()
 
     private val _actualCard = MutableStateFlow<UiState<ImmutableCard>>(UiState.Loading)
     val actualCard: StateFlow<UiState<ImmutableCard>> = _actualCard.asStateFlow()
@@ -46,11 +46,19 @@ class BaseFlashCardGameViewModel(private val repository: FlashCardRepository) : 
 
     fun onCardUnknown(cardList: List<ImmutableCard>) {
         knownCardsSum -= 1
-        unKnownCards.plus(cardList[cardPosition])
+        unKnownCards.add(cardList[cardPosition - 1])
     }
 
-    fun getKnownCardSum() = knownCardsSum
-    fun getUnknownCards() = unKnownCards
+    fun getKnownCardSum(cardList: List<ImmutableCard>) = cardList.size - unKnownCards.size
+    fun getUnknownCards(): List<ImmutableCard> {
+        val newCards = arrayListOf<ImmutableCard>()
+        unKnownCards.forEach { immutableCard -> newCards.add(immutableCard) }
+        return newCards.toList()
+    }
+
+    fun initFlashCard() {
+        unKnownCards.clear()
+    }
 }
 
 class BaseFlashCardGameViewModelFactory(private val repository: FlashCardRepository) :
@@ -60,6 +68,6 @@ class BaseFlashCardGameViewModelFactory(private val repository: FlashCardReposit
             @Suppress("UNCHECKED_CAST")
             return BaseFlashCardGameViewModel(repository) as T
         }
-        throw throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

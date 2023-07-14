@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/baseFlashCardViewGroup"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
@@ -22,6 +23,111 @@
         app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/feedbackCard"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/card_content_border"
+                android:foreground="@drawable/fullscreen_card_dialog_background"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/onFeedbackCardImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/map_pattern"
+                    android:background="@drawable/card_content_border"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/card_image_bg_hint"
+                    android:scaleType="centerCrop"
+                    android:clipToOutline="true" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="@+id/onFeedbackCardImageView"
+                    app:layout_constraintEnd_toEndOf="@+id/onFeedbackCardImageView"
+                    app:layout_constraintStart_toStartOf="@+id/onFeedbackCardImageView"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="@string/flashcard_complete_text"
+                        android:textColor="?colorAccent"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/knownCardsTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/open_sans"
+                        android:text="@string/known_cards_text"
+                        android:textColor="?colorAccent"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/missedCardTV"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/open_sans"
+                        android:text="@string/missed_cards_text"
+                        android:textColor="?colorAccent"
+                        android:textSize="18sp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/reviseMissedCardBT"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:backgroundTint="?colorPrimaryVariant"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/revise_missed_cards_button_txt"
+                        android:textColor="?colorPrimary"
+                        android:textStyle="bold"
+                        app:cornerRadius="15dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/restartFlashCardBT"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:backgroundTint="?colorPrimaryVariant"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/restart_flashcard_button_text"
+                        android:textColor="?colorPrimary"
+                        android:textStyle="bold"
+                        app:cornerRadius="15dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/backToDeckBT"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:backgroundTint="?colorPrimaryVariant"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/back_to_deck_text_button"
+                        android:textColor="?colorPrimary"
+                        android:textStyle="bold"
+                        app:cornerRadius="15dp" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/wordCard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"

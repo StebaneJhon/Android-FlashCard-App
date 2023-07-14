@@ -1,13 +1,18 @@
 package com.example.flashcard.card
 
+import android.annotation.SuppressLint
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.widget.SearchView
@@ -23,6 +28,7 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.databinding.ActivityCardsBinding
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.settings.SettingsActivity
 import com.example.flashcard.util.UiState
 import com.example.flashcard.util.Constant
@@ -54,11 +60,11 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
         setContentView(binding.root)
 
         deck = intent?.getParcelableExtra(DECK_KEY)
-        deck?.let {
+        deck?.let {_deck ->
             supportActionBar?.title = deck?.deckName
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    cardViewModel.getDeckWithCards(it.deckId!!)
+                    cardViewModel.getDeckWithCards(_deck.deckId!!)
                     cardViewModel.deckWithAllCards.collect { state ->
                         when (state) {
                             is UiState.Loading -> {
@@ -79,6 +85,61 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
 
             binding.addNewCardBT.setOnClickListener {
                 onAddNewCard(null)
+            }
+
+            binding.startQuizBT.setOnClickListener {
+                _deck.deckId?.let { it1 -> onStartQuiz(it1) }
+            }
+        }
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun onStartQuiz(deckId: Int) {
+        val viewGroup = binding.cardsActivityRoot
+        val dialogBinding = layoutInflater.inflate(R.layout.quiz_mode_fragment, viewGroup, false)
+        val quizModeDialog = Dialog(this)
+
+        quizModeDialog.apply {
+            setContentView(dialogBinding)
+            setCancelable(true)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            show()
+        }
+
+        val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
+        flashCardQuiz.setOnClickListener {
+            onStartBaseFlashCardGame(deckId)
+        }
+    }
+
+    private fun onStartBaseFlashCardGame(deckId: Int) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cardViewModel.getDeckWithCards(deck?.deckId!!)
+                cardViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.cardsActivityProgressBar.isVisible = true
+                        }
+
+                        is UiState.Error -> {
+                            binding.cardsActivityProgressBar.isVisible = false
+                            Toast.makeText(
+                                this@CardsActivity,
+                                state.errorMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                        is UiState.Success -> {
+                            binding.cardsActivityProgressBar.isVisible = false
+                            val intent = Intent(this@CardsActivity, BaseFlashCardGame::class.java)
+                            val a = state.data
+                            intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                        }
+                    }
+                }
             }
         }
     }
