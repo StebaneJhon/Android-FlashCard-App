@@ -1,39 +1,74 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.FlashCard" parent="Theme.Material3.DayNight">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryDark">@color/white2</item>
-        <item name="colorPrimaryVariant">@color/black</item>
-        <item name="colorSecondary">@color/teal</item>
-        <item name="colorAccent">@color/black</item>
-        <item name="colorSurface">?colorPrimary</item>
-        <item name="colorOnSurface">?colorAccent</item>
+        <item name="colorPrimary">@color/grey700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/grey500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/grey15</item>
+        <item name="colorSurfaceContainerLow">@color/grey25</item>
+        <item name="colorSurfaceContainer">@color/grey50</item>
+        <item name="colorSurfaceContainerHigh">@color/grey100</item>
+        <item name="colorSurfaceContainerHighest">@color/grey200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/white</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
 
     <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight">
-        <item name="colorPrimary">@color/black2</item>
-        <item name="colorPrimaryDark">@color/black</item>
-        <item name="colorPrimaryVariant">@color/white</item>
-        <item name="colorSecondary">@color/teal</item>
-        <item name="colorAccent">@color/white</item>
-        <item name="colorSurface">@color/black2</item>
-        <item name="colorOnSurface">@color/white</item>
+        <item name="colorPrimary">@color/grey15</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryContainer">@color/grey25</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+        <item name="colorSurfaceContainerLowest">@color/grey200</item>
+        <item name="colorSurfaceContainerLow">@color/grey100</item>
+        <item name="colorSurfaceContainer">@color/grey50</item>
+        <item name="colorSurfaceContainerHigh">@color/grey25</item>
+        <item name="colorSurfaceContainerHighest">@color/grey15</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/white</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
 
+    <style name="Purple.Theme.FlashCard" parent="Theme.Material3.DayNight">
+        <item name="colorPrimary">@color/purple700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/purple500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/purple15</item>
+        <item name="colorSurfaceContainerLow">@color/purple25</item>
+        <item name="colorSurfaceContainer">@color/purple50</item>
+        <item name="colorSurfaceContainerHigh">@color/purple100</item>
+        <item name="colorSurfaceContainerHighest">@color/purple200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/white</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+    </style>
+    <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard"/>
+
     <!--Dialog theme-->
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
+        <item name="titleTextColor">?colorPrimary</item>
+        <item name="android:textColor">?colorOnSurface</item>
+        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
+        <item name="backgroundColor">?colorSurfaceContainerLow</item>
+        <item name="android:background">?colorSurfaceContainerLow</item>
     </style>
 
     <style name="Widget.App.Button" parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="android:textColor">?colorPrimaryVariant</item>
+        <item name="android:textColor">?colorOnSurface</item>
     </style>
 
     <!-- Rounded dialog theme -->

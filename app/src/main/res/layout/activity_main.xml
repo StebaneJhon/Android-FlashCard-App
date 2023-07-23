@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorPrimaryDark"
     android:id="@+id/mainActivityRoot"
+    android:background="?colorSurfaceContainerLowest"
     tools:context=".deck.MainActivity">
 
     <ProgressBar
@@ -25,6 +25,7 @@
         android:text="@string/on_no_deck_text_hint"
         android:textAlignment="center"
         android:fontFamily="@font/open_sans"
+        android:textColor="?colorOnSurface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +45,7 @@
         android:id="@+id/addNewDeckButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/teal"
+        android:backgroundTint="?colorPrimary"
         android:background="@drawable/add_new_deck_button_background"
         android:src="@drawable/add_icon_button"
         app:layout_constraintBottom_toBottomOf="parent"

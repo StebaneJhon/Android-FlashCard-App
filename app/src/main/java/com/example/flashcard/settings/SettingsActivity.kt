@@ -36,6 +36,11 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
             updateAppTheme()
         }
 
+        binding.purpleThemeButton.setOnClickListener {
+            setAppTheme("PURPLE THEME")
+            updateAppTheme()
+        }
+
     }
 
     private fun updateAppTheme() {
@@ -52,6 +57,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
     private fun getThem(themeName: String?): Int {
         return when (themeName) {
             "DARK THEME" -> R.style.DarkTheme_FlashCard
+            "PURPLE THEME" -> R.style.PurpleTheme_Flashcard
             else -> R.style.Theme_FlashCard
         }
     }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/edit_card_DM"
+        android:icon="@drawable/icon_edit"
+        android:title="@string/edit_deck_menu_hint" />
+    <item android:id="@+id/delete_card_DM"
+        android:icon="@drawable/icon_delete"
+        android:title="@string/delete_deck_menu_hint" />
+    <item android:id="@+id/fullscrean_card_DM"
+        android:icon="@drawable/icon_full_screen"
+        android:title="@string/expand_card_button_text" />
+</menu>

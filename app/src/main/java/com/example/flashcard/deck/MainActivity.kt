@@ -200,6 +200,7 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
     private fun getThem(themeName: String?): Int {
         return when (themeName) {
             "DARK THEME" -> R.style.DarkTheme_FlashCard
+            "PURPLE THEME" -> R.style.PurpleTheme_Flashcard
             else -> R.style.Theme_FlashCard
         }
     }

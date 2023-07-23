@@ -7,34 +7,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="10dp"
     android:layout_margin="10dp"
-    android:backgroundTint="?colorPrimary"
+    android:backgroundTint="?colorSurfaceContainerLow"
     android:padding="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="?colorPrimaryVariant">
+        android:backgroundTint="?colorSurfaceContainerLow">
 
         <LinearLayout
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="20dp"
             android:elevation="0dp"
             android:orientation="horizontal"
             android:gravity="center"
-            android:background="?colorSecondary"
+            android:background="@color/teal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/firstLanguageHint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:textColor="?colorAccent"
-                android:textSize="15sp"
-                tools:text="French"
-                android:fontFamily="@font/open_sans"/>
 
         </LinearLayout>
 
@@ -42,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="10dp"
-            android:backgroundTint="?colorPrimaryVariant"
+            android:backgroundTint="?colorSurfaceContainerLow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:fontFamily="@font/montserrat_bold"
-                android:textColor="?colorAccent"
+                android:textColor="?colorOnSurface"
                 android:textSize="28sp"
                 android:textStyle="bold"
                 tools:text="Init Deck" />
@@ -69,7 +59,7 @@
                 android:textStyle="bold"
                 android:fontFamily="@font/open_sans_bold"
                 tools:text="Test deck description"
-                android:textColor="?colorAccent"
+                android:textColor="?colorOnSurface"
                 android:layout_below="@+id/deckNameTV"/>
 
             <TextView
@@ -80,7 +70,7 @@
                 tools:text="@string/deck_languages"
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"
-                android:textColor="?colorAccent"
+                android:textColor="?colorOnSurface"
                 android:layout_below="@+id/deckDescriptionTV"/>
 
             <TextView
@@ -91,44 +81,31 @@
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/open_sans"
-                android:textColor="?colorAccent"
+                android:textColor="?colorOnSurface"
                 android:layout_below="@id/languages"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/startGameButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/cardsSum"
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="10dp"
-                android:backgroundTint="?colorPrimaryVariant"
+                android:backgroundTint="?colorSurfaceContainer"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="@string/start_quiz_button_text"
-                android:textColor="?colorPrimary"
+                android:textColor="?colorOnSurface"
                 android:textStyle="bold" />
 
-
             <ImageButton
-                android:id="@+id/deleteDeckButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/cardsSum"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@+id/editDeckButton"
-                android:background="@color/transparent"
-                android:src="@drawable/icon_delete" />
-
-            <ImageButton
-                android:id="@+id/editDeckButton"
+                android:id="@+id/popup_menu_BT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/cardsSum"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="0dp"
                 android:background="@color/transparent"
-                android:src="@drawable/icon_edit" />
+                android:src="@drawable/icon_popup_menu"
+                android:layout_marginTop="20dp"/>
 
         </RelativeLayout>
 

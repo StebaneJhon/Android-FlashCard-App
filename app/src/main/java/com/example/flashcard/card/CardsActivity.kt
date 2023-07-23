@@ -177,6 +177,7 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
 
     private fun displayCards(cardList: List<Card>, deck: ImmutableDeck) {
         val recyclerViewAdapter = CardsRecyclerViewAdapter(
+            this@CardsActivity,
             cardList,
             deck,
             {
@@ -217,6 +218,7 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
     private fun getThem(themeName: String?): Int {
         return when (themeName) {
             "DARK THEME" -> R.style.DarkTheme_FlashCard
+            "PURPLE THEME" -> R.style.PurpleTheme_Flashcard
             else -> R.style.Theme_FlashCard
         }
     }

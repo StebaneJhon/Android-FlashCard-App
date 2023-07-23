@@ -1,54 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="10dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="?colorSurfaceContainerLow">
 
-    <EditText
-        android:id="@+id/deckNameET"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/deck_name_hint"
-        android:autofillHints="@string/deck_name_hint"
-        android:inputType="text"
-        android:layout_marginBottom="10dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_margin="10dp">
 
-    <EditText
-        android:id="@+id/deckDescriptionET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/deck_description_hint"
-        android:autofillHints="@string/deck_description_hint"
-        android:inputType="text"
-        android:layout_marginBottom="10dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorOnSurface"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/deckNameET"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/deck_name_hint"
+                android:textColorHint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:autofillHints="@string/deck_name_hint"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/deckFirstLanguageET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/deck_first_language_hint"
-        android:autofillHints="@string/deck_first_language_hint"
-        android:inputType="text"
-        android:layout_marginBottom="10dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorOnSurface"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/deckDescriptionET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/deck_description_hint"
+                android:textColorHint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:autofillHints="@string/deck_description_hint"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/deckSecondLanguageET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/deck_second_language_hint"
-        android:autofillHints="@string/deck_second_language_hint"
-        android:inputType="text"
-        android:layout_marginBottom="10dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorOnSurface"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/deckFirstLanguageET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/deck_first_language_hint"
+                android:textColorHint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:autofillHints="@string/deck_first_language_hint"
+                android:inputType="text"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/deckDeckColorET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/deck_color"
-        android:autofillHints="@string/deck_color"
-        android:inputType="text"
-        android:layout_marginBottom="10dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorOnSurface"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/deckSecondLanguageET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/deck_second_language_hint"
+                android:textColorHint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:autofillHints="@string/deck_second_language_hint"
+                android:inputType="text"
+                android:layout_marginBottom="10dp"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorOnSurface"
+            android:layout_marginBottom="10dp">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/deckDeckColorET"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/deck_color"
+                android:textColorHint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:autofillHints="@string/deck_color"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

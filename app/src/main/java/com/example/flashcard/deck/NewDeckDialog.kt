@@ -13,6 +13,7 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.card.NewCardDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
 
@@ -26,7 +27,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity)
+        val builder = MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_App_MaterialAlertDialog)
         val inflater = activity?.layoutInflater
         val view = inflater?.inflate(R.layout.add_deck_layout_dialog, null)
 
@@ -89,6 +90,8 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
 
                 })
         }
+
+        builder.setView(view)
 
         return builder.create()
     }

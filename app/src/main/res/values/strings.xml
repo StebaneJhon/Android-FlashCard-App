@@ -29,4 +29,7 @@
     <string name="revise_missed_cards_button_txt">REVISE MISSED CARDS</string>
     <string name="restart_flashcard_button_text">RESTART FLASHCARD</string>
     <string name="back_to_deck_text_button">BACK TO DECK</string>
+    <string name="edit_deck_menu_hint">Edit Deck</string>
+    <string name="delete_deck_menu_hint">Delete Deck</string>
+    <string name="expand_card_button_text">Expand</string>
 </resources>

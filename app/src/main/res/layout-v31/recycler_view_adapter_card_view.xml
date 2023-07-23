@@ -88,37 +88,15 @@
             </LinearLayout>
 
             <ImageButton
-                android:id="@+id/fullScreenButton"
+                android:id="@+id/pupUpBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
                 android:background="@color/transparent"
-                android:src="@drawable/icon_full_screen"
+                android:src="@drawable/icon_popup_menu"
                 android:contentDescription="@string/full_screen_button_description_text" />
-
-            <ImageButton
-                android:id="@+id/editCardButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
-                android:layout_toStartOf="@+id/fullScreenButton"
-                android:background="@color/transparent"
-                android:src="@drawable/icon_edit_bold"
-                android:contentDescription="Edit card button" />
-
-            <ImageButton
-                android:id="@+id/deleteCardButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="10dp"
-                android:layout_toStartOf="@+id/editCardButton"
-                android:background="@color/transparent"
-                android:src="@drawable/icon_delete_bold"
-                android:contentDescription="Delete card button" />
 
         </RelativeLayout>
 

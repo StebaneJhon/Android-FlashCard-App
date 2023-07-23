@@ -1,12 +1,20 @@
 package com.example.flashcard.deck
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.drawable.InsetDrawable
+import android.os.Build
+import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.annotation.MenuRes
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
@@ -47,10 +55,10 @@ class DecksRecyclerViewAdapter(
         private val deckRoot: CardView? = view.findViewById(R.id.deckRoot)
         private val deckLanguages: TextView? = view.findViewById(R.id.languages)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
-        private val deckFirstLanguageHint: TextView? = view.findViewById(R.id.firstLanguageHint)
-        private val editDeckButton: ImageButton? = view.findViewById(R.id.editDeckButton)
-        private val deleteDeckButton: ImageButton? = view.findViewById(R.id.deleteDeckButton)
+        private val popupMenuBT: ImageButton? = view.findViewById(R.id.popup_menu_BT)
         private val startQuizButton: Button? = view.findViewById(R.id.startGameButton)
+
+        private val ICON_MARGIN = 5
 
 
         fun bind(
@@ -70,10 +78,74 @@ class DecksRecyclerViewAdapter(
             )
             cardSum?.text = context.getString(R.string.cards_sum, deck.cardSum.toString())
             deckRoot?.setOnClickListener { deckClickListener(deck) }
-            deckFirstLanguageHint?.text = deck.deckFirstLanguage
-            editDeckButton?.setOnClickListener { editDeckClickListener(deck) }
-            deleteDeckButton?.setOnClickListener { deleteDeckClickListener(deck) }
             startQuizButton?.setOnClickListener { startQuizListener(deck) }
+            popupMenuBT?.setOnClickListener { v: View ->
+                showMenu(
+                    context,
+                    v,
+                    R.menu.deck_popup_menu,
+                    editDeckClickListener,
+                    deleteDeckClickListener,
+                    deck
+                )
+            }
+        }
+
+        @SuppressLint("RestrictedApi")
+        private fun showMenu(
+            context: Context,
+            v: View,
+            @MenuRes menuRes: Int,
+            editDeckClickListener: (ImmutableDeck) -> Unit,
+            deleteDeckClickListener: (ImmutableDeck) -> Unit,
+            deck: ImmutableDeck
+        ) {
+            val popup = PopupMenu(context, v)
+            popup.menuInflater.inflate(menuRes, popup.menu)
+
+            if (popup.menu is MenuBuilder) {
+                val menuBuilder = popup.menu as MenuBuilder
+                menuBuilder.setOptionalIconsVisible(true)
+                for (item in menuBuilder.visibleItems) {
+                    val iconMarginPx =
+                        TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_DIP,
+                            ICON_MARGIN.toFloat(),
+                            context.resources.displayMetrics
+                        )
+                            .toInt()
+                    if (item.icon != null) {
+                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+                            item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
+                        } else {
+                            item.icon =
+                                object :
+                                    InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0) {
+                                    override fun getIntrinsicWidth(): Int {
+                                        return intrinsicHeight + iconMarginPx + iconMarginPx
+                                    }
+                                }
+                        }
+                    }
+                }
+            }
+
+            popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+                if (menuItem.itemId == R.id.edit_deck_DM) {
+                    editDeckClickListener(deck)
+                    true
+                } else if (menuItem.itemId == R.id.delete_deck_DM) {
+                    deleteDeckClickListener(deck)
+                    true
+                } else {
+                    false
+                }
+            }
+            popup.setOnDismissListener {
+                // Respond to popup being dismissed.
+            }
+            // Show the popup menu.
+            popup.show()
         }
 
         companion object {

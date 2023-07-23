@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.Constant
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.ClassCastException
 
 class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
@@ -24,7 +25,7 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(activity)
+        val builder = MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_App_MaterialAlertDialog)
         val inflater = activity?.layoutInflater
         val view = inflater?.inflate(R.layout.add_card_layout_dialog, null)
 

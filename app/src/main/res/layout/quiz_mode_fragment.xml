@@ -3,8 +3,8 @@
     android:layout_width="375dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="15dp"
-    android:backgroundTint="?colorPrimary"
+    app:cardCornerRadius="10dp"
+    android:backgroundTint="?colorSurfaceContainerLow"
     android:id="@+id/quizModeDialogRoot">
 
     <com.google.android.material.button.MaterialButton
@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="@string/flash_card_button_text"
-        android:textColor="?colorPrimary"
-        android:backgroundTint="?colorPrimaryVariant"
+        android:textColor="?colorOnSurface"
+        android:backgroundTint="?colorSurface"
         app:cornerRadius="15dp"/>
 
 </androidx.cardview.widget.CardView>
