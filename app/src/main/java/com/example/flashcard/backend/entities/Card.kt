@@ -15,4 +15,8 @@ data class Card (
     @ColumnInfo(name = "card_value") val cardDefinition: String?,
     @ColumnInfo(name = "value_definition") val valueDefinition: String?,
     @ColumnInfo(name = "deckId") var deckId: Int?,
+    @ColumnInfo(name = "background_img", defaultValue = "") val backgroundImg: String?,
+    @ColumnInfo(name = "is_favorite", defaultValue = "false") val isFavorite: Boolean? = false,
+    @ColumnInfo(name = "revision_time", defaultValue = "0") val revisionTime: Int? = 0,
+    @ColumnInfo(name = "missed_time", defaultValue = "0") val missedTime: Int? = 0
 ): Parcelable

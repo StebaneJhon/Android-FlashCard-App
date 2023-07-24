@@ -6,5 +6,9 @@ data class ImmutableCard(
     val contentDescription: String? = "",
     val cardDefinition: String? = "",
     val valueDefinition: String? = "",
-    val deckId: Int? = null
+    val deckId: Int? = null,
+    val backgroundImg: String? = "",
+    val isFavorite: Boolean? = false,
+    val revisionTime: Int? = 0,
+    val missedTime: Int? = 0
 )

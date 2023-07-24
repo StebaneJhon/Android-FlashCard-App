@@ -84,7 +84,9 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
                                 deckFirstLangET?.text.toString(),
                                 deckSecondLangET?.text.toString(),
                                 deckCategoryColor,
-                                deck.cardSum
+                                deck.cardSum,
+                                deck.category,
+                                deck.isFavorite
                             )
 
                         listener?.getDeck(newDeck, "Update")
@@ -107,7 +109,9 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
                                 deckFirstLangET?.text.toString(),
                                 deckSecondLangET?.text.toString(),
                                 deckCategoryColor,
-                                0
+                            0,
+                            null,
+                            false
                             )
 
                         listener?.getDeck(newDeck, "Add")

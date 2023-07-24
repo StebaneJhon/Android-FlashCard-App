@@ -1,6 +1,7 @@
 package com.example.flashcard.backend
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -9,7 +10,11 @@ import com.example.flashcard.backend.entities.Deck
 
 @Database(
     entities = [Card::class, Deck::class],
-    version = 1
+    version = 3,
+    autoMigrations = [
+        AutoMigration(from = 1, to = 2),
+        AutoMigration(from = 2, to = 3)
+    ]
 )
 abstract class FlashCardDatabase : RoomDatabase() {
 

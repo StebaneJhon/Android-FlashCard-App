@@ -11,7 +11,9 @@ fun ImmutableDeck.toLocal() = Deck (
     deckFirstLanguage = deckFirstLanguage,
     deckSecondLanguage = deckSecondLanguage,
     deckColorCode = deckColorCode,
-    cardSum = cardSum
+    cardSum = cardSum,
+    category = category,
+    isFavorite = isFavorite
 )
 
 fun List<ImmutableDeck>.toLocal() = map(ImmutableDeck::toLocal)
@@ -24,7 +26,9 @@ fun Deck.toExternal() = ImmutableDeck(
     deckFirstLanguage = deckFirstLanguage,
     deckSecondLanguage = deckSecondLanguage,
     deckColorCode = deckColorCode,
-    cardSum = cardSum
+    cardSum = cardSum,
+    category = category,
+    isFavorite = isFavorite
 )
 
 @JvmName("localToExternal")
@@ -37,7 +41,11 @@ fun ImmutableCard.toLocal() = Card (
     contentDescription = contentDescription,
     cardDefinition = cardDefinition,
     valueDefinition = valueDefinition,
-    deckId = deckId
+    deckId = deckId,
+    backgroundImg = backgroundImg,
+    isFavorite = isFavorite,
+    revisionTime = revisionTime,
+    missedTime = missedTime
 )
 
 @JvmName("cardExternalToLocal")
@@ -50,7 +58,11 @@ fun Card.toExternal() = ImmutableCard (
     contentDescription = contentDescription,
     cardDefinition = cardDefinition,
     valueDefinition = valueDefinition,
-    deckId = deckId
+    deckId = deckId,
+    backgroundImg = backgroundImg,
+    isFavorite = isFavorite,
+    revisionTime = revisionTime,
+    missedTime = missedTime
 )
 @JvmName("cardLocalToExternal")
 fun List<Card>.toExternal() = map(Card::toExternal)
