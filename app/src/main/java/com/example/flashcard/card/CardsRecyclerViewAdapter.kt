@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
 
 
@@ -85,6 +86,12 @@ class CardsRecyclerViewAdapter(
             } ?: R.color.red700
 
             cardRoot.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+
+            val background = card.backgroundImg?.let {
+                CardBackgroundSelector().selectPattern(it)
+            } ?: R.drawable.abstract_surface_textures
+
+            cardBackground.setImageResource(background)
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
