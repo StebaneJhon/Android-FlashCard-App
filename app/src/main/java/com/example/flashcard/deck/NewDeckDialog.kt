@@ -7,7 +7,9 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -21,9 +23,16 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
     private var deckDescriptionET: EditText? = null
     private var deckFirstLangET: EditText? = null
     private var deckSecondLangET: EditText? = null
-    private var deckColorET: EditText? = null
+    private var categoryColorBlackBT: LinearLayout? = null
+    private var categoryColorRedBT: LinearLayout? = null
+    private var categoryColorPurpleBT: LinearLayout? = null
+    private var redCheck: View? = null
+    private var blackCheck: View? = null
+    private var purpleCheck: View? = null
 
     private var listener: NewDialogListener? = null
+
+    private var deckCategoryColor: String? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -31,14 +40,30 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         val inflater = activity?.layoutInflater
         val view = inflater?.inflate(R.layout.add_deck_layout_dialog, null)
 
+        redCheck = view?.findViewById(R.id.redChecked)
+        blackCheck = view?.findViewById(R.id.blackChecked)
+        purpleCheck = view?.findViewById(R.id.purpleChecked)
+
         deckNameET = view?.findViewById(R.id.deckNameET)
-        deckColorET = view?.findViewById(R.id.deckDeckColorET)
         deckSecondLangET = view?.findViewById(R.id.deckSecondLanguageET)
         deckFirstLangET = view?.findViewById(R.id.deckFirstLanguageET)
         deckDescriptionET = view?.findViewById(R.id.deckDescriptionET)
 
+        categoryColorBlackBT = view?.findViewById(R.id.blackCategoryButton)
+        categoryColorRedBT = view?.findViewById(R.id.redCategoryButton)
+        categoryColorPurpleBT = view?.findViewById(R.id.purpleCategoryButton)
+
+        categoryColorBlackBT?.setOnClickListener {
+            onColorCategorySelected("black")
+        }
+        categoryColorRedBT?.setOnClickListener {
+            onColorCategorySelected("red")
+        }
+        categoryColorPurpleBT?.setOnClickListener {
+            onColorCategorySelected("purple")
+        }
+
         if (deck != null) {
-            deckColorET?.setText(deck.deckColorCode)
             deckNameET?.setText(deck.deckName)
             deckDescriptionET?.setText(deck.deckDescription)
             deckFirstLangET?.setText(deck.deckFirstLanguage)
@@ -58,7 +83,9 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
                                 deckDescriptionET?.text.toString(),
                                 deckFirstLangET?.text.toString(),
                                 deckSecondLangET?.text.toString(),
-                                deckColorET?.text.toString(),
+                                deckCategoryColor,
+                                null,
+                                false,
                                 deck.cardSum
                             )
 
@@ -81,7 +108,9 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
                                 deckDescriptionET?.text.toString(),
                                 deckFirstLangET?.text.toString(),
                                 deckSecondLangET?.text.toString(),
-                                deckColorET?.text.toString(),
+                                deckCategoryColor,
+                            null,
+                            false,
                                 0
                             )
 
@@ -94,6 +123,35 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         builder.setView(view)
 
         return builder.create()
+    }
+
+    private fun onColorCategorySelected(
+        color: String
+    ) {
+        when (color) {
+            "red" -> {
+                redCheck?.visibility = View.VISIBLE
+                purpleCheck?.visibility = View.GONE
+                blackCheck?.visibility = View.GONE
+            }
+            "purple" -> {
+                redCheck?.visibility = View.GONE
+                purpleCheck?.visibility = View.VISIBLE
+                blackCheck?.visibility = View.GONE
+            }
+            "black" -> {
+                redCheck?.visibility = View.GONE
+                purpleCheck?.visibility = View.GONE
+                blackCheck?.visibility = View.VISIBLE
+            }
+            else -> {
+                redCheck?.visibility = View.GONE
+                purpleCheck?.visibility = View.GONE
+                blackCheck?.visibility = View.GONE
+            }
+        }
+
+        deckCategoryColor = color
     }
 
     override fun onAttach(context: Context) {

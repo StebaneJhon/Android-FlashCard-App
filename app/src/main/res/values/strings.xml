@@ -32,4 +32,5 @@
     <string name="edit_deck_menu_hint">Edit Deck</string>
     <string name="delete_deck_menu_hint">Delete Deck</string>
     <string name="expand_card_button_text">Expand</string>
+    <string name="category_color_picker_title">Category Color</string>
 </resources>

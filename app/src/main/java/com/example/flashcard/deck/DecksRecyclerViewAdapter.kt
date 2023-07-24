@@ -2,6 +2,7 @@ package com.example.flashcard.deck
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.InsetDrawable
 import android.os.Build
 import android.util.TypedValue
@@ -11,14 +12,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.util.DeckColorCategorySelector
 
 class DecksRecyclerViewAdapter(
     private val listOfDecks: List<ImmutableDeck>,
@@ -57,10 +61,12 @@ class DecksRecyclerViewAdapter(
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
         private val popupMenuBT: ImageButton? = view.findViewById(R.id.popup_menu_BT)
         private val startQuizButton: Button? = view.findViewById(R.id.startGameButton)
+        private val categoryColor: LinearLayout? = view.findViewById(R.id.categoryColor)
 
         private val ICON_MARGIN = 5
 
 
+        @SuppressLint("ResourceAsColor")
         fun bind(
             deck: ImmutableDeck,
             context: Context,
@@ -77,6 +83,16 @@ class DecksRecyclerViewAdapter(
                 deck.deckSecondLanguage
             )
             cardSum?.text = context.getString(R.string.cards_sum, deck.cardSum.toString())
+
+            val deckColorCode = deck.deckColorCode?.let {
+                DeckColorCategorySelector().selectColor(
+                    it
+                )
+            } ?: R.color.red700
+
+            categoryColor?.setBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+
+
             deckRoot?.setOnClickListener { deckClickListener(deck) }
             startQuizButton?.setOnClickListener { startQuizListener(deck) }
             popupMenuBT?.setOnClickListener { v: View ->

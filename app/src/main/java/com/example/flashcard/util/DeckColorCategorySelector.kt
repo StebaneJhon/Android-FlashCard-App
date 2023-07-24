@@ -10,5 +10,11 @@ class DeckColorCategorySelector {
         "black" to R.color.black
     )
 
-    fun selectColor(color: String) = colors[color]
+    fun selectColor(color: String): Int? {
+        return if (color in colors.keys) {
+            colors[color]
+        } else {
+            null
+        }
+    }
 }

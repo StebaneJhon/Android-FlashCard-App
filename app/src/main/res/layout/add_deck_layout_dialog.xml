@@ -76,21 +76,86 @@
                 android:layout_marginBottom="10dp"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/deckDeckColorET"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/colorPickerTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/deck_color"
-                android:textColorHint="?colorOnSurface"
+                android:text="@string/category_color_picker_title"
                 android:textColor="?colorOnSurface"
-                android:autofillHints="@string/deck_color"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:textStyle="bold"
+                android:fontFamily="@font/open_sans_bold"/>
+
+            <GridLayout
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_below="@+id/colorPickerTitle"
+                android:layout_margin="2dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="-17dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="2dp"
+                android:columnCount="4"
+                android:rowCount="4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:id="@+id/blackCategoryButton"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/theme_button_background"
+                    android:backgroundTint="@color/black"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/blackChecked"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_check"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/redCategoryButton"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/theme_button_background"
+                    android:backgroundTint="@color/red700"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/redChecked"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_check"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/purpleCategoryButton"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="2dp"
+                    android:background="@drawable/theme_button_background"
+                    android:backgroundTint="@color/purple700"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <ImageView
+                        android:id="@+id/purpleChecked"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/icon_check"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+            </GridLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 

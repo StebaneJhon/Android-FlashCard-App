@@ -17,10 +17,12 @@ import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.DeckColorCategorySelector
 
 
 class CardsRecyclerViewAdapter(
@@ -75,6 +77,15 @@ class CardsRecyclerViewAdapter(
             languageHint.text = deck.deckFirstLanguage
             onCardText.text = card.cardContent
             onCardTextDescription.text = card.contentDescription
+
+            val deckColorCode = deck.deckColorCode?.let {
+                DeckColorCategorySelector().selectColor(
+                    it
+                )
+            } ?: R.color.red700
+
+            cardRoot.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
                     context,
