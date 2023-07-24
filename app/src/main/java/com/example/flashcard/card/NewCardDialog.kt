@@ -72,10 +72,6 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
                 cardValue?.text.toString(),
                 cardValueDefinition?.text.toString(),
                 null,
-                 null,
-                 null,
-                 0,
-                 0
             )
         } else {
             Card(
@@ -85,10 +81,6 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
                 cardValue?.text.toString(),
                 cardValueDefinition?.text.toString(),
                 card?.deckId,
-                null,
-                null,
-                0,
-                0,
             )
         }
 
