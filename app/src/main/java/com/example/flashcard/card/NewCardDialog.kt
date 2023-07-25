@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.cardview.widget.CardView
@@ -26,10 +27,10 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
     private var cardContentDefinition: EditText? = null
     private var cardValue: EditText? = null
     private var cardValueDefinition: EditText? = null
-    private var curvePatternBT: CardView? = null
-    private var mapPatternBT: CardView? = null
-    private var floralPatternBT: CardView? = null
-    private var datesPatternBT: CardView? = null
+    private var curvePatternBT: LinearLayout? = null
+    private var mapPatternBT: LinearLayout? = null
+    private var floralPatternBT: LinearLayout? = null
+    private var datesPatternBT: LinearLayout? = null
 
     private var listener: NewDialogListener? = null
 
@@ -57,6 +58,7 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
             cardContentDefinition?.setText(card.contentDescription)
             cardValue?.setText(card.cardDefinition)
             cardValueDefinition?.setText(card.valueDefinition)
+            card.backgroundImg?.let { onCardBackgroundSelected(it) }
 
             builder.setView(view)
                 .setTitle("New Card")
@@ -98,28 +100,28 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
         val onInactiveBTdForeground = ContextCompat.getDrawable(requireContext(), R.drawable.card_foreground_inactive)
         when (background) {
             MAP_PATTERN -> {
-                mapPatternBT?.setForeground(onActiveBTdForeground)
-                curvePatternBT?.setForeground(onInactiveBTdForeground)
-                floralPatternBT?.setForeground(onInactiveBTdForeground)
-                datesPatternBT?.setForeground(onInactiveBTdForeground)
+                mapPatternBT?.foreground = onActiveBTdForeground
+                curvePatternBT?.foreground = onInactiveBTdForeground
+                floralPatternBT?.foreground = onInactiveBTdForeground
+                datesPatternBT?.foreground = onInactiveBTdForeground
             }
             CURVE_PATTERN -> {
-                mapPatternBT?.setForeground(onInactiveBTdForeground)
-                curvePatternBT?.setForeground(onActiveBTdForeground)
-                floralPatternBT?.setForeground(onInactiveBTdForeground)
-                datesPatternBT?.setForeground(onInactiveBTdForeground)
+                mapPatternBT?.foreground = onInactiveBTdForeground
+                curvePatternBT?.foreground = onActiveBTdForeground
+                floralPatternBT?.foreground = onInactiveBTdForeground
+                datesPatternBT?.foreground = onInactiveBTdForeground
             }
             FLORAL_PATTERN -> {
-                mapPatternBT?.setForeground(onInactiveBTdForeground)
-                curvePatternBT?.setForeground(onInactiveBTdForeground)
-                floralPatternBT?.setForeground(onActiveBTdForeground)
-                datesPatternBT?.setForeground(onInactiveBTdForeground)
+                mapPatternBT?.foreground = onInactiveBTdForeground
+                curvePatternBT?.foreground = onInactiveBTdForeground
+                floralPatternBT?.foreground = onActiveBTdForeground
+                datesPatternBT?.foreground = onInactiveBTdForeground
             }
             DATES_PATTERN -> {
-                mapPatternBT?.setForeground(onInactiveBTdForeground)
-                curvePatternBT?.setForeground(onInactiveBTdForeground)
-                floralPatternBT?.setForeground(onInactiveBTdForeground)
-                datesPatternBT?.setForeground(onActiveBTdForeground)
+                mapPatternBT?.foreground = onInactiveBTdForeground
+                curvePatternBT?.foreground = onInactiveBTdForeground
+                floralPatternBT?.foreground = onInactiveBTdForeground
+                datesPatternBT?.foreground = onActiveBTdForeground
             }
         }
         cardBackground = background

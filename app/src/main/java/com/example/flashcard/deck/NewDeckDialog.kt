@@ -68,6 +68,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
             deckDescriptionET?.setText(deck.deckDescription)
             deckFirstLangET?.setText(deck.deckFirstLanguage)
             deckSecondLangET?.setText(deck.deckSecondLanguage)
+            deck.deckColorCode?.let { onColorCategorySelected(it) }
 
             builder.setView(view)
                 .setTitle("New Deck")

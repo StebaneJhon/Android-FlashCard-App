@@ -6,16 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
-    android:background="?colorPrimaryDark"
+    android:background="?colorSurfaceContainerLowest"
     tools:context=".quiz.baseFlashCardGame.BaseFlashCardGame">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/card"
+        android:id="@+id/cardRoot"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/card_content_border"
-        android:backgroundTint="@color/teal"
-        app:cardCornerRadius="15dp"
+        app:cardCornerRadius="10dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/noButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +33,7 @@
                     android:id="@+id/onFeedbackCardImageView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/map_pattern"
+                    android:src="@drawable/abstract_surface_textures"
                     android:background="@drawable/card_content_border"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +92,7 @@
                         android:backgroundTint="?colorPrimaryVariant"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/revise_missed_cards_button_txt"
-                        android:textColor="?colorPrimary"
+                        android:textColor="?colorOnPrimary"
                         android:textStyle="bold"
                         app:cornerRadius="15dp" />
 
@@ -106,7 +104,7 @@
                         android:backgroundTint="?colorPrimaryVariant"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/restart_flashcard_button_text"
-                        android:textColor="?colorPrimary"
+                        android:textColor="?colorOnPrimary"
                         android:textStyle="bold"
                         app:cornerRadius="15dp" />
 
@@ -118,7 +116,7 @@
                         android:backgroundTint="?colorPrimaryVariant"
                         android:fontFamily="@font/open_sans_bold"
                         android:text="@string/back_to_deck_text_button"
-                        android:textColor="?colorPrimary"
+                        android:textColor="?colorOnPrimary"
                         android:textStyle="bold"
                         app:cornerRadius="15dp" />
 
@@ -135,7 +133,7 @@
                 android:foreground="@drawable/fullscreen_card_dialog_background">
 
                 <ImageView
-                    android:id="@+id/imageView"
+                    android:id="@+id/cardBackgroundImg"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/map_pattern"
@@ -215,9 +213,9 @@
         android:id="@+id/noButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?colorPrimary"
+        android:backgroundTint="?colorSurfaceContainer"
         android:text="No"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -226,9 +224,9 @@
         android:id="@+id/yesButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="?colorPrimary"
+        android:backgroundTint="?colorSurfaceContainer"
         android:text="Yes"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         app:cornerRadius="15dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

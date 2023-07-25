@@ -9,6 +9,7 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -18,6 +19,8 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityBaseFlashCardGameBinding
 import com.example.flashcard.deck.MainActivity
+import com.example.flashcard.util.CardBackgroundSelector
+import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.launch
 
@@ -66,7 +69,7 @@ class BaseFlashCardGame : AppCompatActivity() {
                 displayNextCard(cardList)
             }
         }
-        binding.card.setOnClickListener {
+        binding.cardRoot.setOnClickListener {
             lifecycleScope.launch {
                 flipCard()
             }
@@ -100,15 +103,29 @@ class BaseFlashCardGame : AppCompatActivity() {
                 }
 
                 is UiState.Success -> {
-                    binding.cardProgressBar.visibility = View.GONE
                     val card = state.data
-                    binding.onCardText.visibility = View.VISIBLE
-                    binding.onCardText.text = card.cardContent
-                    binding.onCardTextDefinition.text = card.contentDescription
-                    binding.languageHint.text = deck?.deckFirstLanguage
+                    initCard(card)
                 }
             }
         }
+    }
+
+    private fun initCard(card: ImmutableCard) {
+        binding.cardProgressBar.visibility = View.GONE
+        binding.onCardText.visibility = View.VISIBLE
+        binding.onCardText.text = card.cardContent
+        binding.onCardTextDefinition.text = card.contentDescription
+        binding.languageHint.text = deck?.deckFirstLanguage
+
+        val background = card.backgroundImg?.let {
+            CardBackgroundSelector().selectPattern(it)
+        } ?: R.drawable.abstract_surface_textures
+        binding.cardBackgroundImg.setImageResource(background)
+
+        val deckColorCode = deck?.deckColorCode?.let {
+            DeckColorCategorySelector().selectColor(it)
+        } ?: R.color.red700
+        binding.cardRoot.setCardBackgroundColor(ContextCompat.getColor(this@BaseFlashCardGame, deckColorCode))
     }
 
     private suspend fun flipCard() {
