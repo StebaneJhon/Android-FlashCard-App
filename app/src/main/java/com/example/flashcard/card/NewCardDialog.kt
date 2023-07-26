@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.cardBackgroundConst.CURVE_PATTERN
@@ -21,7 +22,7 @@ import com.example.flashcard.util.cardBackgroundConst.SQUARE_PATTERN
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.ClassCastException
 
-class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
+class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): AppCompatDialogFragment() {
 
     private var cardContent: EditText? = null
     private var cardContentDefinition: EditText? = null
@@ -157,7 +158,7 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
         }
 
 
-        listener?.getCard(newCard, action)
+        listener?.getCard(newCard, action, deck)
     }
 
     override fun onAttach(context: Context) {
@@ -170,6 +171,6 @@ class NewCardDialog(private val card: Card?): AppCompatDialogFragment() {
     }
 
     interface NewDialogListener {
-        fun getCard(card: Card, action: String)
+        fun getCard(card: Card, action: String, deck: ImmutableDeck)
     }
 }

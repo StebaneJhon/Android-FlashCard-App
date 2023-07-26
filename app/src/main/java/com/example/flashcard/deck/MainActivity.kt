@@ -26,22 +26,31 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
+import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.card.CardViewModel
+import com.example.flashcard.card.CardViewModelFactory
+import com.example.flashcard.card.NewCardDialog
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.settings.SettingsActivity
+import com.example.flashcard.util.Constant
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
-    SearchView.OnQueryTextListener {
+    SearchView.OnQueryTextListener, NewCardDialog.NewDialogListener {
 
     private lateinit var binding: ActivityMainBinding
 
     private val deckViewModel: DeckViewModel by viewModels {
         DeckViewModelFactory((application as FlashCardApplication).repository)
+    }
+
+    private val cardViewModel: CardViewModel by viewModels {
+        CardViewModelFactory((application as FlashCardApplication).repository)
     }
 
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
@@ -65,6 +74,8 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         supportActionBar?.apply {
             title = getString(R.string.deck_activity_title)
         }
+
+        /*
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -90,6 +101,8 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         }
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
+
+         */
 
     }
 
@@ -244,6 +257,15 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
                 }
             }
 
+        }
+    }
+
+    override fun getCard(card: Card, action: String, deck: ImmutableDeck) {
+        if (action == Constant.ADD) {
+            card.deckId = deck.deckId
+            cardViewModel.insertCard(card, deck)
+        } else {
+            cardViewModel.updateCard(card)
         }
     }
 }

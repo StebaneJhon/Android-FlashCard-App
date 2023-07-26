@@ -34,4 +34,6 @@
     <string name="expand_card_button_text">Expand</string>
     <string name="category_color_picker_title">Category Color</string>
     <string name="background_text_title">Background</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
