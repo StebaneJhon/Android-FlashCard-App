@@ -7,36 +7,37 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
-import com.example.flashcard.card.CardsActivity
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
-import java.util.NavigableSet
 
-class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQueryTextListener {
+
+class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
 
     private var _binding: FragmentDeckBinding? = null
     private val binding get() = _binding!!
@@ -44,9 +45,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQ
 
     private val deckViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
-        ViewModelProvider(this, DeckViewModelFactory( repository )).get(
-            DeckViewModel::class.java
-        )
+        ViewModelProvider(this, DeckViewModelFactory( repository ))[DeckViewModel::class.java]
     }
 
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
@@ -55,16 +54,16 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQ
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDeckBinding.inflate(inflater, container, false)
         appContext = container?.context
         return binding.root
     }
 
-    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        (activity as AppCompatActivity).setSupportActionBar(binding.deckTopAppBar)
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getAllDecks()
@@ -89,6 +88,26 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQ
         }
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
+
+        /*
+        binding.deckSV.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.mainActivityProgressBar.visibility = View.VISIBLE
+                if (query != null) {
+                    searchDeck(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    searchDeck(newText)
+                }
+                return true
+            }
+
+        })
+         */
     }
 
     private fun displayDecks(listOfDecks: List<ImmutableDeck>) {
@@ -148,6 +167,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQ
 
     }
 
+    /*
     override fun onQueryTextSubmit(query: String?): Boolean {
         binding.mainActivityProgressBar.visibility = View.VISIBLE
         if (query != null) {
@@ -162,6 +182,8 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQ
         }
         return true
     }
+
+     */
 
     private fun searchDeck(query: String) {
         val searchQuery = "%$query%"
@@ -215,5 +237,38 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, SearchView.OnQ
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.deck_fragment_menu, menu)
+        val search = menu.findItem(R.id.search_deck_menu)
+        val searchView: SearchView = search.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.mainActivityProgressBar.visibility = View.VISIBLE
+                if (query != null) {
+                    searchDeck(query)
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    searchDeck(newText)
+                }
+                return true
+            }
+
+        })
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return if (menuItem.itemId == R.id.settings) {
+            Toast.makeText(requireContext(), "To Settings", Toast.LENGTH_LONG).show()
+            true
+        } else {
+            false
+        }
     }
 }

@@ -24,7 +24,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.databinding.ActivityCardsBinding
 import com.example.flashcard.backend.entities.Card
@@ -146,7 +145,7 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.deck_activity_menu, menu)
+        menuInflater.inflate(R.menu.deck_fragment_menu, menu)
         val search = menu?.findItem(R.id.search_deck_menu)
         val searchView = search?.actionView as SearchView
 
@@ -155,7 +154,7 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
 
         return true
     }
-
+    /*
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.settings_button_menu -> {
@@ -168,6 +167,8 @@ class CardsActivity : AppCompatActivity(), NewCardDialog.NewDialogListener, Sear
             }
         }
     }
+
+     */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

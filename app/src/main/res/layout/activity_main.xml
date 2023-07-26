@@ -8,53 +8,6 @@
     android:background="?colorSurfaceContainerLowest"
     tools:context=".deck.MainActivity">
 
-    <ProgressBar
-        android:id="@+id/mainActivityProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
-
-    <TextView
-        android:id="@+id/onNoDeckTextHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/on_no_deck_text_hint"
-        android:textAlignment="center"
-        android:fontFamily="@font/open_sans"
-        android:textColor="?colorOnSurface"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:drawableStartCompat="@drawable/icon_warning"
-        android:drawablePadding="5dp"
-        android:visibility="gone" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/deckRecycleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="47dp"
-        tools:layout_editor_absoluteY="364dp"
-        android:visibility="gone"/>
-
-    <ImageButton
-        android:id="@+id/addNewDeckButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="?colorPrimary"
-        android:background="@drawable/add_new_deck_button_background"
-        android:src="@drawable/add_icon_button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="20dp"
-        android:padding="20dp"
-        android:visibility="gone"/>
-
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
