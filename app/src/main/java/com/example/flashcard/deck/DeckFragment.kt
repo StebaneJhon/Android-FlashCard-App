@@ -34,6 +34,7 @@ import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 
@@ -88,26 +89,6 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         }
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
-
-        /*
-        binding.deckSV.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                binding.mainActivityProgressBar.visibility = View.VISIBLE
-                if (query != null) {
-                    searchDeck(query)
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    searchDeck(newText)
-                }
-                return true
-            }
-
-        })
-         */
     }
 
     private fun displayDecks(listOfDecks: List<ImmutableDeck>) {
@@ -167,24 +148,6 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
 
     }
 
-    /*
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        binding.mainActivityProgressBar.visibility = View.VISIBLE
-        if (query != null) {
-            searchDeck(query)
-        }
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
-            searchDeck(newText)
-        }
-        return true
-    }
-
-     */
-
     private fun searchDeck(query: String) {
         val searchQuery = "%$query%"
         deckViewModel.searchDeck(searchQuery).observe(this) { deckList ->
@@ -217,14 +180,15 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                             }
                             is UiState.Error -> {
                                 binding.mainActivityProgressBar.visibility = View.GONE
-                                //intent.putExtra(BaseFlashCardGame.DECK_ERROR_KEY, state.errorMessage)
                             }
                             is UiState.Success -> {
                                 binding.mainActivityProgressBar.visibility = View.GONE
                                 val intent = Intent(activity?.applicationContext!!, BaseFlashCardGame::class.java)
-                                val a = state.data
                                 intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
                                 startActivity(intent)
+                                quizModeDialog?.dismiss()
+                                this@launch.cancel()
+                                this.cancel()
                             }
                         }
                     }
@@ -264,11 +228,6 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return if (menuItem.itemId == R.id.settings) {
-            Toast.makeText(requireContext(), "To Settings", Toast.LENGTH_LONG).show()
-            true
-        } else {
-            false
-        }
+        return true
     }
 }

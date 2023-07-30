@@ -6,6 +6,8 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -44,6 +46,9 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        val navController = findNavController(R.id.fragmentContainerView)
+        binding.mainActivityBNV.setupWithNavController(navController)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

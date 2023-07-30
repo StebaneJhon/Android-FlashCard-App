@@ -8,10 +8,16 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -24,15 +30,17 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
+import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.FragmentCardBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.UiState
-import com.example.flashcard.util.cardBackgroundConst
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
-class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
+class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
@@ -40,9 +48,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
-        ViewModelProvider(this, CardViewModelFactory(repository)).get(
-            CardViewModel::class.java
-        )
+        ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
 
     val args: CardFragmentArgs by navArgs()
@@ -51,7 +57,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         appContext = container?.context
         return binding.root
@@ -60,6 +66,9 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
     @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
+
         deck = args.selectedDeck
         deck?.let {_deck ->
             lifecycleScope.launch {
@@ -109,6 +118,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
         val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
         flashCardQuiz.setOnClickListener {
             onStartBaseFlashCardGame(deckId)
+            quizModeDialog?.dismiss()
         }
     }
 
@@ -134,9 +144,10 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
                         is UiState.Success -> {
                             binding.cardsActivityProgressBar.isVisible = false
                             val intent = Intent(appContext, BaseFlashCardGame::class.java)
-                            val a = state.data
                             intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
                             startActivity(intent)
+                            this@launch.cancel()
+                            this.cancel()
                         }
                     }
                 }
@@ -183,5 +194,44 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener {
         } else {
             cardViewModel.updateCard(card)
         }
+    }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.deck_fragment_menu, menu)
+        val search = menu.findItem(R.id.search_deck_menu)
+        val searchView = search?.actionView as SearchView
+
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                binding.cardsActivityProgressBar.visibility = View.VISIBLE
+                if (p0 != null) {
+                    searchDeck(p0)
+                    binding.cardsActivityProgressBar.visibility = View.GONE
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                if (p0 != null) {
+                    searchDeck(p0)
+                    binding.cardsActivityProgressBar.visibility = View.GONE
+                }
+                return true
+            }
+        })
+    }
+
+    private fun searchDeck(query: String) {
+        val searchQuery = "%$query%"
+        deck?.let { cardDeck ->
+            cardViewModel.searchCard(searchQuery, cardDeck.deckId!!).observe(this) { cardList ->
+                cardList?.let { displayCards(it.toLocal(), cardDeck) }
+            }
+        }
+
+    }
+
+    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+        return true
     }
 }

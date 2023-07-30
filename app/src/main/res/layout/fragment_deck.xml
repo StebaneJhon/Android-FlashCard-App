@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    android:layout_margin="10dp"
     tools:context=".deck.DeckFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -15,7 +14,8 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?colorSurfaceContainerLow">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/deckTopAppBar"

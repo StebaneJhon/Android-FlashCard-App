@@ -41,8 +41,6 @@ class BaseFlashCardGame : AppCompatActivity() {
         binding = ActivityBaseFlashCardGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar?.hide()
-
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
             cardList = it.cards.toExternal()

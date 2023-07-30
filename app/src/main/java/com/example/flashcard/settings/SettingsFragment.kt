@@ -2,29 +2,40 @@ package com.example.flashcard.settings
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.example.flashcard.R
-import com.example.flashcard.databinding.ActivitySettingsBinding
+import com.example.flashcard.databinding.FragmentSettingsBinding
 
-class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : Fragment() {
 
-    private lateinit var binding: ActivitySettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+    private var appContext: Context? = null
 
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        appContext = container?.context
+        return binding.root
+    }
 
-        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = getThem(appTheme)
-        setTheme(themRef)
-
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        activity?.setTheme(themRef)
 
         binding.blackThemeButton.setOnClickListener {
             setAppTheme("DARK THEME")
@@ -44,7 +55,7 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
     }
 
     private fun updateAppTheme() {
-        this.recreate()
+        activity?.recreate()
     }
 
     private fun setAppTheme(themName: String) {
@@ -62,9 +73,10 @@ class SettingsActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferen
         }
     }
 
-    override fun onSharedPreferenceChanged(p0: SharedPreferences?, p1: String?) {
+    fun onSharedPreferenceChanged(p0: SharedPreferences?, p1: String?) {
         if (p1.equals("color_option")) {
-            this.recreate()
+            activity?.recreate()
         }
     }
+
 }
