@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,9 +15,12 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.SearchView
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.ThemeUtils
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -61,10 +65,19 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         return binding.root
     }
 
+    @SuppressLint("DiscouragedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.deckTopAppBar)
+
+        /*
+        val searchIcon = searchView?.findViewById<ImageView>(androidx.appcompat.R.id.search_button)
+        searchIcon?.setImageDrawable(ContextCompat.getDrawable(requireActivity(), R.drawable.icon_search))
+        searchIcon?.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP)
+
+         */
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getAllDecks()
@@ -87,6 +100,8 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
 
             }
         }
+
+
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
     }
@@ -203,10 +218,20 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         _binding = null
     }
 
+    @SuppressLint("ResourceType")
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.deck_fragment_menu, menu)
         val search = menu.findItem(R.id.search_deck_menu)
         val searchView: SearchView = search.actionView as SearchView
+
+        val searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button) as ImageView
+        searchIcon.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
+
+        val searchIconClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+        searchIconClose.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
+
+        val searchIconMag = searchView.findViewById(androidx.appcompat.R.id.search_go_btn) as ImageView
+        searchIconMag.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
 
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {

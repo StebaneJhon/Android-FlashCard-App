@@ -11,10 +11,13 @@
         <item name="colorSurfaceContainerHigh">@color/grey100</item>
         <item name="colorSurfaceContainerHighest">@color/grey200</item>
         <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/grey700</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -22,18 +25,25 @@
     <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/grey15</item>
         <item name="colorOnPrimary">@color/black</item>
+        <item name="colorPrimaryDark">@color/black</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/grey25</item>
         <item name="colorOnPrimaryContainer">@color/black</item>
-        <item name="colorSurfaceContainerLowest">@color/grey200</item>
-        <item name="colorSurfaceContainerLow">@color/grey100</item>
-        <item name="colorSurfaceContainer">@color/grey50</item>
-        <item name="colorSurfaceContainerHigh">@color/grey25</item>
-        <item name="colorSurfaceContainerHighest">@color/grey15</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurfaceContainerLowest">@color/black</item>
+        <item name="colorSurfaceContainerLow">@color/grey700</item>
+        <item name="colorSurfaceContainer">@color/grey500</item>
+        <item name="colorSurfaceContainerHigh">@color/grey200</item>
+        <item name="colorSurfaceContainerHighest">@color/grey100</item>
+        <item name="colorOnSurface">@color/white</item>
         <item name="colorOnSurfaceVariant">@color/white</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="searchViewStyle">@style/customSearch</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -53,6 +63,9 @@
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
     </style>
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard"/>
 
@@ -79,5 +92,17 @@
     <style name="DialogCorners">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">10dp</item>
+    </style>
+
+    <!-- PopUpMenu theme -->
+    <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
+    <!-- Search View -->
+    <style name="customSearch" parent="Widget.AppCompat.SearchView">
+        <item name="android:textColor">@color/red700</item>
     </style>
 </resources>
