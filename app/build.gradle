@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -76,6 +77,9 @@ dependencies {
 
     implementation 'com.google.android.material:material:1.9.0'
 
-    // Cloud translation
-
+    // firebase
+    implementation(platform("com.google.firebase:firebase-bom:32.2.0"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.mlkit:translate:17.0.1'
 }

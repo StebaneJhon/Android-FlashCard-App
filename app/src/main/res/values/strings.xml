@@ -9,7 +9,7 @@
     <string name="add_new_card_button_description">Add New Card Button</string>
     <string name="card_content_hint">Card Content</string>
     <string name="card_content_definition_hint">Card Content Definition</string>
-    <string name="card_definition">Card Definition</string>
+    <string name="card_definition">Card Value</string>
     <string name="card_value_definition_hint">Card Value Definition</string>
     <string name="deck_activity_title">Your Decks</string>
     <string name="search_deck_title">Search Deck</string>

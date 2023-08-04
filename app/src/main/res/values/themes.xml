@@ -67,7 +67,158 @@
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
     </style>
-    <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard"/>
+
+    <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
+
+    <style name="Blue.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/blue700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/blue500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/blue15</item>
+        <item name="colorSurfaceContainerLow">@color/blue25</item>
+        <item name="colorSurfaceContainer">@color/blue50</item>
+        <item name="colorSurfaceContainerHigh">@color/blue100</item>
+        <item name="colorSurfaceContainerHighest">@color/blue200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+
+    <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
+
+    <style name="Pink.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/pink700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/pink500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/pink15</item>
+        <item name="colorSurfaceContainerLow">@color/pink25</item>
+        <item name="colorSurfaceContainer">@color/pink50</item>
+        <item name="colorSurfaceContainerHigh">@color/pink100</item>
+        <item name="colorSurfaceContainerHighest">@color/pink200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+
+    <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
+
+    <style name="Red.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/red700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/red500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/red15</item>
+        <item name="colorSurfaceContainerLow">@color/red25</item>
+        <item name="colorSurfaceContainer">@color/red50</item>
+        <item name="colorSurfaceContainerHigh">@color/red100</item>
+        <item name="colorSurfaceContainerHighest">@color/red200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+    <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
+
+    <style name="Teal.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/teal700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/teal500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/teal15</item>
+        <item name="colorSurfaceContainerLow">@color/teal25</item>
+        <item name="colorSurfaceContainer">@color/teal50</item>
+        <item name="colorSurfaceContainerHigh">@color/teal100</item>
+        <item name="colorSurfaceContainerHighest">@color/teal200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+    <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
+
+    <style name="Green.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/teal700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/teal500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/teal15</item>
+        <item name="colorSurfaceContainerLow">@color/teal25</item>
+        <item name="colorSurfaceContainer">@color/teal50</item>
+        <item name="colorSurfaceContainerHigh">@color/teal100</item>
+        <item name="colorSurfaceContainerHighest">@color/teal200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+    <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
+
+    <style name="Yellow.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/yellow700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/yellow500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/yellow15</item>
+        <item name="colorSurfaceContainerLow">@color/yellow25</item>
+        <item name="colorSurfaceContainer">@color/yellow50</item>
+        <item name="colorSurfaceContainerHigh">@color/yellow100</item>
+        <item name="colorSurfaceContainerHighest">@color/yellow200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+    <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
+
+    <style name="Brown.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brown700</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/brown500</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+        <item name="colorSurfaceContainerLowest">@color/brown15</item>
+        <item name="colorSurfaceContainerLow">@color/brown25</item>
+        <item name="colorSurfaceContainer">@color/brown50</item>
+        <item name="colorSurfaceContainerHigh">@color/brown100</item>
+        <item name="colorSurfaceContainerHighest">@color/brown200</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+    </style>
+    <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
+
 
     <!--Dialog theme-->
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">

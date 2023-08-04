@@ -18,4 +18,18 @@ object deckCategoryColorConst {
     val RED = "red"
     val PURPLE = "purple"
     val BLACK = "black"
+
+}
+
+object themeConst {
+    val DARK_THEME = "DARK THEME"
+    val PURPLE_THEME = "PURPLE THEME"
+    val WHITE_THEME = "WHITE THEM"
+    val BLUE_THEME = "BLUE THEME"
+    val PINK_THEME = "PINK THEME"
+    val RED_THEME = "RED THEME"
+    val TEAL_THEME = "TEAL THEME"
+    val GREEN_THEME = "GREEN THEME"
+    val YELLOW_THEME = "YELLOW THEME"
+    val BROWN_THEME = "BROWN THEME"
 }

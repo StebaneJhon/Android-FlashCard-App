@@ -9,6 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.flashcard.R
 import com.example.flashcard.databinding.FragmentSettingsBinding
+import com.example.flashcard.util.ThemePicker
+import com.example.flashcard.util.themeConst.BLUE_THEME
+import com.example.flashcard.util.themeConst.BROWN_THEME
+import com.example.flashcard.util.themeConst.DARK_THEME
+import com.example.flashcard.util.themeConst.GREEN_THEME
+import com.example.flashcard.util.themeConst.PINK_THEME
+import com.example.flashcard.util.themeConst.PURPLE_THEME
+import com.example.flashcard.util.themeConst.RED_THEME
+import com.example.flashcard.util.themeConst.TEAL_THEME
+import com.example.flashcard.util.themeConst.WHITE_THEME
+import com.example.flashcard.util.themeConst.YELLOW_THEME
 
 class SettingsFragment : Fragment() {
 
@@ -34,21 +45,58 @@ class SettingsFragment : Fragment() {
         sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = getThem(appTheme)
-        activity?.setTheme(themRef)
+        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
+        if (themRef != null) {
+            activity?.setTheme(themRef)
+        }
 
         binding.blackThemeButton.setOnClickListener {
-            setAppTheme("DARK THEME")
+            setAppTheme(DARK_THEME)
             updateAppTheme()
         }
 
         binding.whiteThemeButton.setOnClickListener {
-            setAppTheme("WHITE THEME")
+            setAppTheme(WHITE_THEME)
             updateAppTheme()
         }
 
         binding.purpleThemeButton.setOnClickListener {
-            setAppTheme("PURPLE THEME")
+            setAppTheme(PURPLE_THEME)
+            updateAppTheme()
+        }
+
+        binding.blueThemeButton.setOnClickListener {
+            setAppTheme(BLUE_THEME)
+            updateAppTheme()
+        }
+
+        binding.pinkThemeButton.setOnClickListener {
+            setAppTheme(PINK_THEME)
+            updateAppTheme()
+        }
+
+        binding.redThemeButton.setOnClickListener {
+            setAppTheme(RED_THEME)
+            updateAppTheme()
+        }
+
+        binding.tealThemeButton.setOnClickListener {
+            setAppTheme(TEAL_THEME)
+            updateAppTheme()
+        }
+
+        binding.greenThemeButton.setOnClickListener {
+            setAppTheme(GREEN_THEME)
+            updateAppTheme()
+        }
+
+        binding.yellowThemeButton.setOnClickListener {
+            setAppTheme(YELLOW_THEME)
+            updateAppTheme()
+        }
+
+        binding.browneThemeButton.setOnClickListener {
+            setAppTheme(BROWN_THEME)
             updateAppTheme()
         }
 
@@ -62,20 +110,6 @@ class SettingsFragment : Fragment() {
         editor?.apply {
             putString("themName", themName)
             apply()
-        }
-    }
-
-    private fun getThem(themeName: String?): Int {
-        return when (themeName) {
-            "DARK THEME" -> R.style.DarkTheme_FlashCard
-            "PURPLE THEME" -> R.style.PurpleTheme_Flashcard
-            else -> R.style.Theme_FlashCard
-        }
-    }
-
-    fun onSharedPreferenceChanged(p0: SharedPreferences?, p1: String?) {
-        if (p1.equals("color_option")) {
-            activity?.recreate()
         }
     }
 

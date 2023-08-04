@@ -18,6 +18,8 @@ import com.example.flashcard.card.CardViewModel
 import com.example.flashcard.card.CardViewModelFactory
 import com.example.flashcard.card.NewCardDialog
 import com.example.flashcard.util.Constant
+import com.example.flashcard.util.ThemePicker
+import com.example.flashcard.util.themeConst
 
 class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
     NewCardDialog.NewDialogListener {
@@ -41,8 +43,9 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
-        val themRef = getThem(appTheme)
-        setTheme(themRef)
+        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
+        if (themRef != null) { setTheme(themRef) }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -65,13 +68,6 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
             deckViewModel.updateDeck(deck)
         }
 
-    }
-    private fun getThem(themeName: String?): Int {
-        return when (themeName) {
-            "DARK THEME" -> R.style.DarkTheme_FlashCard
-            "PURPLE THEME" -> R.style.PurpleTheme_Flashcard
-            else -> R.style.Theme_FlashCard
-        }
     }
 
     override fun getCard(card: Card, action: String, deck: ImmutableDeck) {

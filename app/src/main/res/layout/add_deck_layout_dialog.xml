@@ -12,6 +12,7 @@
         android:layout_margin="10dp">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/deckNameLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
@@ -28,6 +29,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/deckDescriptionLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
@@ -44,11 +46,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/deckFirstLanguageLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
-            <com.google.android.material.textfield.TextInputEditText
+            android:layout_marginBottom="10dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            <AutoCompleteTextView
                 android:id="@+id/deckFirstLanguageET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,11 +64,13 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/deckSecondLanguageLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
-            <com.google.android.material.textfield.TextInputEditText
+            android:layout_marginBottom="10dp"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            <AutoCompleteTextView
                 android:id="@+id/deckSecondLanguageET"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

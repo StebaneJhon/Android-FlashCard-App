@@ -6,12 +6,12 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     app:cardCornerRadius="10dp"
-    android:layout_margin="10dp">
+    android:layout_margin="5dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="299dp"
-        android:layout_margin="10dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="7dp"
         android:padding="3dp"
         android:foreground="@drawable/fullscreen_card_dialog_background"
         android:background="@drawable/card_content_border">
@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:background="@drawable/map_pattern"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="299dp"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -43,18 +43,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
                 android:fontFamily="@font/open_sans"
                 android:textSize="15sp"
                 tools:text="French"
                 android:textColor="@color/black"/>
 
             <LinearLayout
+                android:id="@+id/cardContentLL"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/languageHint"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:gravity="center"
@@ -65,12 +67,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:fontFamily="@font/montserrat_bold"
                     android:textAlignment="center"
+                    android:textColor="@color/black"
                     android:textSize="30sp"
                     android:textStyle="bold"
-                    tools:text="Init Deck"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textColor="@color/black"/>
+                    tools:text="Init Deck" />
 
                 <TextView
                     android:id="@+id/onCardTextDescriptionTV"
@@ -89,12 +91,13 @@
                 android:id="@+id/pupUpBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/cardContentLL"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="10dp"
                 android:background="@color/transparent"
-                android:src="@drawable/icon_popup_menu"
-                android:contentDescription="@string/full_screen_button_description_text" />
+                android:contentDescription="@string/full_screen_button_description_text"
+                android:src="@drawable/icon_popup_menu" />
 
         </RelativeLayout>
 

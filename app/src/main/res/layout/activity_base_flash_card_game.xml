@@ -60,7 +60,7 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/montserrat_bold"
                         android:text="@string/flashcard_complete_text"
-                        android:textColor="?colorAccent"
+                        android:textColor="@color/black"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -71,7 +71,7 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/open_sans"
                         android:text="@string/known_cards_text"
-                        android:textColor="?colorAccent"
+                        android:textColor="@color/black"
                         android:textSize="18sp" />
 
                     <TextView
@@ -81,7 +81,7 @@
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/open_sans"
                         android:text="@string/missed_cards_text"
-                        android:textColor="?colorAccent"
+                        android:textColor="@color/black"
                         android:textSize="18sp" />
 
                     <com.google.android.material.button.MaterialButton

@@ -1,13 +1,14 @@
 package com.example.flashcard.quiz.baseFlashCardGame
 
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build.VERSION.SDK_INT
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,7 @@ import com.example.flashcard.databinding.ActivityBaseFlashCardGameBinding
 import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
+import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.launch
 
@@ -35,9 +37,18 @@ class BaseFlashCardGame : AppCompatActivity() {
     private var cardList: List<ImmutableCard>? = null
     private var deck: ImmutableDeck? = null
     private var cardFliped: Boolean = false
+    var sharedPref: SharedPreferences? = null
+    var editor: SharedPreferences.Editor? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        editor = sharedPref?.edit()
+        val appTheme = sharedPref?.getString("themName", "DARK THEM")
+        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
+        if (themRef != null) { setTheme(themRef) }
+
         binding = ActivityBaseFlashCardGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -202,6 +213,5 @@ class BaseFlashCardGame : AppCompatActivity() {
 
     companion object {
         const val DECK_ID_KEY = "Deck_id_key"
-        const val DECK_ERROR_KEY = "Deck_error_key"
     }
 }
