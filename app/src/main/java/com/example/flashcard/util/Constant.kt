@@ -15,10 +15,16 @@ object cardBackgroundConst {
 }
 
 object deckCategoryColorConst {
+    val WHITE = "white"
     val RED = "red"
+    val PINK = "pink"
     val PURPLE = "purple"
+    val BLUE = "blue"
+    val TEAL = "teal"
+    val GREEN = "green"
+    val YELLOW = "yellow"
+    val BROWN = "brown"
     val BLACK = "black"
-
 }
 
 object themeConst {

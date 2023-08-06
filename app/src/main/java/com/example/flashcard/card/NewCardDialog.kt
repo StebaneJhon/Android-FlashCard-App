@@ -3,10 +3,12 @@ package com.example.flashcard.card
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.speech.RecognizerIntent
 import android.util.TypedValue
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -35,6 +37,7 @@ import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.ClassCastException
 
 class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): AppCompatDialogFragment() {
@@ -54,6 +57,8 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
 
     private var cardBackground: String? = null
     private var appContext: Context? = null
+
+    private val REQUEST_PERMISSION_CODE = 12
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -101,6 +106,7 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
         }
 
         cardContentLY?.setEndIconOnClickListener {
+            listen()
 
         }
 
@@ -125,6 +131,32 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
 
 
         return builder.create()
+    }
+
+    private fun NewCardDialog.listen() {
+        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.SIMPLIFIED_CHINESE)
+        intent.putExtra(
+            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+        )
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to translate")
+
+        try {
+            startActivityForResult(intent, REQUEST_PERMISSION_CODE)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_PERMISSION_CODE) {
+            val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            cardContent?.setText(result?.get(0))
+        }
     }
 
     private fun onTranslateText(text: String) {
