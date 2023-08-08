@@ -7,14 +7,32 @@
     android:backgroundTint="?colorSurfaceContainerLow"
     android:id="@+id/quizModeDialogRoot">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/flashCardQuizButton"
-        android:layout_width="355dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:text="@string/flash_card_button_text"
-        android:textColor="?colorOnSurface"
-        android:backgroundTint="?colorSurface"
-        app:cornerRadius="15dp"/>
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/flashCardQuizButton"
+            android:layout_width="355dp"
+            android:layout_height="wrap_content"
+            android:text="@string/flash_card_button_text"
+            android:layout_marginBottom="10dp"
+            android:textColor="?colorOnSurface"
+            android:backgroundTint="?colorSurface"
+            app:cornerRadius="15dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/timedFlashCardQuizButton"
+            android:layout_width="355dp"
+            android:layout_height="wrap_content"
+            android:text="@string/timed_flash_card_text_button"
+            android:textColor="?colorOnSurface"
+            android:backgroundTint="?colorSurface"
+            app:cornerRadius="15dp"/>
+
+    </LinearLayout>
 
 </androidx.cardview.widget.CardView>

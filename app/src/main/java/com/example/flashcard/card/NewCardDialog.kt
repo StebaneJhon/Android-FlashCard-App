@@ -1,12 +1,15 @@
 package com.example.flashcard.card
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.util.TypedValue
@@ -15,7 +18,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
@@ -29,16 +32,14 @@ import com.example.flashcard.util.cardBackgroundConst.CURVE_PATTERN
 import com.example.flashcard.util.cardBackgroundConst.DATES_PATTERN
 import com.example.flashcard.util.cardBackgroundConst.FLORAL_PATTERN
 import com.example.flashcard.util.cardBackgroundConst.MAP_PATTERN
-import com.example.flashcard.util.cardBackgroundConst.SQUARE_PATTERN
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
-import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.ClassCastException
+
 
 class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): AppCompatDialogFragment() {
 
@@ -59,6 +60,7 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
     private var appContext: Context? = null
 
     private val REQUEST_PERMISSION_CODE = 12
+    private val RecordAudioRequestCode = 3455
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -96,6 +98,10 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
                     onPositiveAction(Constant.UPDATE)
                 }
         } else {
+            cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
+            cardContentDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
+            cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
+            cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
             builder.setView(view)
                 .setTitle("New Card")
                 .setNegativeButton("Cancel") { _, _ ->  }
@@ -134,20 +140,32 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
     }
 
     private fun NewCardDialog.listen() {
-        val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.SIMPLIFIED_CHINESE)
-        intent.putExtra(
-            RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-            RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-        )
-        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to translate")
+        if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+            checkPermission()
+        } else {
+            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, FirebaseTranslatorHelper().getLanguageCodeForSpeechAndText(deck.deckFirstLanguage!!))
+            intent.putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to translate")
 
-        try {
-            startActivityForResult(intent, REQUEST_PERMISSION_CODE)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+            try {
+                startActivityForResult(intent, REQUEST_PERMISSION_CODE)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions( requireActivity(), arrayOf<String>(Manifest.permission.RECORD_AUDIO),
+                RecordAudioRequestCode
+            )
         }
     }
 
@@ -162,8 +180,8 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
     private fun onTranslateText(text: String) {
         animProgressBar()
 
-        val fl = FirebaseTranslatorHelper().getLanguageCode(deck.deckFirstLanguage!!)
-        val tl = FirebaseTranslatorHelper().getLanguageCode(deck.deckSecondLanguage!!)
+        val fl = FirebaseTranslatorHelper().getLanguageCodeForTranslation(deck.deckFirstLanguage!!)
+        val tl = FirebaseTranslatorHelper().getLanguageCodeForTranslation(deck.deckSecondLanguage!!)
         if (fl != null && tl != null) {
             val options = TranslatorOptions.Builder()
                 .setSourceLanguage(fl)
