@@ -40,4 +40,6 @@
     <string name="profile_tab_title">Profile</string>
     <string name="deck_tab_hint">Deck</string>
     <string name="timed_flash_card_text_button">Timed Flash Card</string>
+    <string name="known_button_text">Known</string>
+    <string name="no_button_text">Unknown</string>
 </resources>

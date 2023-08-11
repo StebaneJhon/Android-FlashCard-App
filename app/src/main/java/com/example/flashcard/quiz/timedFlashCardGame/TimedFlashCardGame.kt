@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,8 +25,11 @@ import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.util.ThemePicker
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
+import com.yuyakaido.android.cardstackview.CardStackView
 import com.yuyakaido.android.cardstackview.Direction
+import com.yuyakaido.android.cardstackview.Duration
 import com.yuyakaido.android.cardstackview.StackFrom
+import com.yuyakaido.android.cardstackview.SwipeAnimationSetting
 import com.yuyakaido.android.cardstackview.SwipeableMethod
 
 class TimedFlashCardGame : AppCompatActivity() {
@@ -51,9 +55,7 @@ class TimedFlashCardGame : AppCompatActivity() {
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) {
-            setTheme(themRef)
-        }
+        if (themRef != null) { setTheme(themRef) }
 
         binding = ActivityTimedFlashCardGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -124,7 +126,7 @@ class TimedFlashCardGame : AppCompatActivity() {
 
                 }
             })
-            
+
             cardManager.apply {
                 setStackFrom(StackFrom.None)
                 setVisibleCount(3)
@@ -134,7 +136,7 @@ class TimedFlashCardGame : AppCompatActivity() {
                 setMaxDegree(20.0f)
                 setDirections(Direction.FREEDOM)
                 setCanScrollHorizontal(true)
-                setSwipeableMethod(SwipeableMethod.Manual)
+                setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
                 setOverlayInterpolator(LinearInterpolator())
             }
 
@@ -145,6 +147,33 @@ class TimedFlashCardGame : AppCompatActivity() {
                 itemAnimator = DefaultItemAnimator()
             }
 
+        }
+
+        binding.noButton.setOnClickListener {
+            val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Left)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+            cardManager.setSwipeAnimationSetting(setting)
+            binding.cardStackView.swipe()
+        }
+        binding.yesButton.setOnClickListener {
+            val setting = SwipeAnimationSetting.Builder()
+                .setDirection(Direction.Right)
+                .setDuration(Duration.Normal.duration)
+                .setInterpolator(AccelerateInterpolator())
+                .build()
+            cardManager.setSwipeAnimationSetting(setting)
+            binding.cardStackView.swipe()
+        }
+        binding.rewind.setOnClickListener {
+            Toast.makeText(
+                this@TimedFlashCardGame,
+                "Rewind",
+                Toast.LENGTH_LONG
+            ).show()
+            binding.cardStackView.rewind()
         }
     }
 
