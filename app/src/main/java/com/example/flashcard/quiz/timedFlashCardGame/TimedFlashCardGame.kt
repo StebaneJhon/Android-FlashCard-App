@@ -13,16 +13,20 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
+import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityTimedFlashCardGameBinding
+import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.util.ThemePicker
+import com.example.flashcard.util.UiState
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
 import com.yuyakaido.android.cardstackview.CardStackListener
 import com.yuyakaido.android.cardstackview.CardStackView
@@ -31,6 +35,7 @@ import com.yuyakaido.android.cardstackview.Duration
 import com.yuyakaido.android.cardstackview.StackFrom
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting
 import com.yuyakaido.android.cardstackview.SwipeableMethod
+import kotlinx.coroutines.launch
 
 class TimedFlashCardGame : AppCompatActivity() {
 
@@ -95,6 +100,10 @@ class TimedFlashCardGame : AppCompatActivity() {
                                 "Direction Left",
                                 Toast.LENGTH_LONG
                             ).show()
+                            timedFlashCardViewModel.onCardUnknown(cardList!!)
+                            lifecycleScope.launch {
+                                getNextCard(cardList!!)
+                            }
                         }
 
                         else -> {
@@ -103,6 +112,10 @@ class TimedFlashCardGame : AppCompatActivity() {
                                 "Direction Right",
                                 Toast.LENGTH_LONG
                             ).show()
+                            timedFlashCardViewModel.onCardKnown()
+                            lifecycleScope.launch {
+                                getNextCard(cardList!!)
+                            }
                         }
                     }
                     if (cardManager.topPosition == cardAdapter.itemCount - 5) {
@@ -174,6 +187,66 @@ class TimedFlashCardGame : AppCompatActivity() {
                 Toast.LENGTH_LONG
             ).show()
             binding.cardStackView.rewind()
+        }
+    }
+
+    private suspend fun getNextCard(
+        cardList: List<ImmutableCard>
+    ) {
+        binding.feedbackCardTF.visibility = View.GONE
+
+        timedFlashCardViewModel.getActualCard(cardList)
+        timedFlashCardViewModel.actualCard.collect { state ->
+            when (state) {
+                is UiState.Loading -> {
+                }
+
+                is UiState.Error -> {
+                    onQuizComplete(timedFlashCardViewModel.getKnownCardSum(cardList), timedFlashCardViewModel.getUnknownCards(), deck!!)
+                }
+
+                is UiState.Success -> {
+                    val card = state.data
+                    // initCard(card)
+                }
+            }
+        }
+    }
+
+    private fun onQuizComplete(
+        knownCardSum: Int,
+        missedCard: List<ImmutableCard>,
+        deck: ImmutableDeck
+    ) {
+        binding.feedbackCardTF.visibility = View.VISIBLE
+
+        binding.knownCardsTF.text = getString(R.string.known_cards_text, knownCardSum.toString())
+        binding.missedCardTF.text = getString(R.string.missed_cards_text, missedCard.size.toString())
+
+        if (missedCard.isEmpty()) {
+            binding.reviseMissedCardTF.visibility = View.GONE
+        } else {
+            binding.reviseMissedCardTF.visibility = View.VISIBLE
+        }
+
+        binding.reviseMissedCardTF.setOnClickListener {
+            val newCards = timedFlashCardViewModel.getUnknownCards()
+            timedFlashCardViewModel.initFlashCard()
+            //startFlashCard(newCards)
+        }
+
+        binding.restartFlashCardTF.setOnClickListener {
+            timedFlashCardViewModel.initFlashCard()
+            deckWithCards = intent?.parcelable(BaseFlashCardGame.DECK_ID_KEY)
+            deckWithCards?.let {
+                cardList = it.cards.toExternal()
+                //startFlashCard(cardList!!)
+            }
+        }
+
+        binding.backToDeckTF.setOnClickListener {
+            startActivity(Intent(this@TimedFlashCardGame, MainActivity::class.java))
+            finish()
         }
     }
 
