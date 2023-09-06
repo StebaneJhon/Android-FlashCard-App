@@ -6,130 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".quiz.timedFlashCardGame.TimedFlashCardGame">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/feedbackCardTF"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="40dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/card_stack_view"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginBottom="86dp"
+        app:layout_constraintBottom_toTopOf="@+id/rewind"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardRootFrontFB"
+        <include
+            layout="@layout/score_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="35dp"
-            android:layout_marginBottom="10dp"
-            android:outlineProvider="none"
-            app:cardCornerRadius="10dp">
+            android:layout_height="match_parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/wordCardFrontFB"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:background="@drawable/card_content_border"
-                android:foreground="@drawable/fullscreen_card_dialog_background">
-
-                <ImageView
-                    android:id="@+id/cardBackgroundImgFrontFB"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/card_content_border"
-                    android:clipToOutline="true"
-                    android:contentDescription="@string/card_image_bg_hint"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/abstract_surface_textures"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="@+id/cardBackgroundImgFrontFB"
-                    app:layout_constraintEnd_toEndOf="@+id/cardBackgroundImgFrontFB"
-                    app:layout_constraintStart_toStartOf="@+id/cardBackgroundImgFrontFB"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/montserrat_bold"
-                        android:text="@string/flashcard_complete_text"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/knownCardsTF"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/open_sans"
-                        android:text="@string/known_cards_text"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:id="@+id/missedCardTF"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/open_sans"
-                        android:text="@string/missed_cards_text"
-                        android:textColor="@color/black"
-                        android:textSize="18sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/reviseMissedCardTF"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:backgroundTint="?colorPrimaryVariant"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/revise_missed_cards_button_txt"
-                        android:textColor="?colorOnPrimary"
-                        android:textStyle="bold"
-                        app:cornerRadius="15dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/restartFlashCardTF"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:backgroundTint="?colorPrimaryVariant"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/restart_flashcard_button_text"
-                        android:textColor="?colorOnPrimary"
-                        android:textStyle="bold"
-                        app:cornerRadius="15dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/backToDeckTF"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="5dp"
-                        android:backgroundTint="?colorPrimaryVariant"
-                        android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/back_to_deck_text_button"
-                        android:textColor="?colorOnPrimary"
-                        android:textStyle="bold"
-                        app:cornerRadius="15dp" />
-
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-    </RelativeLayout>
+    </LinearLayout>
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:id="@+id/card_stack_view"

@@ -1,85 +1,186 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="10dp"
-    android:backgroundTint="?colorPrimaryDark"
-    app:cardCornerRadius="15dp">
+    android:backgroundTint="?colorPrimaryContainer"
+    app:cardCornerRadius="5dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="10dp"
-        android:background="?colorPrimaryDark">
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
 
-        <TextView
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="136dp"
+            android:layout_height="105dp"
+            android:layout_marginTop="48dp"
+            android:contentDescription="Check icon"
+            android:src="@drawable/check_icon"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?colorAccent"
-            android:textSize="18sp"
-            android:fontFamily="@font/montserrat_bold"
-            android:textStyle="bold"
-            android:text="@string/flashcard_complete_text"
-            android:layout_marginBottom="10dp"/>
+            android:background="@drawable/card_border_rounded"
+            android:backgroundTint="?colorSurfaceContainerLowest"
+            android:padding="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/reviseMissedCardBT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2">
 
-        <TextView
-            android:id="@+id/knownCardsTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?colorAccent"
-            android:textSize="18sp"
-            android:fontFamily="@font/open_sans"
-            android:text="@string/known_cards_text"
-            android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/score_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/open_sans_bold"
+                android:text="@string/flashcard_score_title_text"
+                android:textAlignment="center"
+                android:textSize="27sp" />
 
-        <TextView
-            android:id="@+id/missedCardTV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="?colorAccent"
-            android:textSize="18sp"
-            android:fontFamily="@font/open_sans"
-            android:text="@string/missed_cards_text"
-            android:layout_marginBottom="10dp"/>
+            <TextView
+                android:id="@+id/known_cards_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/score_title"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="23dp"
+                android:layout_toStartOf="@+id/knownCardsTF"
+                android:fontFamily="@font/open_sans"
+                android:text="@string/known_cards_text"
+                android:textColor="@color/green500"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/knownCardsTF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/score_title"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/card_border_rounded"
+                android:backgroundTint="@color/green500"
+                android:fontFamily="@font/open_sans_bold"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="5dp"
+                android:text="5"
+                android:textColor="?colorSurfaceContainerLowest"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/unknown_cards_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/known_cards_text"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="20dp"
+                android:layout_toStartOf="@+id/knownCardsTF"
+                android:fontFamily="@font/open_sans"
+                android:text="@string/missed_cards_text"
+                android:textColor="@color/red500"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/missedCardTF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/knownCardsTF"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/card_border_rounded"
+                android:backgroundTint="@color/red500"
+                android:fontFamily="@font/open_sans_bold"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="5dp"
+                android:text="0"
+                android:textColor="?colorSurfaceContainerLowest"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/total_cards_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/unknown_cards_text"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="20dp"
+                android:layout_toStartOf="@+id/knownCardsTF"
+                android:fontFamily="@font/open_sans"
+                android:text="@string/total_cards_text"
+                android:textColor="?colorPrimaryContainer"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/total_cards_sum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/missedCardTF"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/card_border_rounded"
+                android:backgroundTint="?colorPrimaryContainer"
+                android:fontFamily="@font/open_sans_bold"
+                android:paddingStart="15dp"
+                android:paddingTop="5dp"
+                android:paddingEnd="15dp"
+                android:paddingBottom="5dp"
+                android:text="5"
+                android:textColor="?colorSurfaceContainerLowest"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/reviseMissedCardBT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?colorPrimaryVariant"
-            android:textColor="?colorPrimary"
-            android:textStyle="bold"
+            android:backgroundTint="?colorSurfaceContainerLowest"
             android:fontFamily="@font/open_sans_bold"
             android:text="@string/revise_missed_cards_button_txt"
-            app:cornerRadius="15dp"
-            android:layout_marginBottom="5dp"/>
+            android:textColor="?colorPrimaryContainer"
+            app:cornerRadius="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/restartFlashCardTF"
+            tools:layout_editor_absoluteX="-16dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/restartFlashCardBT"
+            android:id="@+id/restartFlashCardTF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?colorPrimaryVariant"
-            android:textColor="?colorPrimary"
-            android:textStyle="bold"
+            android:backgroundTint="?colorSurfaceContainerLowest"
             android:fontFamily="@font/open_sans_bold"
             android:text="@string/restart_flashcard_button_text"
-            app:cornerRadius="15dp"
-            android:layout_marginBottom="5dp"/>
+            android:textColor="?colorPrimaryContainer"
+            android:textStyle="bold"
+            app:cornerRadius="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/backToDeckBT"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/backToDeckBT"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?colorPrimaryVariant"
-            android:textColor="?colorPrimary"
-            android:textStyle="bold"
-            android:fontFamily="@font/open_sans_bold"
+            app:cornerRadius="5dp"
             android:text="@string/back_to_deck_text_button"
-            app:cornerRadius="15dp"
-            android:layout_marginBottom="5dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:backgroundTint="?colorSurfaceContainerLowest"
+            android:textColor="?colorPrimaryContainer"
+            android:fontFamily="@font/open_sans_bold"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

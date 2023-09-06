@@ -23,9 +23,9 @@
     <string name="full_screen_button_description_text">Full screen button</string>
     <string name="exit_button_text_hint">Exit Button</string>
     <string name="flash_card_button_text">Flash Card</string>
-    <string name="flashcard_complete_text">FlashCard Complete:</string>
-    <string name="known_cards_text">Known Cards : %1$s</string>
-    <string name="missed_cards_text">Missed cards : %1$s</string>
+    <string name="flashcard_score_title_text">FlashCard Complete:</string>
+    <string name="known_cards_text">Known cards:</string>
+    <string name="missed_cards_text">Missed cards:</string>
     <string name="revise_missed_cards_button_txt">REVISE MISSED CARDS</string>
     <string name="restart_flashcard_button_text">RESTART FLASHCARD</string>
     <string name="back_to_deck_text_button">BACK TO DECK</string>
@@ -42,4 +42,5 @@
     <string name="timed_flash_card_text_button">Timed Flash Card</string>
     <string name="known_button_text">Known</string>
     <string name="no_button_text">Unknown</string>
+    <string name="total_cards_text">Total cards:</string>
 </resources>
