@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="?colorPrimaryContainer"
-    app:cardCornerRadius="5dp">
+    app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,7 +31,7 @@
             android:background="@drawable/card_border_rounded"
             android:backgroundTint="?colorSurfaceContainerLowest"
             android:padding="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/reviseMissedCardBT"
+            app:layout_constraintBottom_toTopOf="@+id/reviseMissedCardButtonTF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView2">
@@ -124,7 +125,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/total_cards_sum"
+                android:id="@+id/totalCardsSumTF"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/missedCardTF"
@@ -137,14 +138,14 @@
                 android:paddingTop="5dp"
                 android:paddingEnd="15dp"
                 android:paddingBottom="5dp"
-                android:text="5"
+                android:text="0"
                 android:textColor="?colorSurfaceContainerLowest"
                 android:textSize="20sp" />
 
         </RelativeLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/reviseMissedCardBT"
+            android:id="@+id/reviseMissedCardButtonTF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="?colorSurfaceContainerLowest"
@@ -165,13 +166,13 @@
             android:textColor="?colorPrimaryContainer"
             android:textStyle="bold"
             app:cornerRadius="5dp"
-            app:layout_constraintBottom_toTopOf="@+id/backToDeckBT"
+            app:layout_constraintBottom_toTopOf="@+id/backToDeckButtonTF"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/backToDeckBT"
+            android:id="@+id/backToDeckButtonTF"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cornerRadius="5dp"

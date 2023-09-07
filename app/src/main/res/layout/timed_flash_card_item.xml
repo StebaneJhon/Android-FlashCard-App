@@ -12,8 +12,8 @@
         android:id="@+id/cardRootFront"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
-        android:layout_margin="35dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="35dp"
         app:cardCornerRadius="10dp"
         android:outlineProvider="none">
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -104,9 +104,9 @@
         android:id="@+id/cardRootBack"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="50dp"
+        android:layout_marginTop="35dp"
         app:cardCornerRadius="10dp"
-        android:layout_margin="30dp"
         android:alpha="0"
         android:outlineProvider="none">
         <androidx.constraintlayout.widget.ConstraintLayout

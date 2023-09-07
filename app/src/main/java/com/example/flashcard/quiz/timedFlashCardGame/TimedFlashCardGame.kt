@@ -11,9 +11,12 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.cardview.widget.CardView
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
@@ -69,6 +72,7 @@ class TimedFlashCardGame : AppCompatActivity() {
 
         deckWithCards = intent?.parcelable(BaseFlashCardGame.DECK_ID_KEY)
         deckWithCards?.let {
+            areQuizButtonsActive(true)
             cardList = it.cards.toExternal()
             deck = it.deck.toExternal()
 
@@ -97,11 +101,6 @@ class TimedFlashCardGame : AppCompatActivity() {
                         }
 
                         Direction.Left -> {
-                            Toast.makeText(
-                                this@TimedFlashCardGame,
-                                "Direction Left",
-                                Toast.LENGTH_LONG
-                            ).show()
                             timedFlashCardViewModel.onCardUnknown(cardList!!)
                             lifecycleScope.launch {
                                 getNextCard(cardList!!)
@@ -109,11 +108,7 @@ class TimedFlashCardGame : AppCompatActivity() {
                         }
 
                         else -> {
-                            Toast.makeText(
-                                this@TimedFlashCardGame,
-                                "Direction Right",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            // Right
                             timedFlashCardViewModel.onCardKnown()
                             lifecycleScope.launch {
                                 getNextCard(cardList!!)
@@ -149,7 +144,7 @@ class TimedFlashCardGame : AppCompatActivity() {
                 setScaleInterval(0.95f)
                 setSwipeThreshold(0.3f)
                 setMaxDegree(20.0f)
-                setDirections(Direction.FREEDOM)
+                setDirections(Direction.HORIZONTAL)
                 setCanScrollHorizontal(true)
                 setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
                 setOverlayInterpolator(LinearInterpolator())
@@ -221,29 +216,25 @@ class TimedFlashCardGame : AppCompatActivity() {
         deck: ImmutableDeck
     ) {
         binding.feedbackCardTF.visibility = View.VISIBLE
+        areQuizButtonsActive(false)
 
-        val knownCardsTF: TextView = findViewById(R.id.knownCardsTF)
-        val missedCardsTF: TextView = findViewById(R.id.missedCardTF)
-        val reviseMissedCardTF: MaterialButton = findViewById(R.id.reviseMissedCardBT)
-        val restartFlashCardTF: MaterialButton = findViewById(R.id.restartFlashCardTF)
-        val  backToDeckTF: MaterialButton = findViewById(R.id.backToDeckBT)
-
-        knownCardsTF.text = knownCardSum.toString()
-        missedCardsTF.text = missedCard.size.toString()
+        binding.knownCardsTF.text = knownCardSum.toString()
+        binding.missedCardTF.text = missedCard.size.toString()
+        binding.totalCardsSumTF.text = deck.cardSum.toString()
 
         if (missedCard.isEmpty()) {
-            reviseMissedCardTF.visibility = View.GONE
+            binding.reviseMissedCardButtonTF.visibility = View.GONE
         } else {
-            reviseMissedCardTF.visibility = View.VISIBLE
+            binding.reviseMissedCardButtonTF.visibility = View.VISIBLE
         }
 
-        reviseMissedCardTF.setOnClickListener {
+        binding.reviseMissedCardButtonTF.setOnClickListener {
             val newCards = timedFlashCardViewModel.getUnknownCards()
             timedFlashCardViewModel.initFlashCard()
             //startFlashCard(newCards)
         }
 
-        restartFlashCardTF.setOnClickListener {
+        binding.restartFlashCardTF.setOnClickListener {
             timedFlashCardViewModel.initFlashCard()
             deckWithCards = intent?.parcelable(BaseFlashCardGame.DECK_ID_KEY)
             deckWithCards?.let {
@@ -252,10 +243,18 @@ class TimedFlashCardGame : AppCompatActivity() {
             }
         }
 
-        backToDeckTF.setOnClickListener {
+        binding.backToDeckButtonTF.setOnClickListener {
             startActivity(Intent(this@TimedFlashCardGame, MainActivity::class.java))
-            finish()
         }
+    }
+
+    private fun areQuizButtonsActive(isActive: Boolean) {
+        binding.rewind.isClickable = isActive
+        binding.rewind.isVisible = isActive
+        binding.noButton.isClickable = isActive
+        binding.noButton.isVisible = isActive
+        binding.yesButton.isClickable = isActive
+        binding.yesButton.isVisible = isActive
     }
 
     private fun paginate() {
