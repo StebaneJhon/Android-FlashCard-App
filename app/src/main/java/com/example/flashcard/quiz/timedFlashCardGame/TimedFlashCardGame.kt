@@ -72,91 +72,11 @@ class TimedFlashCardGame : AppCompatActivity() {
 
         deckWithCards = intent?.parcelable(BaseFlashCardGame.DECK_ID_KEY)
         deckWithCards?.let {
-            areQuizButtonsActive(true)
             cardList = it.cards.toExternal()
             deck = it.deck.toExternal()
-
-            cardManager = CardStackLayoutManager(this, object : CardStackListener {
-                override fun onCardDragging(direction: Direction?, ratio: Float) {
-                    Log.d(TAG, "onCardDragging: d=" + direction?.name + " ratio=" + ratio)
-                }
-
-                override fun onCardSwiped(direction: Direction?) {
-                    Log.d(TAG, "onCardSwiped: p=" + cardManager.topPosition + " d=" + direction)
-                    when (direction) {
-                        Direction.Top -> {
-                            Toast.makeText(
-                                this@TimedFlashCardGame,
-                                "Direction Up",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-
-                        Direction.Bottom -> {
-                            Toast.makeText(
-                                this@TimedFlashCardGame,
-                                "Direction Down",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-
-                        Direction.Left -> {
-                            timedFlashCardViewModel.onCardUnknown(cardList!!)
-                            lifecycleScope.launch {
-                                getNextCard(cardList!!)
-                            }
-                        }
-
-                        else -> {
-                            // Right
-                            timedFlashCardViewModel.onCardKnown()
-                            lifecycleScope.launch {
-                                getNextCard(cardList!!)
-                            }
-                        }
-                    }
-                    if (cardManager.topPosition == cardAdapter.itemCount - 5) {
-                        paginate()
-                    }
-                }
-
-                override fun onCardRewound() {
-                    Log.d(TAG, "onCardRewound: p=" + cardManager.topPosition)
-                }
-
-                override fun onCardCanceled() {
-                    Log.d(TAG, "onCardCancelde: p=" + cardManager.topPosition)
-                }
-
-                override fun onCardAppeared(view: View?, position: Int) {
-
-                }
-
-                override fun onCardDisappeared(view: View?, position: Int) {
-
-                }
-            })
-
-            cardManager.apply {
-                setStackFrom(StackFrom.None)
-                setVisibleCount(3)
-                setTranslationInterval(8.0f)
-                setScaleInterval(0.95f)
-                setSwipeThreshold(0.3f)
-                setMaxDegree(20.0f)
-                setDirections(Direction.HORIZONTAL)
-                setCanScrollHorizontal(true)
-                setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
-                setOverlayInterpolator(LinearInterpolator())
+            if (!cardList.isNullOrEmpty() && deck != null) {
+                startTimedFlashCard(cardList!!, deck!!)
             }
-
-            cardAdapter = CardStackAdapter(this, cardList!!, deck!!)
-            binding.cardStackView.apply {
-                layoutManager = cardManager
-                adapter = cardAdapter
-                itemAnimator = DefaultItemAnimator()
-            }
-
         }
 
         binding.noButton.setOnClickListener {
@@ -187,11 +107,82 @@ class TimedFlashCardGame : AppCompatActivity() {
         }
     }
 
+    private fun startTimedFlashCard(
+        cardList: List<ImmutableCard>,
+        deck: ImmutableDeck
+    ) {
+        areQuizButtonsActive(true)
+        binding.feedbackCardTF.visibility = View.GONE
+        cardManager = CardStackLayoutManager(this, object : CardStackListener {
+            override fun onCardDragging(direction: Direction?, ratio: Float) {
+                Log.d(TAG, "onCardDragging: d=" + direction?.name + " ratio=" + ratio)
+            }
+
+            override fun onCardSwiped(direction: Direction?) {
+                Log.d(TAG, "onCardSwiped: p=" + cardManager.topPosition + " d=" + direction)
+                when (direction) {
+                    Direction.Left -> {
+                        timedFlashCardViewModel.onCardUnknown(cardList)
+                        lifecycleScope.launch {
+                            getNextCard(cardList)
+                        }
+                    }
+
+                    else -> {
+                        // Right
+                        timedFlashCardViewModel.onCardKnown()
+                        lifecycleScope.launch {
+                            getNextCard(cardList)
+                        }
+                    }
+                }
+                if (cardManager.topPosition == cardAdapter.itemCount - 5) {
+                    paginate()
+                }
+            }
+
+            override fun onCardRewound() {
+                Log.d(TAG, "onCardRewound: p=" + cardManager.topPosition)
+            }
+
+            override fun onCardCanceled() {
+                Log.d(TAG, "onCardCancelde: p=" + cardManager.topPosition)
+            }
+
+            override fun onCardAppeared(view: View?, position: Int) {
+
+            }
+
+            override fun onCardDisappeared(view: View?, position: Int) {
+
+            }
+        })
+
+        cardManager.apply {
+            setStackFrom(StackFrom.None)
+            setVisibleCount(3)
+            setTranslationInterval(8.0f)
+            setScaleInterval(0.95f)
+            setSwipeThreshold(0.3f)
+            setMaxDegree(20.0f)
+            setDirections(Direction.HORIZONTAL)
+            setCanScrollHorizontal(true)
+            setSwipeableMethod(SwipeableMethod.AutomaticAndManual)
+            setOverlayInterpolator(LinearInterpolator())
+        }
+
+        cardAdapter = CardStackAdapter(this, cardList, deck)
+        binding.cardStackView.apply {
+            layoutManager = cardManager
+            adapter = cardAdapter
+            itemAnimator = DefaultItemAnimator()
+        }
+    }
+
     private suspend fun getNextCard(
         cardList: List<ImmutableCard>
     ) {
         binding.feedbackCardTF.visibility = View.GONE
-
         timedFlashCardViewModel.getActualCard(cardList)
         timedFlashCardViewModel.actualCard.collect { state ->
             when (state) {
@@ -199,7 +190,7 @@ class TimedFlashCardGame : AppCompatActivity() {
                 }
 
                 is UiState.Error -> {
-                    onQuizComplete(timedFlashCardViewModel.getKnownCardSum(cardList), timedFlashCardViewModel.getUnknownCards(), deck!!)
+                    onQuizComplete(timedFlashCardViewModel.getKnownCardSum(cardList), timedFlashCardViewModel.getUnknownCards(), deck!!, cardList)
                 }
 
                 is UiState.Success -> {
@@ -213,42 +204,39 @@ class TimedFlashCardGame : AppCompatActivity() {
     private fun onQuizComplete(
         knownCardSum: Int,
         missedCard: List<ImmutableCard>,
-        deck: ImmutableDeck
+        deck: ImmutableDeck,
+        cardList: List<ImmutableCard>
     ) {
         binding.feedbackCardTF.visibility = View.VISIBLE
         areQuizButtonsActive(false)
-
-        binding.knownCardsTF.text = knownCardSum.toString()
-        binding.missedCardTF.text = missedCard.size.toString()
-        binding.totalCardsSumTF.text = deck.cardSum.toString()
-
-        if (missedCard.isEmpty()) {
-            binding.reviseMissedCardButtonTF.visibility = View.GONE
-        } else {
-            binding.reviseMissedCardButtonTF.visibility = View.VISIBLE
-        }
-
-        binding.reviseMissedCardButtonTF.setOnClickListener {
-            val newCards = timedFlashCardViewModel.getUnknownCards()
-            timedFlashCardViewModel.initFlashCard()
-            //startFlashCard(newCards)
-        }
-
-        binding.restartFlashCardTF.setOnClickListener {
-            timedFlashCardViewModel.initFlashCard()
-            deckWithCards = intent?.parcelable(BaseFlashCardGame.DECK_ID_KEY)
-            deckWithCards?.let {
-                cardList = it.cards.toExternal()
-                //startFlashCard(cardList!!)
+        binding.feedbackLY.apply {
+            knownCardsTF.text = knownCardSum.toString()
+            missedCardTF.text = missedCard.size.toString()
+            totalCardsSumTF.text = cardList.size.toString()
+            backToDeckButtonTF.setOnClickListener {
+                startActivity(Intent(this@TimedFlashCardGame, MainActivity::class.java))
+            }
+            if (missedCard.isEmpty()) {
+                reviseMissedCardButtonTF.visibility = View.GONE
+            } else {
+                reviseMissedCardButtonTF.visibility = View.VISIBLE
+            }
+            reviseMissedCardButtonTF.setOnClickListener {
+                val newCards = timedFlashCardViewModel.getUnknownCards()
+                timedFlashCardViewModel.initFlashCard()
+                startTimedFlashCard(newCards, deck)
+            }
+            restartFlashCardTF.setOnClickListener {
+                Toast.makeText(this@TimedFlashCardGame, "Restart", Toast.LENGTH_LONG).show()
+                timedFlashCardViewModel.initFlashCard()
+                startTimedFlashCard(cardList, deck)
             }
         }
 
-        binding.backToDeckButtonTF.setOnClickListener {
-            startActivity(Intent(this@TimedFlashCardGame, MainActivity::class.java))
-        }
     }
 
     private fun areQuizButtonsActive(isActive: Boolean) {
+        binding.cardStackView.isVisible = isActive
         binding.rewind.isClickable = isActive
         binding.rewind.isVisible = isActive
         binding.noButton.isClickable = isActive

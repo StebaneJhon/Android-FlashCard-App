@@ -41,7 +41,6 @@ class TimedFlashCardViewModel(private val repository: FlashCardRepository) : Vie
     }
 
     fun onCardUnknown(cardList: List<ImmutableCard>) {
-        //knownCardsSum -= 1
         unKnownCards.add(cardList[cardPosition])
 
     }
