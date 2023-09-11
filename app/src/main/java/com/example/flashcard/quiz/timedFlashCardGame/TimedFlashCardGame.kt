@@ -40,6 +40,7 @@ import com.yuyakaido.android.cardstackview.Duration
 import com.yuyakaido.android.cardstackview.StackFrom
 import com.yuyakaido.android.cardstackview.SwipeAnimationSetting
 import com.yuyakaido.android.cardstackview.SwipeableMethod
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TimedFlashCardGame : AppCompatActivity() {
@@ -195,7 +196,10 @@ class TimedFlashCardGame : AppCompatActivity() {
 
                 is UiState.Success -> {
                     val card = state.data
-                    // initCard(card)
+                    lifecycleScope.launch {
+                        delay(5000)
+                        // TODO
+                    }
                 }
             }
         }

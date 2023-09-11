@@ -3,11 +3,12 @@ package com.example.flashcard.quiz.timedFlashCardGame
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -18,6 +19,7 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
+
 
 class CardStackAdapter(
     private val context: Context,
@@ -71,25 +73,25 @@ class CardStackAdapter(
             back_anim = AnimatorInflater.loadAnimator(context.applicationContext, R.animator.back_animator) as AnimatorSet
 
             cardRoot.setOnClickListener {
-                isFront = if (isFront) {
-                    front_anim.setTarget(cardRootFront)
-                    back_anim.setTarget(cardRootBack)
-                    front_anim.start()
-                    back_anim.start()
-                    false
-                } else {
-                    front_anim.setTarget(cardRootBack)
-                    back_anim.setTarget(cardRootFront)
-                    back_anim.start()
-                    front_anim.start()
-                    true
-                }
+                flipCard()
             }
 
         }
 
-        private fun flipCard() {
-
+        fun flipCard() {
+            isFront = if (isFront) {
+                front_anim.setTarget(cardRootFront)
+                back_anim.setTarget(cardRootBack)
+                front_anim.start()
+                back_anim.start()
+                false
+            } else {
+                front_anim.setTarget(cardRootBack)
+                back_anim.setTarget(cardRootFront)
+                back_anim.start()
+                front_anim.start()
+                true
+            }
         }
 
         private fun initCardBack(

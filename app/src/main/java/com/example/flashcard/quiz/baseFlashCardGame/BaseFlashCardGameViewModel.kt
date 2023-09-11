@@ -27,7 +27,7 @@ class BaseFlashCardGameViewModel(private val repository: FlashCardRepository) : 
     val actualCard: StateFlow<UiState<ImmutableCard>> = _actualCard.asStateFlow()
 
     fun getActualCard(cardList: List<ImmutableCard>) {
-        if (cardPosition >= cardList.size) {
+        if (cardPosition >= cardList.size-1) {
             _actualCard.value = UiState.Error("Quiz Complete")
             cardPosition = 0
         } else {
@@ -45,8 +45,8 @@ class BaseFlashCardGameViewModel(private val repository: FlashCardRepository) : 
     }
 
     fun onCardUnknown(cardList: List<ImmutableCard>) {
-        knownCardsSum -= 1
-        unKnownCards.add(cardList[cardPosition - 1])
+        unKnownCards.add(cardList[cardPosition])
+
     }
 
     fun getKnownCardSum(cardList: List<ImmutableCard>) = cardList.size - unKnownCards.size
