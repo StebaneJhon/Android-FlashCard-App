@@ -216,6 +216,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                     cardViewModel.deleteCard(selectedCard, deck)
                 })
         }
+
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)

@@ -1,5 +1,7 @@
 package com.example.flashcard.quiz.timedFlashCardGame
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,6 +18,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -59,6 +63,12 @@ class TimedFlashCardGame : AppCompatActivity() {
     private var cardList: List<ImmutableCard>? = null
     private var deck: ImmutableDeck? = null
 
+    private var isFront = true
+    private var cardItemFront: CardView? = null
+    private var cardItemBack: CardView? = null
+    private var front_anim: AnimatorSet? = null
+    private var back_anim: AnimatorSet? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -70,6 +80,15 @@ class TimedFlashCardGame : AppCompatActivity() {
 
         binding = ActivityTimedFlashCardGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        front_anim = AnimatorInflater.loadAnimator(
+            applicationContext,
+            R.animator.front_animator
+        ) as AnimatorSet
+        back_anim = AnimatorInflater.loadAnimator(
+            applicationContext,
+            R.animator.back_animator
+        ) as AnimatorSet
 
         deckWithCards = intent?.parcelable(BaseFlashCardGame.DECK_ID_KEY)
         deckWithCards?.let {
@@ -172,11 +191,41 @@ class TimedFlashCardGame : AppCompatActivity() {
             setOverlayInterpolator(LinearInterpolator())
         }
 
-        cardAdapter = CardStackAdapter(this, cardList, deck)
+
+        cardAdapter = CardStackAdapter(this, cardList, deck) { front, back ->
+            cardItemFront = front
+            cardItemBack = back
+            flipCardItem(cardItemFront!!, cardItemBack!!)
+        }
+
         binding.cardStackView.apply {
             layoutManager = cardManager
             adapter = cardAdapter
             itemAnimator = DefaultItemAnimator()
+        }
+    }
+
+    private fun flipCardItem(
+        front: CardView,
+        back: CardView
+    ) {
+
+        val scale: Float = applicationContext.resources.displayMetrics.density
+        cardItemFront?.cameraDistance = 8000 * scale
+        cardItemBack?.cameraDistance = 8000 * scale
+
+        isFront = if (isFront) {
+            front_anim?.setTarget(front)
+            back_anim?.setTarget(back)
+            front_anim?.start()
+            back_anim?.start()
+            false
+        } else {
+            front_anim?.setTarget(back)
+            back_anim?.setTarget(front)
+            back_anim?.start()
+            front_anim?.start()
+            true
         }
     }
 
@@ -196,10 +245,13 @@ class TimedFlashCardGame : AppCompatActivity() {
 
                 is UiState.Success -> {
                     val card = state.data
+                    /*
                     lifecycleScope.launch {
                         delay(5000)
-                        // TODO
+                        flipCardItem(cardItemFront!!, cardItemBack!!)
                     }
+
+                     */
                 }
             }
         }

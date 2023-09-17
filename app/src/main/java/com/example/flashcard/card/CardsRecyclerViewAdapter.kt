@@ -32,7 +32,7 @@ class CardsRecyclerViewAdapter(
     private val deck: ImmutableDeck,
     private val fullScreenClickListener: (Card) -> Unit,
     private val editCardClickListener: (Card) -> Unit,
-    private val deleteCardClickListener: (Card) -> Unit
+    private val deleteCardClickListener: (Card) -> Unit,
 ) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

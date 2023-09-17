@@ -1,8 +1,8 @@
-package com.example.flashcard.quiz.timedFlashCardGame
+package com.example.flashcard.quiz.baseFlashCardGame
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,16 +15,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.quiz.timedFlashCardGame.CardStackAdapter
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
 
-
-class CardStackAdapter(
+class BaseFlashCardGameAdapter(
     private val context: Context,
     private var items: List<ImmutableCard>,
-    private val deck: ImmutableDeck,
-    private val cardItem: (CardView, CardView) -> Unit
-): RecyclerView.Adapter<CardStackAdapter.ViewHolder>() {
+    private val deck: ImmutableDeck
+): RecyclerView.Adapter<BaseFlashCardGameAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.create(parent)
@@ -33,7 +32,7 @@ class CardStackAdapter(
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        return holder.bind(context, items[position], deck, cardItem)
+        return holder.bind(context, items[position], deck)
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -52,26 +51,48 @@ class CardStackAdapter(
         private val onCardTextDefinitionBack: TextView = view.findViewById(R.id.onCardTextDefinitionBack)
         private val cardRootBack: CardView = view.findViewById(R.id.cardRootBack)
 
+        lateinit var front_anim: AnimatorSet
+        lateinit var back_anim: AnimatorSet
+        var isFront = true
+
         fun bind(
             context: Context,
             card: ImmutableCard,
             deck: ImmutableDeck,
-            cardItem: (CardView, CardView) -> Unit
         ) {
             initCardFront(deck, card, context)
             initCardBack(deck, card, context)
+            val scale: Float = context.applicationContext.resources.displayMetrics.density
+            cardRootFront.cameraDistance = 8000 * scale
+            cardRootBack.cameraDistance = 8000 * scale
+
+
+            front_anim = AnimatorInflater.loadAnimator(context.applicationContext, R.animator.front_animator) as AnimatorSet
+            back_anim = AnimatorInflater.loadAnimator(context.applicationContext, R.animator.back_animator) as AnimatorSet
 
             cardRoot.setOnClickListener {
-                cardItem(cardRootFront, cardRootBack)
+                flipCard()
+
             }
 
-            /*
-            Handler(Looper.getMainLooper()).postDelayed({
-                cardItem(cardRootFront, cardRootBack)
-            }, 5000)
-             */
-
         }
+
+        fun flipCard() {
+            isFront = if (isFront) {
+                front_anim.setTarget(cardRootFront)
+                back_anim.setTarget(cardRootBack)
+                front_anim.start()
+                back_anim.start()
+                false
+            } else {
+                front_anim.setTarget(cardRootBack)
+                back_anim.setTarget(cardRootFront)
+                back_anim.start()
+                front_anim.start()
+                true
+            }
+        }
+
         private fun initCardBack(
             deck: ImmutableDeck,
             card: ImmutableCard,
@@ -128,5 +149,4 @@ class CardStackAdapter(
     fun setItems(items: List<ImmutableCard>) {
         this.items = items
     }
-
 }

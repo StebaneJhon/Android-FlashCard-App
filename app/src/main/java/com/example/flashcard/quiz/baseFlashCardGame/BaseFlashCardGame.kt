@@ -14,26 +14,18 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
-import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityBaseFlashCardGameBinding
-import com.example.flashcard.databinding.ActivityTimedFlashCardGameBinding
 import com.example.flashcard.deck.MainActivity
-import com.example.flashcard.quiz.timedFlashCardGame.CardStackAdapter
 import com.example.flashcard.quiz.timedFlashCardGame.CardStackCallback
-import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardViewModeFactory
-import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardViewModel
-import com.example.flashcard.util.CardBackgroundSelector
-import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.yuyakaido.android.cardstackview.CardStackLayoutManager
@@ -53,7 +45,7 @@ class BaseFlashCardGame : AppCompatActivity() {
         BaseFlashCardGameViewModelFactory((application as FlashCardApplication).repository)
     }
     private lateinit var cardManager: CardStackLayoutManager
-    private lateinit var cardAdapter: CardStackAdapter
+    private lateinit var cardAdapter: BaseFlashCardGameAdapter
 
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
@@ -175,7 +167,7 @@ class BaseFlashCardGame : AppCompatActivity() {
             setOverlayInterpolator(LinearInterpolator())
         }
 
-        cardAdapter = CardStackAdapter(this, cardList, deck)
+        cardAdapter = BaseFlashCardGameAdapter(this, cardList, deck)
         binding.cardStackViewBF.apply {
             layoutManager = cardManager
             adapter = cardAdapter
