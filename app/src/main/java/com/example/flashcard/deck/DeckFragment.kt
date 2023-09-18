@@ -37,6 +37,7 @@ import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
+import com.example.flashcard.quiz.timedFlashCardGameV2.TimedFlashCardGameV2
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.cancel
@@ -207,9 +208,9 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                             binding.mainActivityProgressBar.visibility = View.GONE
                             val intent = Intent(
                                 activity?.applicationContext!!,
-                                TimedFlashCardGame::class.java
+                                TimedFlashCardGameV2::class.java
                             )
-                            intent.putExtra(TimedFlashCardGame.DECK_ID_KEY, state.data)
+                            intent.putExtra(TimedFlashCardGameV2.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             quizModeDialog?.dismiss()
                             this@launch.cancel()
