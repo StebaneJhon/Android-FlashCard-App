@@ -1,7 +1,5 @@
-package com.example.flashcard.quiz.timedFlashCardGameV2
+package com.example.flashcard.quiz.timedFlashCardGame
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.Model.ImmutableCard
@@ -13,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class TimedFlashCardGameV2ViewModel(
+class TimedFlashCardGameViewModel(
 ): ViewModel() {
 
     private var fetchJob: Job? = null

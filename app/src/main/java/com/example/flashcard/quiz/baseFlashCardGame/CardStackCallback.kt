@@ -1,4 +1,4 @@
-package com.example.flashcard.quiz.timedFlashCardGame
+package com.example.flashcard.quiz.baseFlashCardGame
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.flashcard.backend.Model.ImmutableCard

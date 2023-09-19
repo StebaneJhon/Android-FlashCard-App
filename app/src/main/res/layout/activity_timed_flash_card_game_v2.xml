@@ -7,7 +7,7 @@
     android:id="@+id/motionLayout"
     app:layoutDescription="@xml/activity_timed_flash_card_game_v2_scene"
     app:motionDebug="SHOW_PATH"
-    tools:context=".quiz.timedFlashCardGameV2.TimedFlashCardGameV2">
+    tools:context=".quiz.timedFlashCardGame.TimedFlashCardGame">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/bottomCard"
