@@ -253,6 +253,8 @@ class TimedFlashCardGame : AppCompatActivity() {
 
                      */
                 }
+
+                else -> {}
             }
         }
     }

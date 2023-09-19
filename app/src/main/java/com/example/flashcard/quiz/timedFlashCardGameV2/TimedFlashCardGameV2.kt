@@ -7,15 +7,21 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableCard
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityTimedFlashCardGameV2Binding
+import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.ThemePicker
@@ -27,8 +33,8 @@ class TimedFlashCardGameV2 : AppCompatActivity() {
     private lateinit var binding: ActivityTimedFlashCardGameV2Binding
     private val viewModel: TimedFlashCardGameV2ViewModel by viewModels()
 
-    var sharedPref: SharedPreferences? = null
-    var editor: SharedPreferences.Editor? = null
+    private var sharedPref: SharedPreferences? = null
+    private var editor: SharedPreferences.Editor? = null
     private var deckWithCards: DeckWithCards? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,9 +52,7 @@ class TimedFlashCardGameV2 : AppCompatActivity() {
         deckWithCards?.let {
             val cardList = it.cards.toExternal()
             val deck = it.deck.toExternal()
-            viewModel.initCardList(cardList)
-            viewModel.initDeck(deck)
-            viewModel.updateCards()
+            startTimedFlashCard(cardList, deck)
         }
 
         lifecycleScope.launch {
@@ -60,7 +64,7 @@ class TimedFlashCardGameV2 : AppCompatActivity() {
                         }
 
                         is UiState.Error -> {
-                            //onQuizComplete(timedFlashCardViewModel.getKnownCardSum(cardList), timedFlashCardViewModel.getUnknownCards(), deck!!, cardList)
+                            onQuizComplete()
                         }
 
                         is UiState.Success -> {
@@ -85,27 +89,40 @@ class TimedFlashCardGameV2 : AppCompatActivity() {
                         }
 
                         R.id.offScreenPass -> {
-                            viewModel.swipe()
                             motionLayout.progress = 0f
-                            motionLayout.setTransition(R.id.rest, R.id.pass)
+                            if (viewModel.swipe(false)) {
+                                motionLayout.setTransition(R.id.rest, R.id.pass)
+                            } else {
+                                motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.pass)
+                            }
+
                         }
 
                         R.id.offScreenLike -> {
-                            viewModel.swipe()
                             motionLayout.progress = 0f
-                            motionLayout.setTransition(R.id.rest, R.id.like)
+                            if (viewModel.swipe(true)) {
+                                motionLayout.setTransition(R.id.rest, R.id.like)
+                            } else {
+                                motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.like)
+                            }
                         }
 
                         R.id.cardBackOffScreenPass -> {
                             motionLayout.progress = 0f
-                            viewModel.swipe()
-                            motionLayout.setTransition(R.id.rest, R.id.backPass)
+                            if (viewModel.swipe(false)) {
+                                motionLayout.setTransition(R.id.rest, R.id.backPass)
+                            } else {
+                                motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.backPass)
+                            }
                         }
 
                         R.id.cardBackoffScreenLike -> {
                             motionLayout.progress = 0f
-                            viewModel.swipe()
-                            motionLayout.setTransition(R.id.rest, R.id.backLike)
+                            if (viewModel.swipe(true)) {
+                                motionLayout.setTransition(R.id.rest, R.id.backLike)
+                            } else {
+                                motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.backLike)
+                            }
                         }
                     }
                 }
@@ -128,8 +145,42 @@ class TimedFlashCardGameV2 : AppCompatActivity() {
                         }
                     }
                 }
+
             })
 
+    }
+
+    private fun startTimedFlashCard(
+        cardList: List<ImmutableCard>,
+        deck: ImmutableDeck
+    ) {
+        binding.motionLayout.setTransition(R.id.rest, R.id.displayGameReviewLayout)
+        viewModel.initCardList(cardList)
+        viewModel.initDeck(deck)
+        viewModel.updateCards()
+    }
+
+    private fun onQuizComplete() {
+        binding.gameReviewLayout.apply {
+            totalCardsSumTF.text = viewModel.getTotalCards().toString()
+            missedCardTF.text = viewModel.getMissedCardSum().toString()
+            knownCardsTF.text = viewModel.getKnownCardSum().toString()
+
+            backToDeckButtonTF.setOnClickListener {
+                startActivity(Intent(this@TimedFlashCardGameV2, MainActivity::class.java))
+            }
+            restartFlashCardTF.setOnClickListener {
+                viewModel.initTimedFlashCard()
+                viewModel.updateCards()
+                binding.motionLayout.setTransition(R.id.rest, R.id.displayGameReviewLayout)
+            }
+            reviseMissedCardButtonTF.setOnClickListener {
+                val newCards = viewModel.getMissedCard()
+                viewModel.initTimedFlashCard()
+                startTimedFlashCard(newCards, viewModel.deck!!)
+
+            }
+        }
     }
 
     private fun bindCard(model: TimedFlashCardGameModel) {
@@ -147,10 +198,17 @@ class TimedFlashCardGameV2 : AppCompatActivity() {
         binding.cardBackLanguageHint.text = viewModel.deck?.deckSecondLanguage
         binding.backCardTextDescription.text = model.top.valueDefinition
 
-        binding.bottomCard.setCardBackgroundColor(getColor(deckColorCode))
-        binding.bottomCardText.text = model.bottom.cardContent
-        binding.bottomCardTextDescription.text = model.bottom.contentDescription
-        binding.cardBottomLanguageHint.text = viewModel.deck?.deckFirstLanguage
+        if (model.bottom != null) {
+            binding.bottomCard.setCardBackgroundColor(getColor(deckColorCode))
+            binding.bottomCardText.text = model.bottom.cardContent
+            binding.bottomCardTextDescription.text = model.bottom.contentDescription
+            binding.cardBottomLanguageHint.text = viewModel.deck?.deckFirstLanguage
+        } else {
+            binding.bottomCardText.text = "..."
+            binding.bottomCardTextDescription.text = "..."
+            binding.cardBottomLanguageHint.text = "..."
+        }
+
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {

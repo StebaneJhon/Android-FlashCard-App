@@ -13,8 +13,6 @@
         android:id="@+id/bottomCard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="20dp">
 
@@ -87,8 +85,6 @@
         android:id="@+id/backCard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
         android:alpha="0"
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="20dp">
@@ -163,8 +159,6 @@
         android:id="@+id/topCard"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:orientation="vertical"
         app:cardBackgroundColor="@color/black"
         app:cardCornerRadius="20dp">
 
@@ -233,5 +227,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/gameReviewContainer"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+        <include
+            android:id="@+id/gameReviewLayout"
+            layout="@layout/layout_score" />
+    </LinearLayout>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
