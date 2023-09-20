@@ -35,6 +35,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
+import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -186,6 +187,11 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         timedFlashCardGame.setOnClickListener {
             startTimedFlashCardGame(deckId, quizModeDialog)
         }
+
+        val multiChoiceQuizGameBT: Button = dialogBinding.findViewById(R.id.multiChoiceQuizButton)
+        multiChoiceQuizGameBT.setOnClickListener {
+            startMultiChoiceQuizGame(deckId, quizModeDialog)
+        }
     }
 
     private fun startTimedFlashCardGame(deckId: Int, quizModeDialog: Dialog?) {
@@ -241,6 +247,38 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                                 BaseFlashCardGame::class.java
                             )
                             intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                            quizModeDialog?.dismiss()
+                            this@launch.cancel()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startMultiChoiceQuizGame(deckId: Int, quizModeDialog: Dialog?) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                deckViewModel.getDeckWithCards(deckId)
+                deckViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.mainActivityProgressBar.visibility = View.VISIBLE
+                        }
+
+                        is UiState.Error -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                        }
+
+                        is UiState.Success -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                            val intent = Intent(
+                                activity?.applicationContext!!,
+                                MultiChoiceQuizGame::class.java
+                            )
+                            intent.putExtra(MultiChoiceQuizGame.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             quizModeDialog?.dismiss()
                             this@launch.cancel()

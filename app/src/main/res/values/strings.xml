@@ -43,4 +43,5 @@
     <string name="known_button_text">Known</string>
     <string name="no_button_text">Unknown</string>
     <string name="total_cards_text">Total cards:</string>
+    <string name="multiple_choice_quiz_button_text">Multiple-Choice Quiz</string>
 </resources>

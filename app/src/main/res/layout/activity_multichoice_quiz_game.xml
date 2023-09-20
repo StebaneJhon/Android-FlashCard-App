@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/multiChoiceQuizGameMotionLY"
+    android:background="?colorSurfaceContainerLowest"
+    app:layoutDescription="@xml/activity_multichoice_quiz_game_scene"
+    tools:context=".quiz.multichoiceQuizGame.MultiChoiceQuizGame">
+
+    <RelativeLayout
+        android:id="@+id/topToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/backToDeckBT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="?colorSurfaceContainerHighest"
+            android:padding="10dp"
+            android:src="@drawable/icon_chevron_left" />
+
+        <ProgressBar
+            android:id="@+id/quizProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/backToDeckBT"
+            android:layout_alignBottom="@+id/backToDeckBT"
+            android:layout_toStartOf="@+id/exitBT"
+            android:layout_toEndOf="@+id/backToDeckBT"
+            tools:layout_editor_absoluteX="109dp"
+            tools:layout_editor_absoluteY="230dp" />
+
+        <ImageButton
+            android:id="@+id/exitBT"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="362dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/rounded_background"
+            android:backgroundTint="?colorSurfaceContainerHighest"
+            android:padding="10dp"
+            android:src="@drawable/icon_exit" />
+    </RelativeLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLY"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:cardBackgroundColor="?colorPrimaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/onCardWord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
+                android:textAlignment="center"
+                android:textColor="?colorOnPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/alternative1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Word" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/alternative1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="?colorOnPrimary"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorPrimaryContainer"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/alternative2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/alternative2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="?colorOnPrimary"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorPrimaryContainer"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/alternative3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative2" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/alternative3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="?colorOnPrimary"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorPrimaryContainer"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative3" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

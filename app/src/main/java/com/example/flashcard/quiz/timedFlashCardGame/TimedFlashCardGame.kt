@@ -77,7 +77,7 @@ class TimedFlashCardGame : AppCompatActivity() {
 
         binding
             .motionLayout
-            .setTransitionListener(object : TransitionAdapter() {
+            .setTransitionListener(object: TransitionAdapter() {
                 override fun onTransitionCompleted(motionLayout: MotionLayout, currentId: Int) {
                     when (currentId) {
                         R.id.flipCard -> {
