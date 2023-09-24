@@ -15,11 +15,13 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
 
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
+    var progress: Int = 0
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCard = MutableStateFlow<UiState<MultiChoiceGameCardModel>>(UiState.Loading)
     val actualCard: StateFlow<UiState<MultiChoiceGameCardModel>> = _actualCard.asStateFlow()
     private lateinit var cardList: List<ImmutableCard>
     lateinit var deck: ImmutableDeck
+    private lateinit var originalCardList: List<ImmutableCard>
 
     fun initCardList(gameCards: List<ImmutableCard>) {
         cardList = gameCards
@@ -28,31 +30,57 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         deck = gameDeck
     }
 
+    fun initOriginalCardList(gameCards: List<ImmutableCard>) {
+        originalCardList = gameCards
+    }
+
     private val onCardWord
         get() = cardList[currentCardPosition].cardContent
+    private val answer
+        get() = cardList[currentCardPosition].cardDefinition
     private val wordAlternatives
-        get() = getWordAlternatives(cardList, cardList[currentCardPosition].cardDefinition!!, 3)
+        get() = getWordAlternatives(originalCardList, answer!!, 3)
 
     private fun getWordAlternatives(
         cards: List<ImmutableCard>,
         onCardWordTranslation: String,
         sum: Int
     ): List<String> {
-        val temporaryList = mutableSetOf<String>()
+        val temporaryList = arrayListOf<String>()
         temporaryList.add(onCardWordTranslation)
         while (temporaryList.size < sum) {
             val randomWordTranslation = cards.random().cardDefinition
-            temporaryList.add(randomWordTranslation!!)
+            if (randomWordTranslation !in temporaryList) {
+                if (randomWordTranslation != null) {
+                    temporaryList.add(randomWordTranslation)
+                }
+            }
         }
-        return temporaryList.toList()
+        return temporaryList.shuffled()
     }
-
-    fun swipe() {
+    fun swipe(): Boolean {
+        progress += 100/cardSum()
         currentCardPosition += 1
         updateCard()
+        return currentCardPosition != cardSum()
+    }
+    fun cardSum() = cardList.size
+    fun getMissedCardSum() = missedCards.size
+    fun getKnownCardSum() = cardSum() - getMissedCardSum()
+    fun getMissedCard(): List<ImmutableCard> {
+        val newCards = arrayListOf<ImmutableCard>()
+        missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
+        return newCards.toList()
+    }
+    fun initTimedFlashCard() {
+        missedCards.clear()
+        progress = 0
+        currentCardPosition = 0
     }
 
-    fun cardSum() = cardList.size
+    fun onCardMissed() {
+        missedCards.add(cardList[currentCardPosition])
+    }
 
     fun updateCard() {
         if (currentCardPosition == cardList.size) {
@@ -60,11 +88,13 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
+                val wordsAL = wordAlternatives
                 _actualCard.value = UiState.Success(MultiChoiceGameCardModel(
                     onCardWord = onCardWord!!,
-                    alternative1 = wordAlternatives[0],
-                    alternative2 = wordAlternatives[1],
-                    alternative3 = wordAlternatives[2]
+                    answer = answer!!,
+                    alternative1 = wordsAL[0],
+                    alternative2 = wordsAL[1],
+                    alternative3 = wordsAL[2]
                 ))
             }
         }

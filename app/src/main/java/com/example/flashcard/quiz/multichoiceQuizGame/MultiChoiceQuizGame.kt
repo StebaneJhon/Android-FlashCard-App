@@ -18,10 +18,10 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMultichoiceQuizGameBinding
+import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MultiChoiceQuizGame : AppCompatActivity() {
@@ -49,6 +49,7 @@ class MultiChoiceQuizGame : AppCompatActivity() {
         deckWithCards?.let {
             val cardList = it.cards.toExternal()
             val deck = it.deck.toExternal()
+            viewModel.initOriginalCardList(cardList)
             startTimedFlashCard(cardList, deck)
         }
 
@@ -59,14 +60,11 @@ class MultiChoiceQuizGame : AppCompatActivity() {
                     when (state) {
                         is UiState.Loading -> {
                         }
-
                         is UiState.Error -> {
                             onQuizComplete()
                         }
-
                         is UiState.Success -> {
-                            val card = state.data
-                            bindCard(card)
+                            bindCard( state.data)
                         }
                     }
                 }
@@ -79,26 +77,35 @@ class MultiChoiceQuizGame : AppCompatActivity() {
                     when (currentId) {
                         R.id.endOffScreen -> {
                             motionLayout?.progress = 0f
-                            motionLayout?.setTransition(R.id.start, R.id.end)
-                            binding.quizProgress.progress = 100/viewModel.cardSum()
-                            viewModel.swipe()
+                            if (viewModel.swipe()) {
+                                motionLayout?.setTransition(R.id.start, R.id.end)
+                            } else {
+                                motionLayout?.setTransition(R.id.displayGameReviewLayoutMQ, R.id.end)
+                            }
+                            binding.quizProgress.progress = viewModel.progress
                         }
                     }
                 }
             })
 
+        binding.backToDeckBT.setOnClickListener {
+            finish()
+        }
+        binding.exitBT.setOnClickListener {
+            finish()
+        }
     }
 
     private fun onAlternativeClicked(word: String, card: MultiChoiceGameCardModel) {
-        if (word == card.alternative1) {
+        if (word == card.answer) {
             binding.multiChoiceQuizGameMotionLY.transitionToState(R.id.end)
         } else {
+            viewModel.onCardMissed()
             Toast.makeText(this, "XXX", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun bindCard(card: MultiChoiceGameCardModel) {
-        val a = card
         binding.onCardWord.text = card.onCardWord
         binding.alternative1.text = card.alternative1
         binding.alternative2.text = card.alternative2
@@ -116,12 +123,31 @@ class MultiChoiceQuizGame : AppCompatActivity() {
     }
 
     private fun onQuizComplete() {
+        binding.gameReviewLayoutMQ.apply {
+            totalCardsSumTF.text = viewModel.cardSum().toString()
+            missedCardTF.text = viewModel.getMissedCardSum().toString()
+            knownCardsTF.text = viewModel.getKnownCardSum().toString()
 
+            backToDeckButtonTF.setOnClickListener {
+                startActivity(Intent(this@MultiChoiceQuizGame, MainActivity::class.java))
+            }
+            restartFlashCardTF.setOnClickListener {
+                viewModel.initTimedFlashCard()
+                viewModel.updateCard()
+                binding.multiChoiceQuizGameMotionLY.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
+            }
+            reviseMissedCardButtonTF.setOnClickListener {
+                val newCards = viewModel.getMissedCard()
+                viewModel.initTimedFlashCard()
+                startTimedFlashCard(newCards, viewModel.deck)
+
+            }
+        }
     }
 
 
     private fun startTimedFlashCard(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
-        binding.multiChoiceQuizGameMotionLY.setTransition(R.id.start, R.id.end)
+        binding.multiChoiceQuizGameMotionLY.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateCard()

@@ -57,22 +57,14 @@ class TimedFlashCardGame : AppCompatActivity() {
                     when (state) {
                         is UiState.Loading -> {
                         }
-
                         is UiState.Error -> {
                             onQuizComplete()
                         }
-
                         is UiState.Success -> {
-                            val cards = state.data
-                            bindCard(cards)
+                            bindCard(state.data)
                         }
                     }
                 }
-        }
-
-        binding.flipButton.setOnClickListener {
-            val scale: Float = applicationContext.resources.displayMetrics.density
-
         }
 
         binding
@@ -82,7 +74,6 @@ class TimedFlashCardGame : AppCompatActivity() {
                     when (currentId) {
                         R.id.flipCard -> {
                         }
-
                         R.id.offScreenPass -> {
                             motionLayout.progress = 0f
                             if (viewModel.swipe(false)) {
@@ -90,9 +81,7 @@ class TimedFlashCardGame : AppCompatActivity() {
                             } else {
                                 motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.pass)
                             }
-
                         }
-
                         R.id.offScreenLike -> {
                             motionLayout.progress = 0f
                             if (viewModel.swipe(true)) {
@@ -101,7 +90,6 @@ class TimedFlashCardGame : AppCompatActivity() {
                                 motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.like)
                             }
                         }
-
                         R.id.cardBackOffScreenPass -> {
                             motionLayout.progress = 0f
                             if (viewModel.swipe(false)) {
@@ -110,7 +98,6 @@ class TimedFlashCardGame : AppCompatActivity() {
                                 motionLayout.setTransition(R.id.displayGameReviewLayout, R.id.backPass)
                             }
                         }
-
                         R.id.cardBackoffScreenLike -> {
                             motionLayout.progress = 0f
                             if (viewModel.swipe(true)) {

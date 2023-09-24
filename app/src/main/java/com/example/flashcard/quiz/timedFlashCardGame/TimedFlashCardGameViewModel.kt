@@ -74,7 +74,6 @@ class TimedFlashCardGameViewModel(
         missedCards.clear()
         currentCardPosition = 0
     }
-
     fun updateCards() {
         cardList?.let {cards ->
             if (currentCardPosition == cards.size) {

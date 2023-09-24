@@ -7,7 +7,8 @@
     android:id="@+id/multiChoiceQuizGameMotionLY"
     android:background="?colorSurfaceContainerLowest"
     app:layoutDescription="@xml/activity_multichoice_quiz_game_scene"
-    tools:context=".quiz.multichoiceQuizGame.MultiChoiceQuizGame">
+    tools:context=".quiz.multichoiceQuizGame.MultiChoiceQuizGame"
+    app:showPaths="true">
 
     <RelativeLayout
         android:id="@+id/topToolBar"
@@ -57,6 +58,80 @@
             android:padding="10dp"
             android:src="@drawable/icon_exit" />
     </RelativeLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardBottomLY"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:cardBackgroundColor="?colorPrimaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/onCardBottomWord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
+                android:textAlignment="center"
+                android:textColor="?colorOnPrimary"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toTopOf="@+id/bottomAlternative1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="..." />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bottomAlternative1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="?colorOnPrimary"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorPrimaryContainer"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bottomAlternative2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="..." />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bottomAlternative2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="?colorOnPrimary"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorPrimaryContainer"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bottomAlternative3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="..." />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bottomAlternative3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="?colorOnPrimary"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorPrimaryContainer"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="..." />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardLY"
@@ -131,5 +206,14 @@
                 tools:text="Alternative3" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/gameReviewContainerMQ"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+        <include
+            android:id="@+id/gameReviewLayoutMQ"
+            layout="@layout/layout_score" />
+    </LinearLayout>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

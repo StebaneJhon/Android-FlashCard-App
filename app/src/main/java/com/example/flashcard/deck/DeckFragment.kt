@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -115,7 +116,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
             recyclerView.apply {
                 adapter = recyclerViewAdapter
                 setHasFixedSize(true)
-                layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                layoutManager = LinearLayoutManager( appContext)
             }
         }
     }

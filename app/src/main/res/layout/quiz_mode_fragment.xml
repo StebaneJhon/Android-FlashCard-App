@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="10dp"
@@ -8,7 +8,7 @@
     android:id="@+id/quizModeDialogRoot">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:orientation="vertical"
@@ -16,7 +16,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/flashCardQuizButton"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="@string/flash_card_button_text"
             android:layout_marginBottom="5dp"
@@ -26,7 +26,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/timedFlashCardQuizButton"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="@string/timed_flash_card_text_button"
             android:layout_marginBottom="5dp"
@@ -36,7 +36,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/multiChoiceQuizButton"
-            android:layout_width="match_parent"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="@string/multiple_choice_quiz_button_text"
             android:textColor="?colorOnSurface"
