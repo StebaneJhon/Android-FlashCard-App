@@ -35,30 +35,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
-    <TextView
-        android:id="@+id/onNoDeckTextHint"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/onNoDeckTextError"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:drawablePadding="5dp"
-        android:fontFamily="@font/open_sans"
-        android:text="@string/on_no_deck_text_hint"
-        android:textAlignment="center"
-        android:textColor="?colorOnSurface"
-        android:visibility="gone"
-        app:drawableStartCompat="@drawable/icon_warning"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_margin="20dp"
+        android:background="@drawable/error_card_border"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/addNewDeckButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        android:visibility="gone">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/warning_icon"
+            android:src="@drawable/icon_warning" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/open_sans"
+            android:text="@string/on_no_deck_text_hint"
+            android:textAlignment="center"
+            android:textColor="?colorOnError"
+            android:textSize="15sp" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/deckRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        android:transitionGroup="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
+        android:visibility="gone"/>
 
     <ImageButton
         android:id="@+id/addNewDeckButton"

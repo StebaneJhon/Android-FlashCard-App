@@ -83,11 +83,9 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                                 binding.mainActivityProgressBar.isVisible = true
                             }
                             is UiState.Error -> {
-                                binding.mainActivityProgressBar.isVisible = false
-                                Toast.makeText(activity?.applicationContext!!, it.errorMessage, Toast.LENGTH_SHORT).show()
+                                onNoDeckError()
                             }
                             is UiState.Success -> {
-                                binding.mainActivityProgressBar.isVisible = false
                                 displayDecks(it.data)
                             }
                         }
@@ -101,7 +99,16 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
     }
 
+    private fun onNoDeckError() {
+        binding.mainActivityProgressBar.visibility = View.GONE
+        binding.deckRecycleView.visibility = View.GONE
+        binding.onNoDeckTextError.visibility = View.VISIBLE
+    }
+
     private fun displayDecks(listOfDecks: List<ImmutableDeck>) {
+        binding.mainActivityProgressBar.visibility = View.GONE
+        binding.deckRecycleView.visibility = View.VISIBLE
+        binding.onNoDeckTextError.visibility = View.GONE
         if (appContext != null) {
             recyclerViewAdapter = DecksRecyclerViewAdapter(listOfDecks, appContext!!, {
                 onAddNewDeck(it)

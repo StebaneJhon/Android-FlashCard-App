@@ -16,7 +16,8 @@
     <string name="start_quiz_button_text">Quiz</string>
     <string name="deck_languages">%1$s &amp; %2$s</string>
     <string name="cards_sum">%1$s Cards</string>
-    <string name="on_no_deck_text_hint">You have no deck</string>
+    <string name="on_no_deck_text_hint">Start by adding a new deck by pressing at the + button below</string>
+    <string name="on_no_card_text_hint">Start by adding a card by pressing at the + button below</string>
     <string name="card_image_bg_hint">card image background</string>
     <string name="settings_hint">Settings</string>
     <string name="themes_head_text">THEMES</string>
@@ -34,7 +35,6 @@
     <string name="expand_card_button_text">Expand</string>
     <string name="category_color_picker_title">Category Color</string>
     <string name="background_text_title">Background</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="add_new_deck_button">Add new deck button</string>
     <string name="profile_tab_title">Profile</string>
@@ -44,4 +44,7 @@
     <string name="no_button_text">Unknown</string>
     <string name="total_cards_text">Total cards:</string>
     <string name="multiple_choice_quiz_button_text">Multiple-Choice Quiz</string>
+    <string name="warning_icon">Warning Icon</string>
+    <string name="this_week_profile_title">This Week</string>
+    <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
 </resources>

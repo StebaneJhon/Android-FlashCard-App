@@ -24,6 +24,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
+import com.google.android.material.card.MaterialCardView
 
 
 class CardsRecyclerViewAdapter(
@@ -62,8 +63,7 @@ class CardsRecyclerViewAdapter(
         private val onCardTextDescription: TextView = view.findViewById(R.id.onCardTextDescriptionTV)
         private val languageHint: TextView = view.findViewById(R.id.languageHint)
         private val popUpBT: ImageButton = view.findViewById(R.id.pupUpBT)
-        private val cardRoot: CardView = view.findViewById(R.id.cardRoot)
-        private val cardBackground: ImageView = view.findViewById(R.id.imageView)
+        private val cardRoot: MaterialCardView = view.findViewById(R.id.cardRoot)
 
         private val ICON_MARGIN = 5
 
@@ -77,7 +77,12 @@ class CardsRecyclerViewAdapter(
         ) {
             languageHint.text = deck.deckFirstLanguage
             onCardText.text = card.cardContent
-            onCardTextDescription.text = card.contentDescription
+            val cardContentDescription = card.contentDescription
+            if (cardContentDescription.isNullOrBlank() && cardContentDescription.isNullOrEmpty()) {
+                onCardTextDescription.visibility = View.GONE
+            } else {
+                onCardTextDescription.text = cardContentDescription
+            }
 
             val deckColorCode = deck.deckColorCode?.let {
                 DeckColorCategorySelector().selectColor(
@@ -86,12 +91,6 @@ class CardsRecyclerViewAdapter(
             } ?: R.color.red700
 
             cardRoot.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
-
-            val background = card.backgroundImg?.let {
-                CardBackgroundSelector().selectPattern(it)
-            } ?: R.drawable.abstract_surface_textures
-
-            cardBackground.setImageResource(background)
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
@@ -107,7 +106,6 @@ class CardsRecyclerViewAdapter(
             cardRoot.setOnClickListener {
                 flipCard(card, deck)
             }
-            cardBackground.setColorFilter(Color.argb(150, 255, 255, 255))
 
         }
 

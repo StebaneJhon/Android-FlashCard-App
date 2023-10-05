@@ -31,7 +31,11 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         fetchJob = viewModelScope.launch {
             try {
                 repository.getDeckWithCards(deckId).collect {
-                    _deckWithAllCards.value = UiState.Success(it)
+                    if (it.cards.isEmpty()) {
+                        _deckWithAllCards.value = UiState.Error("Empty deck")
+                    } else {
+                        _deckWithAllCards.value = UiState.Success(it)
+                    }
                 }
             } catch (e: IOException) {
                 _deckWithAllCards.value = UiState.Error(e.toString())

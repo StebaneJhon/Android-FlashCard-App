@@ -86,11 +86,9 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                                 binding.cardsActivityProgressBar.isVisible = true
                             }
                             is UiState.Error -> {
-                                binding.cardsActivityProgressBar.isVisible = false
-                                Toast.makeText(appContext, state.errorMessage, Toast.LENGTH_LONG).show()
+                                onDeckEmpty()
                             }
                             is UiState.Success -> {
-                                binding.cardsActivityProgressBar.isVisible = false
                                 displayCards(state.data.cards, state.data.deck.toExternal())
                             }
                         }
@@ -106,6 +104,12 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 _deck.deckId?.let { it1 -> onStartQuiz(it1) }
             }
         }
+    }
+
+    private fun onDeckEmpty() {
+        binding.cardsActivityProgressBar.isVisible = false
+        binding.cardRecyclerView.isVisible = false
+        binding.onNoDeckTextError.isVisible = true
     }
 
     @SuppressLint("MissingInflatedId")
@@ -201,6 +205,9 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
     }
 
     private fun displayCards(cardList: List<Card>, deck: ImmutableDeck) {
+        binding.cardsActivityProgressBar.isVisible = false
+        binding.onNoDeckTextError.isVisible = false
+        binding.cardRecyclerView.isVisible = true
         val recyclerViewAdapter = appContext?.let {
             CardsRecyclerViewAdapter(
                 it,

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "a12667196ffb651a52f83293062620ef",
+    "version": 4,
+    "identityHash": "19e201336358e10fdda13ada5fe966b9",
     "entities": [
       {
         "tableName": "Card",
@@ -154,11 +154,11 @@
       },
       {
         "tableName": "User",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `initial` INTEGER, `status` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `initial` TEXT, `status` TEXT)",
         "fields": [
           {
-            "fieldPath": "deckId",
-            "columnName": "deckId",
+            "fieldPath": "userId",
+            "columnName": "userId",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -171,7 +171,7 @@
           {
             "fieldPath": "initial",
             "columnName": "initial",
-            "affinity": "INTEGER",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -184,7 +184,7 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "deckId"
+            "userId"
           ]
         },
         "indices": [],
@@ -192,11 +192,11 @@
       },
       {
         "tableName": "WeeklyReview",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` INTEGER PRIMARY KEY AUTOINCREMENT, `dayName` TEXT, `date` TEXT, `revisedCardSum` TEXT, `colorGrade` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dayId` INTEGER PRIMARY KEY AUTOINCREMENT, `dayName` TEXT, `date` TEXT, `revisedCardSum` INTEGER, `colorGrade` INTEGER)",
         "fields": [
           {
-            "fieldPath": "deckId",
-            "columnName": "deckId",
+            "fieldPath": "dayId",
+            "columnName": "dayId",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -215,20 +215,20 @@
           {
             "fieldPath": "revisedCardSum",
             "columnName": "revisedCardSum",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "colorGrade",
             "columnName": "colorGrade",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "deckId"
+            "dayId"
           ]
         },
         "indices": [],
@@ -238,7 +238,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a12667196ffb651a52f83293062620ef')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '19e201336358e10fdda13ada5fe966b9')"
     ]
   }
 }

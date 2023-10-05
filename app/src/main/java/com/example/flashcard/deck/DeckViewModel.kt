@@ -30,7 +30,11 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
         fetchJob = viewModelScope.launch {
             try {
                 repository.allDecks().collect {
-                    _allDecks.value = UiState.Success(it)
+                    if (it.isEmpty()) {
+                        _allDecks.value = UiState.Error("No Deck")
+                    } else {
+                        _allDecks.value = UiState.Success(it)
+                    }
                 }
             } catch (e: IOException) {
                 _allDecks.value = UiState.Error(e.toString())
