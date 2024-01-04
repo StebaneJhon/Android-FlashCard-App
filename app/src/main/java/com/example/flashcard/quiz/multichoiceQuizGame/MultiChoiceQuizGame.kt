@@ -133,6 +133,7 @@ class MultiChoiceQuizGame : AppCompatActivity() {
             }
             restartFlashCardTF.setOnClickListener {
                 viewModel.initTimedFlashCard()
+                binding.quizProgress.progress = viewModel.progress
                 viewModel.updateCard()
                 binding.multiChoiceQuizGameMotionLY.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
             }

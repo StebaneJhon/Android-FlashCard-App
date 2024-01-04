@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/motionLayout"
     app:layoutDescription="@xml/activity_timed_flash_card_game_v2_scene"
-    app:motionDebug="SHOW_PATH"
+    android:background="?colorSurfaceContainerLowest"
     tools:context=".quiz.timedFlashCardGame.TimedFlashCardGame">
 
     <com.google.android.material.card.MaterialCardView
@@ -65,14 +65,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cardBottomButton"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
-                android:backgroundTint="@color/black"
-                android:background="@drawable/rounded_background"
-                android:text="Flip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bt_flip_text"
+                android:background="@drawable/bt_background_flip"
+                android:backgroundTint="?colorPrimary"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:layout_margin="10dp"
+                android:fontFamily="@font/open_sans_bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -138,21 +138,19 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/flipButtonBack"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
-                android:backgroundTint="@color/black"
-                android:background="@drawable/rounded_background"
-                android:text="Flip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bt_flip_text"
+                android:background="@drawable/bt_background_flip"
+                android:backgroundTint="?colorPrimary"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:fontFamily="@font/open_sans_bold"
-                android:layout_margin="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -211,15 +209,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/flipButton"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
-                android:backgroundTint="@color/black"
-                android:background="@drawable/rounded_background"
-                android:text="Flip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/bt_flip_text"
+                android:background="@drawable/bt_background_flip"
+                android:backgroundTint="?colorPrimary"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:fontFamily="@font/open_sans_bold"
-                android:layout_margin="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>

@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
@@ -130,6 +131,18 @@ class TimedFlashCardGame : AppCompatActivity() {
 
             })
 
+        /*
+        binding.bottomCard.setOnClickListener {
+            Toast.makeText(this, "Click", Toast.LENGTH_LONG).show()
+            binding.motionLayout.transitionToState(R.id.flip)
+        }
+
+        binding.backCard.setOnClickListener {
+            Toast.makeText(this, "Click", Toast.LENGTH_LONG).show()
+            binding.motionLayout.transitionToState(R.id.flip)
+        }
+         */
+
     }
 
     private fun startTimedFlashCard(
@@ -160,7 +173,6 @@ class TimedFlashCardGame : AppCompatActivity() {
                 val newCards = viewModel.getMissedCard()
                 viewModel.initTimedFlashCard()
                 startTimedFlashCard(newCards, viewModel.deck!!)
-
             }
         }
     }

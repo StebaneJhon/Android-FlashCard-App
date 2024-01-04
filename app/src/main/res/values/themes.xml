@@ -18,6 +18,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -39,11 +40,11 @@
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
         <item name="searchViewStyle">@style/customSearch</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -66,6 +67,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -88,6 +90,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -110,6 +113,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -132,6 +136,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -153,6 +158,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -174,6 +180,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -195,6 +202,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -216,6 +224,7 @@
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
         <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -256,4 +265,16 @@
     <style name="customSearch" parent="Widget.AppCompat.SearchView">
         <item name="android:textColor">@color/red700</item>
     </style>
+
+    <!--Progress bar style-->
+    <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.LinearProgressIndicator</item>
+        <item name="trackThickness">20dp</item>
+        <item name="trackColor">?colorSurfaceContainer</item>
+    </style>
+
+    <style name="ThemeOverlay.App.LinearProgressIndicator" parent="">
+        <item name="colorPrimary">?colorSurfaceContainerHighest</item>
+    </style>
+
 </resources>

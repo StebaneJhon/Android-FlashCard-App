@@ -47,4 +47,5 @@
     <string name="warning_icon">Warning Icon</string>
     <string name="this_week_profile_title">This Week</string>
     <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
+    <string name="bt_flip_text">Flip</string>
 </resources>

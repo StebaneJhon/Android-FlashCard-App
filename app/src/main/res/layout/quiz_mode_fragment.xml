@@ -21,7 +21,7 @@
             android:text="@string/flash_card_button_text"
             android:layout_marginBottom="5dp"
             android:textColor="?colorOnSurface"
-            android:backgroundTint="?colorSurface"
+            android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -31,7 +31,7 @@
             android:text="@string/timed_flash_card_text_button"
             android:layout_marginBottom="5dp"
             android:textColor="?colorOnSurface"
-            android:backgroundTint="?colorSurface"
+            android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:text="@string/multiple_choice_quiz_button_text"
             android:textColor="?colorOnSurface"
-            android:backgroundTint="?colorSurface"
+            android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
 
     </LinearLayout>

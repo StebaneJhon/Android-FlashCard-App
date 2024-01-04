@@ -7,8 +7,7 @@
     android:id="@+id/multiChoiceQuizGameMotionLY"
     android:background="?colorSurfaceContainerLowest"
     app:layoutDescription="@xml/activity_multichoice_quiz_game_scene"
-    tools:context=".quiz.multichoiceQuizGame.MultiChoiceQuizGame"
-    app:showPaths="true">
+    tools:context=".quiz.multichoiceQuizGame.MultiChoiceQuizGame">
 
     <RelativeLayout
         android:id="@+id/topToolBar"
@@ -32,17 +31,14 @@
             android:padding="10dp"
             android:src="@drawable/icon_chevron_left" />
 
-        <ProgressBar
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/quizProgress"
-            style="?android:attr/progressBarStyleHorizontal"
+            style="@style/Widget.App.LinearProgressIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/backToDeckBT"
-            android:layout_alignBottom="@+id/backToDeckBT"
+            android:layout_centerInParent="true"
             android:layout_toStartOf="@+id/exitBT"
-            android:layout_toEndOf="@+id/backToDeckBT"
-            tools:layout_editor_absoluteX="109dp"
-            tools:layout_editor_absoluteY="230dp" />
+            android:layout_toEndOf="@+id/backToDeckBT" />
 
         <ImageButton
             android:id="@+id/exitBT"
