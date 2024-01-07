@@ -48,4 +48,6 @@
     <string name="this_week_profile_title">This Week</string>
     <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
     <string name="bt_flip_text">Flip</string>
+    <string name="bt_start_writing_quiz_game_text">Writing Quiz Game</string>
+    <string name="et_user_answer_hint">Write your anwere here</string>
 </resources>

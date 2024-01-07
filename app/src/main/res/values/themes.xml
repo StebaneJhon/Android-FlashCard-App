@@ -277,4 +277,21 @@
         <item name="colorPrimary">?colorSurfaceContainerHighest</item>
     </style>
 
+    <!--Text field style-->
+    <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+        <item name="hintTextColor">?colorSurfaceContainerLowest</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+        <item name="colorPrimary">?colorSurfaceContainerLowest</item>
+        <item name="colorOnSurface">?colorSurfaceContainerLowest</item>
+        <item name="colorOnSurfaceVariant">?colorSurfaceContainerLowest</item>
+        <item name="colorError">?colorOnErrorContainer</item>
+        <item name="colorOutline">?colorSurfaceContainerLowest</item>
+        <item name="colorSecondary">?colorSurfaceContainerLowest</item>
+        <item name="hintTextColor">?colorSurfaceContainerLowest</item>
+        <item name="editTextStyle">@style/Widget.Material3.TextInputLayout.FilledBox</item>
+    </style>
+
 </resources>
