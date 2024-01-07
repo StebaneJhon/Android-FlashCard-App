@@ -41,7 +41,10 @@ class WritingQuizGameViewModel: ViewModel() {
         get() = cardList[currentCardPosition].cardDefinition
 
     fun onCardMissed() {
-        missedCards.add(cardList[currentCardPosition])
+        val missedCard = cardList[currentCardPosition]
+        if (missedCard !in missedCards) {
+            missedCards.add(missedCard)
+        }
     }
 
     fun getMissedCard(): List<ImmutableCard> {
@@ -53,6 +56,12 @@ class WritingQuizGameViewModel: ViewModel() {
     fun cardSum() = cardList.size
     fun getMissedCardSum() = missedCards.size
     fun getKnownCardSum() = cardSum() - getMissedCardSum()
+
+    fun initWritingQuizGame() {
+        missedCards.clear()
+        progress = 0
+        currentCardPosition = 0
+    }
 
     fun swipe(): Boolean {
         progress += 100/cardSum()
@@ -67,11 +76,9 @@ class WritingQuizGameViewModel: ViewModel() {
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                if (!onCardWord.isNullOrBlank() || !answer.isNullOrBlank()) {
                     _actualCard.value = UiState.Success(
                         WritingQuizGameModel(onCardWord!!, answer!!)
                     )
-                }
 
             }
         }

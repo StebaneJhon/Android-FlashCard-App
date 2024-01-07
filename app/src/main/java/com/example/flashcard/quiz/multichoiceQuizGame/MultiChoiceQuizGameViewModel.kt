@@ -79,7 +79,10 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
     }
 
     fun onCardMissed() {
-        missedCards.add(cardList[currentCardPosition])
+        val missedCard = cardList[currentCardPosition]
+        if (missedCard !in missedCards) {
+            missedCards.add(missedCard)
+        }
     }
 
     fun updateCard() {

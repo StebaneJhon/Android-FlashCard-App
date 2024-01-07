@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
+    android:id="@+id/ly_writing_quiz_game_root"
     app:layoutDescription="@xml/activity_writing_quiz_game_scene"
     tools:context=".quiz.writingQuizGame.WritingQuizGameActivity">
 
@@ -54,6 +55,77 @@
             android:src="@drawable/icon_exit" />
     </RelativeLayout>
 
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_card_error_ly"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:cardBackgroundColor="?colorPrimaryContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar"
+        android:visibility="gone">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/onNoDeckTextError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/error_card_border"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/warning_icon"
+                    android:src="@drawable/icon_warning" />
+
+                <TextView
+                    android:id="@+id/tv_error_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/open_sans"
+                    android:text="Something went wrong"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnError"
+                    android:textSize="15sp"/>
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/pb_card_loading_ly"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="15dp"
+        app:cardBackgroundColor="?colorSurfaceContainerHighest"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardBottomLY"
@@ -80,14 +152,14 @@
                 android:textColor="?colorOnPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/tiCardContent"
+                app:layout_constraintBottom_toTopOf="@+id/tilCardContent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Text Bottom" />
+                android:text="..." />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tiCardContent"
+                android:id="@+id/tilCardContent"
                 style="@style/Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,7 +170,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvCardContent"
+                    android:id="@+id/tiCardContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
@@ -134,14 +206,14 @@
                 android:textColor="?colorOnPrimary"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/tiTopCardContent"
+                app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Text Top" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tiTopCardContent"
+                android:id="@+id/tilTopCardContent"
                 style="@style/Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -152,7 +224,7 @@
                 app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tvTopCardContent"
+                    android:id="@+id/tiTopCardContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text" />
@@ -160,5 +232,14 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/gameReviewContainerMQ"
+        android:layout_width="0dp"
+        android:layout_height="0dp">
+        <include
+            android:id="@+id/gameReviewLayoutMQ"
+            layout="@layout/layout_score" />
+    </LinearLayout>
 
 </androidx.constraintlayout.motion.widget.MotionLayout>
