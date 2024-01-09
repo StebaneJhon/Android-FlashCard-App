@@ -50,4 +50,5 @@
     <string name="bt_flip_text">Flip</string>
     <string name="bt_start_writing_quiz_game_text">Writing Quiz Game</string>
     <string name="et_user_answer_hint">Write your anwere here</string>
+    <string name="bt_match_quiz_mode_text">Match Quiz Mode</string>
 </resources>

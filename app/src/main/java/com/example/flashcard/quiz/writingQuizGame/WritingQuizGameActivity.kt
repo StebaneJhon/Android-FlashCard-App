@@ -22,7 +22,6 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
 import com.example.flashcard.deck.MainActivity
-import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.flow.collect
@@ -51,7 +50,7 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
         imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        deckWithCards = intent?.parcelable(TimedFlashCardGame.DECK_ID_KEY)
+        deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
             val cardList = it.cards.toExternal()
             val deck = it.deck.toExternal()
@@ -156,8 +155,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
                 val newCards = viewModel.getMissedCard()
                 viewModel.initWritingQuizGame()
                 startWritingQuizGame(newCards, viewModel.deck)
-                val a = newCards
-                val b = 1
             }
         }
     }

@@ -38,6 +38,7 @@ import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.FragmentCardBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
+import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
@@ -148,6 +149,12 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         val writingQuizGameButton: Button = dialogBinding.findViewById(R.id.bt_writing_quiz_game)
         writingQuizGameButton.setOnClickListener {
             startWritingQuizGame()
+            quizModeDialog?.dismiss()
+        }
+
+        val matchingQuizGameButton: Button = dialogBinding.findViewById(R.id.bt_matching_quiz_game)
+        matchingQuizGameButton.setOnClickListener {
+            startMatchingQuizGame()
             quizModeDialog?.dismiss()
         }
     }
@@ -274,6 +281,39 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                             binding.cardsActivityProgressBar.isVisible = false
                             val intent = Intent(appContext, WritingQuizGameActivity::class.java)
                             intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                            this@launch.cancel()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startMatchingQuizGame() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cardViewModel.getDeckWithCards(deck?.deckId!!)
+                cardViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.cardsActivityProgressBar.isVisible = true
+                        }
+
+                        is UiState.Error -> {
+                            binding.cardsActivityProgressBar.isVisible = false
+                            Toast.makeText(
+                                appContext,
+                                state.errorMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                        is UiState.Success -> {
+                            binding.cardsActivityProgressBar.isVisible = false
+                            val intent = Intent(appContext, MatchQuizGameActivity::class.java)
+                            intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             this@launch.cancel()
                             this.cancel()

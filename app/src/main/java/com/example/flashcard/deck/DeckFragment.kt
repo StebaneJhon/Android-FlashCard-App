@@ -36,6 +36,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
+import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
@@ -206,6 +207,11 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         btWritingQuizGame.setOnClickListener {
             startWritingQuizGame(deckId, quizModeDialog)
         }
+
+        val btMatchingQuizGame: Button = dialogBinding.findViewById(R.id.bt_matching_quiz_game)
+        btMatchingQuizGame.setOnClickListener {
+            startMatchingQuizGame(deckId, quizModeDialog)
+        }
     }
 
     private fun startTimedFlashCardGame(deckId: Int, quizModeDialog: Dialog?) {
@@ -325,6 +331,38 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                                 WritingQuizGameActivity::class.java
                             )
                             intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                            quizModeDialog?.dismiss()
+                            this@launch.cancel()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startMatchingQuizGame(deckId: Int, quizModeDialog: Dialog?) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                deckViewModel.getDeckWithCards(deckId)
+                deckViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.mainActivityProgressBar.visibility = View.VISIBLE
+                        }
+
+                        is UiState.Error -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                        }
+
+                        is UiState.Success -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                            val intent = Intent(
+                                activity?.applicationContext!!,
+                                MatchQuizGameActivity::class.java
+                            )
+                            intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             quizModeDialog?.dismiss()
                             this@launch.cancel()
