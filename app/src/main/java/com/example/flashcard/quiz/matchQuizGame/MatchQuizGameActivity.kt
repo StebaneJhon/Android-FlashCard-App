@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMatchQuizGameBinding
@@ -28,6 +29,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var deckWithCards: DeckWithCards? = null
+    lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
 
     private val viewModel: MatchQuizGameViewModel by viewModels()
 
@@ -58,7 +60,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
                         is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
                         is UiState.Loading -> {}
                         is UiState.Success -> {
-                            displayMatchQuizGameItems(state)
+                            displayMatchQuizGameItems(state.data)
                         }
                     }
                 }
@@ -68,13 +70,29 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
     }
 
-    private fun displayMatchQuizGameItems(state: UiState.Success<List<String>>) {
-        val matchQuizGameRecyclerView = MatchQuizGameAdapter(this@MatchQuizGameActivity, state.data, viewModel.boardSize)
+    private fun displayMatchQuizGameItems(items: List<MatchQuizGameItemModel>) {
+        matchQuizGameRecyclerView = MatchQuizGameAdapter(this@MatchQuizGameActivity, items, viewModel.boardSize) {
+
+            //Toast.makeText(this, "${it.text} Clicked", Toast.LENGTH_LONG).show()
+            onItemClicked(it)
+
+        }
         binding.rvMatchingGame.apply {
             adapter = matchQuizGameRecyclerView
             setHasFixedSize(true)
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         }
+    }
+
+    private fun onItemClicked(item: MatchQuizGameItemModel) {
+
+        if (viewModel.selectItem(item)) {
+            Toast.makeText(this, "Match! Match! Match!", Toast.LENGTH_LONG).show()
+            matchQuizGameRecyclerView.notifyDataSetChanged()
+        } else {
+            Toast.makeText(this, "XXX! XXX! XXX!", Toast.LENGTH_LONG).show()
+        }
+
     }
 
     private fun startMatchQuizGame(cardList: List<ImmutableCard>, deck: ImmutableDeck) {

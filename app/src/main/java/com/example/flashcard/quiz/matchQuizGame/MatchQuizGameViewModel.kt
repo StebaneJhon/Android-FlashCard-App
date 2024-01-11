@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.util.MatchQuizGameBorderSize
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -15,13 +16,15 @@ import kotlinx.coroutines.launch
 class MatchQuizGameViewModel : ViewModel() {
 
     var fetchJob: Job? = null
-    private val _actualCards = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
-    val actualCards: StateFlow<UiState<List<String>>> = _actualCards.asStateFlow()
+    private val _actualCards = MutableStateFlow<UiState<List<MatchQuizGameItemModel>>>(UiState.Loading)
+    val actualCards: StateFlow<UiState<List<MatchQuizGameItemModel>>> = _actualCards.asStateFlow()
     private lateinit var cardList: List<ImmutableCard>
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard>
     private var passedCards: Int = 0
     var boardSize = MatchQuizGameBorderSize.DEFAULT
+    private val onBoarItems = mutableListOf<MatchQuizGameItemModel>()
+    private var firstSelectedItem: MatchQuizGameItemModel? = null
 
     fun initCardList(gameCards: List<ImmutableCard>) {
         cardList = gameCards
@@ -35,6 +38,8 @@ class MatchQuizGameViewModel : ViewModel() {
         originalCardList = gameCards
     }
 
+
+
     fun updateBoard() {
         if (passedCards == cardList.size) {
             _actualCards.value = UiState.Error("Quiz Complete")
@@ -45,21 +50,83 @@ class MatchQuizGameViewModel : ViewModel() {
                 if (cards.isNullOrEmpty()) {
                     _actualCards.value = UiState.Error("Too Few Cards")
                 } else {
-                    _actualCards.value = UiState.Success(getChoices(cards))
+                    getChoices(cardList)
+                    _actualCards.value = UiState.Success(onBoarItems.shuffled())
                 }
             }
         }
     }
 
 
-    private fun getChoices(gameCards: List<ImmutableCard>): List<String> {
-        val result = mutableListOf<String>()
-        for (card in gameCards) {
-            result.add(card.cardContent!!)
-            result.add(card.cardDefinition!!)
+    fun selectItem(item: MatchQuizGameItemModel): Boolean {
+        var match = false
+        if (firstSelectedItem == null) {
+            restoreItems()
+            firstSelectedItem = item
+        } else {
+            match = isMatching(firstSelectedItem!!, item)
+            firstSelectedItem = null
+        }
+        activateItem(item)
+        return match
+    }
+
+    private fun isMatching(item1: MatchQuizGameItemModel, item2: MatchQuizGameItemModel): Boolean {
+        if (item1.text != item2.match) {
+            return false
+        }
+        if (item2.text != item1.match) {
+            return false
+        }
+        onBoarItems.forEach {
+            if (it.text == item1.text) {
+                it.isMatched = true
+            }
+            if (it.text == item2.text) {
+                it.isMatched = true
+            }
         }
 
-        return result.shuffled().toList()
+        return true
+    }
+
+    private fun activateItem(item: MatchQuizGameItemModel) {
+        onBoarItems.forEach {
+            if (it.text == item.text) {
+                it.isActive = !it.isActive
+            }
+        }
+    }
+
+    private fun restoreItems() {
+        onBoarItems.forEach {
+            if (!it.isMatched) {
+                it.isActive = false
+            }
+        }
+    }
+
+    private fun getChoices(gameCards: List<ImmutableCard>) {
+        if (onBoarItems.size < 10) {
+            for (card in gameCards) {
+                val items = toMatchQuizGameItem(card)
+                items?.let {
+                    onBoarItems.add(it[0])
+                    onBoarItems.add(it[1])
+                }
+
+            }
+        }
+        onBoarItems
+    }
+
+    private fun toMatchQuizGameItem(card: ImmutableCard): List<MatchQuizGameItemModel>? {
+        if (!card.cardContent.isNullOrEmpty() && !card.cardDefinition.isNullOrEmpty()) {
+            val item1 = MatchQuizGameItemModel(card.cardContent, card.cardDefinition,)
+            val item2 = MatchQuizGameItemModel(card.cardDefinition, card.cardContent,)
+            return listOf(item1, item2)
+        }
+        return null
     }
 
     fun getCards(quizCardList: List<ImmutableCard>, borderHeight: Int): List<ImmutableCard>? {

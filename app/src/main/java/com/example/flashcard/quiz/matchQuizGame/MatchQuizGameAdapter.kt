@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.util.MatchQuizGameBorderSize
 import com.google.android.material.card.MaterialCardView
 
 class MatchQuizGameAdapter(
     private val context: Context,
-    private val itemList: List<String>,
+    private val itemList: List<MatchQuizGameItemModel>,
     private val boardSize: MatchQuizGameBorderSize,
+    private val flipCard: (MatchQuizGameItemModel) -> Unit
 ): RecyclerView.Adapter<MatchQuizGameAdapter.ViewHolder>() {
 
     companion object {
@@ -37,7 +39,7 @@ class MatchQuizGameAdapter(
     override fun getItemCount() = itemList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        return holder.bind(context, itemList[position])
+        return holder.bind(context, itemList[position], flipCard)
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -47,10 +49,16 @@ class MatchQuizGameAdapter(
 
         fun bind(
             context: Context,
-            item: String,
+            item: MatchQuizGameItemModel,
+            flipCard: (MatchQuizGameItemModel) -> Unit,
         ) {
 
-            tvItem.text = item
+            if (item.isMatched) {
+                cvItemContainer.visibility = View.GONE
+            } else {
+                tvItem.text = item.text
+            }
+            cvItemContainer.setOnClickListener { flipCard(item) }
 
         }
     }
