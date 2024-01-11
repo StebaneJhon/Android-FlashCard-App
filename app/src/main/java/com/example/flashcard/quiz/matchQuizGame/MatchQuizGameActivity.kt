@@ -10,6 +10,7 @@ import android.os.Parcelable
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
@@ -57,13 +58,23 @@ class MatchQuizGameActivity : AppCompatActivity() {
                         is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
                         is UiState.Loading -> {}
                         is UiState.Success -> {
-                            val dd = state.data
-                            val s = 1
+                            displayMatchQuizGameItems(state)
                         }
                     }
                 }
         }
 
+
+
+    }
+
+    private fun displayMatchQuizGameItems(state: UiState.Success<List<String>>) {
+        val matchQuizGameRecyclerView = MatchQuizGameAdapter(this@MatchQuizGameActivity, state.data, viewModel.boardSize)
+        binding.rvMatchingGame.apply {
+            adapter = matchQuizGameRecyclerView
+            setHasFixedSize(true)
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        }
     }
 
     private fun startMatchQuizGame(cardList: List<ImmutableCard>, deck: ImmutableDeck) {

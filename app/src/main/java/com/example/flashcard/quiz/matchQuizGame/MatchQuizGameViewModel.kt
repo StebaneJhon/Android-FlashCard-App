@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class MatchQuizGameViewModel: ViewModel() {
+class MatchQuizGameViewModel : ViewModel() {
 
     var fetchJob: Job? = null
     private val _actualCards = MutableStateFlow<UiState<List<String>>>(UiState.Loading)
@@ -21,26 +21,29 @@ class MatchQuizGameViewModel: ViewModel() {
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard>
     private var passedCards: Int = 0
+    var boardSize = MatchQuizGameBorderSize.DEFAULT
 
     fun initCardList(gameCards: List<ImmutableCard>) {
         cardList = gameCards
     }
+
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
     }
+
     fun initOriginalCardList(gameCards: List<ImmutableCard>) {
         originalCardList = gameCards
     }
 
     fun updateBoard() {
         if (passedCards == cardList.size) {
-            _actualCards.value =UiState.Error("Quiz Complete")
+            _actualCards.value = UiState.Error("Quiz Complete")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                val cards = getCards(cardList, MatchQuizGameBorderSize.DEFAULT.getHeight())
+                val cards = getCards(cardList, boardSize.getHeight())
                 if (cards.isNullOrEmpty()) {
-                    _actualCards.value =UiState.Error("Too Few Cards")
+                    _actualCards.value = UiState.Error("Too Few Cards")
                 } else {
                     _actualCards.value = UiState.Success(getChoices(cards))
                 }
@@ -60,28 +63,38 @@ class MatchQuizGameViewModel: ViewModel() {
     }
 
     fun getCards(quizCardList: List<ImmutableCard>, borderHeight: Int): List<ImmutableCard>? {
-        if (quizCardList.size == borderHeight) {
-            return quizCardList
-        } else if (quizCardList.size < borderHeight) {
-            return null
-        } else if (quizCardList.size > borderHeight) {
-            if (passedCards <= quizCardList.size) {
-                val restCard = quizCardList.size - passedCards
-                return if (restCard > borderHeight) {
-                    quizCardList.slice(passedCards..borderHeight)
-                } else {
-                    val result = quizCardList.slice(passedCards..quizCardList.size.minus(1)).toMutableList()
-                    while (result.size != borderHeight) {
-                        val randomCard = quizCardList.random()
-                        if (randomCard !in result) {
-                            result.add(randomCard)
+        return when {
+            quizCardList.size == borderHeight -> {
+                quizCardList
+            }
+
+            quizCardList.size < borderHeight -> {
+                null
+            }
+
+            quizCardList.size > borderHeight -> {
+                var result = listOf<ImmutableCard>()
+                if (passedCards <= quizCardList.size) {
+                    val restCard = quizCardList.size - passedCards
+                    if (restCard > borderHeight) {
+                        result = quizCardList.slice(passedCards..borderHeight)
+                    } else {
+                        result = quizCardList.slice(passedCards..quizCardList.size.minus(1))
+                            .toMutableList()
+                        while (result.size != borderHeight) {
+                            val randomCard = quizCardList.random()
+                            if (randomCard !in result) {
+                                result.add(randomCard)
+                            }
                         }
                     }
-                    result
                 }
+                result
+            }
+
+            else -> {
+                null
             }
         }
-        return null
     }
-
 }
