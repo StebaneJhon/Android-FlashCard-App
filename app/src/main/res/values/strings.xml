@@ -51,4 +51,9 @@
     <string name="bt_start_writing_quiz_game_text">Writing Quiz Game</string>
     <string name="et_user_answer_hint">Write your anwere here</string>
     <string name="bt_match_quiz_mode_text">Match Quiz Mode</string>
+    <string name="title_match_quiz_score">You did it!</string>
+    <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
+    <string name="bt_continue_match_quiz_score">CONTINUE</string>
+    <string name="bt_restart_match_quiz_score">RSTART</string>
+    <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
 </resources>

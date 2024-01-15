@@ -7,18 +7,24 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMatchQuizGameBinding
+import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -71,11 +77,10 @@ class MatchQuizGameActivity : AppCompatActivity() {
     }
 
     private fun displayMatchQuizGameItems(items: List<MatchQuizGameItemModel>) {
+        binding.gameScoreContainer.visibility = View.GONE
+        viewModel.initOnBoardItems(items.toMutableList())
         matchQuizGameRecyclerView = MatchQuizGameAdapter(this@MatchQuizGameActivity, items, viewModel.boardSize) {
-
-            //Toast.makeText(this, "${it.text} Clicked", Toast.LENGTH_LONG).show()
-            onItemClicked(it)
-
+            onItemClicked(it, items)
         }
         binding.rvMatchingGame.apply {
             adapter = matchQuizGameRecyclerView
@@ -84,21 +89,65 @@ class MatchQuizGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun onItemClicked(item: MatchQuizGameItemModel) {
+    private fun onItemClicked(itemDetails: List<Any>, items: List<MatchQuizGameItemModel>) {
+
+        val item: MatchQuizGameItemModel = itemDetails[0] as MatchQuizGameItemModel
+        val lyItem: MaterialCardView = itemDetails[1] as MaterialCardView
+
+        if (viewModel.isQuizComplete()) {
+            Snackbar.make(binding.lyMatchQuizGameRoot, "You already finished the quiz", Snackbar.LENGTH_LONG).show()
+            return
+        }
+
+        if (viewModel.isItemActive(item)) {
+            Snackbar.make(binding.lyMatchQuizGameRoot, "Select another item please", Snackbar.LENGTH_LONG).show()
+            return
+        }
 
         if (viewModel.selectItem(item)) {
             Toast.makeText(this, "Match! Match! Match!", Toast.LENGTH_LONG).show()
-            matchQuizGameRecyclerView.notifyDataSetChanged()
-        } else {
-            Toast.makeText(this, "XXX! XXX! XXX!", Toast.LENGTH_LONG).show()
+            if (viewModel.isQuizComplete()) {
+                Snackbar.make(binding.lyMatchQuizGameRoot, "Done Congratulations!", Snackbar.LENGTH_LONG).show()
+                onQuizComplete(viewModel.cardLeft(), items)
+            }
         }
 
+        matchQuizGameRecyclerView.notifyDataSetChanged()
+
+    }
+
+    private fun onQuizComplete(cardsLeft: Int, onBoardItems: List<MatchQuizGameItemModel>) {
+        binding.gameScoreContainer.visibility = View.VISIBLE
+        binding.lyGameScore.apply {
+            tvCardsLeftInDeck.text = getString(R.string.cards_left_match_quiz_score, "${cardsLeft}")
+            btBackToDeck.setOnClickListener {
+                startActivity(Intent(this@MatchQuizGameActivity, MainActivity::class.java))
+            }
+            btRestart.setOnClickListener {
+                displayMatchQuizGameItems(onBoardItems)
+            }
+            btContinue.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.updateBoard()
+                    viewModel
+                        .actualCards
+                        .collect { state ->
+                            when (state) {
+                                is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                is UiState.Loading -> {}
+                                is UiState.Success -> {
+                                    displayMatchQuizGameItems(state.data)
+                                }
+                            }
+                        }
+                }
+            }
+        }
     }
 
     private fun startMatchQuizGame(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
-        viewModel.updateBoard()
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {

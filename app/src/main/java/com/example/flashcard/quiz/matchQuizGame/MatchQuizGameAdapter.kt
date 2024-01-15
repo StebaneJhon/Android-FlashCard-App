@@ -1,5 +1,6 @@
 package com.example.flashcard.quiz.matchQuizGame
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,13 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.util.MatchQuizGameBorderSize
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 
 class MatchQuizGameAdapter(
     private val context: Context,
     private val itemList: List<MatchQuizGameItemModel>,
     private val boardSize: MatchQuizGameBorderSize,
-    private val flipCard: (MatchQuizGameItemModel) -> Unit
+    private val flipCard: (List<Any>) -> Unit
 ): RecyclerView.Adapter<MatchQuizGameAdapter.ViewHolder>() {
 
     companion object {
@@ -45,20 +47,28 @@ class MatchQuizGameAdapter(
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
         private val tvItem: TextView = view.findViewById(R.id.tv_item_text)
-        val cvItemContainer: MaterialCardView = view.findViewById(R.id.cv_item_root)
+        private val cvItemContainer: MaterialCardView = view.findViewById(R.id.cv_item_root)
 
         fun bind(
             context: Context,
             item: MatchQuizGameItemModel,
-            flipCard: (MatchQuizGameItemModel) -> Unit,
+            flipCard: (List<Any>) -> Unit,
         ) {
-
+            tvItem.text = item.text
             if (item.isMatched) {
                 cvItemContainer.visibility = View.GONE
             } else {
-                tvItem.text = item.text
+                cvItemContainer.visibility = View.VISIBLE
             }
-            cvItemContainer.setOnClickListener { flipCard(item) }
+
+            if (item.isActive) {
+                cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainerHighest, R.color.blue700))
+            } else {
+                cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainer, R.color.blue700))
+            }
+
+            val itemDetails = listOf(item, cvItemContainer)
+            cvItemContainer.setOnClickListener { flipCard(itemDetails) }
 
         }
     }

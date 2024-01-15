@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
+    android:id="@+id/ly_match_quiz_game_root"
     tools:context=".quiz.matchQuizGame.MatchQuizGameActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -15,5 +16,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/game_score_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <include
+            android:id="@+id/ly_game_score"
+            layout="@layout/ly_matching_quiz_game_score" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
