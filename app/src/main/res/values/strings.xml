@@ -59,4 +59,7 @@
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
     <string name="title_flash_card_game">%1$s</string>
+    <string name="tx_flash_card_game_progression">%1$s/%2$s</string>
+    <string name="tx_flash_card_game_card_orientation">%1$s</string>
+    <string name="hint_flash_card_game_flip">Tap to flip</string>
 </resources>
