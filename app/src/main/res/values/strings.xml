@@ -56,4 +56,7 @@
     <string name="bt_continue_match_quiz_score">CONTINUE</string>
     <string name="bt_restart_match_quiz_score">RSTART</string>
     <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
+    <string name="hint_deck_search_field">Deck name</string>
+    <string name="hint_card_search_field">Card content</string>
+    <string name="title_flash_card_game">%1$s</string>
 </resources>
