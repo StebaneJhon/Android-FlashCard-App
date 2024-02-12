@@ -39,6 +39,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
+import com.example.flashcard.quiz.flashCardGame.FlashCardGame
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
@@ -213,6 +214,43 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         val btMatchingQuizGame: Button = dialogBinding.findViewById(R.id.bt_matching_quiz_game)
         btMatchingQuizGame.setOnClickListener {
             startMatchingQuizGame(deckId, quizModeDialog)
+        }
+
+        val btFlashCard: Button = dialogBinding.findViewById(R.id.bt_flash_card_game)
+        btFlashCard.setOnClickListener {
+            startFlashCardGame(deckId, quizModeDialog)
+        }
+    }
+
+    private fun startFlashCardGame(deckId: Int, quizModeDialog: Dialog?) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                deckViewModel.getDeckWithCards(deckId)
+                deckViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.mainActivityProgressBar.visibility = View.VISIBLE
+                        }
+
+                        is UiState.Error -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                        }
+
+                        is UiState.Success -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                            val intent = Intent(
+                                activity?.applicationContext!!,
+                                FlashCardGame::class.java
+                            )
+                            intent.putExtra(FlashCardGame.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                            quizModeDialog?.dismiss()
+                            this@launch.cancel()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
         }
     }
 

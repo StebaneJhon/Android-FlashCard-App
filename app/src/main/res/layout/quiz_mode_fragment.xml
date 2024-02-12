@@ -61,6 +61,15 @@
             android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_flash_card_game"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_flash_card_game_start"
+            android:textColor="?colorOnSurface"
+            android:backgroundTint="?colorSurfaceContainer"
+            app:cornerRadius="10dp"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

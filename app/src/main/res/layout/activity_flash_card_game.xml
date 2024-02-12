@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    tools:context=".quiz.FlashCardGame">
+    tools:context=".quiz.flashCardGame.FlashCardGame">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -29,7 +29,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_card_front"
+        android:id="@+id/cv_card_bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"
@@ -39,7 +39,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -49,7 +48,7 @@
             android:padding="20dp">
 
             <TextView
-                android:id="@+id/tv_card_orientation"
+                android:id="@+id/tv_card_bottom_orientation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_bold"
@@ -57,23 +56,23 @@
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Swedish" />
+                android:text="@string/tx_flash_card_game_card_orientation_front" />
 
             <TextView
-                android:id="@+id/tv_flash_card_progression"
+                android:id="@+id/tv_flash_card_bottom_progression"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_card_orientation"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_card_bottom_orientation"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_card_orientation"
-                tools:text="1/20" />
+                app:layout_constraintTop_toTopOf="@+id/tv_card_bottom_orientation"
+                android:text="1/20" />
 
 
             <TextView
-                android:id="@+id/tvQuizQuestion"
+                android:id="@+id/tvQuizBottom"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:fontFamily="@font/montserrat_bold"
@@ -84,14 +83,14 @@
                 app:autoSizeMinTextSize="20sp"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform"
-                app:layout_constraintBottom_toTopOf="@+id/tv_flip_hint"
+                app:layout_constraintBottom_toTopOf="@+id/tv_card_bottom_flip_hint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_card_orientation"
+                app:layout_constraintTop_toBottomOf="@+id/tv_card_bottom_orientation"
                 tools:text="1. What is the capital of Madagascar?" />
 
             <TextView
-                android:id="@+id/tv_flip_hint"
+                android:id="@+id/tv_card_bottom_flip_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_light"
@@ -101,11 +100,183 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="@string/hint_flash_card_game_flip" />
+                android:text="@string/hint_flash_card_game_flip" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.card.MaterialCardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_on_screen_card_root"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_card_back"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="65dp"
+            android:backgroundTint="?colorPrimary"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_card_flash_card"
+                android:backgroundTint="?colorSurfaceContainerHigh"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tv_card_back_orientation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@string/tx_flash_card_game_card_orientation_back" />
+
+                <TextView
+                    android:id="@+id/tv_flash_card_back_progression"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_card_back_orientation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_card_back_orientation"
+                    android:text="1/20" />
+
+
+                <TextView
+                    android:id="@+id/tvQuizBack"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="50sp"
+                    app:autoSizeMinTextSize="20sp"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_flip_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_card_back_orientation"
+                    tools:text="1. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_flip_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_light"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@string/hint_flash_card_game_flip" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_card_front"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="65dp"
+            android:backgroundTint="?colorPrimary"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:background="@drawable/bg_card_flash_card"
+                android:backgroundTint="?colorSurfaceContainer"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tv_card_front_orientation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="@string/tx_flash_card_game_card_orientation_front" />
+
+                <TextView
+                    android:id="@+id/tv_flash_card_front_progression"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_card_front_orientation"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_card_front_orientation"
+                    tools:text="1/20" />
+
+
+                <TextView
+                    android:id="@+id/tvQuizFront"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="50sp"
+                    app:autoSizeMinTextSize="20sp"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_card_front_flip_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_card_front_orientation"
+                    tools:text="1. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_card_front_flip_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_light"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:text="@string/hint_flash_card_game_flip" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/bt_not_Know"
