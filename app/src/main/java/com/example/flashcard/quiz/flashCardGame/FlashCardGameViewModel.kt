@@ -46,6 +46,18 @@ class FlashCardGameViewModel(): ViewModel() {
         return currentCardPosition != cardList!!.size
     }
 
+    fun rewind() {
+        currentCardPosition -= 1
+        cardList?.get(currentCardPosition)?.let {
+            if (it in missedCards) {
+                missedCards.remove(it)
+            } else {
+                progress -= 100/getTotalCards()
+            }
+        }
+        updateOnScreenCards()
+    }
+
     fun getKnownCardSum(): Int {
         cardList?.let { return it.size - missedCards.size }
         return 0

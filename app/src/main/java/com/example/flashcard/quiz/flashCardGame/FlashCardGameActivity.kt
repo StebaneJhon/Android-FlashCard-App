@@ -12,6 +12,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -41,12 +42,17 @@ class FlashCardGameActivity : AppCompatActivity() {
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var deckWithCards: DeckWithCards? = null
-    private lateinit var front_anim: AnimatorSet
-    private lateinit var back_anim: AnimatorSet
+    private lateinit var frontAnim: AnimatorSet
+    private lateinit var backAnim: AnimatorSet
     var isFront = true
     private var dx: Float = 0.0f
     private var dy: Float = 0.0f
-    private val MIN_SWIPE_DISTANCE = -75
+
+    companion object {
+        private val MIN_SWIPE_DISTANCE = -275
+        private const val TAG = "FlashCardGameActivity"
+        const val DECK_ID_KEY = "Deck_id_key"
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,6 +102,59 @@ class FlashCardGameActivity : AppCompatActivity() {
 
         gameOn(binding.clOnScreenCardRoot)
 
+        binding.btKnow.setOnClickListener {
+            onKnownButtonClicked()
+        }
+
+        binding.btNotKnow.setOnClickListener {
+            onKnownNotButtonClicked()
+        }
+
+        binding.btRewind.setOnClickListener {
+            viewModel.rewind()
+            if (!isFront) {
+                initCardLayout()
+            }
+        }
+
+    }
+
+    private fun onKnownButtonClicked() {
+        val card = binding.clOnScreenCardRoot
+        val displayMetrics = resources.displayMetrics
+        val cardWidth = card.width
+        val cardHeight = binding.cvCardFront.height
+        val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 47
+        val currentX = card.x
+        val currentY = card.y
+        completeSwipeToRight(card, currentX)
+        onSwipeToRightComplete(
+            card,
+            cardStartX,
+            cardStartY,
+            (MIN_SWIPE_DISTANCE * (-10)).toFloat(),
+            currentY
+        )
+    }
+
+    private fun onKnownNotButtonClicked() {
+        val card = binding.clOnScreenCardRoot
+        val displayMetrics = resources.displayMetrics
+        val cardWidth = card.width
+        val cardHeight = binding.cvCardFront.height
+        val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 47
+        val currentX = card.x
+        val currentY = card.y
+        completeSwipeToLeft(card, currentX)
+        onSwipeToLeftCompleted(
+            card,
+            cardStartX,
+            cardStartY,
+            (MIN_SWIPE_DISTANCE * 10).toFloat(),
+            currentY
+        )
     }
 
     private fun onQuizComplete() {
@@ -141,7 +200,7 @@ class FlashCardGameActivity : AppCompatActivity() {
             val cardWidth = view.width
             val cardHeight = binding.cvCardFront.height
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 40
+            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 46
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -151,15 +210,13 @@ class FlashCardGameActivity : AppCompatActivity() {
 
                 MotionEvent.ACTION_MOVE -> {
                     onCardMoved(view, motionEvent)
-
-
                 }
 
                 MotionEvent.ACTION_UP -> {
                     var currentX = view.x
                     var currentY = view.y
                     when {
-                        currentX > MIN_SWIPE_DISTANCE && currentX <= 0 || currentX < (((MIN_SWIPE_DISTANCE * -1) / 2) + view.width / 2) && currentX >= 0
+                        currentX > MIN_SWIPE_DISTANCE && currentX <= 0 || currentX < (MIN_SWIPE_DISTANCE * -1) && currentX >= 0
                             -> { flipCardOnClicked(view, cardStartX, cardStartY, currentX, currentY) }
                         currentX < MIN_SWIPE_DISTANCE
                             -> {onCardKnownNot(view, currentX, cardStartX, cardStartY, currentY)}
@@ -178,21 +235,24 @@ class FlashCardGameActivity : AppCompatActivity() {
             .x(motionEvent.rawX + dx)
             .y(motionEvent.rawY + dy)
             .setDuration(0)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator) {
+                    when {
+                        (view.x > (MIN_SWIPE_DISTANCE * -1)) -> {
+                            isCardKnown(true)
+                        }
+
+                        (view.x < MIN_SWIPE_DISTANCE) -> {
+                            isCardKnown(false)
+                        }
+
+                        else -> {
+                            isCardKnown(null)
+                        }
+                    }
+                }
+            })
             .start()
-
-        when {
-            (view.x > (((MIN_SWIPE_DISTANCE * -1) / 2) + view.width / 2)) -> {
-                isCardKnown(true)
-            }
-
-            (view.x < MIN_SWIPE_DISTANCE) -> {
-                isCardKnown(false)
-            }
-
-            else -> {
-                isCardKnown(null)
-            }
-        }
     }
 
     private fun flipCardOnClicked(
@@ -365,25 +425,25 @@ class FlashCardGameActivity : AppCompatActivity() {
         val scale: Float = applicationContext.resources.displayMetrics.density
         binding.cvCardFront.cameraDistance = 8000 * scale
         binding.cvCardBack.cameraDistance = 8000 * scale
-        front_anim = AnimatorInflater.loadAnimator(
+        frontAnim = AnimatorInflater.loadAnimator(
             applicationContext,
             R.animator.front_animator
         ) as AnimatorSet
-        back_anim = AnimatorInflater.loadAnimator(
+        backAnim = AnimatorInflater.loadAnimator(
             applicationContext,
             R.animator.back_animator
         ) as AnimatorSet
         isFront = if (isFront) {
-            front_anim.setTarget(binding.cvCardFront)
-            back_anim.setTarget(binding.cvCardBack)
-            front_anim.start()
-            back_anim.start()
+            frontAnim.setTarget(binding.cvCardFront)
+            backAnim.setTarget(binding.cvCardBack)
+            frontAnim.start()
+            backAnim.start()
             false
         } else {
-            front_anim.setTarget(binding.cvCardBack)
-            back_anim.setTarget(binding.cvCardFront)
-            back_anim.start()
-            front_anim.start()
+            frontAnim.setTarget(binding.cvCardBack)
+            backAnim.setTarget(binding.cvCardFront)
+            backAnim.start()
+            frontAnim.start()
             true
         }
     }
@@ -452,10 +512,6 @@ class FlashCardGameActivity : AppCompatActivity() {
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
-    }
-
-    companion object {
-        const val DECK_ID_KEY = "Deck_id_key"
     }
 
 }
