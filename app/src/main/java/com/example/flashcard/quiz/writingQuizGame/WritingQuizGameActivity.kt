@@ -137,21 +137,22 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
     private fun omQuizComplete() {
         binding.gameReviewLayoutMQ.apply {
-            totalCardsSumTF.text = viewModel.cardSum().toString()
-            missedCardTF.text = viewModel.getMissedCardSum().toString()
-            knownCardsTF.text = viewModel.getKnownCardSum().toString()
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
+            tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
+            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
+            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
 
-            backToDeckButtonTF.setOnClickListener {
+            btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@WritingQuizGameActivity, MainActivity::class.java))
                 finish()
             }
-            restartFlashCardTF.setOnClickListener {
+            btRestartQuizScoreLayout.setOnClickListener {
                 viewModel.initWritingQuizGame()
                 binding.pbQuiz.progress = viewModel.progress
                 viewModel.updateCard()
                 binding.lyWritingQuizGameRoot.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
             }
-            reviseMissedCardButtonTF.setOnClickListener {
+            btReviseMissedCardScoreLayout.setOnClickListener {
                 val newCards = viewModel.getMissedCard()
                 viewModel.initWritingQuizGame()
                 startWritingQuizGame(newCards, viewModel.deck)

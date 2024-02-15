@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    tools:context=".quiz.flashCardGame.FlashCardGame">
+    tools:context=".quiz.flashCardGame.FlashCardGameActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -323,5 +323,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bt_rewind" />
+
+    <LinearLayout
+        android:id="@+id/ly_game_review_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+
+        <include
+            android:id="@+id/ly_game_review_layout"
+            layout="@layout/layout_score" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

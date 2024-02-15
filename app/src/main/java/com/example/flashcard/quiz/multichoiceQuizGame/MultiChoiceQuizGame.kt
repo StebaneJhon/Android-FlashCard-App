@@ -124,20 +124,21 @@ class MultiChoiceQuizGame : AppCompatActivity() {
 
     private fun onQuizComplete() {
         binding.gameReviewLayoutMQ.apply {
-            totalCardsSumTF.text = viewModel.cardSum().toString()
-            missedCardTF.text = viewModel.getMissedCardSum().toString()
-            knownCardsTF.text = viewModel.getKnownCardSum().toString()
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Multi Choice Quiz")
+            tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
+            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
+            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
 
-            backToDeckButtonTF.setOnClickListener {
+            btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@MultiChoiceQuizGame, MainActivity::class.java))
             }
-            restartFlashCardTF.setOnClickListener {
+            btRestartQuizScoreLayout.setOnClickListener {
                 viewModel.initTimedFlashCard()
                 binding.quizProgress.progress = viewModel.progress
                 viewModel.updateCard()
                 binding.multiChoiceQuizGameMotionLY.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
             }
-            reviseMissedCardButtonTF.setOnClickListener {
+            btReviseMissedCardScoreLayout.setOnClickListener {
                 val newCards = viewModel.getMissedCard()
                 viewModel.initTimedFlashCard()
                 startTimedFlashCard(newCards, viewModel.deck)

@@ -21,6 +21,7 @@ class FlashCardGameViewModel(): ViewModel() {
     val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
     private var cardList: List<ImmutableCard>? = null
     var deck: ImmutableDeck? = null
+    var progress: Int = 0
 
     fun initCardList(gameCards: List<ImmutableCard>) {
         cardList = gameCards
@@ -35,7 +36,11 @@ class FlashCardGameViewModel(): ViewModel() {
         get() = getBottomCard(cardList!!, currentCardPosition)
 
     fun swipe(isKnown: Boolean): Boolean {
-        if (!isKnown) { missedCards.add(cardList!![currentCardPosition]) }
+        if (!isKnown) {
+            missedCards.add(cardList!![currentCardPosition])
+        } else {
+            progress += 100/getTotalCards()
+        }
         currentCardPosition += 1
         updateOnScreenCards()
         return currentCardPosition != cardList!!.size
@@ -76,6 +81,7 @@ class FlashCardGameViewModel(): ViewModel() {
 
     fun initFlashCard() {
         missedCards.clear()
+        progress = 0
         currentCardPosition = 0
     }
 

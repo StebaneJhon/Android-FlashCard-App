@@ -18,6 +18,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
+import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -205,23 +206,24 @@ class BaseFlashCardGame : AppCompatActivity() {
         binding.feedbackCardBF.visibility = View.VISIBLE
         areQuizButtonsActive(false)
         binding.feedbackLYBF.apply {
-            knownCardsTF.text = knownCardSum.toString()
-            missedCardTF.text = missedCard.size.toString()
-            totalCardsSumTF.text = cardList.size.toString()
-            backToDeckButtonTF.setOnClickListener {
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Base Flash Card")
+            tvKnownCardsSumScoreLayout.text = knownCardSum.toString()
+            tvMissedCardSumScoreLayout.text = missedCard.size.toString()
+            tvTotalCardsSumScoreLayout.text = cardList.size.toString()
+            btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@BaseFlashCardGame, MainActivity::class.java))
             }
             if (missedCard.isEmpty()) {
-                reviseMissedCardButtonTF.visibility = View.GONE
+                btReviseMissedCardScoreLayout.visibility = View.GONE
             } else {
-                reviseMissedCardButtonTF.visibility = View.VISIBLE
+                btReviseMissedCardScoreLayout.visibility = View.VISIBLE
             }
-            reviseMissedCardButtonTF.setOnClickListener {
+            btReviseMissedCardScoreLayout.setOnClickListener {
                 val newCards = baseGameViewModel.getUnknownCards()
                 baseGameViewModel.initFlashCard()
                 startBaseFlashCard(newCards, deck)
             }
-            restartFlashCardTF.setOnClickListener {
+            btRestartQuizScoreLayout.setOnClickListener {
                 Toast.makeText(this@BaseFlashCardGame, "Restart", Toast.LENGTH_LONG).show()
                 baseGameViewModel.initFlashCard()
                 startBaseFlashCard(cardList, deck)

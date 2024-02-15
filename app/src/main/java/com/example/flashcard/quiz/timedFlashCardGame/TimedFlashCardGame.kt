@@ -157,19 +157,20 @@ class TimedFlashCardGame : AppCompatActivity() {
 
     private fun onQuizComplete() {
         binding.gameReviewLayout.apply {
-            totalCardsSumTF.text = viewModel.getTotalCards().toString()
-            missedCardTF.text = viewModel.getMissedCardSum().toString()
-            knownCardsTF.text = viewModel.getKnownCardSum().toString()
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Timed Flash Card")
+            tvTotalCardsSumScoreLayout.text = viewModel.getTotalCards().toString()
+            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
+            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
 
-            backToDeckButtonTF.setOnClickListener {
+            btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@TimedFlashCardGame, MainActivity::class.java))
             }
-            restartFlashCardTF.setOnClickListener {
+            btRestartQuizScoreLayout.setOnClickListener {
                 viewModel.initTimedFlashCard()
                 viewModel.updateCards()
                 binding.motionLayout.setTransition(R.id.rest, R.id.displayGameReviewLayout)
             }
-            reviseMissedCardButtonTF.setOnClickListener {
+            btReviseMissedCardScoreLayout.setOnClickListener {
                 val newCards = viewModel.getMissedCard()
                 viewModel.initTimedFlashCard()
                 startTimedFlashCard(newCards, viewModel.deck!!)

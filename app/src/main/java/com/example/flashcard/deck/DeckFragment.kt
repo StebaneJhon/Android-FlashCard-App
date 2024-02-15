@@ -2,8 +2,6 @@ package com.example.flashcard.deck
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.app.SearchManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -32,14 +30,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
-import com.example.flashcard.quiz.flashCardGame.FlashCardGame
+import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
@@ -240,9 +237,9 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                             binding.mainActivityProgressBar.visibility = View.GONE
                             val intent = Intent(
                                 activity?.applicationContext!!,
-                                FlashCardGame::class.java
+                                FlashCardGameActivity::class.java
                             )
-                            intent.putExtra(FlashCardGame.DECK_ID_KEY, state.data)
+                            intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             quizModeDialog?.dismiss()
                             this@launch.cancel()
