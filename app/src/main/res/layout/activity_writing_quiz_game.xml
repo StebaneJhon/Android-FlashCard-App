@@ -9,58 +9,33 @@
     app:layoutDescription="@xml/activity_writing_quiz_game_scene"
     tools:context=".quiz.writingQuizGame.WritingQuizGameActivity">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topToolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
-            android:id="@+id/btBackToDeck"
-            android:layout_width="wrap_content"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/rounded_background"
-            android:backgroundTint="?colorSurfaceContainerHighest"
-            android:padding="10dp"
-            android:src="@drawable/icon_chevron_left" />
+            android:background="?colorSurfaceContainer"
+            android:minHeight="?attr/actionBarSize"
+            app:menu="@menu/mn_flash_card_top_app_bar"
+            app:navigationIcon="@drawable/icon_chevron_left"
+            app:navigationIconTint="@color/black"
+            app:title="@string/title_flash_card_game" />
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/pbQuiz"
-            style="@style/Widget.App.LinearProgressIndicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toStartOf="@+id/btExit"
-            android:layout_toEndOf="@+id/btBackToDeck" />
-
-        <ImageButton
-            android:id="@+id/btExit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="362dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/rounded_background"
-            android:backgroundTint="?colorSurfaceContainerHighest"
-            android:padding="10dp"
-            android:src="@drawable/icon_exit" />
-    </RelativeLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_card_error_ly"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"
-        app:cardBackgroundColor="?colorPrimaryContainer"
+        app:cardBackgroundColor="?colorSurfaceContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +84,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"
-        app:cardBackgroundColor="?colorSurfaceContainerHighest"
+        app:cardBackgroundColor="?colorSurfaceContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -132,6 +107,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"
+        app:cardCornerRadius="10dp"
         app:cardBackgroundColor="?colorPrimaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -140,31 +116,49 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_flash_card"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:layout_margin="5dp"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_writing_quiz_bottom_progression"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1/20" />
 
             <TextView
                 android:id="@+id/tvOnCardBottomWord"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:fontFamily="@font/open_sans_bold"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="?colorOnPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?colorOnSurface"
+                app:autoSizeMaxTextSize="40sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toTopOf="@+id/tilCardContent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_bottom_progression"
                 android:text="..." />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilCardContent"
-                style="@style/Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                 android:hint="@string/et_user_answer_hint"
+                android:textColorHint="?colorOnSurface"
+                app:boxBackgroundColor="?colorSurfaceContainerLowest"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -173,12 +167,13 @@
                     android:id="@+id/tiCardContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:fontFamily="@font/open_sans"/>
             </com.google.android.material.textfield.TextInputLayout>
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
+
 
 
     <com.google.android.material.card.MaterialCardView
@@ -186,6 +181,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"
+        app:cardCornerRadius="10dp"
         app:cardBackgroundColor="?colorPrimaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -194,31 +190,49 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_flash_card"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:layout_margin="5dp"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_writing_quiz_front_progression"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1/20" />
 
             <TextView
                 android:id="@+id/tvTopOnCardWord"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:fontFamily="@font/open_sans_bold"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="?colorOnPrimary"
-                android:textSize="20sp"
-                android:textStyle="bold"
+                android:textColor="?colorOnSurface"
+                app:autoSizeMaxTextSize="40sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Text Top" />
+                app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_front_progression"
+                tools:text="1. What is the capital of Madagascar?" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilTopCardContent"
-                style="@style/Widget.App.TextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox.Dense"
                 android:hint="@string/et_user_answer_hint"
+                android:textColorHint="?colorOnSurface"
+                app:boxBackgroundColor="?colorSurfaceContainerLowest"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -227,7 +241,8 @@
                     android:id="@+id/tiTopCardContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="text"
+                    android:fontFamily="@font/open_sans"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -97,18 +97,11 @@ class WritingQuizGameActivity : AppCompatActivity() {
                             } else {
                                 motionLayout?.setTransition(R.id.displayGameReviewLayoutMQ, R.id.end)
                             }
-                            binding.pbQuiz.progress = viewModel.progress
+                            //binding.pbQuiz.progress = viewModel.progress
                         }
                     }
                 }
             })
-
-        binding.btExit.setOnClickListener {
-            finish()
-        }
-        binding.btBackToDeck.setOnClickListener {
-            finish()
-        }
 
     }
 
@@ -148,7 +141,7 @@ class WritingQuizGameActivity : AppCompatActivity() {
             }
             btRestartQuizScoreLayout.setOnClickListener {
                 viewModel.initWritingQuizGame()
-                binding.pbQuiz.progress = viewModel.progress
+                //binding.pbQuiz.progress = viewModel.progress
                 viewModel.updateCard()
                 binding.lyWritingQuizGameRoot.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
             }
