@@ -7,6 +7,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +15,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
@@ -22,6 +25,7 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
 import com.example.flashcard.deck.MainActivity
+import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.flow.collect
@@ -37,6 +41,11 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
     private val viewModel: WritingQuizGameViewModel by viewModels()
     private var deckWithCards: DeckWithCards? = null
+
+    companion object {
+        const val DECK_ID_KEY = "Deck_id_key"
+        private const val TAG = "WritingQuizGameActivity"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,6 +67,11 @@ class WritingQuizGameActivity : AppCompatActivity() {
             startWritingQuizGame(cardList, deck)
         }
 
+        binding.topAppBar.apply {
+            title = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
+            setNavigationOnClickListener { finish() }
+        }
+
         lifecycleScope.launch {
             viewModel
                 .actualCard
@@ -68,12 +82,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
                         binding.cvCardErrorLy.visibility = View.GONE
                     }
                     is UiState.Error -> {
-                        /*
-                        binding.pbCardLoadingLy.visibility = View.GONE
-                        binding.tvErrorMessage.text = state.errorMessage.toString()
-                        binding.cvCardErrorLy.visibility = View.VISIBLE
-
-                         */
                         omQuizComplete()
                     }
                     is UiState.Success -> {
@@ -97,7 +105,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
                             } else {
                                 motionLayout?.setTransition(R.id.displayGameReviewLayoutMQ, R.id.end)
                             }
-                            //binding.pbQuiz.progress = viewModel.progress
                         }
                     }
                 }
@@ -108,6 +115,15 @@ class WritingQuizGameActivity : AppCompatActivity() {
     private fun bindCard(card: WritingQuizGameModel) {
 
         binding.tvTopOnCardWord.text = card.onCardWord
+        Log.e(TAG, card.answer)
+        val deckColorCode = viewModel.deck.deckColorCode?.let {
+            DeckColorCategorySelector().selectColor(it)
+        } ?: R.color.black
+        binding.cardTopLY.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
+        binding.cardBottomLY.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
+        binding.tvWritingQuizFrontProgression.text = getString(R.string.tx_flash_card_game_progression, viewModel.getCurrentCardNumber(), viewModel.cardSum().toString())
+        binding.tiTopCardContent.requestFocus()
+        binding.tiCardContent.requestFocus()
         binding.tiTopCardContent.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 val userInput = binding.tiTopCardContent.text?.trim().toString().lowercase()
@@ -130,6 +146,7 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
     private fun omQuizComplete() {
         binding.gameReviewLayoutMQ.apply {
+            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
             tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
@@ -141,14 +158,20 @@ class WritingQuizGameActivity : AppCompatActivity() {
             }
             btRestartQuizScoreLayout.setOnClickListener {
                 viewModel.initWritingQuizGame()
-                //binding.pbQuiz.progress = viewModel.progress
                 viewModel.updateCard()
                 binding.lyWritingQuizGameRoot.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
             }
-            btReviseMissedCardScoreLayout.setOnClickListener {
-                val newCards = viewModel.getMissedCard()
-                viewModel.initWritingQuizGame()
-                startWritingQuizGame(newCards, viewModel.deck)
+            if (viewModel.getMissedCardSum() == 0) {
+                btReviseMissedCardScoreLayout.isActivated = false
+                btReviseMissedCardScoreLayout.isVisible = false
+            } else {
+                btReviseMissedCardScoreLayout.isActivated = true
+                btReviseMissedCardScoreLayout.isVisible = true
+                btReviseMissedCardScoreLayout.setOnClickListener {
+                    val newCards = viewModel.getMissedCard()
+                    viewModel.initWritingQuizGame()
+                    startWritingQuizGame(newCards, viewModel.deck)
+                }
             }
         }
     }
@@ -158,8 +181,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateCard()
-
-
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
@@ -167,7 +188,4 @@ class WritingQuizGameActivity : AppCompatActivity() {
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
 
-    companion object {
-        const val DECK_ID_KEY = "Deck_id_key"
-    }
 }

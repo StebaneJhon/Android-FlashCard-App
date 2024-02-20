@@ -303,7 +303,7 @@
         <item name="colorPrimary">?colorSurfaceContainerHighest</item>
     </style>
 
-    <!--Text field style-->
+    <!--Text field style
     <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
         <item name="hintTextColor">?colorSurfaceContainerLowest</item>
@@ -319,5 +319,6 @@
         <item name="hintTextColor">?colorSurfaceContainerLowest</item>
         <item name="editTextStyle">@style/Widget.Material3.TextInputLayout.FilledBox</item>
     </style>
+    -->
 
 </resources>

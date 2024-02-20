@@ -176,10 +176,17 @@ class FlashCardGameActivity : AppCompatActivity() {
                 isFlashCardGameScreenHidden(false)
                 initCardLayout()
             }
-            btReviseMissedCardScoreLayout.setOnClickListener {
-                val newCards = viewModel.getMissedCards()
-                viewModel.initFlashCard()
-                initFlashCard(newCards, viewModel.deck!!)
+            if (viewModel.getMissedCardSum() == 0) {
+                btReviseMissedCardScoreLayout.isActivated = false
+                btReviseMissedCardScoreLayout.isVisible = false
+            } else {
+                btReviseMissedCardScoreLayout.isActivated = true
+                btReviseMissedCardScoreLayout.isVisible = true
+                btReviseMissedCardScoreLayout.setOnClickListener {
+                    val newCards = viewModel.getMissedCards()
+                    viewModel.initFlashCard()
+                    initFlashCard(newCards, viewModel.deck!!)
+                }
             }
         }
     }
@@ -499,7 +506,11 @@ class FlashCardGameActivity : AppCompatActivity() {
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateOnScreenCards()
-        binding.topAppBar.title = deck.deckName
+        binding.topAppBar.apply {
+            setNavigationOnClickListener { finish() }
+            title = deck.deckName
+        }
+
     }
 
     fun initCardLayout() {

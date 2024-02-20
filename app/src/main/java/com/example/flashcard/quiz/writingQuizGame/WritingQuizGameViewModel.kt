@@ -17,6 +17,7 @@ class WritingQuizGameViewModel: ViewModel() {
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
     var progress: Int = 0
+    var attemptTime: Int = 0
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCard = MutableStateFlow<UiState<WritingQuizGameModel>>(UiState.Loading)
     val actualCard: StateFlow<UiState<WritingQuizGameModel>> = _actualCard.asStateFlow()
@@ -45,6 +46,7 @@ class WritingQuizGameViewModel: ViewModel() {
         if (missedCard !in missedCards) {
             missedCards.add(missedCard)
         }
+        increaseAttemptTime()
     }
 
     fun getMissedCard(): List<ImmutableCard> {
@@ -57,14 +59,24 @@ class WritingQuizGameViewModel: ViewModel() {
     fun getMissedCardSum() = missedCards.size
     fun getKnownCardSum() = cardSum() - getMissedCardSum()
 
+    fun getCurrentCardNumber() = currentCardPosition.plus(1).toString()
+
     fun initWritingQuizGame() {
         missedCards.clear()
         progress = 0
         currentCardPosition = 0
     }
 
+    fun increaseAttemptTime() {
+        attemptTime += 1
+    }
+
     fun swipe(): Boolean {
-        progress += 100/cardSum()
+        if (attemptTime == 0) {
+            progress += 100/cardSum()
+        } else {
+            attemptTime = 0
+        }
         currentCardPosition += 1
         updateCard()
         return currentCardPosition != cardSum()
