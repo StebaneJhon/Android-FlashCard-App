@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
     android:id="@+id/ly_writing_quiz_game_root"
-    app:layoutDescription="@xml/activity_writing_quiz_game_scene"
     tools:context=".quiz.writingQuizGame.WritingQuizGameActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -36,14 +35,16 @@
         android:layout_height="0dp"
         android:layout_margin="15dp"
         app:cardBackgroundColor="?colorSurfaceContainer"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topToolBar"
-        android:visibility="gone">
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <LinearLayout
                 android:id="@+id/onNoDeckTextError"
                 android:layout_width="match_parent"
@@ -73,7 +74,7 @@
                     android:text="Something went wrong"
                     android:textAlignment="center"
                     android:textColor="?colorOnError"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
             </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -84,17 +85,19 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="15dp"
+        android:visibility="gone"
         app:cardBackgroundColor="?colorSurfaceContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topToolBar"
-        android:visibility="gone">
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
+
             <ProgressBar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -102,157 +105,28 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardBottomLY"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_card_holder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="15dp"
-        app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="?colorPrimaryContainer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:layout_margin="5dp"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/tv_writing_quiz_bottom_progression"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1/20" />
-
-            <TextView
-                android:id="@+id/tvOnCardBottomWord"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                app:autoSizeMaxTextSize="40sp"
-                app:autoSizeMinTextSize="20sp"
-                app:autoSizeStepGranularity="2sp"
-                app:autoSizeTextType="uniform"
-                app:layout_constraintBottom_toTopOf="@+id/tilCardContent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_bottom_progression"
-                android:text="..." />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilCardContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/et_user_answer_hint"
-                android:textColorHint="?colorOnSurface"
-                app:boxBackgroundColor="?colorSurfaceContainerLowest"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiCardContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:fontFamily="@font/open_sans"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardTopLY"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_margin="15dp"
-        app:cardCornerRadius="10dp"
-        app:cardBackgroundColor="?colorPrimaryContainer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:layout_margin="5dp"
-            android:padding="20dp">
-
-            <TextView
-                android:id="@+id/tv_writing_quiz_front_progression"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1/20" />
-
-            <TextView
-                android:id="@+id/tvTopOnCardWord"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                app:autoSizeMaxTextSize="40sp"
-                app:autoSizeMinTextSize="20sp"
-                app:autoSizeStepGranularity="2sp"
-                app:autoSizeTextType="uniform"
-                app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_front_progression"
-                tools:text="1. What is the capital of Madagascar?" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilTopCardContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/et_user_answer_hint"
-                android:textColorHint="?colorOnSurface"
-                app:boxBackgroundColor="?colorSurfaceContainerLowest"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiTopCardContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:fontFamily="@font/open_sans"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar"/>
 
     <LinearLayout
         android:id="@+id/gameReviewContainerMQ"
         android:layout_width="0dp"
-        android:layout_height="0dp">
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
         <include
             android:id="@+id/gameReviewLayoutMQ"
             layout="@layout/layout_score" />
     </LinearLayout>
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

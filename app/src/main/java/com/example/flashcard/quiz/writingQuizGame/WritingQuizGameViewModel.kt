@@ -19,8 +19,8 @@ class WritingQuizGameViewModel: ViewModel() {
     var progress: Int = 0
     var attemptTime: Int = 0
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
-    private val _actualCard = MutableStateFlow<UiState<WritingQuizGameModel>>(UiState.Loading)
-    val actualCard: StateFlow<UiState<WritingQuizGameModel>> = _actualCard.asStateFlow()
+    private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
+    val actualCard: StateFlow<UiState<List<WritingQuizGameModel>>> = _actualCard.asStateFlow()
     private lateinit var cardList: List<ImmutableCard>
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard>
@@ -82,6 +82,27 @@ class WritingQuizGameViewModel: ViewModel() {
         return currentCardPosition != cardSum()
     }
 
+    fun isUserAnswerCorrect(userAnswer: String, correctAnswer: String): Boolean {
+        val isCorrect = userAnswer == correctAnswer
+        if (!isCorrect) {
+            onCardMissed()
+        }
+        return isCorrect
+    }
+
+    fun cardToWritingQuizGameItem(cards: List<ImmutableCard>): List<WritingQuizGameModel> {
+        val newList = mutableListOf<WritingQuizGameModel>()
+        cards.forEach { item ->
+            newList.add(
+                WritingQuizGameModel(
+                    item.cardContent!!,
+                    item.cardDefinition!!
+                )
+            )
+        }
+        return newList
+    }
+
     fun updateCard() {
         if (currentCardPosition == cardList.size) {
             _actualCard.value = UiState.Error("Quiz Complete")
@@ -89,7 +110,7 @@ class WritingQuizGameViewModel: ViewModel() {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
                     _actualCard.value = UiState.Success(
-                        WritingQuizGameModel(onCardWord!!, answer!!)
+                        cardToWritingQuizGameItem(cardList)
                     )
 
             }

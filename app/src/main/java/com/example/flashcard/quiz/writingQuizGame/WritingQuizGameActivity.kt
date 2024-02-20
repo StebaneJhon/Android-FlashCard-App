@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
 import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -28,6 +30,9 @@ import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -42,6 +47,8 @@ class WritingQuizGameActivity : AppCompatActivity() {
     private val viewModel: WritingQuizGameViewModel by viewModels()
     private var deckWithCards: DeckWithCards? = null
 
+    private var animFadeIn: Animation? = null
+    private var animFadeOut: Animation? = null
     companion object {
         const val DECK_ID_KEY = "Deck_id_key"
         private const val TAG = "WritingQuizGameActivity"
@@ -56,6 +63,11 @@ class WritingQuizGameActivity : AppCompatActivity() {
         if (themRef != null) { setTheme(themRef) }
         binding = ActivityWritingQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.vpCardHolder.isUserInputEnabled = false
+
+        animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
+        animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
 
         imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
@@ -82,69 +94,56 @@ class WritingQuizGameActivity : AppCompatActivity() {
                         binding.cvCardErrorLy.visibility = View.GONE
                     }
                     is UiState.Error -> {
-                        omQuizComplete()
+                        onQuizComplete()
                     }
                     is UiState.Success -> {
                         binding.cvCardErrorLy.visibility = View.GONE
                         binding.pbCardLoadingLy.visibility = View.GONE
-                        bindCard(state.data)
+                        launchWritingQuizGame(state.data)
                     }
                 }
             }
         }
 
-        binding
-            .lyWritingQuizGameRoot
-            .setTransitionListener(object: TransitionAdapter() {
-                override fun onTransitionCompleted(motionLayout: MotionLayout?, currentId: Int) {
-                    when (currentId) {
-                        R.id.endOffScreen -> {
-                            motionLayout?.progress = 0f
-                            if (viewModel.swipe()) {
-                                motionLayout?.setTransition(R.id.start, R.id.end)
-                            } else {
-                                motionLayout?.setTransition(R.id.displayGameReviewLayoutMQ, R.id.end)
-                            }
-                        }
-                    }
-                }
-            })
-
     }
 
-    private fun bindCard(card: WritingQuizGameModel) {
-
-        binding.tvTopOnCardWord.text = card.onCardWord
-        Log.e(TAG, card.answer)
-        val deckColorCode = viewModel.deck.deckColorCode?.let {
-            DeckColorCategorySelector().selectColor(it)
-        } ?: R.color.black
-        binding.cardTopLY.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
-        binding.cardBottomLY.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvWritingQuizFrontProgression.text = getString(R.string.tx_flash_card_game_progression, viewModel.getCurrentCardNumber(), viewModel.cardSum().toString())
-        binding.tiTopCardContent.requestFocus()
-        binding.tiCardContent.requestFocus()
-        binding.tiTopCardContent.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                val userInput = binding.tiTopCardContent.text?.trim().toString().lowercase()
-                val correctAnswer = card.answer.lowercase()
-
-                if (userInput == correctAnswer) {
-                    binding.lyWritingQuizGameRoot.transitionToState(R.id.end)
-                    binding.tiTopCardContent.text?.clear()
+    private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
+        val writingQuizGameAdapter = WritingQuizGameAdapter(this, cards, viewModel.deck.deckColorCode!!) {
+            if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer)) {
+                if (viewModel.swipe()) {
+                    binding.vpCardHolder.setCurrentItem(binding.vpCardHolder.currentItem + 1, true)
                 } else {
-                    viewModel.onCardMissed()
-                    Toast.makeText(this, "XXX", Toast.LENGTH_LONG).show()
+                    onQuizComplete()
                 }
-                true
             } else {
-                false
+                onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
             }
         }
-
+        binding.vpCardHolder.adapter = writingQuizGameAdapter
     }
 
-    private fun omQuizComplete() {
+    private fun onWrongAnswer(
+        card: MaterialCardView,
+        onWrongCard: MaterialCardView,
+        animFadeIn: Animation,
+        animFadeOut: Animation
+    ) {
+        card.startAnimation(animFadeOut)
+        card.visibility = View.GONE
+        onWrongCard.visibility = View.VISIBLE
+        onWrongCard.startAnimation(animFadeIn)
+        lifecycleScope.launch {
+            delay(500)
+            onWrongCard.startAnimation(animFadeOut)
+            onWrongCard.visibility = View.GONE
+            card.visibility = View.VISIBLE
+            card.startAnimation(animFadeIn)
+        }
+    }
+
+    private fun onQuizComplete() {
+        binding.gameReviewContainerMQ.visibility = View.VISIBLE
+        binding.vpCardHolder.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
             lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
@@ -159,7 +158,8 @@ class WritingQuizGameActivity : AppCompatActivity() {
             btRestartQuizScoreLayout.setOnClickListener {
                 viewModel.initWritingQuizGame()
                 viewModel.updateCard()
-                binding.lyWritingQuizGameRoot.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
+                binding.gameReviewContainerMQ.visibility = View.GONE
+                binding.vpCardHolder.visibility = View.VISIBLE
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false
@@ -177,7 +177,9 @@ class WritingQuizGameActivity : AppCompatActivity() {
     }
 
     private fun startWritingQuizGame(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
-        binding.lyWritingQuizGameRoot.setTransition(R.id.start, R.id.displayGameReviewLayoutMQ)
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
+        binding.vpCardHolder.setCurrentItem(0, true)
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateCard()
