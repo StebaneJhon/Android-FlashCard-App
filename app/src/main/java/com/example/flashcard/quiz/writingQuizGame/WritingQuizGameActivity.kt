@@ -42,7 +42,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
-    private var imm: InputMethodManager? = null
 
     private val viewModel: WritingQuizGameViewModel by viewModels()
     private var deckWithCards: DeckWithCards? = null
@@ -68,8 +67,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
         animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
-
-        imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
@@ -110,11 +107,8 @@ class WritingQuizGameActivity : AppCompatActivity() {
     private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
         val writingQuizGameAdapter = WritingQuizGameAdapter(this, cards, viewModel.deck.deckColorCode!!) {
             if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer)) {
-                if (viewModel.swipe()) {
-                    binding.vpCardHolder.setCurrentItem(binding.vpCardHolder.currentItem + 1, true)
-                } else {
-                    onQuizComplete()
-                }
+                viewModel.swipe()
+                binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
             } else {
                 onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
             }

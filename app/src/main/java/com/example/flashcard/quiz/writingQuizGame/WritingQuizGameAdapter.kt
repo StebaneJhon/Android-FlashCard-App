@@ -69,7 +69,6 @@ class WritingQuizGameAdapter(
         ) {
 
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            tilTopCardContent.requestFocus()
             tiTopCard.setText("")
             tiOnWrongAnswer.setText("")
             tvOnCardWord.text = card.onCardWord

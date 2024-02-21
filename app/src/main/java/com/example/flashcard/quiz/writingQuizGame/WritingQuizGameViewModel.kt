@@ -36,11 +36,6 @@ class WritingQuizGameViewModel: ViewModel() {
         originalCardList = gameCards
     }
 
-    private val onCardWord
-        get() = cardList[currentCardPosition].cardContent
-    private val answer
-        get() = cardList[currentCardPosition].cardDefinition
-
     fun onCardMissed() {
         val missedCard = cardList[currentCardPosition]
         if (missedCard !in missedCards) {
@@ -58,9 +53,6 @@ class WritingQuizGameViewModel: ViewModel() {
     fun cardSum() = cardList.size
     fun getMissedCardSum() = missedCards.size
     fun getKnownCardSum() = cardSum() - getMissedCardSum()
-
-    fun getCurrentCardNumber() = currentCardPosition.plus(1).toString()
-
     fun initWritingQuizGame() {
         missedCards.clear()
         progress = 0
@@ -81,6 +73,8 @@ class WritingQuizGameViewModel: ViewModel() {
         updateCard()
         return currentCardPosition != cardSum()
     }
+
+    fun getCurrentCardPosition() = currentCardPosition
 
     fun isUserAnswerCorrect(userAnswer: String, correctAnswer: String): Boolean {
         val isCorrect = userAnswer == correctAnswer
