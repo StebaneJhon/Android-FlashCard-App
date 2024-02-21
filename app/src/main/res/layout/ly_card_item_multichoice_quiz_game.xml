@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="15dp">
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_card_on_wrong_answer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="@color/red500"
+        app:cardCornerRadius="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_flash_card"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:layout_margin="5dp"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_multi_choice_quiz_front_progression_on_wrong_answer"
+                tools:text="1/20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tv_on_card_word_on_wrong_answer"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="?colorOnSurface"
+                app:autoSizeMaxTextSize="40sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative1_on_wrong_answer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_multi_choice_quiz_front_progression_on_wrong_answer"
+                tools:text="1. What is the capital of Madagascar?" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative1_on_wrong_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative2_on_wrong_answer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative2_on_wrong_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative3_on_wrong_answer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative2" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative3_on_wrong_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative4_on_wrong_answer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative3" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative4_on_wrong_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative4" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_card"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:cardBackgroundColor="?colorPrimaryContainer"
+        app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_flash_card"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:layout_margin="5dp"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_multi_Choice_quiz_front_progression"
+                tools:text="1/20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <TextView
+                android:id="@+id/tv_on_card_word"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="?colorOnSurface"
+                app:autoSizeMaxTextSize="40sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_multi_Choice_quiz_front_progression"
+                tools:text="1. What is the capital of Madagascar?" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative2" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative4"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative3" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_alternative4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="?colorSurfaceContainerLowest"
+                android:fontFamily="@font/open_sans_bold"
+                android:textColor="?colorOnSurface"
+                app:cornerRadius="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Alternative4" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

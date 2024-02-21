@@ -38,7 +38,7 @@ import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
-import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
+import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.UiState
@@ -333,9 +333,9 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
                             binding.mainActivityProgressBar.visibility = View.GONE
                             val intent = Intent(
                                 activity?.applicationContext!!,
-                                MultiChoiceQuizGame::class.java
+                                MultiChoiceQuizGameActivity::class.java
                             )
-                            intent.putExtra(MultiChoiceQuizGame.DECK_ID_KEY, state.data)
+                            intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             quizModeDialog?.dismiss()
                             this@launch.cancel()

@@ -18,7 +18,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
@@ -40,7 +39,7 @@ import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.FragmentCardBinding
 import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
-import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGame
+import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant
@@ -247,8 +246,8 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
                         is UiState.Success -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            val intent = Intent(appContext, MultiChoiceQuizGame::class.java)
-                            intent.putExtra(MultiChoiceQuizGame.DECK_ID_KEY, state.data)
+                            val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
+                            intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             this@launch.cancel()
                             this.cancel()

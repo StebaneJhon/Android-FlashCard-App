@@ -16,9 +16,10 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
     var progress: Int = 0
+    var attemptTime: Int = 0
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
-    private val _actualCard = MutableStateFlow<UiState<MultiChoiceGameCardModel>>(UiState.Loading)
-    val actualCard: StateFlow<UiState<MultiChoiceGameCardModel>> = _actualCard.asStateFlow()
+    private val _actualCards = MutableStateFlow<UiState<List<MultiChoiceGameCardModel>>>(UiState.Loading)
+    val actualCards: StateFlow<UiState<List<MultiChoiceGameCardModel>>> = _actualCards.asStateFlow()
     private lateinit var cardList: List<ImmutableCard>
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard>
@@ -34,12 +35,15 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         originalCardList = gameCards
     }
 
+    /*
     private val onCardWord
         get() = cardList[currentCardPosition].cardContent
     private val answer
         get() = cardList[currentCardPosition].cardDefinition
     private val wordAlternatives
         get() = getWordAlternatives(originalCardList, answer!!, 3)
+
+     */
 
     private fun getWordAlternatives(
         cards: List<ImmutableCard>,
@@ -58,12 +62,22 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         }
         return temporaryList.shuffled()
     }
+
+    fun increaseAttemptTime() {
+        attemptTime += 1
+    }
+
     fun swipe(): Boolean {
-        progress += 100/cardSum()
+        if (attemptTime == 0) {
+            progress += 100/cardSum()
+        } else {
+            attemptTime = 0
+        }
         currentCardPosition += 1
         updateCard()
         return currentCardPosition != cardSum()
     }
+    fun getCurrentCardPosition() = currentCardPosition
     fun cardSum() = cardList.size
     fun getMissedCardSum() = missedCards.size
     fun getKnownCardSum() = cardSum() - getMissedCardSum()
@@ -83,22 +97,43 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         if (missedCard !in missedCards) {
             missedCards.add(missedCard)
         }
+        increaseAttemptTime()
+    }
+
+    fun isUserChoiceCorrect(userChoice: String, correctChoice: String): Boolean {
+        val isCorrect = userChoice == correctChoice
+        if (!isCorrect) {
+            onCardMissed()
+        }
+        return isCorrect
+    }
+
+    private fun toListOfMultiChoiceQuizGameCardModel(cards: List<ImmutableCard>): List<MultiChoiceGameCardModel> {
+        val temporaryList = mutableListOf<MultiChoiceGameCardModel>()
+        cards.forEach {
+            val alternatives = getWordAlternatives(originalCardList, it.cardDefinition!!, 4)
+            temporaryList.add(
+                MultiChoiceGameCardModel(
+                    it.cardContent!!,
+                    it.cardDefinition,
+                    alternatives[0],
+                    alternatives[1],
+                    alternatives[2],
+                    alternatives[3],
+                )
+            )
+        }
+        return temporaryList
     }
 
     fun updateCard() {
         if (currentCardPosition == cardList.size) {
-            _actualCard.value = UiState.Error("Quiz Complete")
+            _actualCards.value = UiState.Error("Quiz Complete")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                val wordsAL = wordAlternatives
-                _actualCard.value = UiState.Success(MultiChoiceGameCardModel(
-                    onCardWord = onCardWord!!,
-                    answer = answer!!,
-                    alternative1 = wordsAL[0],
-                    alternative2 = wordsAL[1],
-                    alternative3 = wordsAL[2]
-                ))
+                //val wordsAL = wordAlternatives
+                _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(cardList))
             }
         }
     }

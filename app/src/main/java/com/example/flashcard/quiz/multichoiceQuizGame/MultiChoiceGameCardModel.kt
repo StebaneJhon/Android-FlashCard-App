@@ -5,5 +5,6 @@ data class MultiChoiceGameCardModel(
     val answer: String,
     val alternative1: String,
     val alternative2: String,
-    val alternative3: String
+    val alternative3: String,
+    val alternative4: String
 )
