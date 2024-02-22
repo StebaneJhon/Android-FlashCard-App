@@ -6,23 +6,75 @@
     android:id="@+id/cv_item_root"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_item_text"
+        <LinearLayout
+            android:id="@+id/ll_card_active"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Text"
-            android:textAlignment="center"
-            android:textSize="25sp"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans_bold"
-            android:textStyle="bold" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/green200"
+            android:visibility="gone"
+            android:gravity="center">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_item_text_card_active"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Text"
+                android:textAlignment="center"
+                android:textSize="25sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/open_sans_bold"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_card_wrong"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/red200"
+            android:visibility="gone"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_item_text_card_wrong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Text"
+                android:textAlignment="center"
+                android:textSize="25sp"
+                android:textColor="@color/white"
+                android:fontFamily="@font/open_sans_bold"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_card_inactive"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="?colorSurfaceContainer"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_item_text_card_inactive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Text"
+                android:textAlignment="center"
+                android:textSize="25sp"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans_bold"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

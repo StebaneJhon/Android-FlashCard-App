@@ -42,6 +42,11 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
     private var animFadeIn: Animation? = null
     private var animFadeOut: Animation? = null
 
+    companion object {
+        private const val TAG = "MultiChoiceQuizGameActivity"
+        const val DECK_ID_KEY = "Deck_id_key"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
@@ -53,6 +58,8 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
         }
         binding = ActivityMultichoiceQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.vpCardHolder.isUserInputEnabled = false
 
         animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
@@ -78,7 +85,6 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
                         is UiState.Loading -> {
                         }
                         is UiState.Error -> {
-                            onQuizComplete()
                         }
                         is UiState.Success -> {
                             launchMultiChoiceQuizGame(state.data)
@@ -91,8 +97,11 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
     private fun launchMultiChoiceQuizGame(data: List<MultiChoiceGameCardModel>) {
         val multiChoiceGameAdapter = MultiChoiceQuizGameAdapter(this, data, viewModel.deck.deckColorCode!!) {
             if (viewModel.isUserChoiceCorrect(it.userChoice, it.answer)) {
-                viewModel.swipe()
-                binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                if (viewModel.swipe()) {
+                    binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                } else {
+                    onQuizComplete()
+                }
             } else {
                 onWrongAnswer(it.cvCard, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
             }
@@ -139,7 +148,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
                 binding.gameReviewContainerMQ.visibility = View.GONE
                 binding.vpCardHolder.visibility = View.VISIBLE
             }
-            if (viewModel.getKnownCardSum() == 0) {
+            if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.apply {
                     isActivated = false
                     isVisible = false
@@ -173,7 +182,4 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
 
-    companion object {
-        const val DECK_ID_KEY = "Deck_id_key"
-    }
 }

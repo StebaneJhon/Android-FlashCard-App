@@ -35,16 +35,6 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         originalCardList = gameCards
     }
 
-    /*
-    private val onCardWord
-        get() = cardList[currentCardPosition].cardContent
-    private val answer
-        get() = cardList[currentCardPosition].cardDefinition
-    private val wordAlternatives
-        get() = getWordAlternatives(originalCardList, answer!!, 3)
-
-     */
-
     private fun getWordAlternatives(
         cards: List<ImmutableCard>,
         onCardWordTranslation: String,
@@ -74,7 +64,7 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
             attemptTime = 0
         }
         currentCardPosition += 1
-        updateCard()
+        //updateCard()
         return currentCardPosition != cardSum()
     }
     fun getCurrentCardPosition() = currentCardPosition
@@ -132,7 +122,6 @@ class MultiChoiceQuizGameViewModel: ViewModel() {
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                //val wordsAL = wordAlternatives
                 _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(cardList))
             }
         }

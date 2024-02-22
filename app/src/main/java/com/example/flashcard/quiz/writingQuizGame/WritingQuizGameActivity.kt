@@ -91,7 +91,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
                         binding.cvCardErrorLy.visibility = View.GONE
                     }
                     is UiState.Error -> {
-                        onQuizComplete()
                     }
                     is UiState.Success -> {
                         binding.cvCardErrorLy.visibility = View.GONE
@@ -107,8 +106,11 @@ class WritingQuizGameActivity : AppCompatActivity() {
     private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
         val writingQuizGameAdapter = WritingQuizGameAdapter(this, cards, viewModel.deck.deckColorCode!!) {
             if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer)) {
-                viewModel.swipe()
-                binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                if (viewModel.swipe()) {
+                    binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                } else {
+                    onQuizComplete()
+                }
             } else {
                 onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
             }

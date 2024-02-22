@@ -70,7 +70,6 @@ class WritingQuizGameViewModel: ViewModel() {
             attemptTime = 0
         }
         currentCardPosition += 1
-        updateCard()
         return currentCardPosition != cardSum()
     }
 

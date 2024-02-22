@@ -8,14 +8,46 @@
     android:id="@+id/ly_match_quiz_game_root"
     tools:context=".quiz.matchQuizGame.MatchQuizGameActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorSurfaceContainer"
+            android:minHeight="?attr/actionBarSize"
+            app:menu="@menu/mn_flash_card_top_app_bar"
+            app:navigationIcon="@drawable/icon_chevron_left"
+            app:navigationIconTint="@color/black"
+            app:title="@string/title_flash_card_game" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/lpi_matching_quiz_game_progression"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:trackThickness="25dp"
+        app:indicatorColor="@color/green200"
+        app:trackColor="?colorSurfaceContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_matching_game"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/lpi_matching_quiz_game_progression" />
 
     <LinearLayout
         android:id="@+id/game_score_container"
@@ -25,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
         <include
             android:id="@+id/ly_game_score"
             layout="@layout/ly_matching_quiz_game_score" />
