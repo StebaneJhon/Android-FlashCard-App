@@ -6,6 +6,7 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.util.MatchQuizGameBorderSize
+import com.example.flashcard.util.MatchQuizGameClickStatus
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +30,8 @@ class MatchQuizGameViewModel : ViewModel() {
     private var firstSelectedItem: MatchQuizGameItemModel? = null
     private var numMatch = 0
     private var restCard = 0
+    private var numMove = 0
+    private var numMiss = 0
 
     fun initCardList(gameCards: List<ImmutableCard>) {
         cardList = gameCards
@@ -47,12 +50,21 @@ class MatchQuizGameViewModel : ViewModel() {
 
     fun initOnBoardItems(items: MutableList<MatchQuizGameItemModel>) {
         numMatch = 0
+        numMiss = 0
+        numMove = 0
         onBoarItems = items
         onBoarItems.forEach {
             it.isMatched = false
             it.isActive = false
         }
     }
+
+    fun getNumMove() = numMove
+    fun getNumMiss() = numMiss
+
+    fun getUserPerformance() = (100/numMove) * numMiss
+
+    fun getOnBoardCardSum() = boardSize.getHeight()
 
 
     fun updateBoard() {
@@ -75,17 +87,24 @@ class MatchQuizGameViewModel : ViewModel() {
     private fun cardSum() = cardList.size
 
 
-    fun selectItem(item: MatchQuizGameItemModel): Boolean {
-        var match = false
-        if (firstSelectedItem == null) {
+    fun selectItem(item: MatchQuizGameItemModel): String {
+        val result = if (firstSelectedItem == null) {
             restoreItems()
             firstSelectedItem = item
+            MatchQuizGameClickStatus.FIRST_TRY
         } else {
-            match = isMatching(firstSelectedItem!!, item)
-            firstSelectedItem = null
+            numMove ++
+            if (isMatching(firstSelectedItem!!, item)) {
+                firstSelectedItem = null
+                MatchQuizGameClickStatus.MATCHE
+            } else {
+                firstSelectedItem = null
+                numMiss++
+                MatchQuizGameClickStatus.MATCH_NOT
+            }
         }
         activateItem(item)
-        return match
+        return result
     }
 
     private fun isMatching(item1: MatchQuizGameItemModel, item2: MatchQuizGameItemModel): Boolean {

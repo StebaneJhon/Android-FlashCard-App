@@ -64,4 +64,6 @@
     <string name="tx_flash_card_game_card_orientation_back">Back</string>
     <string name="hint_flash_card_game_flip">Tap to flip</string>
     <string name="bt_flash_card_game_start">Flash Card Game</string>
+    <string name="text_move">Move Sum:</string>
+    <string name="text_missed_move_sum">Missed move:</string>
 </resources>

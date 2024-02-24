@@ -20,10 +20,12 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMatchQuizGameBinding
 import com.example.flashcard.deck.MainActivity
+import com.example.flashcard.util.MatchQuizGameClickStatus
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MatchQuizGameActivity : AppCompatActivity() {
@@ -37,6 +39,8 @@ class MatchQuizGameActivity : AppCompatActivity() {
     lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
 
     private val viewModel: MatchQuizGameViewModel by viewModels()
+
+    private var firstSelectedItemInfo: MatchingQuizGameSelectedItemInfo? = null
 
     companion object {
         const val DECK_ID_KEY = "Deck_id_key"
@@ -85,6 +89,8 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
     private fun displayMatchQuizGameItems(items: List<MatchQuizGameItemModel>) {
         binding.gameScoreContainer.visibility = View.GONE
+        binding.rvMatchingGame.visibility = View.VISIBLE
+        binding.lpiMatchingQuizGameProgression.progress = 0
         viewModel.initOnBoardItems(items.toMutableList())
         matchQuizGameRecyclerView = MatchQuizGameAdapter(this@MatchQuizGameActivity, items, viewModel.boardSize) {
             onItemClicked(it, items)
@@ -96,64 +102,111 @@ class MatchQuizGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun onItemClicked(itemDetails: List<Any>, items: List<MatchQuizGameItemModel>) {
-
-        val item: MatchQuizGameItemModel = itemDetails[0] as MatchQuizGameItemModel
-        val lyItem: MaterialCardView = itemDetails[1] as MaterialCardView
-
+    private fun onItemClicked(itemDetails: MatchingQuizGameSelectedItemInfo, items: List<MatchQuizGameItemModel>) {
         if (viewModel.isQuizComplete()) {
             Snackbar.make(binding.lyMatchQuizGameRoot, "You already finished the quiz", Snackbar.LENGTH_LONG).show()
             return
         }
 
-        if (viewModel.isItemActive(item)) {
+        if (viewModel.isItemActive(itemDetails.item) && firstSelectedItemInfo != null) {
             Snackbar.make(binding.lyMatchQuizGameRoot, "Select another item please", Snackbar.LENGTH_LONG).show()
             return
         }
 
-        if (viewModel.selectItem(item)) {
-            Toast.makeText(this, "Match! Match! Match!", Toast.LENGTH_LONG).show()
-            binding.lpiMatchingQuizGameProgression.progress = viewModel.getProgression()
-            if (viewModel.isQuizComplete()) {
-                Snackbar.make(binding.lyMatchQuizGameRoot, "Done Congratulations!", Snackbar.LENGTH_LONG).show()
-                onQuizComplete(viewModel.cardLeft(), items)
+        when (viewModel.selectItem(itemDetails.item)) {
+            MatchQuizGameClickStatus.FIRST_TRY -> {
+                activateItem(itemDetails)
+                firstSelectedItemInfo = itemDetails
+            }
+            MatchQuizGameClickStatus.MATCHE -> {
+                disableItem(itemDetails)
+                disableItem(firstSelectedItemInfo!!)
+                Toast.makeText(this, "Match! Match! Match!", Toast.LENGTH_LONG).show()
+                binding.lpiMatchingQuizGameProgression.progress = viewModel.getProgression()
+                if (viewModel.isQuizComplete()) {
+                    Snackbar.make(binding.lyMatchQuizGameRoot, "Done Congratulations!", Snackbar.LENGTH_LONG).show()
+                    onQuizComplete(viewModel.cardLeft(), items)
+                }
+                firstSelectedItemInfo = null
+            }
+            MatchQuizGameClickStatus.MATCH_NOT -> {
+                activateItemOnWrong(firstSelectedItemInfo!!)
+                activateItemOnWrong(itemDetails)
+                lifecycleScope.launch {
+                    delay(400)
+                    inactivateItem(firstSelectedItemInfo!!)
+                    inactivateItem(itemDetails)
+                    firstSelectedItemInfo = null
+                }
             }
         }
 
-        matchQuizGameRecyclerView.notifyDataSetChanged()
+    }
 
+    private fun activateItem(itemInfo: MatchingQuizGameSelectedItemInfo) {
+        itemInfo.itemContainerActive.visibility = View.VISIBLE
+        itemInfo.itemContainerWrong.visibility = View.GONE
+        itemInfo.itemContainerInactive.visibility = View.GONE
+    }
+
+    private fun activateItemOnWrong(itemInfo: MatchingQuizGameSelectedItemInfo) {
+        itemInfo.itemContainerActive.visibility = View.GONE
+        itemInfo.itemContainerWrong.visibility = View.VISIBLE
+        itemInfo.itemContainerInactive.visibility = View.GONE
+    }
+
+    private fun inactivateItem(itemInfo: MatchingQuizGameSelectedItemInfo) {
+        itemInfo.itemContainerActive.visibility = View.GONE
+        itemInfo.itemContainerWrong.visibility = View.GONE
+        itemInfo.itemContainerInactive.visibility = View.VISIBLE
+    }
+
+    private fun disableItem(itemInfo: MatchingQuizGameSelectedItemInfo) {
+        itemInfo.itemContainerRoot.apply {
+            visibility = View.GONE
+            isClickable = false
+        }
     }
 
     private fun onQuizComplete(cardsLeft: Int, onBoardItems: List<MatchQuizGameItemModel>) {
         binding.gameScoreContainer.visibility = View.VISIBLE
         binding.rvMatchingGame.visibility = View.GONE
         binding.lyGameScore.apply {
-            //tvCardsLeftInDeck.text = getString(R.string.cards_left_match_quiz_score, "${cardsLeft}")
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Matching Quiz")
+            tvMoveNumberSumLayout.text = viewModel.getNumMove().toString()
+            tvMissedMoveSumLayout.text = viewModel.getNumMiss().toString()
+            tvTotalCardsSumScoreLayout.text = viewModel.getOnBoardCardSum().toString()
+            lpiQuizResultDiagramScoreLayout.progress = viewModel.getUserPerformance()
             btBackToDeck.setOnClickListener {
                 startActivity(Intent(this@MatchQuizGameActivity, MainActivity::class.java))
             }
             btRestart.setOnClickListener {
                 displayMatchQuizGameItems(onBoardItems)
             }
-            btContinue.apply {
-                text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
-                setOnClickListener {
-                    lifecycleScope.launch {
-                        viewModel.updateBoard()
-                        viewModel
-                            .actualCards
-                            .collect { state ->
-                                when (state) {
-                                    is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
-                                    is UiState.Loading -> {}
-                                    is UiState.Success -> {
-                                        displayMatchQuizGameItems(state.data)
+            if (cardsLeft < 0) {
+                btContinue.visibility = View.GONE
+            } else {
+                btContinue.apply {
+                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
+                    setOnClickListener {
+                        lifecycleScope.launch {
+                            viewModel.updateBoard()
+                            viewModel
+                                .actualCards
+                                .collect { state ->
+                                    when (state) {
+                                        is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                        is UiState.Loading -> {}
+                                        is UiState.Success -> {
+                                            displayMatchQuizGameItems(state.data)
+                                        }
                                     }
                                 }
-                            }
+                        }
                     }
                 }
             }
+
         }
     }
 

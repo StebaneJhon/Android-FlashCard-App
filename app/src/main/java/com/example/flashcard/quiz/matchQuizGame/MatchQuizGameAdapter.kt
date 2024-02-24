@@ -20,7 +20,7 @@ class MatchQuizGameAdapter(
     private val context: Context,
     private val itemList: List<MatchQuizGameItemModel>,
     private val boardSize: MatchQuizGameBorderSize,
-    private val flipCard: (List<Any>) -> Unit
+    private val flipCard: (MatchingQuizGameSelectedItemInfo) -> Unit
 ): RecyclerView.Adapter<MatchQuizGameAdapter.ViewHolder>() {
 
     companion object {
@@ -60,13 +60,14 @@ class MatchQuizGameAdapter(
         fun bind(
             context: Context,
             item: MatchQuizGameItemModel,
-            flipCard: (List<Any>) -> Unit,
+            flipCard: (MatchingQuizGameSelectedItemInfo) -> Unit,
         ) {
             val animFadeIn = AnimationUtils.loadAnimation(context.applicationContext, R.anim.fade_in)
             val animFadeOut = AnimationUtils.loadAnimation(context.applicationContext, R.anim.fade_out)
             tvItemActive.text = item.text
             tvItemInactive.text = item.text
             tvItemWrong.text = item.text
+            /*
             if (item.isMatched) {
                 cvItemContainer.visibility = View.GONE
             } else {
@@ -84,8 +85,20 @@ class MatchQuizGameAdapter(
                 //cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainer, R.color.blue700))
             }
 
+             */
+
             val itemDetails = listOf(item, cvItemContainer)
-            cvItemContainer.setOnClickListener { flipCard(itemDetails) }
+            //cvItemContainer.setOnClickListener { flipCard(itemDetails) }
+            cvItemContainer.setOnClickListener {
+                val itemInfo = MatchingQuizGameSelectedItemInfo(
+                    item,
+                    cvItemContainer,
+                    llItemContainerActive,
+                    llItemContainerInactive,
+                    llItemContainerWrong
+                )
+                flipCard(itemInfo)
+            }
 
         }
 

@@ -39,3 +39,9 @@ object themeConst {
     val YELLOW_THEME = "YELLOW THEME"
     val BROWN_THEME = "BROWN THEME"
 }
+
+object MatchQuizGameClickStatus {
+    val FIRST_TRY = "First try"
+    val MATCHE = "Match"
+    val MATCH_NOT = "Match not"
+}
