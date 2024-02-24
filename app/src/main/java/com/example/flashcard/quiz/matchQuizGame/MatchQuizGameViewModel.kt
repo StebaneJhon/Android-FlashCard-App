@@ -21,6 +21,7 @@ class MatchQuizGameViewModel : ViewModel() {
     val actualCards: StateFlow<UiState<List<MatchQuizGameItemModel>>> = _actualCards.asStateFlow()
     private lateinit var cardList: List<ImmutableCard>
     lateinit var deck: ImmutableDeck
+    private var progression = 0
     private lateinit var originalCardList: List<ImmutableCard>
     private var passedCards: Int = 0
     var boardSize = MatchQuizGameBorderSize.DEFAULT
@@ -103,8 +104,15 @@ class MatchQuizGameViewModel : ViewModel() {
             }
         }
         numMatch++
+        updateProgression()
         return true
     }
+
+    private fun updateProgression() {
+        progression += 100/boardSize.getHeight()
+    }
+
+    fun getProgression() = progression
 
     fun isQuizComplete() = numMatch == boardSize.getNumCards()
 

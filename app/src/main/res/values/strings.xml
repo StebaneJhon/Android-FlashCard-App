@@ -53,7 +53,7 @@
     <string name="bt_match_quiz_mode_text">Match Quiz Mode</string>
     <string name="title_match_quiz_score">You did it!</string>
     <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
-    <string name="bt_continue_match_quiz_score">CONTINUE</string>
+    <string name="bt_continue_match_quiz_score">%1$s CARDS LEFT CONTINUE ?</string>
     <string name="bt_restart_match_quiz_score">RSTART</string>
     <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
     <string name="hint_deck_search_field">Deck name</string>

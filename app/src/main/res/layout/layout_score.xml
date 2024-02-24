@@ -76,7 +76,7 @@
         android:paddingTop="5dp"
         android:paddingEnd="15dp"
         android:paddingBottom="5dp"
-        android:text="5"
+        tools:text="5"
         android:textColor="?colorSurfaceContainerLowest"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@+id/tv_known_cards_score_layout"
@@ -191,6 +191,7 @@
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/back_to_deck_text_button"
         android:textColor="?colorSurfaceContainerLowest"
+        android:textStyle="bold"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent" />
 

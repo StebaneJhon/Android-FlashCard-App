@@ -7,17 +7,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.motion.widget.TransitionAdapter
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
@@ -27,13 +20,10 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
 import com.example.flashcard.deck.MainActivity
-import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class WritingQuizGameActivity : AppCompatActivity() {

@@ -5,6 +5,9 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
@@ -46,7 +49,12 @@ class MatchQuizGameAdapter(
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        private val tvItem: TextView = view.findViewById(R.id.tv_item_text)
+        private val tvItemActive: TextView = view.findViewById(R.id.tv_item_text_card_active)
+        private val tvItemInactive: TextView = view.findViewById(R.id.tv_item_text_card_inactive)
+        private val tvItemWrong: TextView = view.findViewById(R.id.tv_item_text_card_wrong)
+        private val llItemContainerActive: LinearLayout = view.findViewById(R.id.ll_card_active)
+        private val llItemContainerInactive: LinearLayout = view.findViewById(R.id.ll_card_inactive)
+        private val llItemContainerWrong: LinearLayout = view.findViewById(R.id.ll_card_wrong)
         private val cvItemContainer: MaterialCardView = view.findViewById(R.id.cv_item_root)
 
         fun bind(
@@ -54,7 +62,11 @@ class MatchQuizGameAdapter(
             item: MatchQuizGameItemModel,
             flipCard: (List<Any>) -> Unit,
         ) {
-            tvItem.text = item.text
+            val animFadeIn = AnimationUtils.loadAnimation(context.applicationContext, R.anim.fade_in)
+            val animFadeOut = AnimationUtils.loadAnimation(context.applicationContext, R.anim.fade_out)
+            tvItemActive.text = item.text
+            tvItemInactive.text = item.text
+            tvItemWrong.text = item.text
             if (item.isMatched) {
                 cvItemContainer.visibility = View.GONE
             } else {
@@ -62,13 +74,37 @@ class MatchQuizGameAdapter(
             }
 
             if (item.isActive) {
-                cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainerHighest, R.color.blue700))
+                activateItem(animFadeOut, animFadeIn)
+                //cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainerHighest, R.color.blue700))
             } else {
-                cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainer, R.color.blue700))
+                //inactivateItem(animFadeOut, animFadeIn)
+                llItemContainerActive.visibility = View.GONE
+                llItemContainerInactive.visibility = View.VISIBLE
+                llItemContainerWrong.visibility = View.GONE
+                //cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainer, R.color.blue700))
             }
 
             val itemDetails = listOf(item, cvItemContainer)
             cvItemContainer.setOnClickListener { flipCard(itemDetails) }
+
+        }
+
+        private fun activateItem(animFadeOut: Animation?, animFadeIn: Animation?) {
+
+            llItemContainerInactive.startAnimation(animFadeOut)
+            llItemContainerActive.visibility = View.VISIBLE
+            llItemContainerInactive.visibility = View.GONE
+            llItemContainerWrong.visibility = View.GONE
+            llItemContainerActive.startAnimation(animFadeIn)
+
+        }
+        private fun inactivateItem(animFadeOut: Animation?, animFadeIn: Animation?) {
+
+            llItemContainerActive.startAnimation(animFadeOut)
+            llItemContainerActive.visibility = View.GONE
+            llItemContainerInactive.visibility = View.VISIBLE
+            llItemContainerWrong.visibility = View.GONE
+            llItemContainerInactive.startAnimation(animFadeIn)
 
         }
     }

@@ -34,8 +34,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:trackThickness="25dp"
+        android:layout_marginTop="5dp"
         app:indicatorColor="@color/green200"
-        app:trackColor="?colorSurfaceContainer"
+        app:trackColor="?colorSurfaceContainerLow"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topToolBar" />
@@ -44,6 +45,7 @@
         android:id="@+id/rv_matching_game"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

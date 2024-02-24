@@ -10,7 +10,6 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
@@ -25,7 +24,6 @@ import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MatchQuizGameActivity : AppCompatActivity() {
@@ -34,19 +32,25 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
+
     private var deckWithCards: DeckWithCards? = null
     lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
 
     private val viewModel: MatchQuizGameViewModel by viewModels()
 
+    companion object {
+        const val DECK_ID_KEY = "Deck_id_key"
+        private const val TAG = "MatchQuizGameActivity"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMatchQuizGameBinding.inflate(layoutInflater)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) { setTheme(themRef) }
+        binding = ActivityMatchQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
@@ -55,6 +59,11 @@ class MatchQuizGameActivity : AppCompatActivity() {
             val deck = it.deck.toExternal()
             viewModel.initOriginalCardList(cardList)
             startMatchQuizGame(cardList, deck)
+        }
+
+        binding.topAppBar.apply {
+            title = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
+            setNavigationOnClickListener { finish() }
         }
 
         lifecycleScope.launch {
@@ -71,8 +80,6 @@ class MatchQuizGameActivity : AppCompatActivity() {
                     }
                 }
         }
-
-
 
     }
 
@@ -106,6 +113,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
         if (viewModel.selectItem(item)) {
             Toast.makeText(this, "Match! Match! Match!", Toast.LENGTH_LONG).show()
+            binding.lpiMatchingQuizGameProgression.progress = viewModel.getProgression()
             if (viewModel.isQuizComplete()) {
                 Snackbar.make(binding.lyMatchQuizGameRoot, "Done Congratulations!", Snackbar.LENGTH_LONG).show()
                 onQuizComplete(viewModel.cardLeft(), items)
@@ -118,28 +126,32 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
     private fun onQuizComplete(cardsLeft: Int, onBoardItems: List<MatchQuizGameItemModel>) {
         binding.gameScoreContainer.visibility = View.VISIBLE
+        binding.rvMatchingGame.visibility = View.GONE
         binding.lyGameScore.apply {
-            tvCardsLeftInDeck.text = getString(R.string.cards_left_match_quiz_score, "${cardsLeft}")
+            //tvCardsLeftInDeck.text = getString(R.string.cards_left_match_quiz_score, "${cardsLeft}")
             btBackToDeck.setOnClickListener {
                 startActivity(Intent(this@MatchQuizGameActivity, MainActivity::class.java))
             }
             btRestart.setOnClickListener {
                 displayMatchQuizGameItems(onBoardItems)
             }
-            btContinue.setOnClickListener {
-                lifecycleScope.launch {
-                    viewModel.updateBoard()
-                    viewModel
-                        .actualCards
-                        .collect { state ->
-                            when (state) {
-                                is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
-                                is UiState.Loading -> {}
-                                is UiState.Success -> {
-                                    displayMatchQuizGameItems(state.data)
+            btContinue.apply {
+                text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
+                setOnClickListener {
+                    lifecycleScope.launch {
+                        viewModel.updateBoard()
+                        viewModel
+                            .actualCards
+                            .collect { state ->
+                                when (state) {
+                                    is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                    is UiState.Loading -> {}
+                                    is UiState.Success -> {
+                                        displayMatchQuizGameItems(state.data)
+                                    }
                                 }
                             }
-                        }
+                    }
                 }
             }
         }
@@ -155,7 +167,4 @@ class MatchQuizGameActivity : AppCompatActivity() {
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
 
-    companion object {
-        const val DECK_ID_KEY = "Deck_id_key"
-    }
 }
