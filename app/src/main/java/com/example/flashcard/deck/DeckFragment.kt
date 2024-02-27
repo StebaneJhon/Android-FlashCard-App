@@ -35,11 +35,10 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
-import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
+import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
-import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -95,7 +94,6 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
 
             }
         }
-
 
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
@@ -187,17 +185,6 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
             show()
         }
 
-        val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
-        flashCardQuiz.setOnClickListener {
-            startBaseFlashCardGame(deckId, quizModeDialog)
-
-        }
-
-        val timedFlashCardGame: Button = dialogBinding.findViewById(R.id.timedFlashCardQuizButton)
-        timedFlashCardGame.setOnClickListener {
-            startTimedFlashCardGame(deckId, quizModeDialog)
-        }
-
         val multiChoiceQuizGameBT: Button = dialogBinding.findViewById(R.id.multiChoiceQuizButton)
         multiChoiceQuizGameBT.setOnClickListener {
             startMultiChoiceQuizGame(deckId, quizModeDialog)
@@ -216,6 +203,43 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         val btFlashCard: Button = dialogBinding.findViewById(R.id.bt_flash_card_game)
         btFlashCard.setOnClickListener {
             startFlashCardGame(deckId, quizModeDialog)
+        }
+
+        val btFlashCardTimed: Button = dialogBinding.findViewById(R.id.bt_flash_card_game_timed)
+        btFlashCardTimed.setOnClickListener {
+            startFlashCardGameTimed(deckId, quizModeDialog)
+        }
+    }
+
+    private fun startFlashCardGameTimed(deckId: Int, quizModeDialog: Dialog?) {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                deckViewModel.getDeckWithCards(deckId)
+                deckViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.mainActivityProgressBar.visibility = View.VISIBLE
+                        }
+
+                        is UiState.Error -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                        }
+
+                        is UiState.Success -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                            val intent = Intent(
+                                activity?.applicationContext!!,
+                                FlashCardGameTimedActivity::class.java
+                            )
+                            intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                            quizModeDialog?.dismiss()
+                            this@launch.cancel()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -251,69 +275,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun startTimedFlashCardGame(deckId: Int, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
 
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                TimedFlashCardGame::class.java
-                            )
-                            intent.putExtra(TimedFlashCardGame.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun startBaseFlashCardGame(deckId: Int, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
-
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                BaseFlashCardGame::class.java
-                            )
-                            intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private fun startMultiChoiceQuizGame(deckId: Int, quizModeDialog: Dialog?) {
         lifecycleScope.launch {

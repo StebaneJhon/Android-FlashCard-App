@@ -17,6 +17,9 @@
         android:theme="@style/PurpleTheme.Flashcard"
         tools:targetApi="31">
         <activity
+            android:name=".quiz.flashCardGameTimed.FlashCardGameTimedActivity"
+            android:exported="false" />
+        <activity
             android:name=".quiz.flashCardGame.FlashCardGameActivity"
             android:exported="false" />
         <activity
@@ -27,12 +30,6 @@
             android:exported="false" />
         <activity
             android:name=".quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity"
-            android:exported="false" />
-        <activity
-            android:name=".quiz.timedFlashCardGame.TimedFlashCardGame"
-            android:exported="false" />
-        <activity
-            android:name=".quiz.baseFlashCardGame.BaseFlashCardGame"
             android:exported="false" />
         <activity
             android:name=".deck.MainActivity"

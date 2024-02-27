@@ -23,7 +23,6 @@ import com.example.flashcard.deck.MainActivity
 import com.example.flashcard.util.MatchQuizGameClickStatus
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
     private var editor: SharedPreferences.Editor? = null
 
     private var deckWithCards: DeckWithCards? = null
-    lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
+    private lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
 
     private val viewModel: MatchQuizGameViewModel by viewModels()
 

@@ -10,10 +10,7 @@ import android.os.Parcelable
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
@@ -23,7 +20,6 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMultichoiceQuizGameBinding
 import com.example.flashcard.deck.MainActivity
-import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.card.MaterialCardView
@@ -64,7 +60,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity() {
         animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
 
-        deckWithCards = intent?.parcelable(TimedFlashCardGame.DECK_ID_KEY)
+        deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
             val cardList = it.cards.toExternal()
             val deck = it.deck.toExternal()

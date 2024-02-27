@@ -62,33 +62,10 @@ class MatchQuizGameAdapter(
             item: MatchQuizGameItemModel,
             flipCard: (MatchingQuizGameSelectedItemInfo) -> Unit,
         ) {
-            val animFadeIn = AnimationUtils.loadAnimation(context.applicationContext, R.anim.fade_in)
-            val animFadeOut = AnimationUtils.loadAnimation(context.applicationContext, R.anim.fade_out)
             tvItemActive.text = item.text
             tvItemInactive.text = item.text
             tvItemWrong.text = item.text
-            /*
-            if (item.isMatched) {
-                cvItemContainer.visibility = View.GONE
-            } else {
-                cvItemContainer.visibility = View.VISIBLE
-            }
 
-            if (item.isActive) {
-                activateItem(animFadeOut, animFadeIn)
-                //cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainerHighest, R.color.blue700))
-            } else {
-                //inactivateItem(animFadeOut, animFadeIn)
-                llItemContainerActive.visibility = View.GONE
-                llItemContainerInactive.visibility = View.VISIBLE
-                llItemContainerWrong.visibility = View.GONE
-                //cvItemContainer.setCardBackgroundColor(MaterialColors.getColor(cvItemContainer, com.google.android.material.R.attr.colorSurfaceContainer, R.color.blue700))
-            }
-
-             */
-
-            val itemDetails = listOf(item, cvItemContainer)
-            //cvItemContainer.setOnClickListener { flipCard(itemDetails) }
             cvItemContainer.setOnClickListener {
                 val itemInfo = MatchingQuizGameSelectedItemInfo(
                     item,
@@ -101,26 +78,5 @@ class MatchQuizGameAdapter(
             }
 
         }
-
-        private fun activateItem(animFadeOut: Animation?, animFadeIn: Animation?) {
-
-            llItemContainerInactive.startAnimation(animFadeOut)
-            llItemContainerActive.visibility = View.VISIBLE
-            llItemContainerInactive.visibility = View.GONE
-            llItemContainerWrong.visibility = View.GONE
-            llItemContainerActive.startAnimation(animFadeIn)
-
-        }
-        private fun inactivateItem(animFadeOut: Animation?, animFadeIn: Animation?) {
-
-            llItemContainerActive.startAnimation(animFadeOut)
-            llItemContainerActive.visibility = View.GONE
-            llItemContainerInactive.visibility = View.VISIBLE
-            llItemContainerWrong.visibility = View.GONE
-            llItemContainerInactive.startAnimation(animFadeIn)
-
-        }
     }
-
-
 }

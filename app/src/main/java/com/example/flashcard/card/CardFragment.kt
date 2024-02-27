@@ -37,10 +37,10 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.FragmentCardBinding
-import com.example.flashcard.quiz.baseFlashCardGame.BaseFlashCardGame
+import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
+import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
-import com.example.flashcard.quiz.timedFlashCardGame.TimedFlashCardGame
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.UiState
@@ -128,15 +128,15 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
             show()
         }
 
-        val flashCardQuiz: Button = dialogBinding.findViewById(R.id.flashCardQuizButton)
-        flashCardQuiz.setOnClickListener {
-            onStartBaseFlashCardGame()
+        val btFlashCard: Button = dialogBinding.findViewById(R.id.bt_flash_card_game)
+        btFlashCard.setOnClickListener {
+            startFlashCardGame()
             quizModeDialog?.dismiss()
         }
 
-        val timedFlashCardQuizButton: Button = dialogBinding.findViewById(R.id.timedFlashCardQuizButton)
-        timedFlashCardQuizButton.setOnClickListener {
-            startTimedFlashCardGame()
+        val btFlashCardTimed: Button = dialogBinding.findViewById(R.id.bt_flash_card_game_timed)
+        btFlashCardTimed.setOnClickListener {
+            startFlashCardGameTimed()
             quizModeDialog?.dismiss()
         }
 
@@ -159,7 +159,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun onStartBaseFlashCardGame() {
+    private fun startFlashCardGame() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckWithCards(deck?.deckId!!)
@@ -180,8 +180,8 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
                         is UiState.Success -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            val intent = Intent(appContext, BaseFlashCardGame::class.java)
-                            intent.putExtra(BaseFlashCardGame.DECK_ID_KEY, state.data)
+                            val intent = Intent(appContext, FlashCardGameActivity::class.java)
+                            intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             this@launch.cancel()
                             this.cancel()
@@ -192,7 +192,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun startTimedFlashCardGame() {
+    private fun startFlashCardGameTimed() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckWithCards(deck?.deckId!!)
@@ -213,8 +213,8 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
                         is UiState.Success -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            val intent = Intent(appContext, TimedFlashCardGame::class.java)
-                            intent.putExtra(TimedFlashCardGame.DECK_ID_KEY, state.data)
+                            val intent = Intent(appContext, FlashCardGameTimedActivity::class.java)
+                            intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, state.data)
                             startActivity(intent)
                             this@launch.cancel()
                             this.cancel()

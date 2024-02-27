@@ -15,21 +15,19 @@
         android:gravity="center">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/flashCardQuizButton"
+            android:id="@+id/bt_flash_card_game"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:text="@string/flash_card_button_text"
-            android:layout_marginBottom="5dp"
+            android:text="@string/bt_flash_card_game_start"
             android:textColor="?colorOnSurface"
             android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/timedFlashCardQuizButton"
+            android:id="@+id/bt_flash_card_game_timed"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:text="@string/timed_flash_card_text_button"
-            android:layout_marginBottom="5dp"
+            android:text="@string/bt_text_flash_card_timed"
             android:textColor="?colorOnSurface"
             android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
@@ -57,15 +55,6 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="@string/bt_match_quiz_mode_text"
-            android:textColor="?colorOnSurface"
-            android:backgroundTint="?colorSurfaceContainer"
-            app:cornerRadius="10dp"/>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_flash_card_game"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content"
-            android:text="@string/bt_flash_card_game_start"
             android:textColor="?colorOnSurface"
             android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>

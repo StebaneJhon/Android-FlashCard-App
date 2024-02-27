@@ -45,3 +45,7 @@ object MatchQuizGameClickStatus {
     val MATCHE = "Match"
     val MATCH_NOT = "Match not"
 }
+
+object FlashCardTimedTimerStatus {
+    val TIMER_FINISHED = "Timer Finished"
+}
