@@ -24,7 +24,7 @@
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/mn_flash_card_top_app_bar"
             app:navigationIcon="@drawable/icon_chevron_left"
-            app:navigationIconTint="@color/black"
+            app:navigationIconTint="?colorOnSurface"
             app:title="@string/title_flash_card_game" />
 
     </com.google.android.material.appbar.AppBarLayout>

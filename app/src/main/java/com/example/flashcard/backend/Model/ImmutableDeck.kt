@@ -2,6 +2,7 @@ package com.example.flashcard.backend.Model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import java.sql.Date
 
 @Parcelize
 data class ImmutableDeck (
@@ -13,5 +14,6 @@ data class ImmutableDeck (
     val deckColorCode: String? = "",
     val cardSum: Int? = 0,
     val category: String? = "",
-    val isFavorite: Boolean? = false
+    val isFavorite: Boolean? = false,
+    val deckCreationDate: String?,
 ): Parcelable

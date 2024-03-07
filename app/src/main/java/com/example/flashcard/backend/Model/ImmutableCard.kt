@@ -10,5 +10,9 @@ data class ImmutableCard(
     val backgroundImg: String? = "",
     val isFavorite: Boolean? = false,
     val revisionTime: Int? = 0,
-    val missedTime: Int? = 0
+    val missedTime: Int? = 0,
+    val creationDate: String? = null,
+    val lastRevisionDate: String? = null,
+    val cardStatus: String? = null,
+    val nextMissMemorisationDate: String? = null
 )

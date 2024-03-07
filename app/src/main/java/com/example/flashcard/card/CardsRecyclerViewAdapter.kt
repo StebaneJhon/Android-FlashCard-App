@@ -59,11 +59,11 @@ class CardsRecyclerViewAdapter(
 
         private var isCardRevealed = false
 
-        private val onCardText: TextView = view.findViewById(R.id.onCardTextTV)
-        private val onCardTextDescription: TextView = view.findViewById(R.id.onCardTextDescriptionTV)
-        private val languageHint: TextView = view.findViewById(R.id.languageHint)
+        private val onCardText: TextView = view.findViewById(R.id.tv_card_content)
+        private val cardDescription: TextView = view.findViewById(R.id.tv_card_description)
+        private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
         private val popUpBT: ImageButton = view.findViewById(R.id.pupUpBT)
-        private val cardRoot: MaterialCardView = view.findViewById(R.id.cardRoot)
+        private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
 
         private val ICON_MARGIN = 5
 
@@ -75,22 +75,9 @@ class CardsRecyclerViewAdapter(
             editCardClickListener: (Card) -> Unit,
             deleteCardClickListener: (Card) -> Unit
         ) {
-            languageHint.text = deck.deckFirstLanguage
+            cardStatus.text = "L"
             onCardText.text = card.cardContent
-            val cardContentDescription = card.contentDescription
-            if (cardContentDescription.isNullOrBlank() && cardContentDescription.isNullOrEmpty()) {
-                onCardTextDescription.visibility = View.GONE
-            } else {
-                onCardTextDescription.text = cardContentDescription
-            }
-
-            val deckColorCode = deck.deckColorCode?.let {
-                DeckColorCategorySelector().selectColor(
-                    it
-                )
-            } ?: R.color.red700
-
-            cardRoot.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+            cardDescription.text = card.cardDefinition
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
@@ -104,7 +91,7 @@ class CardsRecyclerViewAdapter(
                 )
             }
             cardRoot.setOnClickListener {
-                flipCard(card, deck)
+                //flipCard(card, deck)
             }
 
         }
@@ -178,6 +165,7 @@ class CardsRecyclerViewAdapter(
 
         }
 
+        /*
         private fun flipCard(card: Card, deck: ImmutableDeck) {
             if (!isCardRevealed) {
                 languageHint.text = deck.deckSecondLanguage
@@ -192,10 +180,12 @@ class CardsRecyclerViewAdapter(
             }
         }
 
+         */
+
         companion object {
             fun create(parent: ViewGroup): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.recycler_view_adapter_card_view, parent, false)
+                    .inflate(R.layout.ly_card_fragment_item, parent, false)
                 return ViewHolder(view)
             }
         }

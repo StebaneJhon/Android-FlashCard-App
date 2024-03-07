@@ -79,7 +79,12 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
         deck = args.selectedDeck
         deck?.let {_deck ->
-            view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).title = _deck.deckName
+            view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
+                title = _deck.deckName
+                setNavigationOnClickListener {
+                    (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
+                }
+            }
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     cardViewModel.getDeckWithCards(_deck.deckId!!)

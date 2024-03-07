@@ -18,5 +18,9 @@ data class Card (
     @ColumnInfo(name = "background_img", defaultValue = "") val backgroundImg: String?,
     @ColumnInfo(name = "is_favorite", defaultValue = "false") val isFavorite: Boolean? = false,
     @ColumnInfo(name = "revision_time", defaultValue = "0") val revisionTime: Int? = 0,
-    @ColumnInfo(name = "missed_time", defaultValue = "0") val missedTime: Int? = 0
+    @ColumnInfo(name = "missed_time", defaultValue = "0") val missedTime: Int? = 0,
+    @ColumnInfo(name = "creation_date", defaultValue = "0") val creationDate: String? = null,
+    @ColumnInfo(name = "last_revision_date", defaultValue = "0") val lastRevisionDate: String? = null,
+    @ColumnInfo(name = "card_status", defaultValue = "0") val cardStatus: String? = null,
+    @ColumnInfo(name = "next_miss_memorisation_date", defaultValue = "0") val nextMissMemorisationDate: String? = null,
 ): Parcelable
