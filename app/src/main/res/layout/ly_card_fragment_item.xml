@@ -18,35 +18,16 @@
         android:padding="10dp">
 
         <TextView
-            android:id="@+id/tv_card_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/card_border_rounded"
-            android:backgroundTint="@color/green500"
-            android:fontFamily="@font/open_sans_light"
-            android:paddingStart="15dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="15dp"
-            android:paddingBottom="5dp"
-            android:textColor="?colorSurfaceContainerLowest"
-            android:textSize="11sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="L" />
-
-        <TextView
             android:id="@+id/tv_card_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+            android:layout_marginEnd="5dp"
             android:fontFamily="@font/open_sans_bold"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurface"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_marginEnd="5dp"
-            app:layout_constraintEnd_toStartOf="@+id/tv_card_status"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Init Deck" />
@@ -55,15 +36,34 @@
             android:id="@+id/tv_card_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
             android:fontFamily="@font/open_sans"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurface"
             android:textSize="17sp"
-            app:layout_constraintEnd_toEndOf="@+id/tv_card_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_card_content"
             tools:text="Test deck description" />
+
+        <TextView
+            android:id="@+id/tv_card_status"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/card_border_rounded"
+            android:backgroundTint="@color/green500"
+            android:fontFamily="@font/open_sans_light"
+            android:paddingStart="15dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="5dp"
+            android:layout_marginEnd="5dp"
+            android:textColor="?colorSurfaceContainerLowest"
+            android:textSize="11sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/pupUpBT"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_description"
+            tools:text="L1" />
 
         <ImageButton
             android:id="@+id/pupUpBT"
@@ -72,7 +72,8 @@
             android:background="@color/transparent"
             android:contentDescription="@string/full_screen_button_description_text"
             android:src="@drawable/icon_popup_menu"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_card_description"
+            android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
