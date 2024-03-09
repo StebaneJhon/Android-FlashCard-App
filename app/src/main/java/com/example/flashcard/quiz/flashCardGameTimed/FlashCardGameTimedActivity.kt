@@ -26,7 +26,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameTimedBinding
-import com.example.flashcard.deck.MainActivity
+import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.FlashCardTimedTimerStatus
 import com.example.flashcard.util.ThemePicker

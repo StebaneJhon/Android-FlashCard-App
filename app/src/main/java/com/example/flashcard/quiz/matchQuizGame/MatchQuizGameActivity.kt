@@ -19,7 +19,7 @@ import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMatchQuizGameBinding
-import com.example.flashcard.deck.MainActivity
+import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.MatchQuizGameClickStatus
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState

@@ -22,6 +22,13 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
+    fun allCards(): Flow<List<ImmutableCard>> {
+        return flashCardDao.getAllCards().map { cards ->
+            cards.toExternal()
+        }
+    }
+
+    @WorkerThread
     suspend fun deleteDeck(deck: ImmutableDeck): String {
         return if (deck.cardSum == null || deck.cardSum == 0) {
             flashCardDao.deleteDeck(deck.toLocal())

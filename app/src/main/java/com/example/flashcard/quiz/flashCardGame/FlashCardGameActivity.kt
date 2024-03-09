@@ -12,7 +12,6 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
@@ -27,7 +26,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
-import com.example.flashcard.deck.MainActivity
+import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState

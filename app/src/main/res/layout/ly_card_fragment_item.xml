@@ -51,7 +51,6 @@
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             android:background="@drawable/card_border_rounded"
-            android:backgroundTint="@color/green500"
             android:fontFamily="@font/open_sans_light"
             android:paddingStart="15dp"
             android:paddingTop="5dp"

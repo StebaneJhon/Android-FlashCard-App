@@ -56,4 +56,7 @@ interface FlashCardDao {
 
     @Query("SELECT * FROM card WHERE deckId = :deckId")
     fun getCards(deckId: Int): Flow<List<Card>>
+
+    @Query("SELECT * FROM card")
+    fun getAllCards(): Flow<List<Card>>
 }

@@ -91,7 +91,7 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
             card.backgroundImg?.let { onCardBackgroundSelected(it) }
 
             builder.setView(view)
-                .setTitle("New Card")
+                .setTitle("Update Card")
                 .setNegativeButton("Cancel") { _, _ ->  }
                 .setPositiveButton("Update"
                 ) { _, _ ->
@@ -113,7 +113,6 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
 
         cardContentLY?.setEndIconOnClickListener {
             listen()
-
         }
 
         cardValueLY?.setEndIconOnClickListener {

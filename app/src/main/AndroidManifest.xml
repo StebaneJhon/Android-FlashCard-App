@@ -32,7 +32,7 @@
             android:name=".quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity"
             android:exported="false" />
         <activity
-            android:name=".deck.MainActivity"
+            android:name=".mainActivity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

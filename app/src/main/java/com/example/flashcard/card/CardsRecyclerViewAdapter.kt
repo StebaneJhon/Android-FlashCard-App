@@ -2,7 +2,9 @@ package com.example.flashcard.card
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.InsetDrawable
 import android.os.Build
 import android.util.TypedValue
@@ -24,6 +26,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
+import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.google.android.material.card.MaterialCardView
 
 
@@ -75,7 +78,12 @@ class CardsRecyclerViewAdapter(
             editCardClickListener: (Card) -> Unit,
             deleteCardClickListener: (Card) -> Unit
         ) {
-            cardStatus.text = "L"
+            val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
+            val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
+            cardStatus.apply {
+                text = card.cardStatus
+                backgroundTintList = colorStateList
+            }
             onCardText.text = card.cardContent
             cardDescription.text = card.cardDefinition
 

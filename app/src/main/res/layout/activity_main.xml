@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/mainActivityRoot"
     android:background="?colorSurfaceContainerLowest"
-    tools:context=".deck.MainActivity">
+    tools:context=".mainActivity.MainActivity">
 
     <fragment
         android:id="@+id/fragmentContainerView"
