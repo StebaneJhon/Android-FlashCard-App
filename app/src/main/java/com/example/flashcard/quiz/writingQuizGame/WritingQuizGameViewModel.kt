@@ -88,6 +88,9 @@ class WritingQuizGameViewModel(
             onCardMissed()
             onUserAnswered(isCorrect)
         }
+        if (attemptTime == 0 && isCorrect) {
+            onUserAnswered(isCorrect)
+        }
         return isCorrect
     }
 
