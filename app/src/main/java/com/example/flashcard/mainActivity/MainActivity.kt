@@ -111,7 +111,6 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
     }
 
     private fun updateCardStatus(card: ImmutableCard) {
-        //val today = today()
         val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
         if (isCardForgotten) {
             val newStatus = spaceRepetitionHelper.status(card, false)
@@ -135,14 +134,6 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
             activityViewModel.updateCard(newCard)
         }
     }
-
-    /*
-    private fun today(): String {
-        val today = Calendar.getInstance()
-        val formatter = SimpleDateFormat("yyyy-MM-dd")
-        return formatter.format(today)
-    }
-     */
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

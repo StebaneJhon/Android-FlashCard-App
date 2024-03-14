@@ -28,7 +28,7 @@ class FlashCardGameViewModel(
     var deck: ImmutableDeck? = null
     var progress: Int = 0
 
-    val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
 
     fun initCardList(gameCards: List<ImmutableCard>) {

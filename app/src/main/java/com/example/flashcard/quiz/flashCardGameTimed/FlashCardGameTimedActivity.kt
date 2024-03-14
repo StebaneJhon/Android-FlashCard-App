@@ -21,6 +21,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
+import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
@@ -37,7 +38,9 @@ import kotlinx.coroutines.launch
 class FlashCardGameTimedActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFlashCardGameTimedBinding
-    private val viewModel: FlashCardGameTimedViewModel by viewModels()
+    private val viewModel: FlashCardGameTimedViewModel by viewModels {
+        FlashCardGameTimedViewModelFactory((application as FlashCardApplication).repository)
+    }
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
@@ -505,6 +508,9 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
         binding.clOnScreenCardRoot.isEnabled = isEnabled
         binding.tvCardFrontFlipHint.isVisible = isEnabled
         binding.tvFlipHint.isVisible = isEnabled
+        binding.btKnow.isEnabled = isEnabled
+        binding.btRewind.isEnabled = isEnabled
+        binding.btNotKnow.isEnabled = isEnabled
     }
 
     private fun initFlashCard(

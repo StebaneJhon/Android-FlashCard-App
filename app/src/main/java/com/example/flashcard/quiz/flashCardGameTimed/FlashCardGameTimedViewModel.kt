@@ -2,10 +2,14 @@ package com.example.flashcard.quiz.flashCardGameTimed
 
 import android.os.CountDownTimer
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.FlashCardTimedTimerStatus
+import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +17,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class FlashCardGameTimedViewModel: ViewModel() {
+class FlashCardGameTimedViewModel(
+    private val repository: FlashCardRepository
+): ViewModel() {
 
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
@@ -27,6 +33,9 @@ class FlashCardGameTimedViewModel: ViewModel() {
     private lateinit var timer: CountDownTimer
     private val _seconds = MutableStateFlow<UiState<String>>(UiState.Loading)
     val seconds: StateFlow<UiState<String>> = _seconds.asStateFlow()
+
+    private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+
 
     fun startTimer(seconds: Long) {
         _seconds.value = UiState.Success((seconds/1000).toString())
@@ -65,6 +74,7 @@ class FlashCardGameTimedViewModel: ViewModel() {
         } else {
             progress += 100/getTotalCards()
         }
+        onCardSwiped(isKnown)
         currentCardPosition += 1
         updateOnScreenCards()
         return currentCardPosition != cardList!!.size
@@ -140,6 +150,47 @@ class FlashCardGameTimedViewModel: ViewModel() {
         }
     }
 
+    private fun onCardSwiped(isKnown: Boolean) {
+        cardList?.let {cards ->
+            val card = cards[currentCardPosition]
+            val newStatus = spaceRepetitionHelper.status(card, isKnown)
+            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
+            val lastRevision = spaceRepetitionHelper.today()
+            val newCard = Card(
+                card.cardId,
+                card.cardContent,
+                card.contentDescription,
+                card.cardDefinition,
+                card.valueDefinition,
+                card.deckId,
+                card.backgroundImg,
+                card.isFavorite,
+                card.revisionTime,
+                card.missedTime,
+                card.creationDate,
+                lastRevision,
+                newStatus,
+                nextRevision
+            )
+            updateCard(newCard)
+        }
+    }
 
+    fun updateCard(card: Card) = viewModelScope.launch {
+        repository.updateCard(card)
+    }
+
+
+}
+
+class FlashCardGameTimedViewModelFactory(private val repository: FlashCardRepository): ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(FlashCardGameTimedViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return FlashCardGameTimedViewModel(repository) as T
+        }
+        throw throw IllegalArgumentException("Unknown ViewModel class")
+    }
 
 }
