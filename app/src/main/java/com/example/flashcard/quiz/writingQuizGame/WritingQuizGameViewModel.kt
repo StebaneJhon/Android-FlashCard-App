@@ -1,10 +1,13 @@
 package com.example.flashcard.quiz.writingQuizGame
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceGameCardModel
+import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +15,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class WritingQuizGameViewModel: ViewModel() {
+class WritingQuizGameViewModel(
+    private val repository: FlashCardRepository
+): ViewModel() {
 
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
@@ -24,6 +29,8 @@ class WritingQuizGameViewModel: ViewModel() {
     private lateinit var cardList: List<ImmutableCard>
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard>
+
+    private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     fun initCardList(gameCards: List<ImmutableCard>) {
         cardList = gameCards
@@ -79,6 +86,7 @@ class WritingQuizGameViewModel: ViewModel() {
         val isCorrect = userAnswer == correctAnswer
         if (!isCorrect) {
             onCardMissed()
+            onUserAnswered(isCorrect)
         }
         return isCorrect
     }
@@ -110,4 +118,45 @@ class WritingQuizGameViewModel: ViewModel() {
         }
     }
 
+    private fun onUserAnswered(isKnown: Boolean) {
+        cardList.let { cards ->
+            val card = cards[currentCardPosition]
+            val newStatus = spaceRepetitionHelper.status(card, isKnown)
+            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
+            val lastRevision = spaceRepetitionHelper.today()
+            val newCard = Card(
+                card.cardId,
+                card.cardContent,
+                card.contentDescription,
+                card.cardDefinition,
+                card.valueDefinition,
+                card.deckId,
+                card.backgroundImg,
+                card.isFavorite,
+                card.revisionTime,
+                card.missedTime,
+                card.creationDate,
+                lastRevision,
+                newStatus,
+                nextRevision
+            )
+            updateCard(newCard)
+        }
+    }
+
+    fun updateCard(card: Card) = viewModelScope.launch {
+        repository.updateCard(card)
+    }
+
+
+}
+
+class WritingQuizGameViewModelFactory(private val repository: FlashCardRepository): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(WritingQuizGameViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return WritingQuizGameViewModel(repository) as T
+        }
+        throw throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }

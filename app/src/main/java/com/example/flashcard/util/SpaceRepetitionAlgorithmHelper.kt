@@ -12,8 +12,8 @@ class SpaceRepetitionAlgorithmHelper {
 
     val box = mapOf(
         "L1" to LevelModel(0, R.color.red700),
-        "L2" to LevelModel(1, R.color.brown500),
-        "L3" to LevelModel(2, R.color.orange),
+        "L2" to LevelModel(1, R.color.orange),
+        "L3" to LevelModel(2, R.color.brown500),
         "L4" to LevelModel(4, R.color.yellow700),
         "L5" to LevelModel(7, R.color.yellow500),
         "L6" to LevelModel(14, R.color.green500),

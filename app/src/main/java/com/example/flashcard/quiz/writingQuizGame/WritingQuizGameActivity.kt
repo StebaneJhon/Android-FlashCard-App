@@ -14,6 +14,7 @@ import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
+import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
@@ -33,7 +34,9 @@ class WritingQuizGameActivity : AppCompatActivity() {
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
 
-    private val viewModel: WritingQuizGameViewModel by viewModels()
+    private val viewModel: WritingQuizGameViewModel by viewModels {
+        WritingQuizGameViewModelFactory((application as FlashCardApplication).repository)
+    }
     private var deckWithCards: DeckWithCards? = null
 
     private var animFadeIn: Animation? = null
@@ -90,7 +93,6 @@ class WritingQuizGameActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
