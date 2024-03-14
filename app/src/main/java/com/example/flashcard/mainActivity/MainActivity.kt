@@ -110,12 +110,12 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         }
     }
 
-    fun updateCardStatus(card: ImmutableCard) {
+    private fun updateCardStatus(card: ImmutableCard) {
         //val today = today()
         val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
         if (isCardForgotten) {
             val newStatus = spaceRepetitionHelper.status(card, false)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false)
+            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
             val newCard = Card(
                 card.cardId,
                 card.cardContent,

@@ -20,15 +20,17 @@ class SpaceRepetitionAlgorithmHelper {
         "L7" to LevelModel(31, R.color.green700)
     )
 
+    fun today(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return formatter.format(LocalDate.now())
+    }
+
     fun isForgotten(card: ImmutableCard): Boolean {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val todayDate = formatter.format(today)
-        val dd = card.lastRevisionDate
         return if (!card.lastRevisionDate.isNullOrEmpty() && card.lastRevisionDate != "0") {
             val lastRevised = LocalDate.parse(card.lastRevisionDate, formatter)
-            //val comparison = todayDate.compareTo(lastRevised)
-            today >= lastRevised
+            today > lastRevised
         } else {
 
             val creationDate = if (!card.creationDate.isNullOrEmpty() && card.creationDate == "0") {
@@ -36,29 +38,87 @@ class SpaceRepetitionAlgorithmHelper {
             } else {
                 LocalDate.parse(card.creationDate, formatter)
             }
-            //val comparison = todayDate.compareTo(creationDate)
-            today >= creationDate
+            today > creationDate
         }
     }
 
     fun status(card: ImmutableCard, isKnown: Boolean): String {
-            return if (isKnown) {
-                when (card.cardStatus) {
-                    "L1"  -> { "L2" }
-                    "L2"  -> { "L3" }
-                    "L3"  -> { "L4" }
-                    "L4"  -> { "L5" }
-                    "L6"  -> { "L7" }
-                    else -> {"L7"}
-                }
+        val today = LocalDate.now()
+        val lastRevision = lastRevisionDate(card)
+        val nextRevision = nextForgottenDate(card)
+        lastRevision?.let {
+            if (lastRevision == today && isKnown && nextRevision != today) {
+                return card.cardStatus!!
             } else {
-                "L1"
+                return nextLV(isKnown, card)
             }
+        }
+
+        return nextLV(isKnown, card)
+
     }
 
-    fun nextRevisionDate(card: ImmutableCard, isKnown: Boolean): String {
+    private fun nextLV(
+        isKnown: Boolean,
+        card: ImmutableCard
+    ): String {
+        return if (isKnown) {
+            when (card.cardStatus) {
+                "L1" -> { "L2" }
+                "L2" -> { "L3" }
+                "L3" -> { "L4" }
+                "L4" -> { "L5" }
+                "L6" -> { "L7" }
+                else -> { "L7" }
+            }
+        } else {
+            "L1"
+        }
+    }
+
+    fun lastRevisionDate(card: ImmutableCard): LocalDate? {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return if (!card.lastRevisionDate.isNullOrEmpty() && card.lastRevisionDate != "0") {
+            LocalDate.parse(card.lastRevisionDate, formatter)
+        } else {
+            null
+        }
+
+    }
+
+    fun nextForgottenDate(card: ImmutableCard): LocalDate? {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return if (!card.nextMissMemorisationDate.isNullOrEmpty() && card.nextMissMemorisationDate != "0") {
+            LocalDate.parse(card.nextMissMemorisationDate, formatter)
+        } else {
+            null
+        }
+    }
+
+    fun nextRevisionDate(card: ImmutableCard, isKnown: Boolean, newCardStatus: String): String {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+
+
+        val lastRevised = lastRevisionDate(card)
+        val nextRevision = nextForgottenDate(card)
+
+        lastRevised?.let {
+            if (it == today && !isKnown) {
+                val period = Period.of(0, 0, box["L1"]?.repeatDay!!)
+                val nextDate = today.plus(period)
+                val result = formatter.format(nextDate)
+                return result
+            }
+
+            if (it == today && isKnown && nextRevision != today) {
+                card.nextMissMemorisationDate?.let {
+                    return card.nextMissMemorisationDate
+                }
+                return formatter.format(today)
+            }
+        }
+
         if (!isKnown) {
             val period = Period.of(0, 0, box["L1"]?.repeatDay!!)
             val nextDate = today.plus(period)
@@ -67,7 +127,7 @@ class SpaceRepetitionAlgorithmHelper {
         }
 
         card.cardStatus?.let {
-            val period = Period.of(0, 0, box[it]?.repeatDay!!)
+            val period = Period.of(0, 0, box[newCardStatus]?.repeatDay!!)
             val newDate = today.plus(period)
             return formatter.format(newDate)
         }
