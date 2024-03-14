@@ -67,4 +67,16 @@
     <string name="text_move">Move Sum:</string>
     <string name="text_missed_move_sum">Missed move:</string>
     <string name="bt_text_flash_card_timed">Flash Card Timed</string>
+    <string name="tv_settings_title">Settings</string>
+    <string name="rb_random_settings">Random</string>
+    <string name="rb_creation_time_settings">Creation date</string>
+    <string name="tv_filters_settings_section_title">Filters</string>
+    <string name="tv_space_repetition_settings_title">Space repetition</string>
+    <string name="rb_by_card_level_setting_text">By card level</string>
+    <string name="cb_unknown_card_first_setting_text">Unknown card first</string>
+    <string name="cb_unknown_card_only_setting_text">Unknown card only</string>
+    <string name="tv_card_orientation_setting_section_title">Card orientation</string>
+    <string name="rb_front_and_back_setting_text">Front and Back</string>
+    <string name="rb_back_and_front_setting_text">Back and Front</string>
+    <string name="bt_apply_and_restart_quiz_settings_text">APPLY AND RESTART QUIZ</string>
 </resources>

@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:background="?colorSurfaceContainerLow">
+
+        <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+            android:id="@+id/drag_handle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_settings_title"
+            android:fontFamily="@font/open_sans_bold"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:textColor="?colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/drag_handle" />
+
+        <LinearLayout
+            android:id="@+id/ll_filter_settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/settings_section_bg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            android:padding="5dp"
+            android:layout_marginTop="10dp">
+
+            <RelativeLayout
+                android:id="@+id/rl_filter_title_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_filters_section_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/tv_filters_settings_section_title"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="20sp"/>
+                <ImageButton
+                    android:id="@+id/bt_reveal_filter_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/transparent"
+                    android:src="@drawable/icone_expand_more" />
+            </RelativeLayout>
+
+
+
+            <RadioGroup
+                android:id="@+id/rg_radioGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@+id/rb_random"
+                app:layout_constraintTop_toBottomOf="@+id/tv_filters_section_title"
+                tools:layout_editor_absoluteX="15dp">
+
+                <RadioButton
+                    android:id="@+id/rb_random"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rb_random_settings"
+                    android:textColor="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"/>
+
+                <RadioButton
+                    android:id="@+id/rb_creation_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rb_creation_time_settings"
+                    android:textColor="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"/>
+
+                <RadioButton
+                    android:id="@+id/rb_filter_by_lv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rb_by_card_level_setting_text"
+                    android:textColor="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"/>
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_space_repetition_settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/settings_section_bg"
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_filter_settings_container">
+
+            <RelativeLayout
+                android:id="@+id/rl_space_repetition_title_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_space_repetition_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/tv_space_repetition_settings_title"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="20sp" />
+                <ImageButton
+                    android:id="@+id/bt_reveal_space_repetition_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/transparent"
+                    android:src="@drawable/icone_expand_more" />
+            </RelativeLayout>
+
+
+
+            <CheckBox
+                android:id="@+id/cb_unknown_card_first"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cb_unknown_card_first_setting_text"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"/>
+
+            <CheckBox
+                android:id="@+id/cb_unknown_card_only"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cb_unknown_card_only_setting_text"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_card_orientation_settings_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/settings_section_bg"
+            android:padding="5dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_space_repetition_settings_container">
+
+            <RelativeLayout
+                android:id="@+id/rl_card_orientation_title_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tv_card_orientation_section_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/tv_card_orientation_setting_section_title"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="20sp" />
+
+                <ImageButton
+                    android:id="@+id/bt_reveal_card_orientation_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:background="@color/transparent"
+                    android:src="@drawable/icone_expand_more" />
+            </RelativeLayout>
+
+            <RadioGroup
+                android:id="@+id/rg_card_orientation_section"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@+id/rb_random"
+                app:layout_constraintTop_toBottomOf="@+id/tv_filters_section_title"
+                tools:layout_editor_absoluteX="15dp">
+
+                <RadioButton
+                    android:id="@+id/rb_front_back"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rb_front_and_back_setting_text"
+                    android:textColor="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"/>
+
+                <RadioButton
+                    android:id="@+id/rb_back_front"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/rb_back_and_front_setting_text"
+                    android:textColor="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"/>
+
+            </RadioGroup>
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_apply_restart_flash_card_mini_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:text="@string/bt_apply_and_restart_quiz_settings_text"
+            android:textColor="?colorOnSurface"
+            app:cornerRadius="5dp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_card_orientation_settings_container" />
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

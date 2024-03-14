@@ -119,6 +119,16 @@ class FlashCardGameActivity : AppCompatActivity() {
             }
         }
 
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.mn_bt_settings) {
+                val modalBottomSheet = FlashCardGameSettingsSheet()
+                modalBottomSheet.show(supportFragmentManager, FlashCardGameSettingsSheet.TAG)
+                true
+            } else {
+                false
+            }
+        }
+
     }
 
     private fun onKnownButtonClicked() {

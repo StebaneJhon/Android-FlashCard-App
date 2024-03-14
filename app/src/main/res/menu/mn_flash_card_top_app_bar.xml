@@ -2,5 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item
+        android:id="@+id/mn_bt_settings"
+        android:title="@string/settings_hint"
+        android:icon="@drawable/icon_settings"
+        app:showAsAction="ifRoom"
+        android:iconTint="@color/black"/>
 
 </menu>
