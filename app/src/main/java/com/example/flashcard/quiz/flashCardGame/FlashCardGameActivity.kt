@@ -19,6 +19,8 @@ import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -29,12 +31,15 @@ import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.DeckColorCategorySelector
+import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FlashCardGameActivity : AppCompatActivity() {
+class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.BottomSheetDismissListener {
 
     private lateinit var binding: ActivityFlashCardGameBinding
     private val viewModel: FlashCardGameViewModel by viewModels {
@@ -43,12 +48,15 @@ class FlashCardGameActivity : AppCompatActivity() {
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
+    private var flashCardGameRef: SharedPreferences? = null
     private var deckWithCards: DeckWithCards? = null
     private lateinit var frontAnim: AnimatorSet
     private lateinit var backAnim: AnimatorSet
     var isFront = true
     private var dx: Float = 0.0f
     private var dy: Float = 0.0f
+
+    private var modalBottomSheet: FlashCardGameSettingsSheet? = null
 
     companion object {
         private val MIN_SWIPE_DISTANCE = -275
@@ -61,6 +69,7 @@ class FlashCardGameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        flashCardGameRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
@@ -119,16 +128,44 @@ class FlashCardGameActivity : AppCompatActivity() {
             }
         }
 
+        modalBottomSheet = FlashCardGameSettingsSheet()
+
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.mn_bt_settings) {
-                val modalBottomSheet = FlashCardGameSettingsSheet()
-                modalBottomSheet.show(supportFragmentManager, FlashCardGameSettingsSheet.TAG)
+                modalBottomSheet?.show(supportFragmentManager, FlashCardGameSettingsSheet.TAG)
                 true
             } else {
                 false
             }
         }
 
+
+
+        /*
+        val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                Toast.makeText(this@FlashCardGameActivity, "Dismissed", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                Toast.makeText(this@FlashCardGameActivity, "Dismissed", Toast.LENGTH_SHORT).show()
+            }
+
+        }
+
+        val modalBottomSheetBehavior = (modalBottomSheet?.dialog as BottomSheetDialog).behavior
+        modalBottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
+
+         */
+
+    }
+
+    override fun onBottomSheetDismissed() {
+        val filter = flashCardGameRef?.getString(
+            FlashCardMiniGameRef.CHECKED_FILTER,
+            FlashCardMiniGameRef.FILTER_RANDOM
+        )
+        Toast.makeText(this@FlashCardGameActivity, filter, Toast.LENGTH_SHORT).show()
     }
 
     private fun onKnownButtonClicked() {

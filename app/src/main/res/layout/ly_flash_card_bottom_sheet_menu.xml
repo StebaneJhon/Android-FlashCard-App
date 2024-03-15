@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/bottom_sheet_behavior">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
             android:text="@string/tv_settings_title"
             android:fontFamily="@font/open_sans_bold"
             android:textAlignment="center"
-            android:textSize="25sp"
+            android:textSize="20sp"
             android:textColor="?colorOnSurface"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -55,7 +56,7 @@
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/tv_filters_settings_section_title"
                     android:textColor="?colorOnSurface"
-                    android:textSize="20sp"/>
+                    android:textSize="15sp"/>
                 <ImageButton
                     android:id="@+id/bt_reveal_filter_settings"
                     android:layout_width="wrap_content"
@@ -126,7 +127,7 @@
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/tv_space_repetition_settings_title"
                     android:textColor="?colorOnSurface"
-                    android:textSize="20sp" />
+                    android:textSize="15sp" />
                 <ImageButton
                     android:id="@+id/bt_reveal_space_repetition_settings"
                     android:layout_width="wrap_content"
@@ -179,7 +180,7 @@
                     android:fontFamily="@font/open_sans_bold"
                     android:text="@string/tv_card_orientation_setting_section_title"
                     android:textColor="?colorOnSurface"
-                    android:textSize="20sp" />
+                    android:textSize="15sp" />
 
                 <ImageButton
                     android:id="@+id/bt_reveal_card_orientation_settings"
@@ -230,9 +231,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_card_orientation_settings_container" />
-
-
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

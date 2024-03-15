@@ -49,3 +49,14 @@ object MatchQuizGameClickStatus {
 object FlashCardTimedTimerStatus {
     val TIMER_FINISHED = "Timer Finished"
 }
+
+object FlashCardMiniGameRef {
+    const val FLASH_CARD_MINI_GAME_REF = "Flash Card MiniGame Ref"
+    const val CHECKED_FILTER = "Checked Filter"
+    const val CHECKED_CARD_ORIENTATION = "Checked Card Orientation"
+    const val IS_UNKNOWN_CARD_FIRST = "Is Unknown Card First"
+    const val IS_UNKNOWN_CARD_ONLY = "Is Unknown Card Only"
+    const val FILTER_RANDOM = "Filter Random"
+    const val FILTER_CREATION_DATE = "Filter Creation Date"
+    const val FILTER_BY_LEVEL = "Filter By Level"
+}
