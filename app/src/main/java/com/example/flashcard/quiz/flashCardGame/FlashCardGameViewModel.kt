@@ -3,10 +3,12 @@ package com.example.flashcard.quiz.flashCardGame
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.flashcard.backend.FlashCardDao_Impl
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -24,14 +26,14 @@ class FlashCardGameViewModel(
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
     val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
-    private var cardList: List<ImmutableCard>? = null
+    private var cardList: MutableList<ImmutableCard>? = null
     var deck: ImmutableDeck? = null
     var progress: Int = 0
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
 
-    fun initCardList(gameCards: List<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard>) {
         cardList = gameCards
     }
     fun initDeck(gameDeck: ImmutableDeck) {
@@ -42,6 +44,18 @@ class FlashCardGameViewModel(
         get() = cardList?.get(currentCardPosition)
     private val bottomCard
         get() = getBottomCard(cardList!!, currentCardPosition)
+
+    fun sortCardsByLevel() {
+        cardList?.sortBy { it.cardStatus }
+    }
+
+    fun shuffleCards() {
+        cardList?.shuffle()
+    }
+
+    fun sortByCreationDate() {
+        cardList?.sortBy { it.cardId }
+    }
 
     fun swipe(isKnown: Boolean): Boolean {
         if (!isKnown) {
@@ -83,10 +97,10 @@ class FlashCardGameViewModel(
 
     fun getMissedCardSum() = missedCards.size
 
-    fun getMissedCards(): List<ImmutableCard> {
+    fun getMissedCards(): MutableList<ImmutableCard> {
         val newCards = arrayListOf<ImmutableCard>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-        return newCards.toList()
+        return newCards
     }
 
     private fun getBottomCard(
@@ -114,11 +128,11 @@ class FlashCardGameViewModel(
                 fetchJob?.cancel()
                 _actualCards.value = UiState.Loading
                 fetchJob = viewModelScope.launch {
-                    _actualCards.value = UiState.Success(
-                        FlashCardGameModel(
-                        top = topCard!!,
-                        bottom = bottomCard
-                    )
+                        _actualCards.value = UiState.Success(
+                            FlashCardGameModel(
+                                top = topCard!!,
+                                bottom = bottomCard
+                            )
                     )
                 }
             }

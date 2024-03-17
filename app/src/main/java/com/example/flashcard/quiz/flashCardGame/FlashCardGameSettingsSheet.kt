@@ -11,12 +11,16 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.flashcard.R
 import com.example.flashcard.databinding.LyFlashCardBottomSheetMenuBinding
-import com.example.flashcard.deck.NewDeckDialog
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
+import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
 import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_FILTER
 import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_BY_LEVEL
 import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_CREATION_DATE
 import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_RANDOM
 import com.example.flashcard.util.FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
+import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
+import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
@@ -30,7 +34,15 @@ class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
 
     private var flashCardMiniGamePref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
-    private var listener: FlashCardGameSettingsSheet.BottomSheetDismissListener? = null
+    private var listener: FlashCardGameSettingsSheet.SettingsApplication? = null
+
+    companion object {
+        const val TAG = "ModalBottomSheet"
+    }
+
+    interface SettingsApplication {
+        fun onSettingsApplied()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,22 +58,14 @@ class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
 
         flashCardMiniGamePref = activity?.getSharedPreferences(FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = flashCardMiniGamePref?.edit()
-        val checkedFilter = flashCardMiniGamePref?.getString(CHECKED_FILTER, FILTER_RANDOM)
-        checkedFilter?.apply {
-            selectFilter(this)
-        }
+        initSettingState()
 
         val activity = requireActivity()
         flashCardViewModel = ViewModelProvider(activity)[FlashCardGameViewModel::class.java]
 
-        isFilterSectionRevealed(false)
-        isCardOrientationSectionRevealed(false)
-        isSpaceRepetitionSectionRevealed(false)
-
        binding.btRevealFilterSettings.setOnClickListener {
            isFilterSectionRevealed(!isFilterSectionRevealed)
        }
-
         binding.btRevealCardOrientationSettings.setOnClickListener {
             isCardOrientationSectionRevealed(!isCardOrientationSectionRevealed)
         }
@@ -82,7 +86,7 @@ class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
             isSpaceRepetitionSectionRevealed(!isSpaceRepetitionSectionRevealed)
         }
 
-        binding.rgRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.rgRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             when(checkedId) {
                 R.id.rb_random -> {
                     selectFilter(FILTER_RANDOM)
@@ -96,30 +100,93 @@ class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
             }
         }
 
+        binding.rgCardOrientationSection.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.rb_front_back) {
+                selectCardOrientation(CARD_ORIENTATION_FRONT_AND_BACK)
+            } else {
+                selectCardOrientation(CARD_ORIENTATION_BACK_AND_FRONT)
+            }
+        }
+
         binding.btApplyRestartFlashCardMiniGame.setOnClickListener {
-            listener?.onBottomSheetDismissed()
+            listener?.onSettingsApplied()
             dismiss()
         }
 
-    }
+        binding.cbUnknownCardOnly.setOnCheckedChangeListener { _, isChecked ->
+            isUnknownCardOnlyBoxChecked(isChecked)
+        }
+        binding.cbUnknownCardFirst.setOnCheckedChangeListener { _, isChecked ->
+            isUnknownCardFirstBoxChecked(isChecked)
+        }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
-        listener?.onBottomSheetDismissed()
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         try {
-            listener = context as BottomSheetDismissListener
+            listener = context as SettingsApplication
         } catch (e: ClassCastException) {
             throw ClassCastException((context.toString() +
                     " must implement NoticeDialogListener"))
         }
     }
 
-    interface BottomSheetDismissListener {
-        fun onBottomSheetDismissed()
+    private fun initSettingState() {
+
+        isFilterSectionRevealed(false)
+        isCardOrientationSectionRevealed(false)
+        isSpaceRepetitionSectionRevealed(false)
+
+        val checkedFilter = flashCardMiniGamePref?.getString(CHECKED_FILTER, FILTER_RANDOM)
+        val checkedCardOrientation = flashCardMiniGamePref?.getString(
+            CHECKED_CARD_ORIENTATION,
+            CARD_ORIENTATION_FRONT_AND_BACK
+        )
+        val cbUnknownCardOnlyCheckState =
+            flashCardMiniGamePref?.getBoolean(IS_UNKNOWN_CARD_ONLY, false)
+        val cbUnknownCardFirstCheckState =
+            flashCardMiniGamePref?.getBoolean(IS_UNKNOWN_CARD_FIRST, true)
+        checkedFilter?.apply {
+            selectFilter(this)
+        }
+        checkedCardOrientation?.apply {
+            selectCardOrientation(this)
+        }
+        cbUnknownCardFirstCheckState?.apply {
+            isUnknownCardFirstBoxChecked(this)
+        }
+        cbUnknownCardOnlyCheckState?.apply {
+            isUnknownCardOnlyBoxChecked(this)
+        }
+    }
+
+    private fun isUnknownCardFirstBoxChecked(checkedState: Boolean) {
+        binding.cbUnknownCardFirst.isChecked = checkedState
+        editor?.apply {
+            putBoolean(IS_UNKNOWN_CARD_FIRST, checkedState)
+            apply()
+        }
+    }
+
+    private fun isUnknownCardOnlyBoxChecked(checkedState: Boolean) {
+        binding.cbUnknownCardOnly.isChecked = checkedState
+        editor?.apply {
+            putBoolean(IS_UNKNOWN_CARD_ONLY, checkedState)
+            apply()
+        }
+    }
+
+    private fun selectCardOrientation(orientation: String) {
+        if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+            binding.rbFrontBack.isChecked = true
+        } else {
+            binding.rbBackFront.isChecked = true
+        }
+        editor?.apply {
+            putString(CHECKED_CARD_ORIENTATION, orientation)
+            apply()
+        }
     }
 
     private fun selectFilter(filter: String) {
@@ -169,13 +236,6 @@ class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
         }
         binding.rgCardOrientationSection.isVisible = isRevealed
         isCardOrientationSectionRevealed = isRevealed
-    }
-
-
-
-
-    companion object {
-        const val TAG = "ModalBottomSheet"
     }
 
 }

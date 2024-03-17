@@ -8,6 +8,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,8 +20,6 @@ import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -32,14 +31,22 @@ import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.FlashCardMiniGameRef
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
+import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
+import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_FILTER
+import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_BY_LEVEL
+import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_CREATION_DATE
+import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_RANDOM
+import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
+import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.BottomSheetDismissListener {
+class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.SettingsApplication {
 
     private lateinit var binding: ActivityFlashCardGameBinding
     private val viewModel: FlashCardGameViewModel by viewModels {
@@ -82,10 +89,12 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal()
+            val cardList = it.cards.toExternal().toMutableList()
             val deck = it.deck.toExternal()
             initFlashCard(cardList, deck)
         }
+
+        applySettings()
 
         lifecycleScope.launch {
             viewModel
@@ -105,7 +114,7 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
                         }
 
                         is UiState.Success -> {
-                            bindCard(state.data)
+                            bindCard(state.data, getCardOrientation()!!)
                         }
                     }
                 }
@@ -139,34 +148,55 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
             }
         }
 
+    }
 
+    override fun onSettingsApplied() {
+        applySettings()
+    }
 
-        /*
-        val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Toast.makeText(this@FlashCardGameActivity, "Dismissed", Toast.LENGTH_SHORT).show()
+    private fun applySettings() {
+
+        val filter = flashCardGameRef?.getString(
+            CHECKED_FILTER,
+            FILTER_RANDOM
+        )
+
+        val unKnownCardFirst = flashCardGameRef?.getBoolean(
+            IS_UNKNOWN_CARD_FIRST,
+            true
+        )
+        val unKnownCardOnly = flashCardGameRef?.getBoolean(
+            IS_UNKNOWN_CARD_ONLY,
+            false
+        )
+
+        when (filter) {
+            FILTER_RANDOM -> {
+                viewModel.shuffleCards()
             }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                Toast.makeText(this@FlashCardGameActivity, "Dismissed", Toast.LENGTH_SHORT).show()
+            FILTER_BY_LEVEL -> {
+                viewModel.sortCardsByLevel()
             }
 
+            FILTER_CREATION_DATE -> {
+                viewModel.sortByCreationDate()
+            }
         }
 
-        val modalBottomSheetBehavior = (modalBottomSheet?.dialog as BottomSheetDialog).behavior
-        modalBottomSheetBehavior.addBottomSheetCallback(bottomSheetCallback)
-
-         */
-
+        if (unKnownCardFirst == true) {
+            viewModel.sortCardsByLevel()
+        }
+        if (unKnownCardOnly == true) {
+            //TODO
+        }
+        restartFlashCard(getCardOrientation()!!)
     }
 
-    override fun onBottomSheetDismissed() {
-        val filter = flashCardGameRef?.getString(
-            FlashCardMiniGameRef.CHECKED_FILTER,
-            FlashCardMiniGameRef.FILTER_RANDOM
-        )
-        Toast.makeText(this@FlashCardGameActivity, filter, Toast.LENGTH_SHORT).show()
-    }
+    private fun getCardOrientation() = flashCardGameRef?.getString(
+        CHECKED_CARD_ORIENTATION,
+        CARD_ORIENTATION_FRONT_AND_BACK
+    )
 
     private fun onKnownButtonClicked() {
         val card = binding.clOnScreenCardRoot
@@ -219,11 +249,7 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
             }
             btRestartQuizScoreLayout.setOnClickListener {
-                Toast.makeText(this@FlashCardGameActivity, "Click", Toast.LENGTH_SHORT).show()
-                viewModel.initFlashCard()
-                viewModel.updateOnScreenCards()
-                isFlashCardGameScreenHidden(false)
-                initCardLayout()
+                restartFlashCard(getCardOrientation()!!)
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false
@@ -237,6 +263,18 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
                     initFlashCard(newCards, viewModel.deck!!)
                 }
             }
+        }
+    }
+
+    private fun restartFlashCard(orientation: String) {
+        Toast.makeText(this@FlashCardGameActivity, "Click", Toast.LENGTH_SHORT).show()
+        viewModel.initFlashCard()
+        viewModel.updateOnScreenCards()
+        isFlashCardGameScreenHidden(false)
+        if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+            initCardLayout()
+        } else {
+            onCardOrientationBackFront()
         }
     }
 
@@ -504,17 +542,55 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
         }
     }
 
-    private fun bindCard(onScreenCards: FlashCardGameModel) {
+    @SuppressLint("ResourceType")
+    private fun bindCard(onScreenCards: FlashCardGameModel, cardOrientation: String) {
 
         val deckColorCode = viewModel.deck?.deckColorCode?.let {
             DeckColorCategorySelector().selectColor(it)
         } ?: R.color.black
+        val sumCardsInDeck = viewModel.getTotalCards()
+        val currentCardNumber = viewModel.getCurrentCardNumber()
 
+        if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {
+            onCardOrientationBackFront()
+            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainerHigh)
+            val text = onScreenCards.bottom?.cardDefinition
+            bindCardBottom(
+                onFlippedBackgroundColor,
+                onScreenCards,
+                deckColorCode,
+                text,
+                currentCardNumber,
+                sumCardsInDeck
+            )
+        } else {
+            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainer)
+            val text = onScreenCards.bottom?.cardContent
+            bindCardBottom(
+                onFlippedBackgroundColor,
+                onScreenCards,
+                deckColorCode,
+                text,
+                currentCardNumber,
+                sumCardsInDeck
+            )
+        }
+
+
+
+        bindCardFrontAndBack(deckColorCode, onScreenCards, currentCardNumber, sumCardsInDeck)
+
+    }
+
+    private fun bindCardFrontAndBack(
+        deckColorCode: Int,
+        onScreenCards: FlashCardGameModel,
+        currentCardNumber: Int,
+        sumCardsInDeck: Int
+    ) {
         binding.cvCardFront.backgroundTintList =
             ContextCompat.getColorStateList(this, deckColorCode)
         binding.tvQuizFront.text = onScreenCards.top.cardContent
-        val sumCardsInDeck = viewModel.getTotalCards()
-        val currentCardNumber = viewModel.getCurrentCardNumber()
 
         binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
         binding.tvQuizBack.text = onScreenCards.top.cardDefinition
@@ -528,11 +604,21 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
             "$currentCardNumber",
             "$sumCardsInDeck"
         )
+    }
 
+    private fun bindCardBottom(
+        onFlippedBackgroundColor: ColorStateList?,
+        onScreenCards: FlashCardGameModel,
+        deckColorCode: Int,
+        text: String?,
+        currentCardNumber: Int,
+        sumCardsInDeck: Int
+    ) {
+        binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
         if (onScreenCards.bottom != null) {
             binding.cvCardBottom.backgroundTintList =
                 ContextCompat.getColorStateList(this, deckColorCode)
-            binding.tvQuizBottom.text = onScreenCards.bottom.cardContent
+            binding.tvQuizBottom.text = text
             binding.tvFlashCardBottomProgression.text = getString(
                 R.string.tx_flash_card_game_progression,
                 "${currentCardNumber.plus(1)}",
@@ -543,11 +629,10 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
                 ContextCompat.getColorStateList(this, deckColorCode)
             binding.tvQuizBottom.text = "..."
         }
-
     }
 
     private fun initFlashCard(
-        cardList: List<ImmutableCard>,
+        cardList: MutableList<ImmutableCard>,
         deck: ImmutableDeck
     ) {
         isFlashCardGameScreenHidden(false)
@@ -567,6 +652,13 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Bo
         binding.cvCardFront.rotationY = 0f
         isFront = true
         binding.cvCardBack.alpha = 0f
+    }
+
+    fun onCardOrientationBackFront() {
+        binding.cvCardBack.alpha = 1f
+        binding.cvCardBack.rotationY = 0f
+        isFront = false
+        binding.cvCardFront.alpha = 0f
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
