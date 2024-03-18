@@ -40,6 +40,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_card_bottom_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
@@ -47,6 +48,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:padding="20dp">
 
+            <!--
             <TextView
                 android:id="@+id/tv_card_bottom_orientation"
                 android:layout_width="wrap_content"
@@ -57,6 +59,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="@string/tx_flash_card_game_card_orientation_front" />
+                -->
 
             <TextView
                 android:id="@+id/tv_flash_card_bottom_progression"
@@ -65,9 +68,8 @@
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_card_bottom_orientation"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_card_bottom_orientation"
+                app:layout_constraintTop_toTopOf="parent"
                 android:text="1/20" />
 
 
@@ -86,7 +88,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_card_bottom_flip_hint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_card_bottom_orientation"
+                app:layout_constraintTop_toBottomOf="@+id/tv_flash_card_bottom_progression"
                 tools:text="1. What is the capital of Madagascar?" />
 
             <TextView

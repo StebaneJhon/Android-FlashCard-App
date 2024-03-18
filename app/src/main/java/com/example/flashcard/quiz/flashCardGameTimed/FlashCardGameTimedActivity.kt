@@ -8,6 +8,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -28,14 +29,18 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameTimedBinding
 import com.example.flashcard.mainActivity.MainActivity
+import com.example.flashcard.quiz.flashCardGame.FlashCardGameModel
+import com.example.flashcard.settings.MiniGameSettingsSheet
 import com.example.flashcard.util.DeckColorCategorySelector
+import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardTimedTimerStatus
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FlashCardGameTimedActivity : AppCompatActivity() {
+class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
 
     private lateinit var binding: ActivityFlashCardGameTimedBinding
     private val viewModel: FlashCardGameTimedViewModel by viewModels {
@@ -43,6 +48,7 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
     }
 
     private var sharedPref: SharedPreferences? = null
+    private var miniGameSettingsRef: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var deckWithCards: DeckWithCards? = null
     private lateinit var frontAnim: AnimatorSet
@@ -50,6 +56,8 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
     var isFront = true
     private var dx: Float = 0.0f
     private var dy: Float = 0.0f
+
+    private var modalBottomSheet: MiniGameSettingsSheet? = null
 
     companion object {
         private const val MIN_SWIPE_DISTANCE = -275
@@ -62,6 +70,7 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
 
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
+        miniGameSettingsRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
@@ -73,10 +82,12 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal()
+            val cardList = it.cards.toExternal().toMutableList()
             val deck = it.deck.toExternal()
             initFlashCard(cardList, deck)
         }
+
+        applySettings()
 
         lifecycleScope.launch {
             viewModel
@@ -96,7 +107,7 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
                         }
 
                         is UiState.Success -> {
-                            bindCard(state.data)
+                            bindCard(state.data, getCardOrientation()!!)
                         }
                     }
                 }
@@ -119,7 +130,70 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
             }
         }
 
+        modalBottomSheet = MiniGameSettingsSheet()
+
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.mn_bt_settings) {
+                modalBottomSheet?.show(supportFragmentManager, MiniGameSettingsSheet.TAG)
+                true
+            } else {
+                false
+            }
+        }
+
     }
+
+    override fun onSettingsApplied() {
+        applySettings()
+    }
+
+    private fun applySettings() {
+
+        val filter = miniGameSettingsRef?.getString(
+            FlashCardMiniGameRef.CHECKED_FILTER,
+            FlashCardMiniGameRef.FILTER_RANDOM
+        )
+
+        val unKnownCardFirst = miniGameSettingsRef?.getBoolean(
+            FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST,
+            true
+        )
+        val unKnownCardOnly = miniGameSettingsRef?.getBoolean(
+            FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY,
+            false
+        )
+
+        if (unKnownCardOnly == true) {
+            viewModel.unknownCardsOnly()
+        } else {
+            viewModel.restoreCardList()
+        }
+
+        when (filter) {
+            FlashCardMiniGameRef.FILTER_RANDOM -> {
+                viewModel.shuffleCards()
+            }
+
+            FlashCardMiniGameRef.FILTER_BY_LEVEL -> {
+                viewModel.sortCardsByLevel()
+            }
+
+            FlashCardMiniGameRef.FILTER_CREATION_DATE -> {
+                viewModel.sortByCreationDate()
+            }
+        }
+
+        if (unKnownCardFirst == true) {
+            viewModel.sortCardsByLevel()
+        }
+
+        restartFlashCard(getCardOrientation()!!)
+    }
+
+    private fun getCardOrientation() = miniGameSettingsRef?.getString(
+        FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION,
+        FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
+    )
 
     private fun onKnownButtonClicked() {
         val card = binding.clOnScreenCardRoot
@@ -155,6 +229,18 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
             cardStartY,
             (MIN_SWIPE_DISTANCE * 10).toFloat()
         )
+    }
+
+    private fun restartFlashCard(orientation: String) {
+        Toast.makeText(this@FlashCardGameTimedActivity, "Click", Toast.LENGTH_SHORT).show()
+        viewModel.initFlashCard()
+        viewModel.updateOnScreenCards()
+        isFlashCardGameScreenHidden(false)
+        if (orientation == FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK) {
+            initCardLayout()
+        } else {
+            onCardOrientationBackFront()
+        }
     }
 
     private fun isFlashCardGameScreenHidden(isHidden: Boolean) {
@@ -432,45 +518,41 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
         }
     }
 
-    private fun bindCard(onScreenCards: FlashCardGameTimedModel) {
+    private fun bindCard(onScreenCards: FlashCardGameTimedModel, cardOrientation: String) {
 
         val deckColorCode = viewModel.deck?.deckColorCode?.let {
             DeckColorCategorySelector().selectColor(it)
         } ?: R.color.black
-
-        binding.cvCardFront.backgroundTintList =
-            ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizFront.text = onScreenCards.top.cardContent
         val sumCardsInDeck = viewModel.getTotalCards()
         val currentCardNumber = viewModel.getCurrentCardNumber()
 
-        binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizBack.text = onScreenCards.top.cardDefinition
-        binding.tvFlashCardFrontProgression.text = getString(
-            R.string.tx_flash_card_game_progression,
-            "$currentCardNumber",
-            "$sumCardsInDeck"
-        )
-        binding.tvFlashCardBackProgression.text = getString(
-            R.string.tx_flash_card_game_progression,
-            "$currentCardNumber",
-            "$sumCardsInDeck"
-        )
-
-        if (onScreenCards.bottom != null) {
-            binding.cvCardBottom.backgroundTintList =
-                ContextCompat.getColorStateList(this, deckColorCode)
-            binding.tvQuizBottom.text = onScreenCards.bottom.cardContent
-            binding.tvFlashCardBottomProgression.text = getString(
-                R.string.tx_flash_card_game_progression,
-                "${currentCardNumber.plus(1)}",
-                "$sumCardsInDeck"
+        if (cardOrientation == FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT) {
+            onCardOrientationBackFront()
+            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainerHigh)
+            val text = onScreenCards.bottom?.cardDefinition
+            bindCardBottom(
+                onFlippedBackgroundColor,
+                onScreenCards,
+                deckColorCode,
+                text,
+                currentCardNumber,
+                sumCardsInDeck
             )
         } else {
-            binding.cvCardBottom.backgroundTintList =
-                ContextCompat.getColorStateList(this, deckColorCode)
-            binding.tvQuizBottom.text = "..."
+            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainer)
+            val text = onScreenCards.bottom?.cardContent
+            bindCardBottom(
+                onFlippedBackgroundColor,
+                onScreenCards,
+                deckColorCode,
+                text,
+                currentCardNumber,
+                sumCardsInDeck
+            )
         }
+
+        bindCardFrontAndBack(deckColorCode, onScreenCards, currentCardNumber, sumCardsInDeck)
+
 
         isCardEnabled(false)
         viewModel.startTimer(5000)
@@ -504,6 +586,55 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
 
     }
 
+    private fun bindCardFrontAndBack(
+        deckColorCode: Int,
+        onScreenCards: FlashCardGameTimedModel,
+        currentCardNumber: Int,
+        sumCardsInDeck: Int
+    ) {
+        binding.cvCardFront.backgroundTintList =
+            ContextCompat.getColorStateList(this, deckColorCode)
+        binding.tvQuizFront.text = onScreenCards.top.cardContent
+
+        binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
+        binding.tvQuizBack.text = onScreenCards.top.cardDefinition
+        binding.tvFlashCardFrontProgression.text = getString(
+            R.string.tx_flash_card_game_progression,
+            "$currentCardNumber",
+            "$sumCardsInDeck"
+        )
+        binding.tvFlashCardBackProgression.text = getString(
+            R.string.tx_flash_card_game_progression,
+            "$currentCardNumber",
+            "$sumCardsInDeck"
+        )
+    }
+
+    private fun bindCardBottom(
+        onFlippedBackgroundColor: ColorStateList?,
+        onScreenCards: FlashCardGameTimedModel,
+        deckColorCode: Int,
+        text: String?,
+        currentCardNumber: Int,
+        sumCardsInDeck: Int
+    ) {
+        binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
+        if (onScreenCards.bottom != null) {
+            binding.cvCardBottom.backgroundTintList =
+                ContextCompat.getColorStateList(this, deckColorCode)
+            binding.tvQuizBottom.text = text
+            binding.tvFlashCardBottomProgression.text = getString(
+                R.string.tx_flash_card_game_progression,
+                "${currentCardNumber.plus(1)}",
+                "$sumCardsInDeck"
+            )
+        } else {
+            binding.cvCardBottom.backgroundTintList =
+                ContextCompat.getColorStateList(this, deckColorCode)
+            binding.tvQuizBottom.text = "..."
+        }
+    }
+
     private fun isCardEnabled(isEnabled: Boolean) {
         binding.clOnScreenCardRoot.isEnabled = isEnabled
         binding.tvCardFrontFlipHint.isVisible = isEnabled
@@ -514,7 +645,7 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
     }
 
     private fun initFlashCard(
-        cardList: List<ImmutableCard>,
+        cardList: MutableList<ImmutableCard>,
         deck: ImmutableDeck
     ) {
         isFlashCardGameScreenHidden(false)
@@ -534,6 +665,13 @@ class FlashCardGameTimedActivity : AppCompatActivity() {
         binding.cvCardFront.rotationY = 0f
         isFront = true
         binding.cvCardBack.alpha = 0f
+    }
+
+    private fun onCardOrientationBackFront() {
+        binding.cvCardBack.alpha = 1f
+        binding.cvCardBack.rotationY = 0f
+        isFront = false
+        binding.cvCardFront.alpha = 0f
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {

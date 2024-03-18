@@ -8,6 +8,7 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.CardLevel
 import com.example.flashcard.util.FlashCardTimedTimerStatus
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
@@ -26,7 +27,8 @@ class FlashCardGameTimedViewModel(
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCards = MutableStateFlow<UiState<FlashCardGameTimedModel>>(UiState.Loading)
     val actualCards: StateFlow<UiState<FlashCardGameTimedModel>> = _actualCards.asStateFlow()
-    private var cardList: List<ImmutableCard>? = null
+    private var originalCardList: List<ImmutableCard>? = null
+    private var cardList: MutableList<ImmutableCard>? = null
     var deck: ImmutableDeck? = null
     var progress: Int = 0
 
@@ -56,9 +58,11 @@ class FlashCardGameTimedViewModel(
         timer.cancel()
     }
 
-    fun initCardList(gameCards: List<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard>) {
         cardList = gameCards
+        originalCardList = gameCards
     }
+
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
     }
@@ -108,14 +112,14 @@ class FlashCardGameTimedViewModel(
 
     fun getMissedCardSum() = missedCards.size
 
-    fun getMissedCards(): List<ImmutableCard> {
+    fun getMissedCards(): MutableList<ImmutableCard> {
         val newCards = arrayListOf<ImmutableCard>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-        return newCards.toList()
+        return newCards
     }
 
     private fun getBottomCard(
-        cards: List<ImmutableCard>,
+        cards: MutableList<ImmutableCard>,
         currentCartPosition: Int
     ): ImmutableCard? {
         return if (currentCartPosition > cards.size-2) {
@@ -129,6 +133,26 @@ class FlashCardGameTimedViewModel(
         missedCards.clear()
         progress = 0
         currentCardPosition = 0
+    }
+
+    fun sortCardsByLevel() {
+        cardList?.sortBy { it.cardStatus }
+    }
+
+    fun shuffleCards() {
+        cardList?.shuffle()
+    }
+
+    fun sortByCreationDate() {
+        cardList?.sortBy { it.cardId }
+    }
+
+    fun unknownCardsOnly() {
+        cardList = cardList?.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
+    }
+
+    fun restoreCardList() {
+        cardList = originalCardList?.toMutableList()
     }
 
     fun updateOnScreenCards() {

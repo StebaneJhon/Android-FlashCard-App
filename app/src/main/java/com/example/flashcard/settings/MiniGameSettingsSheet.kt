@@ -1,7 +1,6 @@
-package com.example.flashcard.quiz.flashCardGame
+package com.example.flashcard.settings
 
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import com.example.flashcard.R
 import com.example.flashcard.databinding.LyFlashCardBottomSheetMenuBinding
+import com.example.flashcard.quiz.flashCardGame.FlashCardGameViewModel
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
 import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
 import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_FILTER
@@ -23,18 +23,18 @@ import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
 import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
+class MiniGameSettingsSheet: BottomSheetDialogFragment() {
 
     private var isFilterSectionRevealed = false
     private var isSpaceRepetitionSectionRevealed = false
     private var isCardOrientationSectionRevealed = false
 
     private lateinit var binding: LyFlashCardBottomSheetMenuBinding
-    private lateinit var flashCardViewModel: FlashCardGameViewModel
+    //private lateinit var flashCardViewModel: FlashCardGameViewModel
 
     private var flashCardMiniGamePref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
-    private var listener: FlashCardGameSettingsSheet.SettingsApplication? = null
+    private var listener: SettingsApplication? = null
 
     companion object {
         const val TAG = "ModalBottomSheet"
@@ -60,8 +60,11 @@ class FlashCardGameSettingsSheet: BottomSheetDialogFragment() {
         editor = flashCardMiniGamePref?.edit()
         initSettingState()
 
+        /*
         val activity = requireActivity()
         flashCardViewModel = ViewModelProvider(activity)[FlashCardGameViewModel::class.java]
+
+         */
 
        binding.btRevealFilterSettings.setOnClickListener {
            isFilterSectionRevealed(!isFilterSectionRevealed)

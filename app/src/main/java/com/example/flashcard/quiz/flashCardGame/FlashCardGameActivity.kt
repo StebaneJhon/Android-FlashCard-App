@@ -29,6 +29,7 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
+import com.example.flashcard.settings.MiniGameSettingsSheet
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
@@ -46,7 +47,7 @@ import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.SettingsApplication {
+class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
 
     private lateinit var binding: ActivityFlashCardGameBinding
     private val viewModel: FlashCardGameViewModel by viewModels {
@@ -63,7 +64,7 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Se
     private var dx: Float = 0.0f
     private var dy: Float = 0.0f
 
-    private var modalBottomSheet: FlashCardGameSettingsSheet? = null
+    private var modalBottomSheet: MiniGameSettingsSheet? = null
 
     companion object {
         private val MIN_SWIPE_DISTANCE = -275
@@ -137,11 +138,11 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Se
             }
         }
 
-        modalBottomSheet = FlashCardGameSettingsSheet()
+        modalBottomSheet = MiniGameSettingsSheet()
 
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.mn_bt_settings) {
-                modalBottomSheet?.show(supportFragmentManager, FlashCardGameSettingsSheet.TAG)
+                modalBottomSheet?.show(supportFragmentManager, MiniGameSettingsSheet.TAG)
                 true
             } else {
                 false
@@ -658,7 +659,7 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Se
         binding.cvCardBack.alpha = 0f
     }
 
-    fun onCardOrientationBackFront() {
+    private fun onCardOrientationBackFront() {
         binding.cvCardBack.alpha = 1f
         binding.cvCardBack.rotationY = 0f
         isFront = false
