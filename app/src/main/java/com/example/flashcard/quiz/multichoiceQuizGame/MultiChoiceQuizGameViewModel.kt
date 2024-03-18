@@ -7,6 +7,9 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.CardLevel
+import com.example.flashcard.util.FlashCardMiniGameRef
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -26,13 +29,13 @@ class MultiChoiceQuizGameViewModel(
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCards = MutableStateFlow<UiState<List<MultiChoiceGameCardModel>>>(UiState.Loading)
     val actualCards: StateFlow<UiState<List<MultiChoiceGameCardModel>>> = _actualCards.asStateFlow()
-    private lateinit var cardList: List<ImmutableCard>
+    private lateinit var cardList: MutableList<ImmutableCard>
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard>
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
-    fun initCardList(gameCards: List<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard>) {
         cardList = gameCards
     }
     fun initDeck(gameDeck: ImmutableDeck) {
@@ -45,13 +48,18 @@ class MultiChoiceQuizGameViewModel(
 
     private fun getWordAlternatives(
         cards: List<ImmutableCard>,
-        onCardWordTranslation: String,
-        sum: Int
+        correctAlternative: String,
+        sum: Int,
+        cardOrientation: String
     ): List<String> {
         val temporaryList = arrayListOf<String>()
-        temporaryList.add(onCardWordTranslation)
+        temporaryList.add(correctAlternative)
         while (temporaryList.size < sum) {
-            val randomWordTranslation = cards.random().cardDefinition
+            val randomWordTranslation = if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+                cards.random().cardDefinition
+            } else {
+                cards.random().cardContent
+            }
             if (randomWordTranslation !in temporaryList) {
                 if (randomWordTranslation != null) {
                     temporaryList.add(randomWordTranslation)
@@ -79,10 +87,10 @@ class MultiChoiceQuizGameViewModel(
     fun cardSum() = cardList.size
     fun getMissedCardSum() = missedCards.size
     fun getKnownCardSum() = cardSum() - getMissedCardSum()
-    fun getMissedCard(): List<ImmutableCard> {
+    fun getMissedCard(): MutableList<ImmutableCard> {
         val newCards = arrayListOf<ImmutableCard>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-        return newCards.toList()
+        return newCards
     }
     fun initTimedFlashCard() {
         missedCards.clear()
@@ -110,33 +118,68 @@ class MultiChoiceQuizGameViewModel(
         return isCorrect
     }
 
-    private fun toListOfMultiChoiceQuizGameCardModel(cards: List<ImmutableCard>): List<MultiChoiceGameCardModel> {
+    private fun toListOfMultiChoiceQuizGameCardModel(cards: List<ImmutableCard>, cardOrientation: String): List<MultiChoiceGameCardModel> {
         val temporaryList = mutableListOf<MultiChoiceGameCardModel>()
         cards.forEach {
-            val alternatives = getWordAlternatives(originalCardList, it.cardDefinition!!, 4)
-            temporaryList.add(
-                MultiChoiceGameCardModel(
-                    it.cardContent!!,
-                    it.cardDefinition,
-                    alternatives[0],
-                    alternatives[1],
-                    alternatives[2],
-                    alternatives[3],
+            if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+                val alternatives = getWordAlternatives(originalCardList, it.cardDefinition!!, 4, cardOrientation)
+                temporaryList.add(
+                    MultiChoiceGameCardModel(
+                        it.cardContent!!,
+                        it.cardDefinition,
+                        alternatives[0],
+                        alternatives[1],
+                        alternatives[2],
+                        alternatives[3],
+                    )
                 )
-            )
+            } else {
+                val alternatives = getWordAlternatives(originalCardList, it.cardContent!!, 4, cardOrientation)
+                temporaryList.add(
+                    MultiChoiceGameCardModel(
+                        it.cardDefinition!!,
+                        it.cardContent,
+                        alternatives[0],
+                        alternatives[1],
+                        alternatives[2],
+                        alternatives[3],
+                    )
+                )
+            }
+
         }
         return temporaryList
     }
 
-    fun updateCard() {
+    fun updateCard(cardOrientation: String) {
         if (currentCardPosition == cardList.size) {
             _actualCards.value = UiState.Error("Quiz Complete")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(cardList))
+                _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(cardList, cardOrientation))
             }
         }
+    }
+
+    fun sortCardsByLevel() {
+        cardList.sortBy { it.cardStatus }
+    }
+
+    fun shuffleCards() {
+        cardList.shuffle()
+    }
+
+    fun sortByCreationDate() {
+        cardList.sortBy { it.cardId }
+    }
+
+    fun unknownCardsOnly() {
+        cardList = cardList.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
+    }
+
+    fun restoreCardList() {
+        cardList = originalCardList!!.toMutableList()
     }
 
     private fun onUserAnswered(isKnown: Boolean) {
