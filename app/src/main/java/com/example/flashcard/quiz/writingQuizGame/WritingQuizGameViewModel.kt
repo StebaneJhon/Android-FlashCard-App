@@ -7,6 +7,9 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.CardLevel
+import com.example.flashcard.util.FlashCardMiniGameRef
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -26,13 +29,13 @@ class WritingQuizGameViewModel(
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
     val actualCard: StateFlow<UiState<List<WritingQuizGameModel>>> = _actualCard.asStateFlow()
-    private lateinit var cardList: List<ImmutableCard>
+    private lateinit var cardList: MutableList<ImmutableCard>
     lateinit var deck: ImmutableDeck
-    private lateinit var originalCardList: List<ImmutableCard>
+    private var originalCardList: List<ImmutableCard>? = null
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
-    fun initCardList(gameCards: List<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard>) {
         cardList = gameCards
     }
     fun initDeck(gameDeck: ImmutableDeck) {
@@ -51,10 +54,10 @@ class WritingQuizGameViewModel(
         increaseAttemptTime()
     }
 
-    fun getMissedCard(): List<ImmutableCard> {
+    fun getMissedCard(): MutableList<ImmutableCard> {
         val newCards = arrayListOf<ImmutableCard>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-        return newCards.toList()
+        return newCards
     }
 
     fun cardSum() = cardList.size
@@ -94,27 +97,59 @@ class WritingQuizGameViewModel(
         return isCorrect
     }
 
-    fun cardToWritingQuizGameItem(cards: List<ImmutableCard>): List<WritingQuizGameModel> {
+    fun sortCardsByLevel() {
+        cardList.sortBy { it.cardStatus }
+    }
+
+    fun shuffleCards() {
+        cardList.shuffle()
+    }
+
+    fun sortByCreationDate() {
+        cardList.sortBy { it.cardId }
+    }
+
+    fun unknownCardsOnly() {
+        cardList = cardList.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
+    }
+
+    fun restoreCardList() {
+        cardList = originalCardList!!.toMutableList()
+    }
+
+    private fun cardToWritingQuizGameItem(cards: List<ImmutableCard>, cardOrientation: String): List<WritingQuizGameModel> {
         val newList = mutableListOf<WritingQuizGameModel>()
-        cards.forEach { item ->
-            newList.add(
-                WritingQuizGameModel(
-                    item.cardContent!!,
-                    item.cardDefinition!!
+        if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+            cards.forEach { item ->
+                newList.add(
+                    WritingQuizGameModel(
+                        item.cardContent!!,
+                        item.cardDefinition!!
+                    )
                 )
-            )
+            }
+        } else {
+            cards.forEach { item ->
+                newList.add(
+                    WritingQuizGameModel(
+                        item.cardDefinition!!,
+                        item.cardContent!!
+                    )
+                )
+            }
         }
+
         return newList
     }
 
-    fun updateCard() {
+    fun updateCard(cardOrientation: String) {
         if (currentCardPosition == cardList.size) {
             _actualCard.value = UiState.Error("Quiz Complete")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
                     _actualCard.value = UiState.Success(
-                        cardToWritingQuizGameItem(cardList)
+                        cardToWritingQuizGameItem(cardList, cardOrientation)
                     )
 
             }

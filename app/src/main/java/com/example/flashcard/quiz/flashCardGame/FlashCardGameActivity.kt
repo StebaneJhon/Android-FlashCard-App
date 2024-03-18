@@ -115,7 +115,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                         }
 
                         is UiState.Success -> {
-                            bindCard(state.data, getCardOrientation()!!)
+                            bindCard(state.data, getCardOrientation())
                         }
                     }
                 }
@@ -195,13 +195,13 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
             viewModel.sortCardsByLevel()
         }
 
-        restartFlashCard(getCardOrientation()!!)
+        restartFlashCard(getCardOrientation())
     }
 
     private fun getCardOrientation() = flashCardGameRef?.getString(
         CHECKED_CARD_ORIENTATION,
         CARD_ORIENTATION_FRONT_AND_BACK
-    )
+    ) ?: CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun onKnownButtonClicked() {
         val card = binding.clOnScreenCardRoot
@@ -254,7 +254,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
             }
             btRestartQuizScoreLayout.setOnClickListener {
-                restartFlashCard(getCardOrientation()!!)
+                restartFlashCard(getCardOrientation())
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false

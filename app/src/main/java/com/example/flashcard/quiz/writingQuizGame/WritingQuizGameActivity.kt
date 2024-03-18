@@ -21,13 +21,16 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
+import com.example.flashcard.settings.MiniGameSettingsSheet
+import com.example.flashcard.util.FlashCardMiniGameRef
+import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class WritingQuizGameActivity : AppCompatActivity() {
+class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
 
     private lateinit var binding: ActivityWritingQuizGameBinding
 
@@ -41,6 +44,10 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
     private var animFadeIn: Animation? = null
     private var animFadeOut: Animation? = null
+    private var modalBottomSheet: MiniGameSettingsSheet? = null
+    private var miniGameRef: SharedPreferences? = null
+
+
     companion object {
         const val DECK_ID_KEY = "Deck_id_key"
         private const val TAG = "WritingQuizGameActivity"
@@ -49,6 +56,7 @@ class WritingQuizGameActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        miniGameRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
@@ -63,7 +71,7 @@ class WritingQuizGameActivity : AppCompatActivity() {
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal()
+            val cardList = it.cards.toExternal().toMutableList()
             val deck = it.deck.toExternal()
             viewModel.initOriginalCardList(cardList)
             startWritingQuizGame(cardList, deck)
@@ -73,6 +81,8 @@ class WritingQuizGameActivity : AppCompatActivity() {
             title = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
             setNavigationOnClickListener { finish() }
         }
+
+        applySettings()
 
         lifecycleScope.launch {
             viewModel
@@ -93,7 +103,71 @@ class WritingQuizGameActivity : AppCompatActivity() {
                 }
             }
         }
+
+        modalBottomSheet = MiniGameSettingsSheet()
+
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.mn_bt_settings) {
+                modalBottomSheet?.show(supportFragmentManager, MiniGameSettingsSheet.TAG)
+                true
+            } else {
+                false
+            }
+        }
+
     }
+
+    override fun onSettingsApplied() {
+        applySettings()
+    }
+
+    private fun applySettings() {
+
+        val filter = miniGameRef?.getString(
+            FlashCardMiniGameRef.CHECKED_FILTER,
+            FlashCardMiniGameRef.FILTER_RANDOM
+        )
+
+        val unKnownCardFirst = miniGameRef?.getBoolean(
+            FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST,
+            true
+        )
+        val unKnownCardOnly = miniGameRef?.getBoolean(
+            FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY,
+            false
+        )
+
+        if (unKnownCardOnly == true) {
+            viewModel.unknownCardsOnly()
+        } else {
+            viewModel.restoreCardList()
+        }
+
+        when (filter) {
+            FlashCardMiniGameRef.FILTER_RANDOM -> {
+                viewModel.shuffleCards()
+            }
+
+            FlashCardMiniGameRef.FILTER_BY_LEVEL -> {
+                viewModel.sortCardsByLevel()
+            }
+
+            FlashCardMiniGameRef.FILTER_CREATION_DATE -> {
+                viewModel.sortByCreationDate()
+            }
+        }
+
+        if (unKnownCardFirst == true) {
+            viewModel.sortCardsByLevel()
+        }
+
+        restartWritingQuiz()
+    }
+
+    private fun getCardOrientation() = miniGameRef?.getString(
+        FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION,
+        FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
+    ) ?: CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
         val writingQuizGameAdapter = WritingQuizGameAdapter(this, cards, viewModel.deck.deckColorCode!!) {
@@ -144,10 +218,7 @@ class WritingQuizGameActivity : AppCompatActivity() {
                 finish()
             }
             btRestartQuizScoreLayout.setOnClickListener {
-                viewModel.initWritingQuizGame()
-                viewModel.updateCard()
-                binding.gameReviewContainerMQ.visibility = View.GONE
-                binding.vpCardHolder.visibility = View.VISIBLE
+                restartWritingQuiz()
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false
@@ -164,13 +235,20 @@ class WritingQuizGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun startWritingQuizGame(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
+    private fun restartWritingQuiz() {
+        viewModel.initWritingQuizGame()
+        viewModel.updateCard(getCardOrientation())
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
+    }
+
+    private fun startWritingQuizGame(cardList: MutableList<ImmutableCard>, deck: ImmutableDeck) {
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
         binding.vpCardHolder.setCurrentItem(0, true)
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
-        viewModel.updateCard()
+        viewModel.updateCard(getCardOrientation())
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
