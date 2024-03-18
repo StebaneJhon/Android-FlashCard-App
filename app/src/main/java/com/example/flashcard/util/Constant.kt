@@ -62,3 +62,13 @@ object FlashCardMiniGameRef {
     const val CARD_ORIENTATION_BACK_AND_FRONT = "Orientation Back and Front"
     const val CARD_ORIENTATION_FRONT_AND_BACK = "Orientation Front and Back"
 }
+
+object CardLevel {
+    const val L1 = "L1"
+    const val L2 = "L2"
+    const val L3 = "L3"
+    const val L4 = "L4"
+    const val L5 = "L5"
+    const val L6 = "L6"
+    const val L7 = "L7"
+}

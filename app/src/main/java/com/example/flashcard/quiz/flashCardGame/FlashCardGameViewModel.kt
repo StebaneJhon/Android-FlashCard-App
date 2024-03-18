@@ -8,6 +8,7 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
@@ -26,6 +27,7 @@ class FlashCardGameViewModel(
     private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
     private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
     val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
+    private var originalCardList: List<ImmutableCard>? = null
     private var cardList: MutableList<ImmutableCard>? = null
     var deck: ImmutableDeck? = null
     var progress: Int = 0
@@ -35,6 +37,7 @@ class FlashCardGameViewModel(
 
     fun initCardList(gameCards: MutableList<ImmutableCard>) {
         cardList = gameCards
+        originalCardList = gameCards
     }
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
@@ -55,6 +58,14 @@ class FlashCardGameViewModel(
 
     fun sortByCreationDate() {
         cardList?.sortBy { it.cardId }
+    }
+
+    fun unknownCardsOnly() {
+        cardList = cardList?.filter { it.cardStatus == L1 } as MutableList<ImmutableCard>
+    }
+
+    fun restoreCardList() {
+        cardList = originalCardList?.toMutableList()
     }
 
     fun swipe(isKnown: Boolean): Boolean {

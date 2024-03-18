@@ -170,6 +170,12 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Se
             false
         )
 
+        if (unKnownCardOnly == true) {
+            viewModel.unknownCardsOnly()
+        } else {
+            viewModel.restoreCardList()
+        }
+
         when (filter) {
             FILTER_RANDOM -> {
                 viewModel.shuffleCards()
@@ -187,9 +193,7 @@ class FlashCardGameActivity : AppCompatActivity(), FlashCardGameSettingsSheet.Se
         if (unKnownCardFirst == true) {
             viewModel.sortCardsByLevel()
         }
-        if (unKnownCardOnly == true) {
-            //TODO
-        }
+
         restartFlashCard(getCardOrientation()!!)
     }
 
