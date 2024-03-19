@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">FlashCard</string>
+    <string name="app_name_2">Quizeo</string>
     <string name="deck_name_hint">Deck Name</string>
     <string name="deck_description_hint">Deck Description</string>
     <string name="add_your_new_deck_text">Add Your New Deck</string>

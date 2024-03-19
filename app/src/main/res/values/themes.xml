@@ -21,6 +21,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -48,6 +50,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -73,6 +77,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -98,6 +104,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -123,6 +131,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -148,6 +158,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -172,6 +184,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -196,6 +210,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -220,6 +236,8 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -245,6 +263,8 @@
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
         <item name="endIconTint">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -286,11 +306,18 @@
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
         <item name="titleTextColor">?attr/colorOnSurface</item>
         <item name="subtitleTextColor">?attr/colorOnSurface</item>
+        <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
     </style>
 
     <style name="ThemeOverlay.App.Toolbar" parent="">
 
     </style>
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
 
     <!--Progress bar style-->
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
