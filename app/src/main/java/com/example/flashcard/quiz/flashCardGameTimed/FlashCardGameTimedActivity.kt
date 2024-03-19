@@ -50,6 +50,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     private var sharedPref: SharedPreferences? = null
     private var miniGameSettingsRef: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
+    private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var deckWithCards: DeckWithCards? = null
     private lateinit var frontAnim: AnimatorSet
     private lateinit var backAnim: AnimatorSet
@@ -71,6 +72,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         miniGameSettingsRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePrefEditor = miniGameSettingsRef?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
@@ -98,16 +100,20 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
                         }
 
                         is UiState.Error -> {
+                            /*
                             onQuizComplete()
                             Toast.makeText(
                                 this@FlashCardGameTimedActivity,
                                 "FlashCard Completed",
                                 Toast.LENGTH_SHORT
                             ).show()
+
+                             */
+                            onNoCardToRevise()
                         }
 
                         is UiState.Success -> {
-                            bindCard(state.data, getCardOrientation()!!)
+                            bindCard(state.data, getCardOrientation())
                         }
                     }
                 }
@@ -187,13 +193,34 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
             viewModel.sortCardsByLevel()
         }
 
-        restartFlashCard(getCardOrientation()!!)
+        restartFlashCard(getCardOrientation())
+    }
+
+    private fun unableShowUnKnownCardOnly() {
+        miniGamePrefEditor?.apply {
+            putBoolean(FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY, false)
+            apply()
+        }
+    }
+
+    private fun onNoCardToRevise() {
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = true
+        binding.lyNoCardError.apply {
+            btBackToDeck.setOnClickListener {
+                finish()
+            }
+            btUnableUnknownCardOnly.setOnClickListener {
+                unableShowUnKnownCardOnly()
+                applySettings()
+            }
+        }
+        isFlashCardGameScreenHidden(true)
     }
 
     private fun getCardOrientation() = miniGameSettingsRef?.getString(
         FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION,
         FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
-    )
+    ) ?: FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun onKnownButtonClicked() {
         val card = binding.clOnScreenCardRoot
@@ -232,10 +259,11 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     }
 
     private fun restartFlashCard(orientation: String) {
-        Toast.makeText(this@FlashCardGameTimedActivity, "Click", Toast.LENGTH_SHORT).show()
+        isFlashCardGameScreenHidden(false)
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+        binding.lyGameReviewContainer.isVisible = false
         viewModel.initFlashCard()
         viewModel.updateOnScreenCards()
-        isFlashCardGameScreenHidden(false)
         if (orientation == FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK) {
             initCardLayout()
         } else {
@@ -244,7 +272,6 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     }
 
     private fun isFlashCardGameScreenHidden(isHidden: Boolean) {
-        binding.lyGameReviewContainer.isVisible = isHidden
         binding.clOnScreenCardRoot.isVisible = !isHidden
         binding.cvCardBottom.isVisible = !isHidden
         binding.btKnow.isVisible = !isHidden
@@ -372,7 +399,9 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
                             if (!isFront) {
                                 initCardLayout()
                             }
-                            viewModel.swipe(false)
+                            if (viewModel.swipe(false)) {
+                                onQuizComplete()
+                            }
                         }
                     }
                 })
@@ -415,7 +444,9 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
                             if (!isFront) {
                                 initCardLayout()
                             }
-                            viewModel.swipe(true)
+                            if (viewModel.swipe(true)) {
+                                onQuizComplete()
+                            }
                         }
                     }
                 })
@@ -486,6 +517,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
 
     private fun onQuizComplete() {
         isFlashCardGameScreenHidden(true)
+        binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
             lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Flash Card")
@@ -495,13 +527,18 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@FlashCardGameTimedActivity, MainActivity::class.java))
+                finish()
             }
             btRestartQuizScoreLayout.setOnClickListener {
+                /*
                 Toast.makeText(this@FlashCardGameTimedActivity, "Click", Toast.LENGTH_SHORT).show()
                 viewModel.initFlashCard()
                 viewModel.updateOnScreenCards()
                 isFlashCardGameScreenHidden(false)
                 initCardLayout()
+
+                 */
+                restartFlashCard(getCardOrientation())
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false
