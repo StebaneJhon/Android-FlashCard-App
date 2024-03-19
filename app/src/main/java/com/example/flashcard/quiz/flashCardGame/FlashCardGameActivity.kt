@@ -56,7 +56,8 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
-    private var flashCardGameRef: SharedPreferences? = null
+    private var miniGamePref: SharedPreferences? = null
+    private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var deckWithCards: DeckWithCards? = null
     private lateinit var frontAnim: AnimatorSet
     private lateinit var backAnim: AnimatorSet
@@ -77,8 +78,9 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         super.onCreate(savedInstanceState)
 
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        flashCardGameRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
+        miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
@@ -106,12 +108,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                         }
 
                         is UiState.Error -> {
-                            onQuizComplete()
-                            Toast.makeText(
-                                this@FlashCardGameActivity,
-                                "FlashCard Completed",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            onNoCardToRevise()
                         }
 
                         is UiState.Success -> {
@@ -157,16 +154,16 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
     private fun applySettings() {
 
-        val filter = flashCardGameRef?.getString(
+        val filter = miniGamePref?.getString(
             CHECKED_FILTER,
             FILTER_RANDOM
         )
 
-        val unKnownCardFirst = flashCardGameRef?.getBoolean(
+        val unKnownCardFirst = miniGamePref?.getBoolean(
             IS_UNKNOWN_CARD_FIRST,
             true
         )
-        val unKnownCardOnly = flashCardGameRef?.getBoolean(
+        val unKnownCardOnly = miniGamePref?.getBoolean(
             IS_UNKNOWN_CARD_ONLY,
             false
         )
@@ -198,7 +195,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         restartFlashCard(getCardOrientation())
     }
 
-    private fun getCardOrientation() = flashCardGameRef?.getString(
+    private fun getCardOrientation() = miniGamePref?.getString(
         CHECKED_CARD_ORIENTATION,
         CARD_ORIENTATION_FRONT_AND_BACK
     ) ?: CARD_ORIENTATION_FRONT_AND_BACK
@@ -241,8 +238,30 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         )
     }
 
+    private fun onNoCardToRevise() {
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = true
+        binding.lyNoCardError.apply {
+            btBackToDeck.setOnClickListener {
+                finish()
+            }
+            btUnableUnknownCardOnly.setOnClickListener {
+                unableShowUnKnownCardOnly()
+                applySettings()
+            }
+        }
+        isFlashCardGameScreenHidden(true)
+    }
+
+    private fun unableShowUnKnownCardOnly() {
+        miniGamePrefEditor?.apply {
+            putBoolean(IS_UNKNOWN_CARD_ONLY, false)
+            apply()
+        }
+    }
+
     private fun onQuizComplete() {
         isFlashCardGameScreenHidden(true)
+        binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
             lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Flash Card")
@@ -252,6 +271,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
+                finish()
             }
             btRestartQuizScoreLayout.setOnClickListener {
                 restartFlashCard(getCardOrientation())
@@ -272,10 +292,11 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     }
 
     private fun restartFlashCard(orientation: String) {
-        Toast.makeText(this@FlashCardGameActivity, "Click", Toast.LENGTH_SHORT).show()
+        isFlashCardGameScreenHidden(false)
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+        binding.lyGameReviewContainer.isVisible = false
         viewModel.initFlashCard()
         viewModel.updateOnScreenCards()
-        isFlashCardGameScreenHidden(false)
         if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             initCardLayout()
         } else {
@@ -284,7 +305,6 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     }
 
     private fun isFlashCardGameScreenHidden(isHidden: Boolean) {
-        binding.lyGameReviewContainer.isVisible = isHidden
         binding.clOnScreenCardRoot.isVisible = !isHidden
         binding.cvCardBottom.isVisible = !isHidden
         binding.btKnow.isVisible = !isHidden
@@ -423,7 +443,9 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                             if (!isFront) {
                                 initCardLayout()
                             }
-                            viewModel.swipe(false)
+                            if(viewModel.swipe(false)) {
+                                onQuizComplete()
+                            }
                             currentY11 = 0f
                             currentX11 = 0f
                         }
@@ -474,7 +496,9 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                             if (!isFront) {
                                 initCardLayout()
                             }
-                            viewModel.swipe(true)
+                            if(viewModel.swipe(true)) {
+                                onQuizComplete()
+                            }
                             currentY11 = 0f
                             currentX11 = 0f
                         }

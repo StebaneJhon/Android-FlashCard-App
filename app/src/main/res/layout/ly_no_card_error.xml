@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/ll_on_no_card_root_ly"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="20dp"
+    android:background="@drawable/error_card_border"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/warning_icon"
+            android:src="@drawable/icon_warning" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/open_sans"
+            android:text="@string/text_on_no_more_cards_error"
+            android:textAlignment="center"
+            android:textColor="?colorOnError"
+            android:textSize="15sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_unable_unknown_card_only"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?colorOnError"
+            android:text="@string/bt_unable_unknown_cards_only_text"
+            android:textColor="@color/red100"
+            app:cornerRadius="6dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/open_sans"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_back_to_deck"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?colorOnError"
+        android:text="@string/back_to_deck_text_button"
+        android:textColor="@color/red100"
+        app:cornerRadius="6dp"
+        android:fontFamily="@font/open_sans"/>
+
+</LinearLayout>

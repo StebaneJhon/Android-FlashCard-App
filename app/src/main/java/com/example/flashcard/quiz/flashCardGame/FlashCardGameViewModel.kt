@@ -69,15 +69,19 @@ class FlashCardGameViewModel(
     }
 
     fun swipe(isKnown: Boolean): Boolean {
+        val isQuizComplete = currentCardPosition == cardList?.size?.minus(1)
         if (!isKnown) {
             missedCards.add(cardList!![currentCardPosition])
         } else {
             progress += 100/getTotalCards()
         }
         onCardSwiped(isKnown)
-        currentCardPosition += 1
-        updateOnScreenCards()
-        return currentCardPosition != cardList!!.size
+        if (!isQuizComplete) {
+            currentCardPosition += 1
+            updateOnScreenCards()
+        }
+
+        return isQuizComplete
     }
 
     fun rewind() {
@@ -133,8 +137,8 @@ class FlashCardGameViewModel(
 
     fun updateOnScreenCards() {
         cardList?.let {cards ->
-            if (currentCardPosition == cards.size) {
-                _actualCards.value = UiState.Error("Quiz Complete")
+            if (cards.size == 0) {
+                _actualCards.value = UiState.Error("No Cards To Revise")
             } else {
                 fetchJob?.cancel()
                 _actualCards.value = UiState.Loading

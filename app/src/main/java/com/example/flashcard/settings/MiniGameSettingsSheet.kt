@@ -30,8 +30,6 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
     private var isCardOrientationSectionRevealed = false
 
     private lateinit var binding: LyFlashCardBottomSheetMenuBinding
-    //private lateinit var flashCardViewModel: FlashCardGameViewModel
-
     private var flashCardMiniGamePref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var listener: SettingsApplication? = null
