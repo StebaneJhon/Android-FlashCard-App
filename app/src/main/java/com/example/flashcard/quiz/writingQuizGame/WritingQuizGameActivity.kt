@@ -45,7 +45,8 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     private var animFadeIn: Animation? = null
     private var animFadeOut: Animation? = null
     private var modalBottomSheet: MiniGameSettingsSheet? = null
-    private var miniGameRef: SharedPreferences? = null
+    private var miniGamePref: SharedPreferences? = null
+    private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
 
     companion object {
@@ -56,8 +57,9 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        miniGameRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
+        miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) { setTheme(themRef) }
@@ -94,6 +96,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
                         binding.cvCardErrorLy.visibility = View.GONE
                     }
                     is UiState.Error -> {
+                        onNoCardToRevise()
                     }
                     is UiState.Success -> {
                         binding.cvCardErrorLy.visibility = View.GONE
@@ -123,16 +126,16 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
 
     private fun applySettings() {
 
-        val filter = miniGameRef?.getString(
+        val filter = miniGamePref?.getString(
             FlashCardMiniGameRef.CHECKED_FILTER,
             FlashCardMiniGameRef.FILTER_RANDOM
         )
 
-        val unKnownCardFirst = miniGameRef?.getBoolean(
+        val unKnownCardFirst = miniGamePref?.getBoolean(
             FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST,
             true
         )
-        val unKnownCardOnly = miniGameRef?.getBoolean(
+        val unKnownCardOnly = miniGamePref?.getBoolean(
             FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY,
             false
         )
@@ -164,7 +167,30 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         restartWritingQuiz()
     }
 
-    private fun getCardOrientation() = miniGameRef?.getString(
+    private fun onNoCardToRevise() {
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = true
+        binding.vpCardHolder.visibility = View.GONE
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.lyNoCardError.apply {
+            btBackToDeck.setOnClickListener {
+                finish()
+            }
+            btUnableUnknownCardOnly.setOnClickListener {
+                unableShowUnKnownCardOnly()
+                applySettings()
+            }
+        }
+        //isFlashCardGameScreenHidden(true)
+    }
+
+    private fun unableShowUnKnownCardOnly() {
+        miniGamePrefEditor?.apply {
+            putBoolean(FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY, false)
+            apply()
+        }
+    }
+
+    private fun getCardOrientation() = miniGamePref?.getString(
         FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION,
         FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
     ) ?: CARD_ORIENTATION_FRONT_AND_BACK
@@ -206,6 +232,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     private fun onQuizComplete() {
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
+        binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
             lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
@@ -236,10 +263,11 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     }
 
     private fun restartWritingQuiz() {
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
         viewModel.initWritingQuizGame()
         viewModel.updateCard(getCardOrientation())
-        binding.gameReviewContainerMQ.visibility = View.GONE
-        binding.vpCardHolder.visibility = View.VISIBLE
     }
 
     private fun startWritingQuizGame(cardList: MutableList<ImmutableCard>, deck: ImmutableDeck) {

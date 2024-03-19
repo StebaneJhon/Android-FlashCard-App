@@ -129,4 +129,19 @@
             layout="@layout/layout_score" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ly_on_no_more_cards_error_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
+        <include
+            android:id="@+id/ly_no_card_error"
+            layout="@layout/ly_no_card_error" />
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

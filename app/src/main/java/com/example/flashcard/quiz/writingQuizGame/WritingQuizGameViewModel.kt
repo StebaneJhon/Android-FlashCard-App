@@ -143,8 +143,8 @@ class WritingQuizGameViewModel(
     }
 
     fun updateCard(cardOrientation: String) {
-        if (currentCardPosition == cardList.size) {
-            _actualCard.value = UiState.Error("Quiz Complete")
+        if (cardList.size == 0) {
+            _actualCard.value = UiState.Error("No Cards to Revise")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
