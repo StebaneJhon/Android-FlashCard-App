@@ -80,7 +80,6 @@ class MultiChoiceQuizGameViewModel(
             attemptTime = 0
         }
         currentCardPosition += 1
-        //updateCard()
         return currentCardPosition != cardSum()
     }
     fun getCurrentCardPosition() = currentCardPosition
@@ -152,8 +151,8 @@ class MultiChoiceQuizGameViewModel(
     }
 
     fun updateCard(cardOrientation: String) {
-        if (currentCardPosition == cardList.size) {
-            _actualCards.value = UiState.Error("Quiz Complete")
+        if (cardList.size == 0) {
+            _actualCards.value = UiState.Error("No Cards To Revise")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
@@ -179,7 +178,7 @@ class MultiChoiceQuizGameViewModel(
     }
 
     fun restoreCardList() {
-        cardList = originalCardList!!.toMutableList()
+        cardList = originalCardList.toMutableList()
     }
 
     private fun onUserAnswered(isKnown: Boolean) {

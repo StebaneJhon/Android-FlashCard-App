@@ -43,7 +43,8 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     private var animFadeIn: Animation? = null
     private var animFadeOut: Animation? = null
     private var modalBottomSheet: MiniGameSettingsSheet? = null
-    private var miniGameRef: SharedPreferences? = null
+    private var miniGamePref: SharedPreferences? = null
+    private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     companion object {
         private const val TAG = "MultiChoiceQuizGameActivity"
@@ -53,7 +54,8 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        miniGameRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePrefEditor = miniGamePref?.edit()
         editor = sharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
@@ -91,6 +93,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
                         is UiState.Loading -> {
                         }
                         is UiState.Error -> {
+                            onNoCardToRevise()
                         }
                         is UiState.Success -> {
                             launchMultiChoiceQuizGame(state.data)
@@ -116,23 +119,23 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         applySettings()
     }
 
-    private fun getCardOrientation() = miniGameRef?.getString(
+    private fun getCardOrientation() = miniGamePref?.getString(
         FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION,
         FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
     ) ?: FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun applySettings() {
 
-        val filter = miniGameRef?.getString(
+        val filter = miniGamePref?.getString(
             FlashCardMiniGameRef.CHECKED_FILTER,
             FlashCardMiniGameRef.FILTER_RANDOM
         )
 
-        val unKnownCardFirst = miniGameRef?.getBoolean(
+        val unKnownCardFirst = miniGamePref?.getBoolean(
             FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST,
             true
         )
-        val unKnownCardOnly = miniGameRef?.getBoolean(
+        val unKnownCardOnly = miniGamePref?.getBoolean(
             FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY,
             false
         )
@@ -162,6 +165,29 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         }
 
         restartMultiChoiceQuiz()
+    }
+
+    private fun onNoCardToRevise() {
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = true
+        binding.vpCardHolder.visibility = View.GONE
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.lyNoCardError.apply {
+            btBackToDeck.setOnClickListener {
+                finish()
+            }
+            btUnableUnknownCardOnly.setOnClickListener {
+                unableShowUnKnownCardOnly()
+                applySettings()
+            }
+        }
+        //isFlashCardGameScreenHidden(true)
+    }
+
+    private fun unableShowUnKnownCardOnly() {
+        miniGamePrefEditor?.apply {
+            putBoolean(FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY, false)
+            apply()
+        }
     }
 
     private fun launchMultiChoiceQuizGame(data: List<MultiChoiceGameCardModel>) {
@@ -235,10 +261,11 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     }
 
     private fun restartMultiChoiceQuiz() {
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
         viewModel.initTimedFlashCard()
         viewModel.updateCard(getCardOrientation())
-        binding.gameReviewContainerMQ.visibility = View.GONE
-        binding.vpCardHolder.visibility = View.VISIBLE
     }
 
 
