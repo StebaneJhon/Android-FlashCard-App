@@ -170,7 +170,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         )
 
         if (unKnownCardOnly == true) {
-            viewModel.unknownCardsOnly()
+            viewModel.cardToReviseOnly()
         } else {
             viewModel.restoreCardList()
         }

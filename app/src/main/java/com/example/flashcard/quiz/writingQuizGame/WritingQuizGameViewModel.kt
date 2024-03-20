@@ -113,6 +113,10 @@ class WritingQuizGameViewModel(
         cardList = cardList.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
     }
 
+    fun cardToReviseOnly() {
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it) } as MutableList<ImmutableCard>
+    }
+
     fun restoreCardList() {
         cardList = originalCardList!!.toMutableList()
     }
@@ -156,11 +160,12 @@ class WritingQuizGameViewModel(
     }
 
     private fun onUserAnswered(isKnown: Boolean) {
-        cardList.let { cards ->
+        cardList.let {cards ->
             val card = cards[currentCardPosition]
             val newStatus = spaceRepetitionHelper.status(card, isKnown)
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
             val lastRevision = spaceRepetitionHelper.today()
+            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
             val newCard = Card(
                 card.cardId,
                 card.cardContent,
@@ -175,6 +180,7 @@ class WritingQuizGameViewModel(
                 card.creationDate,
                 lastRevision,
                 newStatus,
+                nextForgettingDate,
                 nextRevision
             )
             updateCard(newCard)

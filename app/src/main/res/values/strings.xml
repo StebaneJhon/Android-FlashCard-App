@@ -74,8 +74,8 @@
     <string name="tv_filters_settings_section_title">Filters</string>
     <string name="tv_space_repetition_settings_title">Space repetition</string>
     <string name="rb_by_card_level_setting_text">By card level</string>
-    <string name="cb_unknown_card_first_setting_text">Unknown card first</string>
-    <string name="cb_unknown_card_only_setting_text">Unknown card only</string>
+    <string name="cb_card_to_be_revised_first_setting_text">Card to be revised first</string>
+    <string name="cb_card_to_be_revised_only_setting_text">Card to be revised Only only</string>
     <string name="tv_card_orientation_setting_section_title">Card orientation</string>
     <string name="rb_front_and_back_setting_text">Front and Back</string>
     <string name="rb_back_and_front_setting_text">Back and Front</string>

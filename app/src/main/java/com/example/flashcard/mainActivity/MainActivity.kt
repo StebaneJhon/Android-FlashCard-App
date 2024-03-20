@@ -115,6 +115,7 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         if (isCardForgotten) {
             val newStatus = spaceRepetitionHelper.status(card, false)
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
+            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
             val newCard = Card(
                 card.cardId,
                 card.cardContent,
@@ -129,6 +130,7 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
                 card.creationDate,
                 card.lastRevisionDate,
                 newStatus,
+                nextForgettingDate,
                 nextRevision
             )
             activityViewModel.updateCard(newCard)

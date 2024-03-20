@@ -141,7 +141,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         )
 
         if (unKnownCardOnly == true) {
-            viewModel.unknownCardsOnly()
+            viewModel.cardToReviseOnly()
         } else {
             viewModel.restoreCardList()
         }

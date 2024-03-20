@@ -14,5 +14,6 @@ data class ImmutableCard(
     val creationDate: String? = null,
     val lastRevisionDate: String? = null,
     val cardStatus: String? = null,
-    val nextMissMemorisationDate: String? = null
+    val nextMissMemorisationDate: String? = null,
+    val nextRevisionDate: String? = null
 )

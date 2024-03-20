@@ -177,6 +177,10 @@ class MultiChoiceQuizGameViewModel(
         cardList = cardList.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
     }
 
+    fun cardToReviseOnly() {
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it) } as MutableList<ImmutableCard>
+    }
+
     fun restoreCardList() {
         cardList = originalCardList.toMutableList()
     }
@@ -187,6 +191,7 @@ class MultiChoiceQuizGameViewModel(
             val newStatus = spaceRepetitionHelper.status(card, isKnown)
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
             val lastRevision = spaceRepetitionHelper.today()
+            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
             val newCard = Card(
                 card.cardId,
                 card.cardContent,
@@ -201,6 +206,7 @@ class MultiChoiceQuizGameViewModel(
                 card.creationDate,
                 lastRevision,
                 newStatus,
+                nextForgettingDate,
                 nextRevision
             )
             updateCard(newCard)

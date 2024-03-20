@@ -66,8 +66,6 @@
                     android:src="@drawable/icone_expand_more" />
             </RelativeLayout>
 
-
-
             <RadioGroup
                 android:id="@+id/rg_radioGroup"
                 android:layout_width="match_parent"
@@ -143,7 +141,7 @@
                 android:id="@+id/cb_unknown_card_first"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/cb_unknown_card_first_setting_text"
+                android:text="@string/cb_card_to_be_revised_first_setting_text"
                 android:textColor="?colorOnSurface"
                 android:fontFamily="@font/open_sans"/>
 
@@ -151,7 +149,7 @@
                 android:id="@+id/cb_unknown_card_only"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/cb_unknown_card_only_setting_text"
+                android:text="@string/cb_card_to_be_revised_only_setting_text"
                 android:textColor="?colorOnSurface"
                 android:fontFamily="@font/open_sans"/>
 

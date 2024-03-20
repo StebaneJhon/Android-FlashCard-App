@@ -141,7 +141,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         )
 
         if (unKnownCardOnly == true) {
-            viewModel.unknownCardsOnly()
+            viewModel.cardToReviseOnly()
         } else {
             viewModel.restoreCardList()
         }

@@ -19,7 +19,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?colorSurfaceContainer"
+            android:background="?colorSurfaceContainerLow"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/mn_flash_card_top_app_bar"
             app:navigationIcon="@drawable/icon_chevron_left"

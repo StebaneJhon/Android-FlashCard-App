@@ -169,7 +169,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         )
 
         if (unKnownCardOnly == true) {
-            viewModel.unknownCardsOnly()
+            viewModel.cardToReviseOnly()
         } else {
             viewModel.restoreCardList()
         }

@@ -52,6 +52,7 @@ fun ImmutableCard.toLocal() = Card (
     lastRevisionDate = lastRevisionDate,
     cardStatus = cardStatus,
     nextMissMemorisationDate = nextMissMemorisationDate,
+    nextRevisionDate = nextRevisionDate
 )
 
 @JvmName("cardExternalToLocal")
@@ -73,6 +74,7 @@ fun Card.toExternal() = ImmutableCard (
     lastRevisionDate = lastRevisionDate,
     cardStatus = cardStatus,
     nextMissMemorisationDate = nextMissMemorisationDate,
+    nextRevisionDate = nextRevisionDate
 )
 @JvmName("cardLocalToExternal")
 fun List<Card>.toExternal() = map(Card::toExternal)

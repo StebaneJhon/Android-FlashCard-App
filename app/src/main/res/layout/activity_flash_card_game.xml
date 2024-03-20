@@ -19,7 +19,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?colorSurfaceContainer"
+            android:background="?colorSurfaceContainerLow"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/mn_flash_card_top_app_bar"
             app:navigationIcon="@drawable/icon_chevron_left"
@@ -46,19 +46,6 @@
             android:layout_margin="5dp"
             android:background="@drawable/bg_card_flash_card"
             android:padding="20dp">
-
-            <!--
-            <TextView
-                android:id="@+id/tv_card_bottom_orientation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/tx_flash_card_game_card_orientation_front" />
-                -->
 
             <TextView
                 android:id="@+id/tv_flash_card_bottom_progression"
