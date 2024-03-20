@@ -82,4 +82,7 @@
     <string name="bt_apply_and_restart_quiz_settings_text">APPLY AND RESTART QUIZ</string>
     <string name="text_on_no_more_cards_error">Looks like you do not have any cards to revise. Please create new cards or unable the show unknown cards only option in your settings.</string>
     <string name="bt_unable_unknown_cards_only_text">UNABLE UNKNOWN CARDS ONLY</string>
+    <string name="tv_cards_text">Cards</string>
+    <string name="tv_deck_text">Decks</string>
+    <string name="tv_known_text">Known</string>
 </resources>

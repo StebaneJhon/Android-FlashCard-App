@@ -1,7 +1,6 @@
 package com.example.flashcard.profile
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.TypedValue
@@ -10,16 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import com.example.flashcard.R
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableWeeklyReviewModel
 import com.example.flashcard.databinding.FragmentProfileBinding
 import com.example.flashcard.util.UiState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -31,6 +27,9 @@ class ProfileFragment : Fragment() {
         val repository = (requireActivity().application as FlashCardApplication).repository
         ViewModelProvider(this, ProfileViewModelFactory(repository))[ProfileViewModel::class.java]
     }
+
+    private lateinit var profileDeckSectionRecyclerViewAdapter: ProfileFragmentDecksSectionRecyclerViewAdapter
+    private lateinit var profileCardSectionRecyclerViewAdapter: ProfileFragmentCardsSectionRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +61,75 @@ class ProfileFragment : Fragment() {
                 }
         }
 
+        showCardList()
+        showDeckList()
+
+
+    }
+
+    private fun showCardList() {
+        lifecycleScope.launch {
+            profileViewModel.getAllCards()
+            profileViewModel.allCards
+                .collect {
+                    when (it) {
+                        is UiState.Loading -> {
+
+                        }
+
+                        is UiState.Error -> {
+                            Toast.makeText(appContext, it.errorMessage, Toast.LENGTH_LONG).show()
+                        }
+
+                        is UiState.Success -> {
+                            profileCardSectionRecyclerViewAdapter = ProfileFragmentCardsSectionRecyclerViewAdapter(appContext!!, it.data)
+                            binding.rvCard.apply {
+                                layoutManager = LinearLayoutManager(
+                                    appContext,
+                                    LinearLayoutManager.HORIZONTAL,
+                                    false
+                                )
+                                adapter = profileCardSectionRecyclerViewAdapter
+                            }
+                            binding.tvCardNumber.text = it.data.size.toString()
+                            binding.tvKnownCardNumber.text = profileViewModel.getKnownCardsSum(it.data).toString()
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun showDeckList() {
+        lifecycleScope.launch {
+            profileViewModel.getAllDecks()
+            profileViewModel.allDecks
+                .collect {
+                    when (it) {
+                        is UiState.Loading -> {
+
+                        }
+
+                        is UiState.Error -> {
+                            Toast.makeText(appContext, it.errorMessage, Toast.LENGTH_LONG).show()
+                        }
+
+                        is UiState.Success -> {
+                            profileDeckSectionRecyclerViewAdapter = ProfileFragmentDecksSectionRecyclerViewAdapter(it.data, appContext!!) {
+                                //TODO: Open card list fragment
+                            }
+                            binding.rvDeck.apply {
+                                layoutManager = LinearLayoutManager(
+                                    appContext,
+                                    LinearLayoutManager.HORIZONTAL,
+                                    false
+                                )
+                                adapter = profileDeckSectionRecyclerViewAdapter
+                            }
+                            binding.tvDeckNumber.text = it.data.size.toString()
+                        }
+                    }
+                }
+        }
     }
 
     private fun bindWeeklyReview(data: ImmutableWeeklyReviewModel) {

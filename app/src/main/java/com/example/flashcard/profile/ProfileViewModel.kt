@@ -4,32 +4,89 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
+import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDayModel
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableWeeklyReviewModel
+import com.example.flashcard.util.CardLevel.L1
+import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 class ProfileViewModel(private val repository: FlashCardRepository): ViewModel() {
 
     private var fetchJob: Job? = null
-    private var _weeklyReview = MutableStateFlow<UiState<ImmutableWeeklyReviewModel>>(UiState.Loading)
-    val weeklyReview: StateFlow<UiState<ImmutableWeeklyReviewModel>> = _weeklyReview.asStateFlow()
+    private var fetchCardJob: Job? = null
+
+    private var _allDecks = MutableStateFlow<UiState<List<ImmutableDeck>>>(UiState.Loading)
+    val allDecks: StateFlow<UiState<List<ImmutableDeck>>> = _allDecks.asStateFlow()
+    fun getAllDecks() {
+        fetchJob?.cancel()
+        _allDecks.value = UiState.Loading
+        fetchJob = viewModelScope.launch {
+            try {
+                repository.allDecks().collect {
+                    if (it.isEmpty()) {
+                        _allDecks.value = UiState.Error("No Deck")
+                    } else {
+                        _allDecks.value = UiState.Success(it)
+                    }
+                }
+            } catch (e: IOException) {
+                _allDecks.value = UiState.Error(e.toString())
+            }
+        }
+    }
+
+    private var _allCards = MutableStateFlow<UiState<List<ImmutableCard>>>(UiState.Loading)
+    val allCards: StateFlow<UiState<List<ImmutableCard>>> = _allCards.asStateFlow()
+    fun getAllCards() {
+        fetchCardJob?.cancel()
+        _allCards.value = UiState.Loading
+        fetchCardJob = viewModelScope.launch {
+            repository.allCards().collect {
+                try {
+                    if (it.isEmpty()) {
+                        _allCards.value = UiState.Error("Card Update Failed")
+                    } else {
+                        _allCards.value = UiState.Success(it)
+                    }
+                } catch (e: IOException) {
+                    _allCards.value = UiState.Error(e.toString())
+                }
+
+            }
+        }
+    }
+
+    fun getKnownCardsSum(cards: List<ImmutableCard>): Int {
+        var result = 0
+        cards.forEach {
+            if (it.cardStatus != L1) {
+                result += 1
+            }
+        }
+        return result
+    }
 
     private val thisWeek = ImmutableWeeklyReviewModel(
-        sunday = ImmutableDayModel("Sunday", "28-09-23", 0),
-        monday = ImmutableDayModel("monday", "28-09-23", 30),
+        sunday = ImmutableDayModel("Sunday", "28-09-23", 1),
+        monday = ImmutableDayModel("monday", "28-09-23", 2),
         tuesday = ImmutableDayModel("Tuesday", "28-09-23", 3),
         wednesday = ImmutableDayModel("Wednesday", "28-09-23", 4),
-        thursday = ImmutableDayModel("Thursday", "28-09-23", 10),
+        thursday = ImmutableDayModel("Thursday", "28-09-23", 5),
         friday = ImmutableDayModel("Friday", "28-09-23", 6),
         saturday = ImmutableDayModel("saturday", "28-09-23", 7)
     )
 
+    private var _weeklyReview = MutableStateFlow<UiState<ImmutableWeeklyReviewModel>>(UiState.Loading)
+    val weeklyReview: StateFlow<UiState<ImmutableWeeklyReviewModel>> = _weeklyReview.asStateFlow()
     fun getWeeklyReview() {
         fetchJob?.cancel()
         _weeklyReview.value = UiState.Loading
@@ -100,6 +157,8 @@ class ProfileViewModel(private val repository: FlashCardRepository): ViewModel()
         }
         return result
     }
+
+
 }
 
 class ProfileViewModelFactory(private val repository: FlashCardRepository) : ViewModelProvider.Factory {
