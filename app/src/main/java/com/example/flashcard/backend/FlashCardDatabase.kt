@@ -9,17 +9,19 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.backend.entities.User
 import com.example.flashcard.backend.entities.WeeklyReview
 
 @Database(
-    entities = [Card::class, Deck::class, User::class, WeeklyReview::class],
-    version = 6,
+    entities = [Card::class, Deck::class, User::class, WeeklyReview::class, SpaceRepetitionBox::class],
+    version = 7,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
         AutoMigration(from = 4, to = 5),
-        AutoMigration(from = 5, to = 6)
+        AutoMigration(from = 5, to = 6),
+        AutoMigration(from = 6, to =7)
     ]
 )
 abstract class FlashCardDatabase : RoomDatabase() {
@@ -46,6 +48,7 @@ abstract class FlashCardDatabase : RoomDatabase() {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL("CREATE TABLE IF NOT EXISTS user (userId INT PRIMARY KEY, name varchar(255), initial varchar(255), status varchar(255))")
                 database.execSQL("CREATE TABLE IF NOT EXISTS weeklyReview (dayId INT PRIMARY KEY, dayName varchar(255), date varchar(255), revisedCardSum INT, colorGrade INT)")
+                database.execSQL("CREATE TABLE IF NOT EXISTS spaceRepetitionBox (levelId INT PRIMARY KEY, levelNme varchar(255), levelColor varchar(255), levelRepeatIn INT, levelRevisionMargin INT)")
             }
 
         }

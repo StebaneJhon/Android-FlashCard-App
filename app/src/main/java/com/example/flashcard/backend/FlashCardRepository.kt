@@ -3,10 +3,14 @@ package com.example.flashcard.backend
 import androidx.annotation.WorkerThread
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
+import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
+import com.example.flashcard.backend.entities.User
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -97,6 +101,36 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     @WorkerThread
     fun getCards(deckId: Int): Flow<List<ImmutableCard>> {
         return flashCardDao.getCards(deckId).map { it.toExternal() }
+    }
+
+    @WorkerThread
+    suspend fun createUser(user: User) {
+        flashCardDao.createUser(user)
+    }
+
+    @WorkerThread
+    fun getUser(): Flow<List<ImmutableUser>> {
+        return flashCardDao.getUser().map { it.toExternal() }
+    }
+
+    @WorkerThread
+    suspend fun updateUser(user: User) {
+        flashCardDao.updateUser(user)
+    }
+
+    @WorkerThread
+    fun getBox(): Flow<List<ImmutableSpaceRepetitionBox>> {
+        return flashCardDao.getBox().map { it.toExternal() }
+    }
+
+    @WorkerThread
+    suspend fun insertBoxLevel(boxLevel: SpaceRepetitionBox) {
+        flashCardDao.insertBoxLevel(boxLevel)
+    }
+
+    @WorkerThread
+    suspend fun updateBoxLevel(boxLevel: SpaceRepetitionBox) {
+        flashCardDao.updateBoxLevel(boxLevel)
     }
 
 }

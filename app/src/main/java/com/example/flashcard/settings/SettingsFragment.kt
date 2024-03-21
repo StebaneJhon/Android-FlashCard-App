@@ -1,5 +1,6 @@
 package com.example.flashcard.settings
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -7,9 +8,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.flashcard.R
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.flashcard.backend.FlashCardApplication
+import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.databinding.FragmentSettingsBinding
 import com.example.flashcard.util.ThemePicker
+import com.example.flashcard.util.UiState
 import com.example.flashcard.util.themeConst.BLUE_THEME
 import com.example.flashcard.util.themeConst.BROWN_THEME
 import com.example.flashcard.util.themeConst.DARK_THEME
@@ -20,12 +27,18 @@ import com.example.flashcard.util.themeConst.RED_THEME
 import com.example.flashcard.util.themeConst.TEAL_THEME
 import com.example.flashcard.util.themeConst.WHITE_THEME
 import com.example.flashcard.util.themeConst.YELLOW_THEME
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private var appContext: Context? = null
+    private val settingsFragmentViewModel by lazy {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        ViewModelProvider(this, SettingsFragmentViewModelFactory(repository))[SettingsFragmentViewModel::class.java]
+    }
 
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
@@ -39,6 +52,7 @@ class SettingsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -100,6 +114,31 @@ class SettingsFragment : Fragment() {
             updateAppTheme()
         }
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingsFragmentViewModel.getUserDetails()
+                settingsFragmentViewModel.user
+                    .collect {
+                        when (it) {
+                            is UiState.Loading -> {
+
+                            }
+                            is UiState.Error -> {
+
+                            }
+                            is UiState.Success -> {
+                                bindProfileSection(it.data[0])
+                            }
+                        }
+                    }
+            }
+        }
+
+    }
+
+    fun bindProfileSection(user: ImmutableUser) {
+        binding.tvProfileSectionUserName.text = user.name
+        binding.tvProfileSectionUserStatus.text = user.status
     }
 
     private fun updateAppTheme() {

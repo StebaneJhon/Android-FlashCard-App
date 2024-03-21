@@ -6,8 +6,9 @@ import java.sql.Date
 
 @Parcelize
 data class ImmutableUser(
-    val name: String = "Anonymous",
-    val initial: Char = name[1],
-    val status: String,
-    val creation: String?,
+    val userId: Int? = null,
+    val name: String? = null,
+    val initial: String? = null,
+    val status: String? = null,
+    val creation: String? = null,
 ): Parcelable

@@ -9,6 +9,8 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
+import com.example.flashcard.backend.entities.User
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import kotlinx.coroutines.flow.Flow
 
@@ -59,4 +61,22 @@ interface FlashCardDao {
 
     @Query("SELECT * FROM card")
     fun getAllCards(): Flow<List<Card>>
+
+    @Query("SELECT * FROM user")
+    fun getUser(): Flow<List<User>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun createUser(user: User)
+
+    @Update
+    suspend fun updateUser(user: User)
+
+    @Query("SELECT * FROM spaceRepetitionBox")
+    fun getBox(): Flow<List<SpaceRepetitionBox>>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertBoxLevel(boxLevel: SpaceRepetitionBox)
+
+    @Update
+    suspend fun updateBoxLevel(boxLevel: SpaceRepetitionBox)
 }

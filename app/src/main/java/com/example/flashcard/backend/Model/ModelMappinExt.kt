@@ -2,6 +2,8 @@ package com.example.flashcard.backend.Model
 
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
+import com.example.flashcard.backend.entities.User
 
 // External to local
 fun ImmutableDeck.toLocal() = Deck (
@@ -78,3 +80,47 @@ fun Card.toExternal() = ImmutableCard (
 )
 @JvmName("cardLocalToExternal")
 fun List<Card>.toExternal() = map(Card::toExternal)
+
+@JvmName("userExternalToLocal")
+fun List<ImmutableUser>.toLocal() = map(ImmutableUser::toLocal)
+// User Ex
+fun ImmutableUser.toLocal() = User(
+    userId = userId,
+    name = name,
+    initial = initial,
+    status = status,
+    creation = creation
+)
+
+@JvmName("userLocalToExternal")
+fun List<User>.toExternal() = map(User::toExternal)
+// User Loc
+fun User.toExternal() = ImmutableUser(
+    userId = userId,
+    name = name,
+    initial = initial,
+    status = status,
+    creation = creation
+)
+
+@JvmName("spaceRepetitionBoxExternalToLocal")
+fun List<ImmutableSpaceRepetitionBox>.toLocal() = map(ImmutableSpaceRepetitionBox::toLocal)
+// SpaceRepetitionBox Ex
+fun ImmutableSpaceRepetitionBox.toLocal() = SpaceRepetitionBox(
+    levelId = levelId,
+    levelName = levelName,
+    levelColor = levelColor,
+    levelRepeatIn = levelRepeatIn,
+    levelRevisionMargin = levelRevisionMargin
+)
+
+@JvmName("spaceRepetitionBoxLocalToExternal")
+fun List<SpaceRepetitionBox>.toExternal() = map(SpaceRepetitionBox::toExternal)
+// SpaceRepetitionBox Local
+fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
+    levelId = levelId,
+    levelName = levelName,
+    levelColor = levelColor,
+    levelRepeatIn = levelRepeatIn,
+    levelRevisionMargin = levelRevisionMargin
+)

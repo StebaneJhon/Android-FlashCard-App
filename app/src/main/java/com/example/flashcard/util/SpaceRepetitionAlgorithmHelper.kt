@@ -2,8 +2,14 @@ package com.example.flashcard.util
 
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardLevel.L2
+import com.example.flashcard.util.CardLevel.L3
+import com.example.flashcard.util.CardLevel.L4
+import com.example.flashcard.util.CardLevel.L5
+import com.example.flashcard.util.CardLevel.L6
+import com.example.flashcard.util.CardLevel.L7
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.Period
@@ -20,6 +26,18 @@ class SpaceRepetitionAlgorithmHelper {
         "L6" to LevelModel(14, R.color.green500, revisionMargin(14)),
         "L7" to LevelModel(31, R.color.green700, revisionMargin(31))
     )
+
+    fun getInitialSpaceRepetitionBox(): List<SpaceRepetitionBox> {
+        return listOf(
+            SpaceRepetitionBox(null, L1, "Red", 0, revisionMargin(0)),
+            SpaceRepetitionBox(null, L2, "Orange", 1, revisionMargin(1)),
+            SpaceRepetitionBox(null, L3, "Brown", 2, revisionMargin(2)),
+            SpaceRepetitionBox(null, L4, "Yellow700", 4, revisionMargin(4)),
+            SpaceRepetitionBox(null, L5, "Yellow500", 7, revisionMargin(7)),
+            SpaceRepetitionBox(null, L6, "Green500", 14, revisionMargin(14)),
+            SpaceRepetitionBox(null, L7, "Green700", 31, revisionMargin(31)),
+        )
+    }
 
     private fun revisionMargin(repeatDay: Int): Int {
         if (repeatDay == 0) {
