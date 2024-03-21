@@ -21,7 +21,7 @@
     <string name="on_no_card_text_hint">Start by adding a card by pressing at the + button below</string>
     <string name="card_image_bg_hint">card image background</string>
     <string name="settings_hint">Settings</string>
-    <string name="themes_head_text">THEMES</string>
+    <string name="themes_head_text">Theme</string>
     <string name="full_screen_button_description_text">Full screen button</string>
     <string name="exit_button_text_hint">Exit Button</string>
     <string name="flash_card_button_text">Flash Card</string>
@@ -85,4 +85,12 @@
     <string name="tv_cards_text">Cards</string>
     <string name="tv_deck_text">Decks</string>
     <string name="tv_known_text">Known</string>
+    <string name="tv_language_section_settings">Language</string>
+    <string name="tv_others_section_settings">Others</string>
+    <string name="bt_privacy_text">Privacy</string>
+    <string name="bt_contact_text">Contact the developer</string>
+    <string name="bt_help_text">Help</string>
+    <string name="bt_rate_the_app_text">Rate the Quizeo</string>
+    <string name="bt_about_the_quizeo_text">About the Quizeo</string>
+    <string name="tv_space_repetition_title">Space Repetition</string>
 </resources>

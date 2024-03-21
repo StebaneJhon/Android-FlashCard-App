@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="65dp"
+    android:layout_height="65dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="2dp"
+    android:background="@drawable/theme_button_background"
+    android:backgroundTint="?colorSurfaceContainer"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:id="@+id/ll_space_repetition_section_item">
+
+        <TextView
+            android:id="@+id/tv_space_repetition_forgetting_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_bold"
+            tools:text="2"
+            android:textAlignment="center"
+            android:textColor="?colorOnSurface"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_space_repetition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/open_sans_light"
+            tools:text="L2"
+            android:textColor="?colorOnSurface"
+            android:textSize="15sp" />
+
+</LinearLayout>
