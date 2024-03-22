@@ -7,17 +7,16 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
-import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
@@ -35,10 +34,7 @@ import com.example.flashcard.util.Constant
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 class MainActivity :
     AppCompatActivity(),
@@ -70,6 +66,8 @@ class MainActivity :
 
     val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
+    lateinit var navController: NavController
+
     companion object {
         private const val TAG = "MainActivity"
     }
@@ -87,7 +85,7 @@ class MainActivity :
         val view = binding.root
         setContentView(view)
 
-        val navController = findNavController(R.id.fragmentContainerView)
+        navController = findNavController(R.id.fragmentContainerView)
         binding.mainActivityBNV.setupWithNavController(navController)
 
         lifecycleScope.launch {

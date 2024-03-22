@@ -13,7 +13,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
+import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableUser
@@ -117,6 +121,15 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         binding.browneThemeButton.setOnClickListener {
             setAppTheme(BROWN_THEME)
             updateAppTheme()
+        }
+
+        binding.clProfileSectionRoot.setOnClickListener {
+            findNavController().navigate(
+                R.id.profileFragment,
+                null,
+                NavOptions.Builder()
+                    .setPopUpTo(R.id.settingsFragment, true)
+                    .build())
         }
 
         lifecycleScope.launch {

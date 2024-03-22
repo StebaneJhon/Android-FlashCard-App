@@ -26,9 +26,7 @@ class SettingsFragmentEditBoxLevelDialog(
     private var appContext: Context? = null
     private var til: TextInputLayout? = null
     private var ti: TextInputEditText? = null
-
     private var listener: SettingsFragmentEditBoxLevelDialogListener? = null
-
     private var imm: InputMethodManager? = null
 
 
@@ -74,52 +72,52 @@ class SettingsFragmentEditBoxLevelDialog(
 
     private fun onUpdate(): Boolean {
         val newRepeatInDay = ti?.text.toString().toInt()
-        if (boxLevel.levelName == L1) {
-            val nextBoxLevelRepeatDay = boxLevelList[1].levelRepeatIn ?: 1
-            if (newRepeatInDay > nextBoxLevelRepeatDay || newRepeatInDay < 0) {
-                til?.error =
-                    "Repetition day level must be inferior to the next repetition day level"
-                return false
-            } else {
-                //updateBoxLevel(newRepeatInDay)
-                return true
-            }
-        } else if(boxLevel.levelName == L7) {
-            val previousBoxLevelRepeatDay =
-                boxLevelList[boxLevelList.indexOf(boxLevel) - 1].levelRepeatIn
-            if (newRepeatInDay < previousBoxLevelRepeatDay!!) {
-                til?.error =
-                    "Repetition day level must be superior to the next previous day level"
-                return false
-            } else {
-                //updateBoxLevel(newRepeatInDay)
-                return true
-            }
-        } else {
-            val previousBoxLevelRepeatDay =
-                boxLevelList[boxLevelList.indexOf(boxLevel) - 1].levelRepeatIn
-            val nextBoxLevelRepeatDay =
-                boxLevelList[boxLevelList.indexOf(boxLevel) + 1].levelRepeatIn
-
-            when {
-                newRepeatInDay < previousBoxLevelRepeatDay!! -> {
-                    til?.error =
-                        "Repetition day level must be superior to the next previous day level"
-                    return false
-                }
-
-                newRepeatInDay > nextBoxLevelRepeatDay!! -> {
+        when (boxLevel.levelName) {
+            L1 -> {
+                val nextBoxLevelRepeatDay = boxLevelList[1].levelRepeatIn ?: 1
+                return if (newRepeatInDay > nextBoxLevelRepeatDay || newRepeatInDay < 0) {
                     til?.error =
                         "Repetition day level must be inferior to the next repetition day level"
-                    return false
-                }
-
-                else -> {
-                    //updateBoxLevel(newRepeatInDay)
-                    return true
+                    false
+                } else {
+                    true
                 }
             }
+            L7 -> {
+                val previousBoxLevelRepeatDay =
+                    boxLevelList[boxLevelList.indexOf(boxLevel) - 1].levelRepeatIn
+                return if (newRepeatInDay < previousBoxLevelRepeatDay!!) {
+                    til?.error =
+                        "Repetition day level must be superior to the next previous day level"
+                    false
+                } else {
+                    true
+                }
+            }
+            else -> {
+                val previousBoxLevelRepeatDay =
+                    boxLevelList[boxLevelList.indexOf(boxLevel) - 1].levelRepeatIn
+                val nextBoxLevelRepeatDay =
+                    boxLevelList[boxLevelList.indexOf(boxLevel) + 1].levelRepeatIn
 
+                when {
+                    newRepeatInDay < previousBoxLevelRepeatDay!! -> {
+                        til?.error =
+                            "Repetition day level must be superior to the next previous day level"
+                        return false
+                    }
+
+                    newRepeatInDay > nextBoxLevelRepeatDay!! -> {
+                        til?.error =
+                            "Repetition day level must be inferior to the next repetition day level"
+                        return false
+                    }
+
+                    else -> {
+                        return true
+                    }
+                }
+            }
         }
     }
     override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {

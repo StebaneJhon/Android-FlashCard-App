@@ -23,7 +23,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIcon="@drawable/icon_chevron_left"
                 app:navigationIconTint="?colorOnSurface"
-                app:title="@string/deck_activity_title" />
+                app:title="@string/settings_hint" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

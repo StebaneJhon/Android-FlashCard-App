@@ -28,7 +28,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -130,7 +132,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
 
     private fun navigateTo(data: ImmutableDeck) {
         val action = DeckFragmentDirections.navigateToCardFragment(data)
-        Navigation.findNavController(binding.root).navigate(action)
+        findNavController().navigate(action, NavOptions.Builder().setPopUpTo(R.id.deckFragment, true).build())
 
     }
 

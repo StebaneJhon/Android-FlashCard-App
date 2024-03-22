@@ -18,6 +18,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
@@ -28,6 +30,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
@@ -82,7 +86,12 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
             view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
                 title = _deck.deckName
                 setNavigationOnClickListener {
-                    (activity as AppCompatActivity).onBackPressedDispatcher.onBackPressed()
+                    findNavController().navigate(
+                        R.id.deckFragment,
+                        null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.cardFragment, true)
+                            .build())
                 }
             }
             lifecycleScope.launch {
@@ -112,7 +121,22 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 _deck.deckId?.let { it1 -> onStartQuiz(it1) }
             }
         }
+
+        requireActivity()
+            .onBackPressedDispatcher
+            .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(
+                        R.id.deckFragment,
+                        null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.cardFragment, true)
+                            .build())
+                }
+            })
     }
+
+
 
     private fun onDeckEmpty() {
         binding.cardsActivityProgressBar.isVisible = false
