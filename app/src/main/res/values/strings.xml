@@ -92,5 +92,5 @@
     <string name="bt_help_text">Help</string>
     <string name="bt_rate_the_app_text">Rate the Quizeo</string>
     <string name="bt_about_the_quizeo_text">About the Quizeo</string>
-    <string name="tv_space_repetition_title">Space Repetition</string>
+    <string name="tv_space_repetition_title">Space repetition box</string>
 </resources>

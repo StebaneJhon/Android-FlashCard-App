@@ -8,11 +8,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.backend.FlashCardApplication
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.databinding.FragmentSettingsBinding
 import com.example.flashcard.util.ThemePicker
@@ -42,6 +45,8 @@ class SettingsFragment : Fragment() {
 
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
+
+    private lateinit var settingsFragmentSpaceRepetitionViewAdapter: SettingsFragmentSpaceRepetitionViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -134,9 +139,44 @@ class SettingsFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launch {
+            settingsFragmentViewModel.getBox()
+            settingsFragmentViewModel.boxLevels
+                .collect {
+                    when(it) {
+                        is UiState.Loading -> {
+
+                        }
+                        is UiState.Error -> {
+                            Toast.makeText(appContext, it.errorMessage, Toast.LENGTH_LONG).show()
+                        }
+                        is UiState.Success -> {
+                            bindSpaceRepetitionBox(it)
+                        }
+                    }
+                }
+        }
+
     }
 
-    fun bindProfileSection(user: ImmutableUser) {
+    private fun bindSpaceRepetitionBox(it: UiState.Success<List<ImmutableSpaceRepetitionBox>>) {
+        settingsFragmentSpaceRepetitionViewAdapter =
+            SettingsFragmentSpaceRepetitionViewAdapter(appContext!!, it.data)
+            { lv ->
+                Toast.makeText(appContext, lv.levelName, Toast.LENGTH_LONG).show()
+            }
+
+        binding.rvSpaceRepetitionSection.apply {
+            layoutManager = LinearLayoutManager(
+                appContext,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            adapter = settingsFragmentSpaceRepetitionViewAdapter
+        }
+    }
+
+    private fun bindProfileSection(user: ImmutableUser) {
         binding.tvProfileSectionUserName.text = user.name
         binding.tvProfileSectionUserStatus.text = user.status
     }

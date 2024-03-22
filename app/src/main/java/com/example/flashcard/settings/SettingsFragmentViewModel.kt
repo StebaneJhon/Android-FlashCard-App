@@ -1,10 +1,10 @@
 package com.example.flashcard.settings
 
-import android.view.View
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.util.UiState
@@ -47,9 +47,31 @@ class SettingsFragmentViewModel(private val repository: FlashCardRepository): Vi
         }
     }
 
-    fun insertBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch {
-        repository.insertBoxLevel(boxLevel)
+    private var boxFetchJob: Job? = null
+    val _boxLevels = MutableStateFlow<UiState<List<ImmutableSpaceRepetitionBox>>>(UiState.Loading)
+    val boxLevels: StateFlow<UiState<List<ImmutableSpaceRepetitionBox>>> = _boxLevels.asStateFlow()
+
+    fun getBox() {
+        boxFetchJob?.cancel()
+        _boxLevels.value = UiState.Loading
+        boxFetchJob = viewModelScope.launch {
+            try {
+                repository.getBox().collect {
+                    if (it.isEmpty()) {
+                        _boxLevels.value = UiState.Error("Your Space Repetition Box is not initiated. Please do initiate your box for a better experience in the Quizeo")
+                    } else {
+                        _boxLevels.value = UiState.Success(it)
+                    }
+                }
+            } catch (e: IOException) {
+                _boxLevels.value = UiState.Error(e.toString())
+            }
+        }
     }
+
+    fun updateBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch { repository.updateBoxLevel(boxLevel) }
+
+    fun insertBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch { repository.insertBoxLevel(boxLevel) }
 
 }
 
