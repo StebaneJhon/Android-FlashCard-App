@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableUser
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.databinding.FragmentSettingsBinding
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
@@ -30,10 +31,9 @@ import com.example.flashcard.util.themeConst.RED_THEME
 import com.example.flashcard.util.themeConst.TEAL_THEME
 import com.example.flashcard.util.themeConst.WHITE_THEME
 import com.example.flashcard.util.themeConst.YELLOW_THEME
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.SettingsFragmentEditBoxLevelDialogListener {
 
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
@@ -151,7 +151,7 @@ class SettingsFragment : Fragment() {
                             Toast.makeText(appContext, it.errorMessage, Toast.LENGTH_LONG).show()
                         }
                         is UiState.Success -> {
-                            bindSpaceRepetitionBox(it)
+                            bindSpaceRepetitionBox(it.data)
                         }
                     }
                 }
@@ -159,11 +159,11 @@ class SettingsFragment : Fragment() {
 
     }
 
-    private fun bindSpaceRepetitionBox(it: UiState.Success<List<ImmutableSpaceRepetitionBox>>) {
+    private fun bindSpaceRepetitionBox(boxLevels: List<ImmutableSpaceRepetitionBox>) {
         settingsFragmentSpaceRepetitionViewAdapter =
-            SettingsFragmentSpaceRepetitionViewAdapter(appContext!!, it.data)
+            SettingsFragmentSpaceRepetitionViewAdapter(appContext!!, boxLevels)
             { lv ->
-                Toast.makeText(appContext, lv.levelName, Toast.LENGTH_LONG).show()
+                onBoxLevelCilcked(lv, boxLevels)
             }
 
         binding.rvSpaceRepetitionSection.apply {
@@ -174,6 +174,11 @@ class SettingsFragment : Fragment() {
             )
             adapter = settingsFragmentSpaceRepetitionViewAdapter
         }
+    }
+
+    fun onBoxLevelCilcked(boxLevel: ImmutableSpaceRepetitionBox, boxLevelList: List<ImmutableSpaceRepetitionBox>) {
+        val newDialog = SettingsFragmentEditBoxLevelDialog(boxLevel, boxLevelList)
+        newDialog.show(parentFragmentManager, "Update Box Level Dialog")
     }
 
     private fun bindProfileSection(user: ImmutableUser) {
@@ -190,6 +195,10 @@ class SettingsFragment : Fragment() {
             putString("themName", themName)
             apply()
         }
+    }
+
+    override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {
+        settingsFragmentViewModel.updateBoxLevel(boxLevel)
     }
 
 }

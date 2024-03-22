@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="?colorSurfaceContainerLow">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_level_repeat_day"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColorHint="?colorOnSurface"
+        android:layout_margin="10dp"
+        app:endIconMode="custom"
+        app:endIconDrawable="@drawable/icon_help">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ti_level_repeat_day"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorOnSurface"
+            android:textColor="?colorOnSurface"
+            android:hint="@string/ti_repeat_card_in_days_hint"
+            android:inputType="number"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

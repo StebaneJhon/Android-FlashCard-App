@@ -93,4 +93,5 @@
     <string name="bt_rate_the_app_text">Rate the Quizeo</string>
     <string name="bt_about_the_quizeo_text">About the Quizeo</string>
     <string name="tv_space_repetition_title">Space repetition box</string>
+    <string name="ti_repeat_card_in_days_hint">Repeat card in ... days</string>
 </resources>

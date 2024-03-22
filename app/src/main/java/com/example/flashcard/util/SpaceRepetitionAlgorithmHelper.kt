@@ -39,7 +39,7 @@ class SpaceRepetitionAlgorithmHelper {
         )
     }
 
-    private fun revisionMargin(repeatDay: Int): Int {
+    fun revisionMargin(repeatDay: Int): Int {
         if (repeatDay == 0) {
             return 1
         }

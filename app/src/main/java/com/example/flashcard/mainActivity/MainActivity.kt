@@ -21,12 +21,16 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.ActivityMainBinding
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.card.CardViewModel
 import com.example.flashcard.card.CardViewModelFactory
 import com.example.flashcard.card.NewCardDialog
 import com.example.flashcard.deck.DeckViewModel
 import com.example.flashcard.deck.DeckViewModelFactory
 import com.example.flashcard.deck.NewDeckDialog
+import com.example.flashcard.settings.SettingsFragmentEditBoxLevelDialog
+import com.example.flashcard.settings.SettingsFragmentViewModel
+import com.example.flashcard.settings.SettingsFragmentViewModelFactory
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.ThemePicker
@@ -36,8 +40,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
-    NewCardDialog.NewDialogListener {
+class MainActivity :
+    AppCompatActivity(),
+    NewDeckDialog.NewDialogListener,
+    NewCardDialog.NewDialogListener,
+    SettingsFragmentEditBoxLevelDialog.SettingsFragmentEditBoxLevelDialogListener {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -47,6 +54,10 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
 
     private val cardViewModel: CardViewModel by viewModels {
         CardViewModelFactory((application as FlashCardApplication).repository)
+    }
+
+    private val settingsViewModel: SettingsFragmentViewModel by viewModels {
+        SettingsFragmentViewModelFactory((application as FlashCardApplication).repository)
     }
 
     private val activityViewModel: MainActivityViewModel by viewModels {
@@ -160,5 +171,9 @@ class MainActivity : AppCompatActivity(), NewDeckDialog.NewDialogListener,
         } else {
             cardViewModel.updateCard(card)
         }
+    }
+
+    override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {
+        settingsViewModel.updateBoxLevel(boxLevel)
     }
 }
