@@ -27,9 +27,7 @@ import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
-class SpaceRepetitionAlgorithmHelper(
-    //val boxLevels: List<ImmutableSpaceRepetitionBox>
-) {
+class SpaceRepetitionAlgorithmHelper{
 
     lateinit var boxLevels: List<ImmutableSpaceRepetitionBox>
     private val box = FlashCardApplication().repository.getBox()
@@ -293,7 +291,7 @@ class SpaceRepetitionAlgorithmHelper(
         }
 
         if (!isKnown) {
-            val repeatIn = boxLevels?.let { getBoxLevelByStatus(it, L1)?.levelRepeatIn } ?: 1
+            val repeatIn = boxLevels.let { getBoxLevelByStatus(it, L1)?.levelRepeatIn } ?: 1
             val period = Period.of(0, 0, repeatIn)
             val nextDate = today.plus(period)
             val result = formatter.format(nextDate)
@@ -301,13 +299,13 @@ class SpaceRepetitionAlgorithmHelper(
         }
 
         card.cardStatus?.let {
-            val newBoxLevel = boxLevels?.let { it1 -> getBoxLevelByStatus(it1, newCardStatus) }
+            val newBoxLevel = boxLevels.let { it1 -> getBoxLevelByStatus(it1, newCardStatus) }
             val repeatIn = newBoxLevel?.levelRepeatIn ?: 1
             val period = Period.of(0, 0, repeatIn)
             val newDate = today.plus(period)
             return formatter.format(newDate)
         }
-        val repeatIn = boxLevels?.let { getBoxLevelByStatus(it, L2)?.levelRepeatIn } ?: 1
+        val repeatIn = boxLevels.let { getBoxLevelByStatus(it, L2)?.levelRepeatIn } ?: 1
         val period = Period.of(0, 0, repeatIn)
         return formatter.format(today.plus(period))
     }
