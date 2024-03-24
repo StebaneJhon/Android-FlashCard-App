@@ -21,7 +21,6 @@
                 android:id="@+id/cardsTopAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/icon_chevron_left"
                 app:navigationIconTint="?colorOnSurface"
                 app:title="@string/settings_hint" />
 

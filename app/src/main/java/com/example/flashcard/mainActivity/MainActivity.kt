@@ -64,7 +64,6 @@ class MainActivity :
     var editor: SharedPreferences.Editor? = null
     private val SETTINGS_CODE = 12334
 
-    val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     lateinit var navController: NavController
 
@@ -120,6 +119,7 @@ class MainActivity :
     }
 
     private fun updateCardStatus(card: ImmutableCard) {
+        val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
         val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
         if (isCardForgotten) {
             val newStatus = spaceRepetitionHelper.status(card, false)

@@ -82,7 +82,10 @@ class ProfileFragment : Fragment() {
                         }
 
                         is UiState.Success -> {
-                            profileCardSectionRecyclerViewAdapter = ProfileFragmentCardsSectionRecyclerViewAdapter(appContext!!, it.data)
+                            profileCardSectionRecyclerViewAdapter = ProfileFragmentCardsSectionRecyclerViewAdapter(
+                                appContext!!,
+                                it.data,
+                                profileViewModel.getBoxLevels()!!)
                             binding.rvCard.apply {
                                 layoutManager = LinearLayoutManager(
                                     appContext,

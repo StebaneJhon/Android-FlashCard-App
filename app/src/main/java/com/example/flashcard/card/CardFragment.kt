@@ -362,6 +362,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 it,
                 cardList,
                 deck,
+                cardViewModel.getBoxLevels()!!,
                 { selectedCard ->
                     onFullScreen(selectedCard, deck)
                 },

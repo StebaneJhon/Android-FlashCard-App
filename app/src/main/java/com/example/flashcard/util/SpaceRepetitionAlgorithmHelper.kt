@@ -1,7 +1,9 @@
 package com.example.flashcard.util
 
 import com.example.flashcard.R
+import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardLevel.L2
@@ -10,13 +12,66 @@ import com.example.flashcard.util.CardLevel.L4
 import com.example.flashcard.util.CardLevel.L5
 import com.example.flashcard.util.CardLevel.L6
 import com.example.flashcard.util.CardLevel.L7
+import com.example.flashcard.util.LevelColors.BROWNE
+import com.example.flashcard.util.LevelColors.GREEN500
+import com.example.flashcard.util.LevelColors.GREEN700
+import com.example.flashcard.util.LevelColors.ORANGE
+import com.example.flashcard.util.LevelColors.RED
+import com.example.flashcard.util.LevelColors.YELLOW500
+import com.example.flashcard.util.LevelColors.YELLOW700
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
 
-class SpaceRepetitionAlgorithmHelper {
+class SpaceRepetitionAlgorithmHelper(
+    //val boxLevels: List<ImmutableSpaceRepetitionBox>
+) {
 
+    lateinit var boxLevels: List<ImmutableSpaceRepetitionBox>
+    private val box = FlashCardApplication().repository.getBox()
+
+    init {
+        initSpaceRepetitionAlgorithmHelper()
+    }
+    @OptIn(DelicateCoroutinesApi::class)
+    fun initSpaceRepetitionAlgorithmHelper() {
+        GlobalScope.launch {
+            box.collect {
+                val b = it
+                boxLevels = it
+            }
+        }
+    }
+
+    fun getActualBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
+        return boxLevels
+    }
+
+    private val colors = mapOf(
+        RED to R.color.red700,
+        ORANGE to R.color.orange,
+        BROWNE to R.color.brown500,
+        YELLOW700 to R.color.yellow700,
+        YELLOW500 to R.color.yellow500,
+        GREEN500 to R.color.green500,
+        GREEN700 to R.color.green700
+    )
+
+
+
+    fun selectBoxLevelColor(color: String): Int? {
+        return if (color in colors.keys) {
+            colors[color]
+        } else {
+            R.color.red700
+        }
+    }
+
+    /*
     val box = mapOf<String, LevelModel>(
         "L1" to LevelModel(0, R.color.red700, revisionMargin(0)),
         "L2" to LevelModel(1, R.color.orange, revisionMargin(1)),
@@ -26,6 +81,7 @@ class SpaceRepetitionAlgorithmHelper {
         "L6" to LevelModel(14, R.color.green500, revisionMargin(14)),
         "L7" to LevelModel(31, R.color.green700, revisionMargin(31))
     )
+     */
 
     fun getInitialSpaceRepetitionBox(): List<SpaceRepetitionBox> {
         return listOf(
@@ -157,8 +213,9 @@ class SpaceRepetitionAlgorithmHelper {
 
         lastRevised?.let {
             if (it == today && !isKnown) {
-                val days = box["L1"]?.repeatDay!!.plus(box[L1]!!.revisionMargin)
-                val period = Period.of(0, 0, box["L1"]?.repeatDay!!.plus(box[L1]!!.revisionMargin))
+                val newRepeatDay = boxLevels?.get(0)?.levelRepeatIn?.plus(boxLevels!![0].levelRevisionMargin!!) ?: 1
+                //val days = box["L1"]?.repeatDay!!.plus(box[L1]!!.revisionMargin)
+                val period = Period.of(0, 0, newRepeatDay)
                 val nextDate = today.plus(period)
                 val result = formatter.format(nextDate)
                 return result
@@ -173,22 +230,40 @@ class SpaceRepetitionAlgorithmHelper {
         }
 
         if (!isKnown) {
-            val days = box["L1"]?.repeatDay!!.plus(box[L1]!!.revisionMargin)
-            val period = Period.of(0, 0, box["L1"]?.repeatDay!!.plus(box[L1]!!.revisionMargin))
+            val newRepeatDay = boxLevels?.get(0)?.levelRepeatIn?.plus(boxLevels!![0].levelRevisionMargin!!) ?: 1
+            //val days = box["L1"]?.repeatDay!!.plus(box[L1]!!.revisionMargin)
+            val period = Period.of(0, 0, newRepeatDay)
             val nextDate = today.plus(period)
             val result = formatter.format(nextDate)
             return result
         }
 
         card.cardStatus?.let {
-            val days = box[newCardStatus]?.repeatDay!!.plus(box[newCardStatus]!!.revisionMargin)
-            val period = Period.of(0, 0, box[newCardStatus]?.repeatDay!!.plus(box[newCardStatus]!!.revisionMargin))
+            val newBoxLevel = boxLevels?.let { it1 -> getBoxLevelByStatus(it1, newCardStatus) }
+            val newRepeatDay = newBoxLevel?.levelRepeatIn?.plus(newBoxLevel.levelRevisionMargin!!) ?: 1
+            //val days = box[newCardStatus]?.repeatDay!!.plus(box[newCardStatus]!!.revisionMargin)
+            val period = Period.of(0, 0, newRepeatDay)
             val newDate = today.plus(period)
             return formatter.format(newDate)
         }
-        val days = box["L2"]?.repeatDay!!.plus(box[L2]!!.revisionMargin)
-        val period = Period.of(0, 0, box["L2"]?.repeatDay!!.plus(box[L2]!!.revisionMargin))
+
+        val newBoxLevel = boxLevels?.let { getBoxLevelByStatus(it, L2) }
+        val newRepeatDay = newBoxLevel?.levelRepeatIn?.plus(newBoxLevel.levelRevisionMargin!!) ?: 2
+        //val days = box["L2"]?.repeatDay!!.plus(box[L2]!!.revisionMargin)
+        val period = Period.of(0, 0, newRepeatDay)
         return formatter.format(today.plus(period))
+    }
+
+    fun getBoxLevelByStatus(
+        boxLevels: List<ImmutableSpaceRepetitionBox>,
+        statusLevel: String
+    ): ImmutableSpaceRepetitionBox? {
+        boxLevels.forEach { boxLevel ->
+            if (boxLevel.levelName == statusLevel) {
+                return boxLevel
+            }
+        }
+        return null
     }
 
     fun nextRevisionDate(card: ImmutableCard, isKnown: Boolean, newCardStatus: String): String {
@@ -201,7 +276,9 @@ class SpaceRepetitionAlgorithmHelper {
 
         lastRevised?.let {
             if (it == today && !isKnown) {
-                val period = Period.of(0, 0, box["L1"]?.repeatDay!!)
+                val repeatIn = boxLevels?.let { it1 -> getBoxLevelByStatus(it1, L1)?.levelRepeatIn }
+                    ?: 1
+                val period = Period.of(0, 0, repeatIn)
                 val nextDate = today.plus(period)
                 val result = formatter.format(nextDate)
                 return result
@@ -216,18 +293,22 @@ class SpaceRepetitionAlgorithmHelper {
         }
 
         if (!isKnown) {
-            val period = Period.of(0, 0, box["L1"]?.repeatDay!!)
+            val repeatIn = boxLevels?.let { getBoxLevelByStatus(it, L1)?.levelRepeatIn } ?: 1
+            val period = Period.of(0, 0, repeatIn)
             val nextDate = today.plus(period)
             val result = formatter.format(nextDate)
             return result
         }
 
         card.cardStatus?.let {
-            val period = Period.of(0, 0, box[newCardStatus]?.repeatDay!!)
+            val newBoxLevel = boxLevels?.let { it1 -> getBoxLevelByStatus(it1, newCardStatus) }
+            val repeatIn = newBoxLevel?.levelRepeatIn ?: 1
+            val period = Period.of(0, 0, repeatIn)
             val newDate = today.plus(period)
             return formatter.format(newDate)
         }
-        val period = Period.of(0, 0, box["L2"]?.repeatDay!!)
+        val repeatIn = boxLevels?.let { getBoxLevelByStatus(it, L2)?.levelRepeatIn } ?: 1
+        val period = Period.of(0, 0, repeatIn)
         return formatter.format(today.plus(period))
     }
 

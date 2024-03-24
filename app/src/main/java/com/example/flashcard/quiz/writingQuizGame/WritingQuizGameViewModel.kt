@@ -33,6 +33,9 @@ class WritingQuizGameViewModel(
     lateinit var deck: ImmutableDeck
     private var originalCardList: List<ImmutableCard>? = null
 
+
+
+
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     fun initCardList(gameCards: MutableList<ImmutableCard>) {

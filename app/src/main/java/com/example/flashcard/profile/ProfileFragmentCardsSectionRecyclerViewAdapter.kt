@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
@@ -34,6 +35,7 @@ import com.google.android.material.card.MaterialCardView
 class ProfileFragmentCardsSectionRecyclerViewAdapter(
     private val context: Context,
     private val cardList: List<ImmutableCard>,
+    private val boxLevels: List<ImmutableSpaceRepetitionBox>,
 ) : RecyclerView.Adapter<ProfileFragmentCardsSectionRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -47,7 +49,8 @@ class ProfileFragmentCardsSectionRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return holder.bind(
             context,
-            cardList[position]
+            cardList[position],
+            boxLevels,
         )
     }
 
@@ -65,10 +68,13 @@ class ProfileFragmentCardsSectionRecyclerViewAdapter(
 
         fun bind(
             context: Context,
-            card: ImmutableCard
-        ) {
+            card: ImmutableCard,
+            boxLevels: List<ImmutableSpaceRepetitionBox>,
+            ) {
             popUpBT.visibility = View.GONE
-            val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
+            //val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
+            val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card.cardStatus!!)
+            val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
             val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
             cardStatus.apply {
                 text = card.cardStatus

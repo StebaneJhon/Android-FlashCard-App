@@ -40,6 +40,16 @@ object themeConst {
     val BROWN_THEME = "BROWN THEME"
 }
 
+object LevelColors {
+    const val RED = "Red"
+    const val ORANGE = "Orange"
+    const val BROWNE = "Brown"
+    const val YELLOW700 = "Yellow700"
+    const val YELLOW500 = "Yellow500"
+    const val GREEN500 = "Green500"
+    const val GREEN700 = "Green700"
+}
+
 object MatchQuizGameClickStatus {
     val FIRST_TRY = "First try"
     val MATCHE = "Match"

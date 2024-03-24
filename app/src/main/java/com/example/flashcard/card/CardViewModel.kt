@@ -8,9 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.relations.DeckWithCards
+import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +26,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     private var _deckWithAllCards = MutableStateFlow<UiState<DeckWithCards>>(UiState.Loading)
     val deckWithAllCards: StateFlow<UiState<DeckWithCards>> = _deckWithAllCards.asStateFlow()
     private var fetchJob: Job? = null
+    val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     fun getDeckWithCards(deckId: Int) {
         fetchJob?.cancel()
@@ -41,6 +44,10 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
                 _deckWithAllCards.value = UiState.Error(e.toString())
             }
         }
+    }
+
+    fun getBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
+       return spaceRepetitionHelper.getActualBoxLevels()
     }
 
     fun insertCard(card: Card, localDeck: ImmutableDeck) = viewModelScope.launch {

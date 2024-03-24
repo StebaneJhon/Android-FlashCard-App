@@ -28,6 +28,7 @@ class SettingsFragmentEditBoxLevelDialog(
     private var ti: TextInputEditText? = null
     private var listener: SettingsFragmentEditBoxLevelDialogListener? = null
     private var imm: InputMethodManager? = null
+    private lateinit var spaceRepetitionAlgorithmHelper: SpaceRepetitionAlgorithmHelper
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -37,6 +38,9 @@ class SettingsFragmentEditBoxLevelDialog(
 
         appContext = activity?.applicationContext
         imm = appContext?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        spaceRepetitionAlgorithmHelper =  SpaceRepetitionAlgorithmHelper()
+
 
         til = view?.findViewById(R.id.til_level_repeat_day)
         ti = view?.findViewById(R.id.ti_level_repeat_day)
@@ -139,7 +143,7 @@ class SettingsFragmentEditBoxLevelDialog(
             boxLevel.levelName,
             boxLevel.levelColor,
             newRepeatInDay,
-            SpaceRepetitionAlgorithmHelper().revisionMargin(newRepeatInDay)
+            spaceRepetitionAlgorithmHelper.revisionMargin(newRepeatInDay)
         )
         listener?.getUpdatedBoxLevel(updateBoxLevel)
         dismiss()

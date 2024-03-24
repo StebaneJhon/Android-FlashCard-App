@@ -23,6 +23,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
@@ -34,6 +35,7 @@ class CardsRecyclerViewAdapter(
     private val context: Context,
     private val cardList: List<Card>,
     private val deck: ImmutableDeck,
+    private val boxLevels: List<ImmutableSpaceRepetitionBox>,
     private val fullScreenClickListener: (Card) -> Unit,
     private val editCardClickListener: (Card) -> Unit,
     private val deleteCardClickListener: (Card) -> Unit,
@@ -52,6 +54,7 @@ class CardsRecyclerViewAdapter(
             context,
             cardList[position],
             deck,
+            boxLevels,
             fullScreenClickListener,
             editCardClickListener,
             deleteCardClickListener
@@ -74,11 +77,14 @@ class CardsRecyclerViewAdapter(
             context: Context,
             card: Card,
             deck: ImmutableDeck,
+            boxLevels: List<ImmutableSpaceRepetitionBox>,
             fullScreenClickListener: (Card) -> Unit,
             editCardClickListener: (Card) -> Unit,
             deleteCardClickListener: (Card) -> Unit
         ) {
-            val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
+            //val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
+            val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card.cardStatus!!)
+            val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
             val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
             cardStatus.apply {
                 text = card.cardStatus

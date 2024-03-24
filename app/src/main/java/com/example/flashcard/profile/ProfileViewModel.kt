@@ -7,6 +7,7 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDayModel
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableWeeklyReviewModel
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
@@ -23,6 +24,7 @@ class ProfileViewModel(private val repository: FlashCardRepository): ViewModel()
 
     private var fetchJob: Job? = null
     private var fetchCardJob: Job? = null
+    private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     private var _allDecks = MutableStateFlow<UiState<List<ImmutableDeck>>>(UiState.Loading)
     val allDecks: StateFlow<UiState<List<ImmutableDeck>>> = _allDecks.asStateFlow()
@@ -63,6 +65,10 @@ class ProfileViewModel(private val repository: FlashCardRepository): ViewModel()
 
             }
         }
+    }
+
+    fun getBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
+        return spaceRepetitionHelper.getActualBoxLevels()
     }
 
     fun getKnownCardsSum(cards: List<ImmutableCard>): Int {
