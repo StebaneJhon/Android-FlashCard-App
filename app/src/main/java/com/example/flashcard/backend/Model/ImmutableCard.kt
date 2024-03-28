@@ -1,5 +1,7 @@
 package com.example.flashcard.backend.Model
 
+import com.example.flashcard.backend.entities.CardDefinition
+
 data class ImmutableCard(
     val cardId: Int? = null,
     val cardContent: String? = "",
@@ -15,5 +17,7 @@ data class ImmutableCard(
     val lastRevisionDate: String? = null,
     val cardStatus: String? = null,
     val nextMissMemorisationDate: String? = null,
-    val nextRevisionDate: String? = null
+    val nextRevisionDate: String? = null,
+    val cardType: String? = null,
+    val cardDefinitions: List<CardDefinition>? = null
 )

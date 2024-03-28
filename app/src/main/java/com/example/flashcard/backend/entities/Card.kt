@@ -24,4 +24,5 @@ data class Card (
     @ColumnInfo(name = "card_status", defaultValue = "0") val cardStatus: String? = null,
     @ColumnInfo(name = "next_miss_memorisation_date", defaultValue = "0") val nextMissMemorisationDate: String? = null,
     @ColumnInfo(name = "next_revision_date", defaultValue = "0") val nextRevisionDate: String? = null,
+    @ColumnInfo(name = "card_type", defaultValue = "0") val cardType: String? = null,
 ): Parcelable
