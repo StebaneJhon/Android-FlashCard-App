@@ -264,15 +264,13 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun deleteCard(card: ImmutableCard, deck: Deck) {
-        if (deck.cardSum!! > 0) {
-            deck.cardSum = deck.cardSum?.minus(1)
-            flashCardDao.updateDeck(deck)
-            flashCardDao.deleteCard(card.toLocal())
-            flashCardDao.deleteCardContent(card.cardContent!!)
-            card.cardDefinition?.forEach {
-                flashCardDao.deleteCardDefinition(it)
-            }
+        flashCardDao.deleteCardContent(card.cardContent!!)
+        card.cardDefinition?.forEach {
+            flashCardDao.deleteCardDefinition(it)
         }
+        flashCardDao.deleteCard(card.toLocal())
+        deck.cardSum = deck.cardSum?.minus(1)
+        flashCardDao.updateDeck(deck)
     }
 
     @WorkerThread
