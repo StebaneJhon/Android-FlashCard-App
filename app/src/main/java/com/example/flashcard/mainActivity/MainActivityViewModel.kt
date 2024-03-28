@@ -41,7 +41,7 @@ class MainActivityViewModel(private val repository: FlashCardRepository): ViewMo
         }
     }
 
-    fun updateCard(card: Card) = viewModelScope.launch {
+    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
     }
 

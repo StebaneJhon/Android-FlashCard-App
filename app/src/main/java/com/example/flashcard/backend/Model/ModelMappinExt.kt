@@ -1,9 +1,12 @@
 package com.example.flashcard.backend.Model
 
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.CardContent
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.backend.entities.User
+import com.example.flashcard.backend.entities.relations.DeckWithCards
 
 // External to local
 fun ImmutableDeck.toLocal() = Deck (
@@ -41,9 +44,9 @@ fun List<Deck>.toExternal() = map(Deck::toExternal)
 // Cards Ex
 fun ImmutableCard.toLocal() = Card (
     cardId = cardId,
-    cardContent = cardContent,
+    cardContent = null,
     contentDescription = contentDescription,
-    cardDefinition = cardDefinition,
+    cardDefinition = null,
     valueDefinition = valueDefinition,
     deckId = deckId,
     backgroundImg = backgroundImg,
@@ -54,18 +57,20 @@ fun ImmutableCard.toLocal() = Card (
     lastRevisionDate = lastRevisionDate,
     cardStatus = cardStatus,
     nextMissMemorisationDate = nextMissMemorisationDate,
-    nextRevisionDate = nextRevisionDate
+    nextRevisionDate = nextRevisionDate,
+    cardType = cardType,
+    creationDateTime = creationDateTime,
 )
 
 @JvmName("cardExternalToLocal")
 fun List<ImmutableCard>.toLocal() = map(ImmutableCard::toLocal)
 
 // Local to External
-fun Card.toExternal() = ImmutableCard (
+fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = ImmutableCard (
     cardId = cardId,
     cardContent = cardContent,
     contentDescription = contentDescription,
-    cardDefinition = cardDefinition,
+    cardDefinition = cardDefinitions,
     valueDefinition = valueDefinition,
     deckId = deckId,
     backgroundImg = backgroundImg,
@@ -76,10 +81,12 @@ fun Card.toExternal() = ImmutableCard (
     lastRevisionDate = lastRevisionDate,
     cardStatus = cardStatus,
     nextMissMemorisationDate = nextMissMemorisationDate,
-    nextRevisionDate = nextRevisionDate
+    nextRevisionDate = nextRevisionDate,
+    cardType = cardType,
+    creationDateTime = creationDateTime,
 )
 @JvmName("cardLocalToExternal")
-fun List<Card>.toExternal() = map(Card::toExternal)
+fun List<Card>.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = map{card -> card.toExternal(cardContent, cardDefinitions)}
 
 @JvmName("userExternalToLocal")
 fun List<ImmutableUser>.toLocal() = map(ImmutableUser::toLocal)
@@ -123,4 +130,10 @@ fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
     levelColor = levelColor,
     levelRepeatIn = levelRepeatIn,
     levelRevisionMargin = levelRevisionMargin
+)
+
+@JvmName("deckWithCardsLocalToExternal")
+fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard>) = ImmutableDeckWithCards(
+    deck = deck,
+    cards = cards
 )

@@ -24,8 +24,13 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.CardContent
+import com.example.flashcard.backend.entities.CardDefinition
+import com.example.flashcard.util.CardLevel.L1
+import com.example.flashcard.util.CardType.FLASHCARD
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.example.flashcard.util.cardBackgroundConst.CURVE_PATTERN
@@ -38,10 +43,13 @@ import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 
-class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): AppCompatDialogFragment() {
+class NewCardDialog(private val card: ImmutableCard?, private val deck: ImmutableDeck): AppCompatDialogFragment() {
 
     private var cardContent: EditText? = null
     private var cardContentDefinition: EditText? = null
@@ -84,9 +92,9 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
 
         if (card != null) {
 
-            cardContent?.setText(card.cardContent)
+            cardContent?.setText(card.cardContent?.content)
             cardContentDefinition?.setText(card.contentDescription)
-            cardValue?.setText(card.cardDefinition)
+            cardValue?.setText(card.cardDefinition?.first()?.definition)
             cardValueDefinition?.setText(card.valueDefinition)
             card.backgroundImg?.let { onCardBackgroundSelected(it) }
 
@@ -263,31 +271,72 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
     }
 
     private fun onPositiveAction(action: String) {
+
         val newCard = if (action == Constant.ADD) {
-             Card(
+            val newCardContent = CardContent(
                 null,
-                cardContent?.text.toString(),
-                cardContentDefinition?.text.toString(),
+                null,
+                cardContent?.text.toString()
+            )
+            val newCardDefinition = CardDefinition(
+                null,
+                null,
+                null,
                 cardValue?.text.toString(),
-                cardValueDefinition?.text.toString(),
+                true
+            )
+             ImmutableCard(
                 null,
+                newCardContent,
+                cardContentDefinition?.text.toString(),
+                listOf(newCardDefinition),
+                cardValueDefinition?.text.toString(),
+                deck.deckId,
                  cardBackground,
                  false,
                  0,
-                 0
+                 0,
+                 today(),
+                 null,
+                 L1,
+                 null,
+                 null,
+                 FLASHCARD,
+                 now()
             )
         } else {
-            Card(
-                card?.cardId,
-                cardContent?.text.toString(),
-                cardContentDefinition?.text.toString(),
+
+            val newCardContent = CardContent(
+                card?.cardContent?.contentId,
+                card?.cardContent?.cardId,
+                cardContent?.text.toString()
+            )
+            val newCardDefinition = CardDefinition(
+                card?.cardDefinition?.first()?.definitionId,
+                card?.cardDefinition?.first()?.cardId,
+                card?.cardDefinition?.first()?.contentId,
                 cardValue?.text.toString(),
+                card?.cardDefinition?.first()?.isCorrectDefinition
+            )
+
+            ImmutableCard(
+                card?.cardId,
+                newCardContent,
+                cardContentDefinition?.text.toString(),
+                listOf(newCardDefinition),
                 cardValueDefinition?.text.toString(),
                 card?.deckId,
                 cardBackground,
                 card?.isFavorite,
                 card?.revisionTime,
-                card?.missedTime
+                card?.missedTime,
+                card?.creationDate,
+                card?.lastRevisionDate,
+                card?.cardStatus,
+                card?.nextMissMemorisationDate,
+                card?.nextRevisionDate,
+                card?.cardType,
+                card?.creationDateTime,
             )
         }
 
@@ -302,6 +351,16 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
         } catch (e: ClassCastException) {
             throw ClassCastException(context.toString() + "must implement NewDialogListener")
         }
+    }
+
+    private fun today(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return formatter.format(LocalDate.now())
+    }
+
+    private fun now(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
+        return LocalDateTime.now().format(formatter)
     }
 
     private fun Context.getProgressBarDrawable(): Drawable {
@@ -323,6 +382,6 @@ class NewCardDialog(private val card: Card?, private val deck: ImmutableDeck): A
     }
 
     interface NewDialogListener {
-        fun getCard(card: Card, action: String, deck: ImmutableDeck)
+        fun getCard(card: ImmutableCard, action: String, deck: ImmutableDeck)
     }
 }

@@ -17,6 +17,7 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
@@ -40,7 +41,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     private val viewModel: WritingQuizGameViewModel by viewModels {
         WritingQuizGameViewModelFactory((application as FlashCardApplication).repository)
     }
-    private var deckWithCards: DeckWithCards? = null
+    private var deckWithCards: ImmutableDeckWithCards? = null
 
     private var animFadeIn: Animation? = null
     private var animFadeOut: Animation? = null
@@ -73,10 +74,14 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal().toMutableList()
-            val deck = it.deck.toExternal()
-            viewModel.initOriginalCardList(cardList)
-            startWritingQuizGame(cardList, deck)
+            val cardList = it.cards?.toMutableList()
+            val deck = it.deck
+            if (!cardList.isNullOrEmpty() && deck != null) {
+                viewModel.initOriginalCardList(cardList)
+                startWritingQuizGame(cardList, deck)
+            } else {
+                onNoCardToRevise()
+            }
         }
 
         binding.topAppBar.apply {

@@ -130,8 +130,8 @@ class WritingQuizGameViewModel(
             cards.forEach { item ->
                 newList.add(
                     WritingQuizGameModel(
-                        item.cardContent!!,
-                        item.cardDefinition!!
+                        item.cardContent?.content!!,
+                        item.cardDefinition?.first()?.definition!!
                     )
                 )
             }
@@ -139,8 +139,8 @@ class WritingQuizGameViewModel(
             cards.forEach { item ->
                 newList.add(
                     WritingQuizGameModel(
-                        item.cardDefinition!!,
-                        item.cardContent!!
+                        item.cardDefinition?.first()?.definition!!,
+                        item.cardContent?.content!!
                     )
                 )
             }
@@ -169,7 +169,7 @@ class WritingQuizGameViewModel(
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
             val lastRevision = spaceRepetitionHelper.today()
             val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = Card(
+            val newCard = ImmutableCard(
                 card.cardId,
                 card.cardContent,
                 card.contentDescription,
@@ -184,13 +184,15 @@ class WritingQuizGameViewModel(
                 lastRevision,
                 newStatus,
                 nextForgettingDate,
-                nextRevision
+                nextRevision,
+                card.cardType,
+                card.creationDateTime
             )
             updateCard(newCard)
         }
     }
 
-    fun updateCard(card: Card) = viewModelScope.launch {
+    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
     }
 

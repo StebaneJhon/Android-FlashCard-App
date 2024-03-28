@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
@@ -23,8 +24,8 @@ import java.io.IOException
 
 class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
-    private var _deckWithAllCards = MutableStateFlow<UiState<DeckWithCards>>(UiState.Loading)
-    val deckWithAllCards: StateFlow<UiState<DeckWithCards>> = _deckWithAllCards.asStateFlow()
+    private var _deckWithAllCards = MutableStateFlow<UiState<ImmutableDeckWithCards>>(UiState.Loading)
+    val deckWithAllCards: StateFlow<UiState<ImmutableDeckWithCards>> = _deckWithAllCards.asStateFlow()
     private var fetchJob: Job? = null
     val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
@@ -33,8 +34,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getDeckWithCards(deckId).collect {
-                    if (it.cards.isEmpty()) {
+                repository.getImmutableDeckWithCards(deckId).collect {
+                    if (it.cards?.isEmpty()!!) {
                         _deckWithAllCards.value = UiState.Error("Empty deck")
                     } else {
                         _deckWithAllCards.value = UiState.Success(it)
@@ -50,22 +51,22 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
        return spaceRepetitionHelper.getActualBoxLevels()
     }
 
-    fun insertCard(card: Card, localDeck: ImmutableDeck) = viewModelScope.launch {
+    fun insertCard(card: ImmutableCard, localDeck: ImmutableDeck) = viewModelScope.launch {
         val externalDeck = localDeck.toLocal()
         repository.insertCard(card, externalDeck)
     }
 
-    fun updateCard(card: Card) = viewModelScope.launch {
+    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
     }
 
-    fun deleteCard(card: Card, localDeck: ImmutableDeck) = viewModelScope.launch {
+    fun deleteCard(card: ImmutableCard, localDeck: ImmutableDeck) = viewModelScope.launch {
         val externalDeck = localDeck.toLocal()
         repository.deleteCard(card, externalDeck)
     }
 
-    fun searchCard(searchQuery: String, deckId: Int): LiveData<List<ImmutableCard>> {
-        return repository.searchCard(searchQuery, deckId).asLiveData()
+    suspend fun searchCard(searchQuery: String, deckId: Int): LiveData<List<ImmutableCard>> {
+        return repository.searchCardImmutable(searchQuery, deckId).asLiveData()
     }
 
 }

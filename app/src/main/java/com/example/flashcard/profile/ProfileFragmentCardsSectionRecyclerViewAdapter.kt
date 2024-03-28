@@ -80,8 +80,8 @@ class ProfileFragmentCardsSectionRecyclerViewAdapter(
                 text = card.cardStatus
                 backgroundTintList = colorStateList
             }
-            onCardText.text = card.cardContent
-            cardDescription.text = card.cardDefinition
+            onCardText.text = card.cardContent?.content
+            cardDescription.text = card.cardDefinition?.first()?.definition
             cardRoot.setOnClickListener {
                 //flipCard(card, deck)
             }

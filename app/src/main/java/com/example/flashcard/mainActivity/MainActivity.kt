@@ -125,7 +125,7 @@ class MainActivity :
             val newStatus = spaceRepetitionHelper.status(card, false)
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
             val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
-            val newCard = Card(
+            val newCard = ImmutableCard(
                 card.cardId,
                 card.cardContent,
                 card.contentDescription,
@@ -140,7 +140,9 @@ class MainActivity :
                 card.lastRevisionDate,
                 newStatus,
                 nextForgettingDate,
-                nextRevision
+                nextRevision,
+                card.cardType,
+                card.creationDateTime
             )
             activityViewModel.updateCard(newCard)
         }
@@ -162,9 +164,9 @@ class MainActivity :
 
     }
 
-    override fun getCard(card: Card, action: String, deck: ImmutableDeck) {
+    override fun getCard(card: ImmutableCard, action: String, deck: ImmutableDeck) {
         if (action == Constant.ADD) {
-            card.deckId = deck.deckId
+            //card.deckId = deck.deckId
             cardViewModel.insertCard(card, deck)
         } else {
             cardViewModel.updateCard(card)

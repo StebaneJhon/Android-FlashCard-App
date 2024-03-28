@@ -82,3 +82,7 @@ object CardLevel {
     const val L6 = "L6"
     const val L7 = "L7"
 }
+
+object CardType {
+    const val FLASHCARD = "flash_card"
+}
