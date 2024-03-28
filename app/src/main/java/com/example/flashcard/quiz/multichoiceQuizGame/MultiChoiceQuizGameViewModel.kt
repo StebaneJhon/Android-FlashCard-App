@@ -56,9 +56,9 @@ class MultiChoiceQuizGameViewModel(
         temporaryList.add(correctAlternative)
         while (temporaryList.size < sum) {
             val randomWordTranslation = if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                cards.random().cardDefinition
+                cards.random().cardDefinition?.first()?.definition
             } else {
-                cards.random().cardContent
+                cards.random().cardContent?.content
             }
             if (randomWordTranslation !in temporaryList) {
                 if (randomWordTranslation != null) {
@@ -121,11 +121,11 @@ class MultiChoiceQuizGameViewModel(
         val temporaryList = mutableListOf<MultiChoiceGameCardModel>()
         cards.forEach {
             if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                val alternatives = getWordAlternatives(originalCardList, it.cardDefinition!!, 4, cardOrientation)
+                val alternatives = getWordAlternatives(originalCardList, it.cardDefinition?.first()?.definition!!, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
-                        it.cardContent!!,
-                        it.cardDefinition,
+                        it.cardContent?.content!!,
+                        it.cardDefinition.first().definition!!,
                         alternatives[0],
                         alternatives[1],
                         alternatives[2],
@@ -133,11 +133,11 @@ class MultiChoiceQuizGameViewModel(
                     )
                 )
             } else {
-                val alternatives = getWordAlternatives(originalCardList, it.cardContent!!, 4, cardOrientation)
+                val alternatives = getWordAlternatives(originalCardList, it.cardContent?.content!!, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
-                        it.cardDefinition!!,
-                        it.cardContent,
+                        it.cardDefinition?.first()?.definition!!,
+                        it.cardContent.content,
                         alternatives[0],
                         alternatives[1],
                         alternatives[2],
@@ -192,7 +192,7 @@ class MultiChoiceQuizGameViewModel(
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
             val lastRevision = spaceRepetitionHelper.today()
             val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = Card(
+            val newCard = ImmutableCard(
                 card.cardId,
                 card.cardContent,
                 card.contentDescription,
@@ -207,13 +207,15 @@ class MultiChoiceQuizGameViewModel(
                 lastRevision,
                 newStatus,
                 nextForgettingDate,
-                nextRevision
+                nextRevision,
+                card.cardType,
+                card.creationDateTime
             )
             updateCard(newCard)
         }
     }
 
-    fun updateCard(card: Card) = viewModelScope.launch {
+    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
     }
 

@@ -36,6 +36,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
+import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
@@ -57,6 +58,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
     private var appContext: Context? = null
+    private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -106,7 +108,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                                 onDeckEmpty()
                             }
                             is UiState.Success -> {
-                                displayCards(state.data.cards, state.data.deck.toExternal())
+                                displayCards(state.data.cards!!, state.data.deck!!)
                             }
                         }
                     }
@@ -353,11 +355,11 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun displayCards(cardList: List<Card>, deck: ImmutableDeck) {
+    private fun displayCards(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
         binding.cardsActivityProgressBar.isVisible = false
         binding.onNoDeckTextError.isVisible = false
         binding.cardRecyclerView.isVisible = true
-        val recyclerViewAdapter = appContext?.let {
+        recyclerViewAdapter = appContext?.let {
             CardsRecyclerViewAdapter(
                 it,
                 cardList,
@@ -372,7 +374,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 {selectedCard ->
                     cardViewModel.deleteCard(selectedCard, deck)
                 })
-        }
+        }!!
 
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
@@ -381,22 +383,23 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun onAddNewCard(card: Card?) {
+    private fun onAddNewCard(card: ImmutableCard?) {
         val newCardDialog = deck?.let { NewCardDialog(card, it) }
          newCardDialog?.show(parentFragmentManager, "New Deck Dialog")
     }
 
-    private fun onFullScreen(card: Card, deck: ImmutableDeck) {
+    private fun onFullScreen(card: ImmutableCard, deck: ImmutableDeck) {
         FullScreenCardDialog(card, deck).show(parentFragmentManager, "Full Screen Card")
     }
 
-    override fun getCard(card: Card, action: String, deck: ImmutableDeck) {
+    override fun getCard(card: ImmutableCard, action: String, deck: ImmutableDeck) {
         if (action == Constant.ADD) {
-            card.deckId = deck.deckId
+            //card.deckId = deck.deckId
             cardViewModel.insertCard(card, deck)
         } else {
             cardViewModel.updateCard(card)
         }
+        recyclerViewAdapter.notifyDataSetChanged()
     }
 
     @SuppressLint("RestrictedApi")
@@ -443,12 +446,13 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
     private fun searchDeck(query: String) {
         val searchQuery = "%$query%"
-        deck?.let { cardDeck ->
-            cardViewModel.searchCard(searchQuery, cardDeck.deckId!!).observe(this) { cardList ->
-                cardList?.let { displayCards(it.toLocal(), cardDeck) }
+        lifecycleScope.launch {
+            deck?.let { cardDeck ->
+                cardViewModel.searchCard(searchQuery, cardDeck.deckId!!).observe(this@CardFragment) { cardList ->
+                    cardList?.let { displayCards(it, cardDeck) }
+                }
             }
         }
-
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

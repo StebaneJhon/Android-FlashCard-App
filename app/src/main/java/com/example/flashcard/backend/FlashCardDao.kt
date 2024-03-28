@@ -57,24 +57,33 @@ interface FlashCardDao {
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    fun getSimpleDeckWithCards(deckId: Int): DeckWithCards
+    suspend fun getSimpleDeckWithCards(deckId: Int): DeckWithCards
 
     @Transaction
     @Query("SELECT * FROM cardContent WHERE cardId = :cardId")
-    fun getCardAndContent(cardId: Int): CardAndContent
+    suspend fun getCardAndContent(cardId: Int): CardAndContent
 
     @Transaction
     @Query("SELECT * FROM cardDefinition WHERE cardId = :cardId")
-    fun getCardWithDefinition(cardId: Int): CardWithDefinitions
+    suspend fun getCardWithDefinition(cardId: Int): CardWithDefinitions
 
     @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR content_definition LIKE :searchQuery OR card_value LIKE :searchQuery OR value_definition LIKE :searchQuery)")
     fun searchCard(searchQuery: String, deckId: Int): Flow<List<Card>>
 
+    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR content_definition LIKE :searchQuery OR card_value LIKE :searchQuery OR value_definition LIKE :searchQuery)")
+    fun searchCardNoFlow(searchQuery: String, deckId: Int): List<Card>
+
     @Query("SELECT * FROM card WHERE deckId = :deckId")
     fun getCards(deckId: Int): Flow<List<Card>>
 
+    @Query("SELECT * FROM card WHERE creationDateTime = :creationDateTime")
+    suspend fun getCardByCreationDateTime(creationDateTime: String): Card
+
     @Query("SELECT * FROM card")
     fun getAllCards(): Flow<List<Card>>
+
+    @Query("SELECT * FROM card")
+    fun getAllCardsNoFlow(): List<Card>
 
     @Query("SELECT * FROM user")
     fun getUser(): Flow<List<User>>

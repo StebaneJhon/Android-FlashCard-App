@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.util.UiState
@@ -59,14 +60,14 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateDeck(deck)
     }
 
-    private var _deckWithAllCards = MutableStateFlow<UiState<DeckWithCards>>(UiState.Loading)
-    val deckWithAllCards: StateFlow<UiState<DeckWithCards>> = _deckWithAllCards.asStateFlow()
+    private var _deckWithAllCards = MutableStateFlow<UiState<ImmutableDeckWithCards>>(UiState.Loading)
+    val deckWithAllCards: StateFlow<UiState<ImmutableDeckWithCards>> = _deckWithAllCards.asStateFlow()
     fun getDeckWithCards(deckId: Int) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getDeckWithCards(deckId).collect {
+                repository.getImmutableDeckWithCards(deckId).collect {
                     _deckWithAllCards.value = UiState.Success(it)
                 }
             } catch (e: IOException) {

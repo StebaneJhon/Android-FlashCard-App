@@ -166,9 +166,9 @@ class MatchQuizGameViewModel : ViewModel() {
     }
 
     private fun toMatchQuizGameItem(card: ImmutableCard): List<MatchQuizGameItemModel>? {
-        if (!card.cardContent.isNullOrEmpty() && !card.cardDefinition.isNullOrEmpty()) {
-            val item1 = MatchQuizGameItemModel(card.cardContent, card.cardDefinition)
-            val item2 = MatchQuizGameItemModel(card.cardDefinition, card.cardContent)
+        if (!card.cardContent?.content.isNullOrEmpty() && !card.cardDefinition.isNullOrEmpty()) {
+            val item1 = MatchQuizGameItemModel(card.cardContent?.content!!, card.cardDefinition.first().definition!!)
+            val item2 = MatchQuizGameItemModel(card.cardDefinition.first().definition!!, card.cardContent.content)
             return listOf(item1, item2)
         }
         return null

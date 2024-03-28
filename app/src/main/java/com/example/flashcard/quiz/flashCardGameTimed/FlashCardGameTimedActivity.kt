@@ -566,7 +566,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         if (cardOrientation == FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT) {
             onCardOrientationBackFront()
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainerHigh)
-            val text = onScreenCards.bottom?.cardDefinition
+            val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
@@ -577,7 +577,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
             )
         } else {
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainer)
-            val text = onScreenCards.bottom?.cardContent
+            val text = onScreenCards.bottom?.cardContent?.content
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
@@ -631,10 +631,10 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     ) {
         binding.cvCardFront.backgroundTintList =
             ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizFront.text = onScreenCards.top.cardContent
+        binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
 
         binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizBack.text = onScreenCards.top.cardDefinition
+        binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
         binding.tvFlashCardFrontProgression.text = getString(
             R.string.tx_flash_card_game_progression,
             "$currentCardNumber",

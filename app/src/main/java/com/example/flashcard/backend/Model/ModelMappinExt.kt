@@ -41,9 +41,9 @@ fun List<Deck>.toExternal() = map(Deck::toExternal)
 // Cards Ex
 fun ImmutableCard.toLocal() = Card (
     cardId = cardId,
-    cardContent = cardContent,
+    cardContent = null,
     contentDescription = contentDescription,
-    cardDefinition = cardDefinition,
+    cardDefinition = null,
     valueDefinition = valueDefinition,
     deckId = deckId,
     backgroundImg = backgroundImg,
@@ -55,7 +55,8 @@ fun ImmutableCard.toLocal() = Card (
     cardStatus = cardStatus,
     nextMissMemorisationDate = nextMissMemorisationDate,
     nextRevisionDate = nextRevisionDate,
-    cardType = cardType
+    cardType = cardType,
+    creationDateTime = creationDateTime,
 )
 
 @JvmName("cardExternalToLocal")
@@ -64,9 +65,9 @@ fun List<ImmutableCard>.toLocal() = map(ImmutableCard::toLocal)
 // Local to External
 fun Card.toExternal() = ImmutableCard (
     cardId = cardId,
-    cardContent = cardContent,
+    cardContent = null,
     contentDescription = contentDescription,
-    cardDefinition = cardDefinition,
+    cardDefinition = null,
     valueDefinition = valueDefinition,
     deckId = deckId,
     backgroundImg = backgroundImg,
@@ -78,7 +79,8 @@ fun Card.toExternal() = ImmutableCard (
     cardStatus = cardStatus,
     nextMissMemorisationDate = nextMissMemorisationDate,
     nextRevisionDate = nextRevisionDate,
-    cardType = cardType
+    cardType = cardType,
+    creationDateTime = creationDateTime,
 )
 @JvmName("cardLocalToExternal")
 fun List<Card>.toExternal() = map(Card::toExternal)

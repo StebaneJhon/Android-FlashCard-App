@@ -10,6 +10,6 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class CardContent(
     @PrimaryKey(autoGenerate = true) val contentId: Int?,
-    @ColumnInfo(name = "cardId") val cardId: Int?,
+    @ColumnInfo(name = "cardId") var cardId: Int?,
     @ColumnInfo(name = "content") val content: String?,
 ): Parcelable

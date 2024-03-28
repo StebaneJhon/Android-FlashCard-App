@@ -37,6 +37,39 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
+    suspend fun allCardsImmutable(): Flow<List<ImmutableCard>> {
+        val cards = flashCardDao.getAllCardsNoFlow()
+        val immutableCardList = mutableListOf<ImmutableCard>()
+        cards.forEach {
+            val cardContent = flashCardDao.getCardAndContent(it.cardId!!).cardContent
+            val cardDefinitions = flashCardDao.getCardWithDefinition(it.cardId).definition
+            val immutableCard = ImmutableCard(
+                it.cardId,
+                cardContent,
+                it.contentDescription,
+                cardDefinitions,
+                it.valueDefinition,
+                it.deckId,
+                it.backgroundImg,
+                it.isFavorite,
+                it.revisionTime,
+                it.missedTime,
+                it.creationDate,
+                it.lastRevisionDate,
+                it.cardStatus,
+                it.nextMissMemorisationDate,
+                it.nextRevisionDate,
+                it.cardType,
+                it.creationDateTime
+            )
+
+            immutableCardList.add(immutableCard)
+        }
+
+        return flowOf(immutableCardList)
+    }
+
+    @WorkerThread
     fun searchDeck(searchQuery: String): Flow<List<ImmutableDeck>> {
         return flashCardDao.searchDeck(searchQuery).map {
             it.toExternal()
@@ -50,18 +83,18 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    fun getImmutableDeckWithCards(deckId: Int): Flow<ImmutableDeckWithCards> {
+    suspend fun getImmutableDeckWithCards(deckId: Int): Flow<ImmutableDeckWithCards> {
         val deckWithCards = flashCardDao.getSimpleDeckWithCards(deckId)
         val immutableDeck = deckWithCards.deck.toExternal()
         val immutableCardList = mutableListOf<ImmutableCard>()
         deckWithCards.cards.forEach {
-            val cardContent = flashCardDao.getCardAndContent(it.cardId!!).cardContent.content
+            val cardContent = flashCardDao.getCardAndContent(it.cardId!!).cardContent
             val cardDefinitions = flashCardDao.getCardWithDefinition(it.cardId).definition
             val immutableCard = ImmutableCard(
                 it.cardId,
                 cardContent,
                 it.contentDescription,
-                it.cardDefinition,
+                cardDefinitions,
                 it.valueDefinition,
                 it.deckId,
                 it.backgroundImg,
@@ -74,9 +107,9 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                 it.nextMissMemorisationDate,
                 it.nextRevisionDate,
                 it.cardType,
-                cardDefinitions
+                it.creationDateTime
             )
-            
+
             immutableCardList.add(immutableCard)
         }
         return flowOf( ImmutableDeckWithCards(
@@ -86,12 +119,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    fun getCardAndContent(cardId: Int): CardAndContent {
+    suspend fun getCardAndContent(cardId: Int): CardAndContent {
         return flashCardDao.getCardAndContent(cardId)
     }
 
     @WorkerThread
-    fun getCardWithDefinition(cardId: Int): CardWithDefinitions {
+    suspend fun getCardWithDefinition(cardId: Int): CardWithDefinitions {
         return flashCardDao.getCardWithDefinition(cardId)
     }
 
@@ -101,10 +134,20 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun insertCard(card: Card, deck: Deck) {
+    suspend fun insertCard(card: ImmutableCard, deck: Deck) {
         deck.cardSum = deck.cardSum?.plus(1)
         flashCardDao.updateDeck(deck)
-        flashCardDao.insertCard(card)
+        val localCard = card.toLocal()
+        flashCardDao.insertCard(localCard)
+        val actualCard = flashCardDao.getCardByCreationDateTime(card.creationDateTime!!)
+        val cardContent = card.cardContent
+        cardContent?.cardId = actualCard.cardId
+        val cardDefinition = card.cardDefinition
+        flashCardDao.insertCardContent(cardContent!!)
+        cardDefinition?.forEach {
+            it.cardId = actualCard.cardId
+            flashCardDao.insertCardDefinition(it)
+        }
     }
 
     @WorkerThread
@@ -112,6 +155,41 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         return flashCardDao.searchCard(searchQuery, deckId).map {
             it.toExternal()
         }
+    }
+
+    @WorkerThread
+    suspend fun searchCardImmutable(searchQuery: String, deckId: Int): Flow<List<ImmutableCard>> {
+
+        val cards = flashCardDao.searchCardNoFlow(searchQuery, deckId)
+        val immutableCardList = mutableListOf<ImmutableCard>()
+
+        cards.forEach {
+            val cardContent = flashCardDao.getCardAndContent(it.cardId!!).cardContent
+            val cardDefinitions = flashCardDao.getCardWithDefinition(it.cardId).definition
+            val immutableCard = ImmutableCard(
+                it.cardId,
+                cardContent,
+                it.contentDescription,
+                cardDefinitions,
+                it.valueDefinition,
+                it.deckId,
+                it.backgroundImg,
+                it.isFavorite,
+                it.revisionTime,
+                it.missedTime,
+                it.creationDate,
+                it.lastRevisionDate,
+                it.cardStatus,
+                it.nextMissMemorisationDate,
+                it.nextRevisionDate,
+                it.cardType,
+                it.creationDateTime
+            )
+
+            immutableCardList.add(immutableCard)
+        }
+
+        return flowOf(immutableCardList)
     }
 
     @WorkerThread
@@ -137,8 +215,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun updateCard(card: Card) {
-        flashCardDao.updateCard(card)
+    suspend fun updateCard(card: ImmutableCard) {
+        flashCardDao.updateCardContent(card.cardContent!!)
+        card.cardDefinition?.forEach {
+            flashCardDao.updateCardDefinition(it)
+        }
+        flashCardDao.updateCard(card.toLocal())
     }
 
     @WorkerThread
@@ -167,11 +249,15 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun deleteCard(card: Card, deck: Deck) {
+    suspend fun deleteCard(card: ImmutableCard, deck: Deck) {
         if (deck.cardSum!! > 0) {
             deck.cardSum = deck.cardSum?.minus(1)
             flashCardDao.updateDeck(deck)
-            flashCardDao.deleteCard(card)
+            flashCardDao.deleteCard(card.toLocal())
+            flashCardDao.deleteCardContent(card.cardContent!!)
+            card.cardDefinition?.forEach {
+                flashCardDao.deleteCardDefinition(it)
+            }
         }
     }
 

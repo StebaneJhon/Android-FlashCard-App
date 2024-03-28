@@ -188,7 +188,7 @@ class FlashCardGameTimedViewModel(
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
             val lastRevision = spaceRepetitionHelper.today()
             val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = Card(
+            val newCard = ImmutableCard(
                 card.cardId,
                 card.cardContent,
                 card.contentDescription,
@@ -203,13 +203,15 @@ class FlashCardGameTimedViewModel(
                 lastRevision,
                 newStatus,
                 nextForgettingDate,
-                nextRevision
+                nextRevision,
+                card.cardType,
+                card.creationDateTime
             )
             updateCard(newCard)
         }
     }
 
-    fun updateCard(card: Card) = viewModelScope.launch {
+    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
     }
 

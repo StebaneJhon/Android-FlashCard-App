@@ -10,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class CardDefinition(
     @PrimaryKey(autoGenerate = true) val definitionId: Int?,
-    @ColumnInfo(name = "cardId") val cardId: Int?,
+    @ColumnInfo(name = "cardId") var cardId: Int?,
     @ColumnInfo(name = "contentId") val contentId: Int?,
     @ColumnInfo(name = "definition") val definition: String?,
     @ColumnInfo(name = "isCorrectDefinition") val isCorrectDefinition: Boolean?,

@@ -25,6 +25,7 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
@@ -58,7 +59,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     private var editor: SharedPreferences.Editor? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
-    private var deckWithCards: DeckWithCards? = null
+    private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var frontAnim: AnimatorSet
     private lateinit var backAnim: AnimatorSet
     var isFront = true
@@ -92,8 +93,8 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal().toMutableList()
-            val deck = it.deck.toExternal()
+            val cardList = it.cards?.toMutableList()!!
+            val deck = it.deck!!
             initFlashCard(cardList, deck)
         }
 
@@ -583,7 +584,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {
             onCardOrientationBackFront()
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainerHigh)
-            val text = onScreenCards.bottom?.cardDefinition
+            val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
@@ -594,7 +595,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
             )
         } else {
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainer)
-            val text = onScreenCards.bottom?.cardContent
+            val text = onScreenCards.bottom?.cardContent?.content
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
@@ -619,10 +620,10 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     ) {
         binding.cvCardFront.backgroundTintList =
             ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizFront.text = onScreenCards.top.cardContent
+        binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
 
         binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizBack.text = onScreenCards.top.cardDefinition
+        binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
         binding.tvFlashCardFrontProgression.text = getString(
             R.string.tx_flash_card_game_progression,
             "$currentCardNumber",

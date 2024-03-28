@@ -1,12 +1,16 @@
 package com.example.flashcard.backend.Model
 
+import android.os.Parcelable
+import com.example.flashcard.backend.entities.CardContent
 import com.example.flashcard.backend.entities.CardDefinition
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class ImmutableCard(
     val cardId: Int? = null,
-    val cardContent: String? = "",
+    val cardContent: CardContent? = null,
     val contentDescription: String? = "",
-    val cardDefinition: String? = "",
+    val cardDefinition: List<CardDefinition>? = null,
     val valueDefinition: String? = "",
     val deckId: Int? = null,
     val backgroundImg: String? = "",
@@ -19,5 +23,5 @@ data class ImmutableCard(
     val nextMissMemorisationDate: String? = null,
     val nextRevisionDate: String? = null,
     val cardType: String? = null,
-    val cardDefinitions: List<CardDefinition>? = null
-)
+    val creationDateTime: String? = null
+): Parcelable

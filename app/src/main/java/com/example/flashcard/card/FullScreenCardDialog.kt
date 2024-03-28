@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
@@ -21,7 +22,7 @@ import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class FullScreenCardDialog(private val card: Card, private val deck: ImmutableDeck) :
+class FullScreenCardDialog(private val card: ImmutableCard, private val deck: ImmutableDeck) :
     AppCompatDialogFragment() {
 
     private var languageHint: TextView? = null
@@ -47,7 +48,7 @@ class FullScreenCardDialog(private val card: Card, private val deck: ImmutableDe
         cardBg = view?.findViewById(R.id.fullScreenCardBG)
 
         languageHint?.text = deck.deckFirstLanguage
-        onCardText?.text = card.cardContent
+        onCardText?.text = card.cardContent?.content
         onCardTextDescription?.text = card.contentDescription
         dismissButton?.setOnClickListener { dismiss() }
         cardRoot?.setOnClickListener { flipCard(card, deck) }
@@ -72,15 +73,15 @@ class FullScreenCardDialog(private val card: Card, private val deck: ImmutableDe
         return builder.create()
     }
 
-    private fun flipCard(card: Card, deck: ImmutableDeck) {
+    private fun flipCard(card: ImmutableCard, deck: ImmutableDeck) {
         if (!isCardRevealed) {
             languageHint?.text = deck.deckSecondLanguage
-            onCardText?.text = card.cardDefinition
+            onCardText?.text = card.cardDefinition?.first()?.definition
             onCardTextDescription?.text = card.valueDefinition
             isCardRevealed = true
         } else {
             languageHint?.text = deck.deckFirstLanguage
-            onCardText?.text = card.cardContent
+            onCardText?.text = card.cardContent?.content
             onCardTextDescription?.text = card.contentDescription
             isCardRevealed = false
         }
