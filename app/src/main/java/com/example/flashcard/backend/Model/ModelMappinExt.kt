@@ -4,6 +4,7 @@ import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.backend.entities.User
+import com.example.flashcard.backend.entities.relations.DeckWithCards
 
 // External to local
 fun ImmutableDeck.toLocal() = Deck (
@@ -127,4 +128,10 @@ fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
     levelColor = levelColor,
     levelRepeatIn = levelRepeatIn,
     levelRevisionMargin = levelRevisionMargin
+)
+
+@JvmName("deckWithCardsLocalToExternal")
+fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard>) = ImmutableDeckWithCards(
+    deck = deck,
+    cards = cards
 )

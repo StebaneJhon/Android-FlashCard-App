@@ -16,8 +16,11 @@ import com.example.flashcard.backend.entities.relations.CardAndContent
 import com.example.flashcard.backend.entities.relations.CardWithDefinitions
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 
 class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
@@ -77,6 +80,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     // Cards
+
     @WorkerThread
     fun getDeckWithCards(deckId: Int): Flow<DeckWithCards> {
         return flashCardDao.getDeckWithCards(deckId)
@@ -84,39 +88,46 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun getImmutableDeckWithCards(deckId: Int): Flow<ImmutableDeckWithCards> {
-        val deckWithCards = flashCardDao.getSimpleDeckWithCards(deckId)
-        val immutableDeck = deckWithCards.deck.toExternal()
-        val immutableCardList = mutableListOf<ImmutableCard>()
-        deckWithCards.cards.forEach {
-            val cardContent = flashCardDao.getCardAndContent(it.cardId!!).cardContent
-            val cardDefinitions = flashCardDao.getCardWithDefinition(it.cardId).definition
-            val immutableCard = ImmutableCard(
-                it.cardId,
-                cardContent,
-                it.contentDescription,
-                cardDefinitions,
-                it.valueDefinition,
-                it.deckId,
-                it.backgroundImg,
-                it.isFavorite,
-                it.revisionTime,
-                it.missedTime,
-                it.creationDate,
-                it.lastRevisionDate,
-                it.cardStatus,
-                it.nextMissMemorisationDate,
-                it.nextRevisionDate,
-                it.cardType,
-                it.creationDateTime
-            )
+        val deckWithCards = flashCardDao.getDeckWithCards(deckId)
+        val immutableDeckWithCards =
+            deckWithCards.map { localDeckWithCards ->
+            val deck = localDeckWithCards.deck.toExternal()
+            val cardList = mutableListOf<ImmutableCard>()
 
-            immutableCardList.add(immutableCard)
+            localDeckWithCards.cards.forEach {
+                val cardContent = flashCardDao.getCardAndContent(it.cardId!!).cardContent
+                val cardDefinitions = flashCardDao.getCardWithDefinition(it.cardId).definition
+
+                val immutableCard = ImmutableCard(
+                    it.cardId,
+                    cardContent,
+                    it.contentDescription,
+                    cardDefinitions,
+                    it.valueDefinition,
+                    it.deckId,
+                    it.backgroundImg,
+                    it.isFavorite,
+                    it.revisionTime,
+                    it.missedTime,
+                    it.creationDate,
+                    it.lastRevisionDate,
+                    it.cardStatus,
+                    it.nextMissMemorisationDate,
+                    it.nextRevisionDate,
+                    it.cardType,
+                    it.creationDateTime
+                )
+
+                cardList.add(immutableCard)
+
+            }
+
+            localDeckWithCards.toExternal(deck, cardList)
         }
-        return flowOf( ImmutableDeckWithCards(
-            immutableDeck,
-            immutableCardList
-        ))
+
+        return immutableDeckWithCards
     }
+
 
     @WorkerThread
     suspend fun getCardAndContent(cardId: Int): CardAndContent {
