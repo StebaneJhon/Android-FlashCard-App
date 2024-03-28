@@ -1,6 +1,8 @@
 package com.example.flashcard.backend.Model
 
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.CardContent
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.backend.entities.User
@@ -64,11 +66,11 @@ fun ImmutableCard.toLocal() = Card (
 fun List<ImmutableCard>.toLocal() = map(ImmutableCard::toLocal)
 
 // Local to External
-fun Card.toExternal() = ImmutableCard (
+fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = ImmutableCard (
     cardId = cardId,
-    cardContent = null,
+    cardContent = cardContent,
     contentDescription = contentDescription,
-    cardDefinition = null,
+    cardDefinition = cardDefinitions,
     valueDefinition = valueDefinition,
     deckId = deckId,
     backgroundImg = backgroundImg,
@@ -84,7 +86,7 @@ fun Card.toExternal() = ImmutableCard (
     creationDateTime = creationDateTime,
 )
 @JvmName("cardLocalToExternal")
-fun List<Card>.toExternal() = map(Card::toExternal)
+fun List<Card>.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = map{card -> card.toExternal(cardContent, cardDefinitions)}
 
 @JvmName("userExternalToLocal")
 fun List<ImmutableUser>.toLocal() = map(ImmutableUser::toLocal)

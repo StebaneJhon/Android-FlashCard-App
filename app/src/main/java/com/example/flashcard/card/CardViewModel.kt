@@ -53,9 +53,6 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     fun insertCard(card: ImmutableCard, localDeck: ImmutableDeck) = viewModelScope.launch {
         val externalDeck = localDeck.toLocal()
-        val localCard = card.toLocal()
-        val cardContent = card.cardContent
-        val cardDefinition = card.cardDefinition
         repository.insertCard(card, externalDeck)
     }
 

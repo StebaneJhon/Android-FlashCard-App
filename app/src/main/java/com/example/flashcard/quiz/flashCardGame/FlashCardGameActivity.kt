@@ -93,9 +93,13 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards?.toMutableList()!!
-            val deck = it.deck!!
-            initFlashCard(cardList, deck)
+            val cardList = it.cards?.toMutableList()
+            val deck = it.deck
+            if (!cardList.isNullOrEmpty() && deck != null) {
+                initFlashCard(cardList, deck)
+            } else {
+                onNoCardToRevise()
+            }
         }
 
         applySettings()

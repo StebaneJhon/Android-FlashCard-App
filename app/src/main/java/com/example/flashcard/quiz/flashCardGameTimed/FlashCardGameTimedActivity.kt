@@ -25,6 +25,7 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameTimedBinding
@@ -51,7 +52,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     private var miniGameSettingsRef: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
-    private var deckWithCards: DeckWithCards? = null
+    private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var frontAnim: AnimatorSet
     private lateinit var backAnim: AnimatorSet
     var isFront = true
@@ -84,9 +85,13 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal().toMutableList()
-            val deck = it.deck.toExternal()
-            initFlashCard(cardList, deck)
+            val cardList = it.cards?.toMutableList()
+            val deck = it.deck
+            if (!cardList.isNullOrEmpty() && deck != null) {
+                initFlashCard(cardList, deck)
+            } else {
+                onNoCardToRevise()
+            }
         }
 
         applySettings()

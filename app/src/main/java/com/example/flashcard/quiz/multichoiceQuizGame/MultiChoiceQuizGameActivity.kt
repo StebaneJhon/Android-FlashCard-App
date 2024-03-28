@@ -17,6 +17,7 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMultichoiceQuizGameBinding
@@ -38,7 +39,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
-    private var deckWithCards: DeckWithCards? = null
+    private var deckWithCards: ImmutableDeckWithCards? = null
 
     private var animFadeIn: Animation? = null
     private var animFadeOut: Animation? = null
@@ -72,10 +73,15 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal().toMutableList()
-            val deck = it.deck.toExternal()
-            viewModel.initOriginalCardList(cardList)
-            startTimedFlashCard(cardList, deck)
+            val cardList = it.cards?.toMutableList()
+            val deck = it.deck
+            if (!cardList.isNullOrEmpty() && deck != null) {
+                viewModel.initOriginalCardList(cardList)
+                startTimedFlashCard(cardList, deck)
+            } else {
+                onNoCardToRevise()
+            }
+
         }
 
         binding.topAppBar.apply {

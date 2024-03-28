@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.MatchQuizGameItemModel
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
@@ -34,7 +35,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
 
-    private var deckWithCards: DeckWithCards? = null
+    private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
 
     private val viewModel: MatchQuizGameViewModel by viewModels()
@@ -58,10 +59,14 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards.toExternal()
-            val deck = it.deck.toExternal()
-            viewModel.initOriginalCardList(cardList)
-            startMatchQuizGame(cardList, deck)
+            val cardList = it.cards
+            val deck = it.deck
+            if (!cardList.isNullOrEmpty() && deck != null) {
+                viewModel.initOriginalCardList(cardList)
+                startMatchQuizGame(cardList, deck)
+            } else {
+                // TODO: On Deck or CardList null
+            }
         }
 
         binding.topAppBar.apply {

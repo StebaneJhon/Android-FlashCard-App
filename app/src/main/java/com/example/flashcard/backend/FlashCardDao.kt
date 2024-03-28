@@ -74,7 +74,7 @@ interface FlashCardDao {
     fun searchCardNoFlow(searchQuery: String, deckId: Int): List<Card>
 
     @Query("SELECT * FROM card WHERE deckId = :deckId")
-    fun getCards(deckId: Int): Flow<List<Card>>
+    fun getCards(deckId: Int): Card
 
     @Query("SELECT * FROM card WHERE creationDateTime = :creationDateTime")
     suspend fun getCardByCreationDateTime(creationDateTime: String): Card
