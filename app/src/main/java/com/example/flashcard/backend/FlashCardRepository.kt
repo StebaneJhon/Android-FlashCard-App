@@ -128,15 +128,29 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun insertCard(card: ImmutableCard, deck: Deck) {
-        deck.cardSum = deck.cardSum?.plus(1)
-        flashCardDao.updateDeck(deck)
+
+        val localDeck = flashCardDao.getDeckById(deck.deckId!!)
+        val newDeck = Deck(
+            deckId = localDeck.deckId,
+            deckName = localDeck.deckName,
+            deckDescription = localDeck.deckDescription,
+            deckFirstLanguage = localDeck.deckFirstLanguage,
+            deckSecondLanguage = localDeck.deckSecondLanguage,
+            deckColorCode = localDeck.deckColorCode,
+            cardSum = localDeck.cardSum?.plus(1),
+            category = localDeck.category,
+            isFavorite = localDeck.isFavorite,
+            deckCreationDate = localDeck.deckCreationDate
+        )
+        flashCardDao.updateDeck(newDeck)
+
         val localCard = card.toLocal()
         flashCardDao.insertCard(localCard)
         val actualCard = flashCardDao.getCardByCreationDateTime(card.creationDateTime!!)
         val cardContent = card.cardContent
         cardContent?.cardId = actualCard.cardId
-        val cardDefinition = card.cardDefinition
         flashCardDao.insertCardContent(cardContent!!)
+        val cardDefinition = card.cardDefinition
         cardDefinition?.forEach {
             it.cardId = actualCard.cardId
             flashCardDao.insertCardDefinition(it)

@@ -49,7 +49,7 @@ interface FlashCardDao {
     suspend fun deleteCards(deckId: Int)
 
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    fun getDeckById(deckId: Int): Deck
+    suspend fun getDeckById(deckId: Int): Deck
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
