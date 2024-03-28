@@ -399,7 +399,6 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         } else {
             cardViewModel.updateCard(card)
         }
-        recyclerViewAdapter.notifyDataSetChanged()
     }
 
     @SuppressLint("RestrictedApi")

@@ -308,7 +308,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
             val newCardContent = CardContent(
                 card?.cardContent?.contentId,
-                card?.cardContent?.contentId,
+                card?.cardContent?.cardId,
                 cardContent?.text.toString()
             )
             val newCardDefinition = CardDefinition(
