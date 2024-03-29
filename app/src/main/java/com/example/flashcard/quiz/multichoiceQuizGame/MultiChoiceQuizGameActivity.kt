@@ -275,7 +275,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     }
 
 
-    private fun startTimedFlashCard(cardList: MutableList<ImmutableCard>, deck: ImmutableDeck) {
+    private fun startTimedFlashCard(cardList: MutableList<ImmutableCard?>, deck: ImmutableDeck) {
         binding.vpCardHolder.setCurrentItem(0, true)
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE

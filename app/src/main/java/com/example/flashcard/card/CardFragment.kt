@@ -355,7 +355,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun displayCards(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
+    private fun displayCards(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
         binding.cardsActivityProgressBar.isVisible = false
         binding.onNoDeckTextError.isVisible = false
         binding.cardRecyclerView.isVisible = true
@@ -388,7 +388,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
          newCardDialog?.show(parentFragmentManager, "New Deck Dialog")
     }
 
-    private fun onFullScreen(card: ImmutableCard, deck: ImmutableDeck) {
+    private fun onFullScreen(card: ImmutableCard?, deck: ImmutableDeck) {
         FullScreenCardDialog(card, deck).show(parentFragmentManager, "Full Screen Card")
     }
 

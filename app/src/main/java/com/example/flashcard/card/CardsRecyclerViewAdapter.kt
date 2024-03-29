@@ -34,12 +34,12 @@ import com.google.android.material.card.MaterialCardView
 
 class CardsRecyclerViewAdapter(
     private val context: Context,
-    private val cardList: List<ImmutableCard>,
+    private val cardList: List<ImmutableCard?>,
     private val deck: ImmutableDeck,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
-    private val fullScreenClickListener: (ImmutableCard) -> Unit,
-    private val editCardClickListener: (ImmutableCard) -> Unit,
-    private val deleteCardClickListener: (ImmutableCard) -> Unit,
+    private val fullScreenClickListener: (ImmutableCard?) -> Unit,
+    private val editCardClickListener: (ImmutableCard?) -> Unit,
+    private val deleteCardClickListener: (ImmutableCard?) -> Unit,
 ) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -76,23 +76,23 @@ class CardsRecyclerViewAdapter(
 
         fun bind(
             context: Context,
-            card: ImmutableCard,
+            card: ImmutableCard?,
             deck: ImmutableDeck,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
-            fullScreenClickListener: (ImmutableCard) -> Unit,
-            editCardClickListener: (ImmutableCard) -> Unit,
-            deleteCardClickListener: (ImmutableCard) -> Unit
+            fullScreenClickListener: (ImmutableCard?) -> Unit,
+            editCardClickListener: (ImmutableCard?) -> Unit,
+            deleteCardClickListener: (ImmutableCard?) -> Unit
         ) {
             //val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
-            val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card.cardStatus!!)
+            val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
             val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
             val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
             cardStatus.apply {
-                text = card.cardStatus
+                text = card?.cardStatus
                 backgroundTintList = colorStateList
             }
-            onCardText.text = card.cardContent?.content
-            cardDescription.text = card.cardDefinition?.first()?.definition
+            onCardText.text = card?.cardContent?.content
+            cardDescription.text = card?.cardDefinition?.first()?.definition
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
@@ -116,10 +116,10 @@ class CardsRecyclerViewAdapter(
             context: Context,
             v: View,
             @MenuRes menuRes: Int,
-            fullScreenClickListener: (ImmutableCard) -> Unit,
-            editCardClickListener: (ImmutableCard) -> Unit,
-            deleteCardClickListener: (ImmutableCard) -> Unit,
-            card: ImmutableCard
+            fullScreenClickListener: (ImmutableCard?) -> Unit,
+            editCardClickListener: (ImmutableCard?) -> Unit,
+            deleteCardClickListener: (ImmutableCard?) -> Unit,
+            card: ImmutableCard?
             ) {
 
             val popup = PopupMenu(context, v)

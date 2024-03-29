@@ -26,26 +26,26 @@ class WritingQuizGameViewModel(
     private var currentCardPosition: Int = 0
     var progress: Int = 0
     var attemptTime: Int = 0
-    private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
+    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
     val actualCard: StateFlow<UiState<List<WritingQuizGameModel>>> = _actualCard.asStateFlow()
-    private lateinit var cardList: MutableList<ImmutableCard>
+    private lateinit var cardList: MutableList<ImmutableCard?>
     lateinit var deck: ImmutableDeck
-    private var originalCardList: List<ImmutableCard>? = null
+    private var originalCardList: List<ImmutableCard?>? = null
 
 
 
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
-    fun initCardList(gameCards: MutableList<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
     }
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
     }
 
-    fun initOriginalCardList(gameCards: List<ImmutableCard>) {
+    fun initOriginalCardList(gameCards: List<ImmutableCard?>) {
         originalCardList = gameCards
     }
 
@@ -57,8 +57,8 @@ class WritingQuizGameViewModel(
         increaseAttemptTime()
     }
 
-    fun getMissedCard(): MutableList<ImmutableCard> {
-        val newCards = arrayListOf<ImmutableCard>()
+    fun getMissedCard(): MutableList<ImmutableCard?> {
+        val newCards = arrayListOf<ImmutableCard?>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
         return newCards
     }
@@ -101,7 +101,7 @@ class WritingQuizGameViewModel(
     }
 
     fun sortCardsByLevel() {
-        cardList.sortBy { it.cardStatus }
+        cardList.sortBy { it?.cardStatus }
     }
 
     fun shuffleCards() {
@@ -109,28 +109,28 @@ class WritingQuizGameViewModel(
     }
 
     fun sortByCreationDate() {
-        cardList.sortBy { it.cardId }
+        cardList.sortBy { it?.cardId }
     }
 
     fun unknownCardsOnly() {
-        cardList = cardList.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
+        cardList = cardList.filter { it?.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard?>
     }
 
     fun cardToReviseOnly() {
-        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it) } as MutableList<ImmutableCard>
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
     fun restoreCardList() {
         cardList = originalCardList!!.toMutableList()
     }
 
-    private fun cardToWritingQuizGameItem(cards: List<ImmutableCard>, cardOrientation: String): List<WritingQuizGameModel> {
+    private fun cardToWritingQuizGameItem(cards: List<ImmutableCard?>, cardOrientation: String): List<WritingQuizGameModel> {
         val newList = mutableListOf<WritingQuizGameModel>()
         if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             cards.forEach { item ->
                 newList.add(
                     WritingQuizGameModel(
-                        item.cardContent?.content!!,
+                        item?.cardContent?.content!!,
                         item.cardDefinition?.first()?.definition!!
                     )
                 )
@@ -139,7 +139,7 @@ class WritingQuizGameViewModel(
             cards.forEach { item ->
                 newList.add(
                     WritingQuizGameModel(
-                        item.cardDefinition?.first()?.definition!!,
+                        item?.cardDefinition?.first()?.definition!!,
                         item.cardContent?.content!!
                     )
                 )
@@ -165,30 +165,32 @@ class WritingQuizGameViewModel(
     private fun onUserAnswered(isKnown: Boolean) {
         cardList.let {cards ->
             val card = cards[currentCardPosition]
-            val newStatus = spaceRepetitionHelper.status(card, isKnown)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-            val lastRevision = spaceRepetitionHelper.today()
-            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.contentDescription,
-                card.cardDefinition,
-                card.valueDefinition,
-                card.deckId,
-                card.backgroundImg,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                lastRevision,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.creationDateTime
-            )
-            updateCard(newCard)
+            if (card != null) {
+                val newStatus = spaceRepetitionHelper.status(card, isKnown)
+                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
+                val lastRevision = spaceRepetitionHelper.today()
+                val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
+                val newCard = ImmutableCard(
+                    card.cardId,
+                    card.cardContent,
+                    card.contentDescription,
+                    card.cardDefinition,
+                    card.valueDefinition,
+                    card.deckId,
+                    card.backgroundImg,
+                    card.isFavorite,
+                    card.revisionTime,
+                    card.missedTime,
+                    card.creationDate,
+                    lastRevision,
+                    newStatus,
+                    nextForgettingDate,
+                    nextRevision,
+                    card.cardType,
+                    card.creationDateTime
+                )
+                updateCard(newCard)
+            }
         }
     }
 

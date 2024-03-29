@@ -687,7 +687,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     }
 
     private fun initFlashCard(
-        cardList: MutableList<ImmutableCard>,
+        cardList: MutableList<ImmutableCard?>,
         deck: ImmutableDeck
     ) {
         isFlashCardGameScreenHidden(false)

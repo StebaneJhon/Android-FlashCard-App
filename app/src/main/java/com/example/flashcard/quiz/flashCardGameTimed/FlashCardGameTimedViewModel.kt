@@ -24,11 +24,11 @@ class FlashCardGameTimedViewModel(
 
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
-    private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
+    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     private val _actualCards = MutableStateFlow<UiState<FlashCardGameTimedModel>>(UiState.Loading)
     val actualCards: StateFlow<UiState<FlashCardGameTimedModel>> = _actualCards.asStateFlow()
-    private var originalCardList: List<ImmutableCard>? = null
-    private var cardList: MutableList<ImmutableCard>? = null
+    private var originalCardList: List<ImmutableCard?>? = null
+    private var cardList: MutableList<ImmutableCard?>? = null
     var deck: ImmutableDeck? = null
     var progress: Int = 0
 
@@ -58,7 +58,7 @@ class FlashCardGameTimedViewModel(
         timer.cancel()
     }
 
-    fun initCardList(gameCards: MutableList<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
         originalCardList = gameCards
     }
@@ -115,14 +115,14 @@ class FlashCardGameTimedViewModel(
 
     fun getMissedCardSum() = missedCards.size
 
-    fun getMissedCards(): MutableList<ImmutableCard> {
-        val newCards = arrayListOf<ImmutableCard>()
+    fun getMissedCards(): MutableList<ImmutableCard?> {
+        val newCards = arrayListOf<ImmutableCard?>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
         return newCards
     }
 
     private fun getBottomCard(
-        cards: MutableList<ImmutableCard>,
+        cards: MutableList<ImmutableCard?>,
         currentCartPosition: Int
     ): ImmutableCard? {
         return if (currentCartPosition > cards.size-2) {
@@ -139,7 +139,7 @@ class FlashCardGameTimedViewModel(
     }
 
     fun sortCardsByLevel() {
-        cardList?.sortBy { it.cardStatus }
+        cardList?.sortBy { it?.cardStatus }
     }
 
     fun shuffleCards() {
@@ -147,15 +147,15 @@ class FlashCardGameTimedViewModel(
     }
 
     fun sortByCreationDate() {
-        cardList?.sortBy { it.cardId }
+        cardList?.sortBy { it?.cardId }
     }
 
     fun unknownCardsOnly() {
-        cardList = cardList?.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
+        cardList = cardList?.filter { it?.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard?>
     }
 
     fun cardToReviseOnly() {
-        cardList = cardList?.filter { spaceRepetitionHelper.isToBeRevised(it) } as MutableList<ImmutableCard>
+        cardList = cardList?.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
     fun restoreCardList() {
@@ -184,30 +184,33 @@ class FlashCardGameTimedViewModel(
     private fun onCardSwiped(isKnown: Boolean) {
         cardList?.let {cards ->
             val card = cards[currentCardPosition]
-            val newStatus = spaceRepetitionHelper.status(card, isKnown)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-            val lastRevision = spaceRepetitionHelper.today()
-            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.contentDescription,
-                card.cardDefinition,
-                card.valueDefinition,
-                card.deckId,
-                card.backgroundImg,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                lastRevision,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.creationDateTime
-            )
-            updateCard(newCard)
+            if (card != null) {
+                val newStatus = spaceRepetitionHelper.status(card, isKnown)
+                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
+                val lastRevision = spaceRepetitionHelper.today()
+                val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
+                val newCard = ImmutableCard(
+                    card.cardId,
+                    card.cardContent,
+                    card.contentDescription,
+                    card.cardDefinition,
+                    card.valueDefinition,
+                    card.deckId,
+                    card.backgroundImg,
+                    card.isFavorite,
+                    card.revisionTime,
+                    card.missedTime,
+                    card.creationDate,
+                    lastRevision,
+                    newStatus,
+                    nextForgettingDate,
+                    nextRevision,
+                    card.cardType,
+                    card.creationDateTime
+                )
+                updateCard(newCard)
+            }
+
         }
     }
 

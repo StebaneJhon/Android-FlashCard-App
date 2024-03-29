@@ -133,7 +133,7 @@ fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
 )
 
 @JvmName("deckWithCardsLocalToExternal")
-fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard>) = ImmutableDeckWithCards(
+fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard?>) = ImmutableDeckWithCards(
     deck = deck,
     cards = cards
 )

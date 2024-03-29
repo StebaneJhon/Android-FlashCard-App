@@ -275,7 +275,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         viewModel.updateCard(getCardOrientation())
     }
 
-    private fun startWritingQuizGame(cardList: MutableList<ImmutableCard>, deck: ImmutableDeck) {
+    private fun startWritingQuizGame(cardList: MutableList<ImmutableCard?>, deck: ImmutableDeck) {
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
         binding.vpCardHolder.setCurrentItem(0, true)

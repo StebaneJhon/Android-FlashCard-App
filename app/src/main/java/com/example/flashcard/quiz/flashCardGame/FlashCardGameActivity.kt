@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -26,8 +25,6 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
-import com.example.flashcard.backend.Model.toExternal
-import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
@@ -666,7 +663,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     }
 
     private fun initFlashCard(
-        cardList: MutableList<ImmutableCard>,
+        cardList: MutableList<ImmutableCard?>,
         deck: ImmutableDeck
     ) {
         isFlashCardGameScreenHidden(false)

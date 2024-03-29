@@ -24,6 +24,8 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
     val allDecks: StateFlow<UiState<List<ImmutableDeck>>> = _allDecks.asStateFlow()
 
     private var fetchJob: Job? = null
+    private var fetchCardDeletionJob: Job? = null
+    private var fetchDeckDeletionJob: Job? = null
 
     fun getAllDecks() {
         fetchJob?.cancel()
@@ -51,9 +53,17 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.insertDeck(deck)
     }
 
-    fun deleteDeck(deck: ImmutableDeck) = viewModelScope.launch {
-        repository.deleteCards(deck.deckId!!)
-        repository.deleteDeck(deck)
+    fun deleteDeck(deck: ImmutableDeck) {
+        /*
+        fetchCardDeletionJob?.cancel()
+        fetchCardDeletionJob = viewModelScope.launch {
+        }
+         */
+        fetchDeckDeletionJob?.cancel()
+        fetchDeckDeletionJob = viewModelScope.launch {
+            repository.deleteCards(deck)
+            repository.deleteDeck(deck)
+        }
     }
 
     fun updateDeck(deck: Deck) = viewModelScope.launch {

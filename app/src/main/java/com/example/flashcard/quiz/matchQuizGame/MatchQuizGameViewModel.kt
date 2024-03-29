@@ -20,10 +20,10 @@ class MatchQuizGameViewModel : ViewModel() {
     private val _actualCards =
         MutableStateFlow<UiState<List<MatchQuizGameItemModel>>>(UiState.Loading)
     val actualCards: StateFlow<UiState<List<MatchQuizGameItemModel>>> = _actualCards.asStateFlow()
-    private lateinit var cardList: List<ImmutableCard>
+    private lateinit var cardList: List<ImmutableCard?>
     lateinit var deck: ImmutableDeck
     private var progression = 0
-    private lateinit var originalCardList: List<ImmutableCard>
+    private lateinit var originalCardList: List<ImmutableCard?>
     private var passedCards: Int = 0
     var boardSize = MatchQuizGameBorderSize.DEFAULT
     private var onBoarItems = mutableListOf<MatchQuizGameItemModel>()
@@ -33,7 +33,7 @@ class MatchQuizGameViewModel : ViewModel() {
     private var numMove = 0
     private var numMiss = 0
 
-    fun initCardList(gameCards: List<ImmutableCard>) {
+    fun initCardList(gameCards: List<ImmutableCard?>) {
         cardList = gameCards
         restCard = cardSum()
     }
@@ -42,7 +42,7 @@ class MatchQuizGameViewModel : ViewModel() {
         deck = gameDeck
     }
 
-    fun initOriginalCardList(gameCards: List<ImmutableCard>) {
+    fun initOriginalCardList(gameCards: List<ImmutableCard?>) {
         originalCardList = gameCards
     }
 
@@ -153,7 +153,7 @@ class MatchQuizGameViewModel : ViewModel() {
         }
     }
 
-    private fun getChoices(gameCards: List<ImmutableCard>) {
+    private fun getChoices(gameCards: List<ImmutableCard?>) {
         onBoarItems = mutableListOf()
         for (card in gameCards) {
             val items = toMatchQuizGameItem(card)
@@ -165,16 +165,16 @@ class MatchQuizGameViewModel : ViewModel() {
         }
     }
 
-    private fun toMatchQuizGameItem(card: ImmutableCard): List<MatchQuizGameItemModel>? {
-        if (!card.cardContent?.content.isNullOrEmpty() && !card.cardDefinition.isNullOrEmpty()) {
-            val item1 = MatchQuizGameItemModel(card.cardContent?.content!!, card.cardDefinition.first().definition!!)
+    private fun toMatchQuizGameItem(card: ImmutableCard?): List<MatchQuizGameItemModel>? {
+        if (!card?.cardContent?.content.isNullOrEmpty() && !card?.cardDefinition.isNullOrEmpty()) {
+            val item1 = MatchQuizGameItemModel(card?.cardContent?.content!!, card.cardDefinition?.first()?.definition!!)
             val item2 = MatchQuizGameItemModel(card.cardDefinition.first().definition!!, card.cardContent.content)
             return listOf(item1, item2)
         }
         return null
     }
 
-    fun getCards(quizCardList: List<ImmutableCard>, borderHeight: Int): List<ImmutableCard>? {
+    fun getCards(quizCardList: List<ImmutableCard?>, borderHeight: Int): List<ImmutableCard?>? {
         return when {
             quizCardList.size == borderHeight -> {
                 quizCardList
@@ -185,7 +185,7 @@ class MatchQuizGameViewModel : ViewModel() {
             }
 
             quizCardList.size > borderHeight -> {
-                var result = listOf<ImmutableCard>()
+                var result = listOf<ImmutableCard?>()
                 if (passedCards <= quizCardList.size) {
                     if (restCard > borderHeight) {
                         result = quizCardList.slice(passedCards..borderHeight.minus(1))

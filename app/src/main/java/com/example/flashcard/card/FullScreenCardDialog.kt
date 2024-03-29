@@ -22,7 +22,7 @@ import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class FullScreenCardDialog(private val card: ImmutableCard, private val deck: ImmutableDeck) :
+class FullScreenCardDialog(private val card: ImmutableCard?, private val deck: ImmutableDeck) :
     AppCompatDialogFragment() {
 
     private var languageHint: TextView? = null
@@ -48,8 +48,8 @@ class FullScreenCardDialog(private val card: ImmutableCard, private val deck: Im
         cardBg = view?.findViewById(R.id.fullScreenCardBG)
 
         languageHint?.text = deck.deckFirstLanguage
-        onCardText?.text = card.cardContent?.content
-        onCardTextDescription?.text = card.contentDescription
+        onCardText?.text = card?.cardContent?.content
+        onCardTextDescription?.text = card?.contentDescription
         dismissButton?.setOnClickListener { dismiss() }
         cardRoot?.setOnClickListener { flipCard(card, deck) }
 
@@ -61,7 +61,7 @@ class FullScreenCardDialog(private val card: ImmutableCard, private val deck: Im
 
         cardRoot?.setBackgroundColor(ContextCompat.getColor(requireContext(), deckColorCode))
 
-        val background = card.backgroundImg?.let {
+        val background = card?.backgroundImg?.let {
             CardBackgroundSelector().selectPattern(it)
         } ?: R.drawable.abstract_surface_textures
 
@@ -73,16 +73,16 @@ class FullScreenCardDialog(private val card: ImmutableCard, private val deck: Im
         return builder.create()
     }
 
-    private fun flipCard(card: ImmutableCard, deck: ImmutableDeck) {
+    private fun flipCard(card: ImmutableCard?, deck: ImmutableDeck) {
         if (!isCardRevealed) {
             languageHint?.text = deck.deckSecondLanguage
-            onCardText?.text = card.cardDefinition?.first()?.definition
-            onCardTextDescription?.text = card.valueDefinition
+            onCardText?.text = card?.cardDefinition?.first()?.definition
+            onCardTextDescription?.text = card?.valueDefinition
             isCardRevealed = true
         } else {
             languageHint?.text = deck.deckFirstLanguage
-            onCardText?.text = card.cardContent?.content
-            onCardTextDescription?.text = card.contentDescription
+            onCardText?.text = card?.cardContent?.content
+            onCardTextDescription?.text = card?.contentDescription
             isCardRevealed = false
         }
     }

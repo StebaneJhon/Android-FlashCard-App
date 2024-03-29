@@ -108,7 +108,7 @@ class MainActivity :
 
     }
 
-    private fun updateCardsStatus(data: List<ImmutableCard>) {
+    private fun updateCardsStatus(data: List<ImmutableCard?>) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 data.forEach { card ->
@@ -118,34 +118,37 @@ class MainActivity :
         }
     }
 
-    private fun updateCardStatus(card: ImmutableCard) {
-        val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
-        val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
-        if (isCardForgotten) {
-            val newStatus = spaceRepetitionHelper.status(card, false)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
-            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.contentDescription,
-                card.cardDefinition,
-                card.valueDefinition,
-                card.deckId,
-                card.backgroundImg,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                card.lastRevisionDate,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.creationDateTime
-            )
-            activityViewModel.updateCard(newCard)
+    private fun updateCardStatus(card: ImmutableCard?) {
+        if (card != null) {
+            val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+            val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
+            if (isCardForgotten) {
+                val newStatus = spaceRepetitionHelper.status(card, false)
+                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
+                val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
+                val newCard = ImmutableCard(
+                    card.cardId,
+                    card.cardContent,
+                    card.contentDescription,
+                    card.cardDefinition,
+                    card.valueDefinition,
+                    card.deckId,
+                    card.backgroundImg,
+                    card.isFavorite,
+                    card.revisionTime,
+                    card.missedTime,
+                    card.creationDate,
+                    card.lastRevisionDate,
+                    newStatus,
+                    nextForgettingDate,
+                    nextRevision,
+                    card.cardType,
+                    card.creationDateTime
+                )
+                activityViewModel.updateCard(newCard)
+            }
         }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -26,28 +26,28 @@ class MultiChoiceQuizGameViewModel(
     private var currentCardPosition: Int = 0
     var progress: Int = 0
     var attemptTime: Int = 0
-    private val missedCards: ArrayList<ImmutableCard> = arrayListOf()
+    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     private val _actualCards = MutableStateFlow<UiState<List<MultiChoiceGameCardModel>>>(UiState.Loading)
     val actualCards: StateFlow<UiState<List<MultiChoiceGameCardModel>>> = _actualCards.asStateFlow()
-    private lateinit var cardList: MutableList<ImmutableCard>
+    private lateinit var cardList: MutableList<ImmutableCard?>
     lateinit var deck: ImmutableDeck
-    private lateinit var originalCardList: List<ImmutableCard>
+    private lateinit var originalCardList: List<ImmutableCard?>
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
-    fun initCardList(gameCards: MutableList<ImmutableCard>) {
+    fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
     }
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
     }
 
-    fun initOriginalCardList(gameCards: List<ImmutableCard>) {
+    fun initOriginalCardList(gameCards: List<ImmutableCard?>) {
         originalCardList = gameCards
     }
 
     private fun getWordAlternatives(
-        cards: List<ImmutableCard>,
+        cards: List<ImmutableCard?>,
         correctAlternative: String,
         sum: Int,
         cardOrientation: String
@@ -56,9 +56,9 @@ class MultiChoiceQuizGameViewModel(
         temporaryList.add(correctAlternative)
         while (temporaryList.size < sum) {
             val randomWordTranslation = if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                cards.random().cardDefinition?.first()?.definition
+                cards.random()?.cardDefinition?.first()?.definition
             } else {
-                cards.random().cardContent?.content
+                cards.random()?.cardContent?.content
             }
             if (randomWordTranslation !in temporaryList) {
                 if (randomWordTranslation != null) {
@@ -86,8 +86,8 @@ class MultiChoiceQuizGameViewModel(
     fun cardSum() = cardList.size
     fun getMissedCardSum() = missedCards.size
     fun getKnownCardSum() = cardSum() - getMissedCardSum()
-    fun getMissedCard(): MutableList<ImmutableCard> {
-        val newCards = arrayListOf<ImmutableCard>()
+    fun getMissedCard(): MutableList<ImmutableCard?> {
+        val newCards = arrayListOf<ImmutableCard?>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
         return newCards
     }
@@ -117,11 +117,11 @@ class MultiChoiceQuizGameViewModel(
         return isCorrect
     }
 
-    private fun toListOfMultiChoiceQuizGameCardModel(cards: List<ImmutableCard>, cardOrientation: String): List<MultiChoiceGameCardModel> {
+    private fun toListOfMultiChoiceQuizGameCardModel(cards: List<ImmutableCard?>, cardOrientation: String): List<MultiChoiceGameCardModel> {
         val temporaryList = mutableListOf<MultiChoiceGameCardModel>()
         cards.forEach {
             if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                val alternatives = getWordAlternatives(originalCardList, it.cardDefinition?.first()?.definition!!, 4, cardOrientation)
+                val alternatives = getWordAlternatives(originalCardList, it?.cardDefinition?.first()?.definition!!, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
                         it.cardContent?.content!!,
@@ -133,7 +133,7 @@ class MultiChoiceQuizGameViewModel(
                     )
                 )
             } else {
-                val alternatives = getWordAlternatives(originalCardList, it.cardContent?.content!!, 4, cardOrientation)
+                val alternatives = getWordAlternatives(originalCardList, it?.cardContent?.content!!, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
                         it.cardDefinition?.first()?.definition!!,
@@ -162,7 +162,7 @@ class MultiChoiceQuizGameViewModel(
     }
 
     fun sortCardsByLevel() {
-        cardList.sortBy { it.cardStatus }
+        cardList.sortBy { it?.cardStatus }
     }
 
     fun shuffleCards() {
@@ -170,15 +170,15 @@ class MultiChoiceQuizGameViewModel(
     }
 
     fun sortByCreationDate() {
-        cardList.sortBy { it.cardId }
+        cardList.sortBy { it?.cardId }
     }
 
     fun unknownCardsOnly() {
-        cardList = cardList.filter { it.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard>
+        cardList = cardList.filter { it?.cardStatus == CardLevel.L1 } as MutableList<ImmutableCard?>
     }
 
     fun cardToReviseOnly() {
-        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it) } as MutableList<ImmutableCard>
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
     fun restoreCardList() {
@@ -188,30 +188,32 @@ class MultiChoiceQuizGameViewModel(
     private fun onUserAnswered(isKnown: Boolean) {
         cardList.let {cards ->
             val card = cards[currentCardPosition]
-            val newStatus = spaceRepetitionHelper.status(card, isKnown)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-            val lastRevision = spaceRepetitionHelper.today()
-            val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.contentDescription,
-                card.cardDefinition,
-                card.valueDefinition,
-                card.deckId,
-                card.backgroundImg,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                lastRevision,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.creationDateTime
-            )
-            updateCard(newCard)
+            if (card != null) {
+                val newStatus = spaceRepetitionHelper.status(card, isKnown)
+                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
+                val lastRevision = spaceRepetitionHelper.today()
+                val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
+                val newCard = ImmutableCard(
+                    card.cardId,
+                    card.cardContent,
+                    card.contentDescription,
+                    card.cardDefinition,
+                    card.valueDefinition,
+                    card.deckId,
+                    card.backgroundImg,
+                    card.isFavorite,
+                    card.revisionTime,
+                    card.missedTime,
+                    card.creationDate,
+                    lastRevision,
+                    newStatus,
+                    nextForgettingDate,
+                    nextRevision,
+                    card.cardType,
+                    card.creationDateTime
+                )
+                updateCard(newCard)
+            }
         }
     }
 

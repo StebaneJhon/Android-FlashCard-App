@@ -60,12 +60,12 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateCard(card)
     }
 
-    fun deleteCard(card: ImmutableCard, localDeck: ImmutableDeck) = viewModelScope.launch {
+    fun deleteCard(card: ImmutableCard?, localDeck: ImmutableDeck) = viewModelScope.launch {
         val externalDeck = localDeck.toLocal()
         repository.deleteCard(card, externalDeck)
     }
 
-    suspend fun searchCard(searchQuery: String, deckId: Int): LiveData<List<ImmutableCard>> {
+    suspend fun searchCard(searchQuery: String, deckId: Int): LiveData<List<ImmutableCard?>> {
         return repository.searchCardImmutable(searchQuery, deckId).asLiveData()
     }
 

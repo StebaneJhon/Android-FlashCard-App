@@ -17,8 +17,8 @@ import java.io.IOException
 
 class MainActivityViewModel(private val repository: FlashCardRepository): ViewModel() {
 
-    private var _allCards = MutableStateFlow<UiState<List<ImmutableCard>>>(UiState.Loading)
-    val allCards: StateFlow<UiState<List<ImmutableCard>>> = _allCards.asStateFlow()
+    private var _allCards = MutableStateFlow<UiState<List<ImmutableCard?>>>(UiState.Loading)
+    val allCards: StateFlow<UiState<List<ImmutableCard?>>> = _allCards.asStateFlow()
 
     private var fetchJob: Job? = null
 

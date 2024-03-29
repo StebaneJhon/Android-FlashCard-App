@@ -46,8 +46,8 @@ class ProfileViewModel(private val repository: FlashCardRepository): ViewModel()
         }
     }
 
-    private var _allCards = MutableStateFlow<UiState<List<ImmutableCard>>>(UiState.Loading)
-    val allCards: StateFlow<UiState<List<ImmutableCard>>> = _allCards.asStateFlow()
+    private var _allCards = MutableStateFlow<UiState<List<ImmutableCard?>>>(UiState.Loading)
+    val allCards: StateFlow<UiState<List<ImmutableCard?>>> = _allCards.asStateFlow()
     fun getAllCards() {
         fetchCardJob?.cancel()
         _allCards.value = UiState.Loading
@@ -71,10 +71,10 @@ class ProfileViewModel(private val repository: FlashCardRepository): ViewModel()
         return spaceRepetitionHelper.getActualBoxLevels()
     }
 
-    fun getKnownCardsSum(cards: List<ImmutableCard>): Int {
+    fun getKnownCardsSum(cards: List<ImmutableCard?>): Int {
         var result = 0
         cards.forEach {
-            if (it.cardStatus != L1) {
+            if (it?.cardStatus != L1) {
                 result += 1
             }
         }

@@ -214,7 +214,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun startMatchQuizGame(cardList: List<ImmutableCard>, deck: ImmutableDeck) {
+    private fun startMatchQuizGame(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
     }
