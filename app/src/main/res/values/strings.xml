@@ -94,4 +94,5 @@
     <string name="bt_about_the_quizeo_text">About the Quizeo</string>
     <string name="tv_space_repetition_title">Space repetition box</string>
     <string name="ti_repeat_card_in_days_hint">Repeat card in ... days</string>
+    <string name="bt_help_button_text">Help Button</string>
 </resources>

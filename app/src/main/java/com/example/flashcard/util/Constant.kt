@@ -84,5 +84,7 @@ object CardLevel {
 }
 
 object CardType {
-    const val FLASHCARD = "flash_card"
+    const val FLASHCARD = "flash card"
+    const val ONE_OR_MULTI_ANSWER_CARD = "One or multi answer card"
+    const val TRUE_OR_FALSE_CARD = "True or false card"
 }

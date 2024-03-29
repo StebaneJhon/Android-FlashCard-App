@@ -67,7 +67,7 @@ class CardsRecyclerViewAdapter(
         private var isCardRevealed = false
 
         private val onCardText: TextView = view.findViewById(R.id.tv_card_content)
-        private val cardDescription: TextView = view.findViewById(R.id.tv_card_description)
+        private val cardDescription: TextView = view.findViewById(R.id.tv_card_description1)
         private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
         private val popUpBT: ImageButton = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)

@@ -33,7 +33,7 @@
             tools:text="Init Deck" />
 
         <TextView
-            android:id="@+id/tv_card_description"
+            android:id="@+id/tv_card_description1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
@@ -43,6 +43,36 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_card_content"
+            tools:text="Test deck description" />
+
+        <TextView
+            android:id="@+id/tv_card_description2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurface"
+            android:textSize="17sp"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_description1"
+            tools:text="Test deck description" />
+
+        <TextView
+            android:id="@+id/tv_card_description3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurface"
+            android:textSize="17sp"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_description2"
             tools:text="Test deck description" />
 
         <TextView
@@ -62,12 +92,12 @@
             android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/pupUpBT"
-            app:layout_constraintTop_toBottomOf="@+id/tv_card_description"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_description3"
             tools:text="L1" />
 
         <ImageButton
             android:id="@+id/pupUpBT"
-            android:layout_width="wrap_content"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
             android:contentDescription="@string/full_screen_button_description_text"
