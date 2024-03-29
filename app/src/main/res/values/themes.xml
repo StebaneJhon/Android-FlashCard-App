@@ -23,6 +23,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -52,6 +53,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -79,6 +81,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -106,6 +109,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -133,6 +137,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -160,6 +165,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -186,6 +192,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -212,6 +219,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -238,6 +246,7 @@
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -265,6 +274,7 @@
         <item name="endIconTint">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -328,6 +338,33 @@
 
     <style name="ThemeOverlay.App.LinearProgressIndicator" parent="">
         <item name="colorPrimary">?colorSurfaceContainerHighest</item>
+    </style>
+
+    <!--Chip theme-->
+    <style name="Widget.app.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="chipBackgroundColor">@color/chip_background_color</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="checkedIconTint">?colorOnPrimary</item>
+    </style>
+
+    <style name="Widget.app.Chip.Suggestion" parent="Widget.Material3.Chip.Suggestion">
+        <item name="chipBackgroundColor">@color/chip_background_color_suggestion</item>
+        <item name="android:textColor">@color/chip_text_color</item>
+        <item name="checkedIconTint">?colorOnPrimary</item>
+    </style>
+
+    <!--Bottom navigation bar -->
+    <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
+        <item name="itemActiveIndicatorStyle">@style/App.Custom.Indicator</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="colorOnSurface">?colorPrimary</item>
+    </style>
+
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">?colorPrimary</item>
     </style>
 
     <!--Text field style

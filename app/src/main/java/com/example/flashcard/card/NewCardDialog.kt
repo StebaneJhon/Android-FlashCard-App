@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.util.TypedValue
+import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -46,7 +47,6 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 
 class NewCardDialog(private val card: ImmutableCard?, private val deck: ImmutableDeck): AppCompatDialogFragment() {
@@ -63,6 +63,10 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private var clAddMultiAnswerCardContainer: ConstraintLayout? = null
     private var llAddTrueOrFalseCardContainer: LinearLayout? = null
     private var llAddFlashCardContainer: LinearLayout? = null
+    private var cpDefinition1IsTrue: Chip? = null
+    private var cpDefinition2IsTrue: Chip? = null
+    private var cpDefinition3IsTrue: Chip? = null
+    private var cpDefinition4IsTrue: Chip? = null
 
 
     private var listener: NewDialogListener? = null
@@ -94,6 +98,10 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         llAddFlashCardContainer = view?.findViewById(R.id.ll_add_flash_card_container)
         llAddTrueOrFalseCardContainer = view?.findViewById(R.id.ll_add_true_or_false_card_container)
         clAddMultiAnswerCardContainer = view?.findViewById(R.id.cl_add_multi_answer_card_container)
+        cpDefinition1IsTrue = view?.findViewById(R.id.cp_definition_1_is_true)
+        cpDefinition2IsTrue = view?.findViewById(R.id.cp_definition_2_is_true)
+        cpDefinition3IsTrue = view?.findViewById(R.id.cp_definition_3_is_true)
+        cpDefinition4IsTrue = view?.findViewById(R.id.cp_definition_4_is_true)
 
         if (card != null) {
 
@@ -137,14 +145,38 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         }
 
         cpAddMultiAnswerCard?.setOnCheckedChangeListener { _, isChecked ->
-            onAddMultiAswerCard(isChecked)
+            onAddMultiAnswerCard(isChecked)
         }
 
         cpAddTrueOrFalseCard?.setOnCheckedChangeListener { _, isChecked ->
             onAddTrueOrFalseCard(isChecked)
         }
 
+        cpDefinition1IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+        }
+
+        cpDefinition2IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+        }
+
+        cpDefinition3IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+        }
+
+        cpDefinition4IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+        }
+
         return builder.create()
+    }
+
+    private fun onIsDefinitionIsTrueClicked(isChecked: Boolean, buttonView: CompoundButton) {
+        if (isChecked) {
+            buttonView.text = getString(R.string.cp_true_text)
+        } else {
+            buttonView.text = getString(R.string.cp_false_text)
+        }
     }
 
     private fun onAddTrueOrFalseCard(isChecked: Boolean) {
@@ -158,7 +190,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun onAddMultiAswerCard(isChecked: Boolean) {
+    private fun onAddMultiAnswerCard(isChecked: Boolean) {
         if (isChecked) {
             cpAddFlashCard?.isChecked = false
             cpAddTrueOrFalseCard?.isChecked = false

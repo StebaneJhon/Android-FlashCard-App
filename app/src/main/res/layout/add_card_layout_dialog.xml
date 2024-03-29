@@ -23,11 +23,12 @@
                 android:id="@+id/cg_card_type_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleLine="true">
+                app:singleLine="true"
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/cp_add_flash_card"
-                    style="@style/Widget.Material3.Chip.Filter"
+                    style="@style/Widget.app.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ch_flash_card_text"
@@ -35,14 +36,14 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/cp_add_true_or_false_card"
-                    style="@style/Widget.Material3.Chip.Filter"
+                    style="@style/Widget.app.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cp_true_or_false_text"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/cp_add_multi_answer"
-                    style="@style/Widget.Material3.Chip.Filter"
+                    style="@style/Widget.app.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cp_multi_answer_card_text" />
@@ -108,7 +109,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/cp_definition_1_is_true"
-                style="@style/Widget.Material3.Chip.Suggestion"
+                style="@style/Widget.app.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:text="false"
@@ -142,7 +143,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/cp_definition_2_is_true"
-                style="@style/Widget.Material3.Chip.Suggestion"
+                style="@style/Widget.app.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:text="false"
@@ -176,7 +177,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/cp_definition_3_is_true"
-                style="@style/Widget.Material3.Chip.Suggestion"
+                style="@style/Widget.app.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:text="false"
@@ -210,7 +211,7 @@
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/cp_definition_4_is_true"
-                style="@style/Widget.Material3.Chip.Suggestion"
+                style="@style/Widget.app.Chip.Suggestion"
                 android:layout_width="wrap_content"
                 android:layout_height="70dp"
                 android:text="false"
@@ -255,22 +256,23 @@
                 android:id="@+id/cg_true_or_false_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleLine="true">
+                app:singleLine="true"
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/cp_true"
-                    style="@style/Widget.Material3.Chip.Filter"
+                    style="@style/Widget.app.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ch_flash_card_text"
+                    android:text="@string/cp_true_text"
                     android:checked="true"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/cp_false"
-                    style="@style/Widget.Material3.Chip.Filter"
+                    style="@style/Widget.app.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cp_true_or_false_text"/>
+                    android:text="@string/cp_false_text"/>
 
             </com.google.android.material.chip.ChipGroup>
 

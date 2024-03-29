@@ -103,4 +103,6 @@
     <string name="til_card_definition_2_hint">Card definition 2</string>
     <string name="til_card_definition_3_hint">Card definition 3</string>
     <string name="til_card_definition_4_hint">Card definition 4</string>
+    <string name="cp_true_text">True</string>
+    <string name="cp_false_text">False</string>
 </resources>
