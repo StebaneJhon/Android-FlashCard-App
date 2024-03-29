@@ -95,4 +95,12 @@
     <string name="tv_space_repetition_title">Space repetition box</string>
     <string name="ti_repeat_card_in_days_hint">Repeat card in ... days</string>
     <string name="bt_help_button_text">Help Button</string>
+    <string name="ch_flash_card_text">Flash Card</string>
+    <string name="cp_true_or_false_text">True or False</string>
+    <string name="cp_multi_answer_card_text">Multi Answer Card</string>
+    <string name="til_card_content_hint">Card content</string>
+    <string name="til_card_definition_1_hint">Card definition 1</string>
+    <string name="til_card_definition_2_hint">Card definition 2</string>
+    <string name="til_card_definition_3_hint">Card definition 3</string>
+    <string name="til_card_definition_4_hint">Card definition 4</string>
 </resources>

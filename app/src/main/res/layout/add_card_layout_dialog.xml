@@ -1,169 +1,360 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="?colorSurfaceContainerLow">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="10dp">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cardContentLY"
+        <HorizontalScrollView
+            android:id="@+id/hs_scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/icon_mic">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cardContentTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="10dp">
 
-        <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_card_type_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_add_flash_card"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ch_flash_card_text"
+                    android:checked="true"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_add_true_or_false_card"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cp_true_or_false_text"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_add_multi_answer"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cp_multi_answer_card_text" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="gone"
+            android:id="@+id/cl_add_multi_answer_card_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cardContentDefinitionTV"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hs_scrollView">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_content_multi_answer_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/til_card_content_hint"
                 android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/cardValueLY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp"
-            app:endIconMode="custom"
-            app:endIconDrawable="@drawable/icon_translate">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/cardValueTV"
-                android:layout_width="match_parent"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_content_multi_answer_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_definition_1_multi_answer_card"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:hint="@string/til_card_definition_1_hint"
                 android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
-            <EditText
-                android:id="@+id/cardValueDefinitionTV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_definition_1_multi_answer_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/colorPickerTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/background_text_title"
-                android:textColor="?colorOnSurface"
-                android:textStyle="bold"
-                android:fontFamily="@font/open_sans_bold"/>
-
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                android:layout_below="@+id/colorPickerTitle"
-                android:layout_margin="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="-17dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="2dp"
-                android:columnCount="4"
-                android:orientation="horizontal"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cp_definition_1_is_true"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:text="false"
+                android:layout_marginTop="6dp"
+                app:layout_constraintBottom_toBottomOf="@+id/til_definition_1_multi_answer_card"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintTop_toTopOf="@+id/til_definition_1_multi_answer_card" />
 
-                <LinearLayout
-                    android:id="@+id/curvePatternBT"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="5dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/curve_pattern"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/card_foreground_inactive"
-                        android:clipToOutline="true"/>
-                </LinearLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_definition_2_multi_answer_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/til_card_definition_2_hint"
+                android:textColorHint="?colorOnSurface"
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card">
 
-                <LinearLayout
-                    android:id="@+id/mapPatternBT"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="5dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/map_pattern"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/card_foreground_inactive"
-                        android:clipToOutline="true"/>
-                </LinearLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_definition_2_multi_answer_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:id="@+id/floralPatternBT"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="5dp">
-                    <ImageView
-                        android:id="@+id/button3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/floral_pattern"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/card_foreground_inactive"
-                        android:clipToOutline="true"/>
-                </LinearLayout>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cp_definition_2_is_true"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:text="false"
+                android:layout_marginTop="6dp"
+                app:layout_constraintBottom_toBottomOf="@+id/til_definition_2_multi_answer_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/til_definition_2_multi_answer_card" />
 
-                <LinearLayout
-                    android:id="@+id/datesPatternBT"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="5dp">
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/dates_minimal_halftone_patterns"
-                        android:scaleType="centerCrop"
-                        android:background="@drawable/card_foreground_inactive"
-                        android:clipToOutline="true"/>
-                </LinearLayout>
-            </GridLayout>
-        </RelativeLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_definition_3_multi_answer_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/til_card_definition_3_hint"
+                android:textColorHint="?colorOnSurface"
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card">
 
-    </LinearLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_definition_3_multi_answer_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cp_definition_3_is_true"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:text="false"
+                android:layout_marginTop="6dp"
+                app:layout_constraintBottom_toBottomOf="@+id/til_definition_3_multi_answer_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/til_definition_3_multi_answer_card" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_definition_4_multi_answer_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/til_card_definition_4_hint"
+                android:textColorHint="?colorOnSurface"
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_definition_4_multi_answer_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/cp_definition_4_is_true"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_width="wrap_content"
+                android:layout_height="70dp"
+                android:text="false"
+                android:layout_marginTop="6dp"
+                app:layout_constraintBottom_toBottomOf="@+id/til_definition_4_multi_answer_card"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/til_definition_4_multi_answer_card" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/ll_add_true_or_false_card_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hs_scrollView">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_content_true_or_false_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColorHint="?colorOnSurface"
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tie_content_true_or_false_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/cg_true_or_false_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_true"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ch_flash_card_text"
+                    android:checked="true"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/cp_false"
+                    style="@style/Widget.Material3.Chip.Filter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cp_true_or_false_text"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_add_flash_card_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/hs_scrollView">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cardContentLY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColorHint="?colorOnSurface"
+                app:endIconDrawable="@drawable/icon_mic"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cardContentTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColorHint="?colorOnSurface">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cardContentDefinitionTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cardValueLY"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColorHint="?colorOnSurface"
+                app:endIconDrawable="@drawable/icon_translate"
+                app:endIconMode="custom">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/cardValueTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColorHint="?colorOnSurface">
+
+                <EditText
+                    android:id="@+id/cardValueDefinitionTV"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.cardview.widget.CardView>

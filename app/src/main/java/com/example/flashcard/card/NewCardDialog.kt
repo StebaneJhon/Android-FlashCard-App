@@ -18,25 +18,25 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.CardContent
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardType.FLASHCARD
+import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
-import com.example.flashcard.util.cardBackgroundConst.CURVE_PATTERN
-import com.example.flashcard.util.cardBackgroundConst.DATES_PATTERN
-import com.example.flashcard.util.cardBackgroundConst.FLORAL_PATTERN
-import com.example.flashcard.util.cardBackgroundConst.MAP_PATTERN
+import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
@@ -55,17 +55,21 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private var cardContentDefinition: EditText? = null
     private var cardValue: EditText? = null
     private var cardValueDefinition: EditText? = null
-    private var curvePatternBT: LinearLayout? = null
-    private var mapPatternBT: LinearLayout? = null
-    private var floralPatternBT: LinearLayout? = null
-    private var datesPatternBT: LinearLayout? = null
     private var cardContentLY: TextInputLayout? = null
     private var cardValueLY: TextInputLayout? = null
+    private var cpAddFlashCard: Chip? = null
+    private var cpAddTrueOrFalseCard: Chip? = null
+    private var cpAddMultiAnswerCard: Chip? = null
+    private var clAddMultiAnswerCardContainer: ConstraintLayout? = null
+    private var llAddTrueOrFalseCardContainer: LinearLayout? = null
+    private var llAddFlashCardContainer: LinearLayout? = null
+
 
     private var listener: NewDialogListener? = null
 
     private var cardBackground: String? = null
     private var appContext: Context? = null
+    private var cardType: String? = null
 
     private val REQUEST_PERMISSION_CODE = 12
     private val RecordAudioRequestCode = 3455
@@ -84,11 +88,12 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         cardValueDefinition = view?.findViewById(R.id.cardValueDefinitionTV)
         cardContentLY = view?.findViewById(R.id.cardContentLY)
         cardValueLY = view?.findViewById(R.id.cardValueLY)
-
-        curvePatternBT = view?.findViewById(R.id.curvePatternBT)
-        mapPatternBT = view?.findViewById(R.id.mapPatternBT)
-        floralPatternBT = view?.findViewById(R.id.floralPatternBT)
-        datesPatternBT = view?.findViewById(R.id.datesPatternBT)
+        cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
+        cpAddTrueOrFalseCard = view?.findViewById(R.id.cp_add_true_or_false_card)
+        cpAddMultiAnswerCard = view?.findViewById(R.id.cp_add_multi_answer)
+        llAddFlashCardContainer = view?.findViewById(R.id.ll_add_flash_card_container)
+        llAddTrueOrFalseCardContainer = view?.findViewById(R.id.ll_add_true_or_false_card_container)
+        clAddMultiAnswerCardContainer = view?.findViewById(R.id.cl_add_multi_answer_card_container)
 
         if (card != null) {
 
@@ -96,7 +101,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             cardContentDefinition?.setText(card.contentDescription)
             cardValue?.setText(card.cardDefinition?.first()?.definition)
             cardValueDefinition?.setText(card.valueDefinition)
-            card.backgroundImg?.let { onCardBackgroundSelected(it) }
 
             builder.setView(view)
                 .setTitle("Update Card")
@@ -128,22 +132,52 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             onTranslateText(contentText)
         }
 
-        mapPatternBT?.setOnClickListener {
-            onCardBackgroundSelected(MAP_PATTERN)
-        }
-        curvePatternBT?.setOnClickListener {
-            onCardBackgroundSelected(CURVE_PATTERN)
-        }
-        floralPatternBT?.setOnClickListener {
-            onCardBackgroundSelected(FLORAL_PATTERN)
-        }
-        datesPatternBT?.setOnClickListener {
-            onCardBackgroundSelected(DATES_PATTERN)
+        cpAddFlashCard?.setOnCheckedChangeListener { _, isChecked ->
+            onAddFlashCard(isChecked)
         }
 
+        cpAddMultiAnswerCard?.setOnCheckedChangeListener { _, isChecked ->
+            onAddMultiAswerCard(isChecked)
+        }
 
+        cpAddTrueOrFalseCard?.setOnCheckedChangeListener { _, isChecked ->
+            onAddTrueOrFalseCard(isChecked)
+        }
 
         return builder.create()
+    }
+
+    private fun onAddTrueOrFalseCard(isChecked: Boolean) {
+        if (isChecked) {
+            cpAddFlashCard?.isChecked = false
+            cpAddMultiAnswerCard?.isChecked = false
+            llAddTrueOrFalseCardContainer?.isVisible = true
+            llAddFlashCardContainer?.isVisible = false
+            clAddMultiAnswerCardContainer?.isVisible = false
+            cardType = TRUE_OR_FALSE_CARD
+        }
+    }
+
+    private fun onAddMultiAswerCard(isChecked: Boolean) {
+        if (isChecked) {
+            cpAddFlashCard?.isChecked = false
+            cpAddTrueOrFalseCard?.isChecked = false
+            clAddMultiAnswerCardContainer?.isVisible = true
+            llAddTrueOrFalseCardContainer?.isVisible = false
+            llAddFlashCardContainer?.isVisible = false
+            cardType = ONE_OR_MULTI_ANSWER_CARD
+        }
+    }
+
+    private fun onAddFlashCard(isChecked: Boolean) {
+        if (isChecked) {
+            cpAddTrueOrFalseCard?.isChecked = false
+            cpAddMultiAnswerCard?.isChecked = false
+            llAddFlashCardContainer?.isVisible = true
+            llAddTrueOrFalseCardContainer?.isVisible = false
+            clAddMultiAnswerCardContainer?.isVisible = false
+            cardType = FLASHCARD
+        }
     }
 
     private fun NewCardDialog.listen() {
@@ -236,38 +270,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
             cardValueLY?.endIconDrawable = drawable
         }
-    }
-
-    private fun onCardBackgroundSelected(background: String) {
-        val onActiveBTdForeground = ContextCompat.getDrawable(requireContext(), R.drawable.card_foreground_active)
-        val onInactiveBTdForeground = ContextCompat.getDrawable(requireContext(), R.drawable.card_foreground_inactive)
-        when (background) {
-            MAP_PATTERN -> {
-                mapPatternBT?.foreground = onActiveBTdForeground
-                curvePatternBT?.foreground = onInactiveBTdForeground
-                floralPatternBT?.foreground = onInactiveBTdForeground
-                datesPatternBT?.foreground = onInactiveBTdForeground
-            }
-            CURVE_PATTERN -> {
-                mapPatternBT?.foreground = onInactiveBTdForeground
-                curvePatternBT?.foreground = onActiveBTdForeground
-                floralPatternBT?.foreground = onInactiveBTdForeground
-                datesPatternBT?.foreground = onInactiveBTdForeground
-            }
-            FLORAL_PATTERN -> {
-                mapPatternBT?.foreground = onInactiveBTdForeground
-                curvePatternBT?.foreground = onInactiveBTdForeground
-                floralPatternBT?.foreground = onActiveBTdForeground
-                datesPatternBT?.foreground = onInactiveBTdForeground
-            }
-            DATES_PATTERN -> {
-                mapPatternBT?.foreground = onInactiveBTdForeground
-                curvePatternBT?.foreground = onInactiveBTdForeground
-                floralPatternBT?.foreground = onInactiveBTdForeground
-                datesPatternBT?.foreground = onActiveBTdForeground
-            }
-        }
-        cardBackground = background
     }
 
     private fun onPositiveAction(action: String) {
