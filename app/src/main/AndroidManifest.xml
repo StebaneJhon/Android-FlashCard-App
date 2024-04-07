@@ -17,6 +17,9 @@
         android:theme="@style/PurpleTheme.Flashcard"
         tools:targetApi="31">
         <activity
+            android:name=".quiz.testQuizGame.TestQuizGameActivity"
+            android:exported="false" />
+        <activity
             android:name=".quiz.flashCardGameTimed.FlashCardGameTimedActivity"
             android:exported="false" />
         <activity

@@ -52,7 +52,7 @@
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
     </style>
 

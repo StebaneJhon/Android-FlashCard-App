@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorSurfaceContainerLowest"
+    tools:context=".quiz.testQuizGame.TestQuizGameActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topToolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorSurfaceContainerLow"
+            android:minHeight="?attr/actionBarSize"
+            app:menu="@menu/mn_flash_card_top_app_bar"
+            app:navigationIcon="@drawable/icon_chevron_left"
+            app:title="@string/title_flash_card_game" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/vp_card_holder"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar"/>
+
+    <LinearLayout
+        android:id="@+id/gameReviewContainerMQ"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+        <include
+            android:id="@+id/gameReviewLayoutMQ"
+            layout="@layout/layout_score" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ly_on_no_more_cards_error_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
+        <include
+            android:id="@+id/ly_no_card_error"
+            layout="@layout/ly_no_card_error" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -59,6 +59,15 @@
             android:backgroundTint="?colorSurfaceContainer"
             app:cornerRadius="10dp"/>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_test_quiz_game"
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_test_quiz_game_text"
+            android:textColor="?colorOnSurface"
+            android:backgroundTint="?colorSurfaceContainer"
+            app:cornerRadius="10dp"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
