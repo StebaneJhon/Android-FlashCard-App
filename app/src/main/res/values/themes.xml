@@ -28,6 +28,36 @@
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
 
+    <style name="Stale.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/stale600</item>
+        <item name="colorOnPrimary">@color/stale50</item>
+        <item name="colorPrimaryDark">@color/stale900</item>
+        <item name="android:textColorPrimary">@color/stale50</item>
+        <item name="colorPrimaryContainer">@color/stale700</item>
+        <item name="colorOnPrimaryContainer">@color/stale50</item>
+        <item name="colorSurfaceContainerLowest">@color/stale50</item>
+        <item name="colorSurfaceContainerLow">@color/stale100</item>
+        <item name="colorSurfaceContainer">@color/stale200</item>
+        <item name="colorSurfaceContainerHigh">@color/stale300</item>
+        <item name="colorSurfaceContainerHighest">@color/stale400</item>
+        <item name="colorOnSurface">@color/stale950</item>
+        <item name="colorOnSurfaceVariant">@color/stale50</item>
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/stale400</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+    </style>
+
+    <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
+
     <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/grey15</item>
         <item name="colorOnPrimary">@color/black</item>

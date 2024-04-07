@@ -14,7 +14,7 @@ class ThemePicker {
         themeConst.GREEN_THEME to R.style.GreenTheme_Flashcard,
         themeConst.YELLOW_THEME to R.style.YellowTheme_Flashcard,
         themeConst.BROWN_THEME to R.style.BrownTheme_Flashcard,
-        themeConst.WHITE_THEME to R.style.Theme_FlashCard,
+        themeConst.WHITE_THEME to R.style.StaleTheme_FlashCard,
     )
 
     fun selectTheme(themeName: String): Int? {
