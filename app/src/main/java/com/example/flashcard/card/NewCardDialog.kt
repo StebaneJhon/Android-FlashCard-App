@@ -39,6 +39,7 @@ import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.Translation
@@ -55,8 +56,24 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private var cardContentDefinition: EditText? = null
     private var cardValue: EditText? = null
     private var cardValueDefinition: EditText? = null
+    private var tieContentMultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition1MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition2MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition3MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition4MultiAnswerCard: TextInputEditText? = null
+    private var tieContentTrueOrFalseCard: TextInputEditText? = null
+
     private var cardContentLY: TextInputLayout? = null
     private var cardValueLY: TextInputLayout? = null
+    private var tilContentMultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition1MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition2MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition3MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition4MultiAnswerCard: TextInputLayout? = null
+    private var tilContentTrueOrFalseCard: TextInputLayout? = null
+    private var cpTrue: Chip? = null
+    private var cpFalse: Chip? = null
+
     private var cpAddFlashCard: Chip? = null
     private var cpAddTrueOrFalseCard: Chip? = null
     private var cpAddMultiAnswerCard: Chip? = null
@@ -74,9 +91,18 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private var cardBackground: String? = null
     private var appContext: Context? = null
     private var cardType: String? = null
+    private var definitionList = mutableSetOf<CardDefinition>()
 
-    private val REQUEST_PERMISSION_CODE = 12
-    private val RecordAudioRequestCode = 3455
+    companion object {
+        private const val REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD = 12
+        private const val REQUEST_PERMISSION_CODE_CONTENT_MAC = 13
+        private const val REQUEST_PERMISSION_CODE_DEFINITION_1_MAC = 14
+        private const val REQUEST_PERMISSION_CODE_DEFINITION_2_MAC = 15
+        private const val REQUEST_PERMISSION_CODE_DEFINITION_3_MAC = 16
+        private const val REQUEST_PERMISSION_CODE_DEFINITION_4_MAC = 17
+        private const val REQUEST_PERMISSION_CODE_CONTENT_TFC = 18
+        private const val RecordAudioRequestCode = 3455
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -90,8 +116,22 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         cardContentDefinition = view?.findViewById(R.id.cardContentDefinitionTV)
         cardValue = view?.findViewById(R.id.cardValueTV)
         cardValueDefinition = view?.findViewById(R.id.cardValueDefinitionTV)
+        tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
+        tieDefinition1MultiAnswerCard = view?.findViewById(R.id.tie_definition_1_multi_answer_card)
+        tieDefinition2MultiAnswerCard = view?.findViewById(R.id.tie_definition_2_multi_answer_card)
+        tieDefinition3MultiAnswerCard = view?.findViewById(R.id.tie_definition_3_multi_answer_card)
+        tieDefinition4MultiAnswerCard = view?.findViewById(R.id.tie_definition_4_multi_answer_card)
+        tieContentTrueOrFalseCard = view?.findViewById(R.id.tie_content_true_or_false_card)
+
         cardContentLY = view?.findViewById(R.id.cardContentLY)
         cardValueLY = view?.findViewById(R.id.cardValueLY)
+        tilContentMultiAnswerCard = view?.findViewById(R.id.til_content_multi_answer_card)
+        tilDefinition1MultiAnswerCard = view?.findViewById(R.id.til_definition_1_multi_answer_card)
+        tilDefinition2MultiAnswerCard = view?.findViewById(R.id.til_definition_2_multi_answer_card)
+        tilDefinition3MultiAnswerCard = view?.findViewById(R.id.til_definition_3_multi_answer_card)
+        tilDefinition4MultiAnswerCard = view?.findViewById(R.id.til_definition_4_multi_answer_card)
+        tilContentTrueOrFalseCard = view?.findViewById(R.id.til_content_true_or_false_card)
+
         cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
         cpAddTrueOrFalseCard = view?.findViewById(R.id.cp_add_true_or_false_card)
         cpAddMultiAnswerCard = view?.findViewById(R.id.cp_add_multi_answer)
@@ -102,9 +142,10 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         cpDefinition2IsTrue = view?.findViewById(R.id.cp_definition_2_is_true)
         cpDefinition3IsTrue = view?.findViewById(R.id.cp_definition_3_is_true)
         cpDefinition4IsTrue = view?.findViewById(R.id.cp_definition_4_is_true)
+        cpFalse = view?.findViewById(R.id.cp_false)
+        cpTrue = view?.findViewById(R.id.cp_true)
 
         if (card != null) {
-
             cardContent?.setText(card.cardContent?.content)
             cardContentDefinition?.setText(card.contentDescription)
             cardValue?.setText(card.cardDefinition?.first()?.definition)
@@ -112,7 +153,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
             builder.setView(view)
                 .setTitle("Update Card")
-                .setNegativeButton("Cancel") { _, _ ->  }
+                .setNegativeButton("Cancel") { _, _ ->  dismiss()}
                 .setPositiveButton("Update"
                 ) { _, _ ->
                     onPositiveAction(Constant.UPDATE)
@@ -124,7 +165,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
             builder.setView(view)
                 .setTitle("New Card")
-                .setNegativeButton("Cancel") { _, _ ->  }
+                .setNegativeButton("Cancel") { _, _ -> dismiss()}
                 .setPositiveButton("Add"
                 ) { _, _ ->
                     onPositiveAction(Constant.ADD)
@@ -132,7 +173,25 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         }
 
         cardContentLY?.setEndIconOnClickListener {
-            listen()
+            listen(REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD)
+        }
+        tilContentMultiAnswerCard?.setEndIconOnClickListener {
+            listen(REQUEST_PERMISSION_CODE_CONTENT_MAC)
+        }
+        tilDefinition1MultiAnswerCard?.setEndIconOnClickListener {
+            listen(REQUEST_PERMISSION_CODE_DEFINITION_1_MAC)
+        }
+        tilDefinition2MultiAnswerCard?.setEndIconOnClickListener {
+            listen(REQUEST_PERMISSION_CODE_DEFINITION_2_MAC)
+        }
+        tilDefinition3MultiAnswerCard?.setEndIconOnClickListener {
+            listen(REQUEST_PERMISSION_CODE_DEFINITION_3_MAC)
+        }
+        tilDefinition4MultiAnswerCard?.setEndIconOnClickListener {
+            listen(REQUEST_PERMISSION_CODE_DEFINITION_4_MAC)
+        }
+        tilContentTrueOrFalseCard?.setEndIconOnClickListener {
+            listen(REQUEST_PERMISSION_CODE_CONTENT_TFC)
         }
 
         cardValueLY?.setEndIconOnClickListener {
@@ -181,8 +240,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private fun onAddTrueOrFalseCard(isChecked: Boolean) {
         if (isChecked) {
-            cpAddFlashCard?.isChecked = false
-            cpAddMultiAnswerCard?.isChecked = false
             llAddTrueOrFalseCardContainer?.isVisible = true
             llAddFlashCardContainer?.isVisible = false
             clAddMultiAnswerCardContainer?.isVisible = false
@@ -192,8 +249,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private fun onAddMultiAnswerCard(isChecked: Boolean) {
         if (isChecked) {
-            cpAddFlashCard?.isChecked = false
-            cpAddTrueOrFalseCard?.isChecked = false
             clAddMultiAnswerCardContainer?.isVisible = true
             llAddTrueOrFalseCardContainer?.isVisible = false
             llAddFlashCardContainer?.isVisible = false
@@ -203,8 +258,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private fun onAddFlashCard(isChecked: Boolean) {
         if (isChecked) {
-            cpAddTrueOrFalseCard?.isChecked = false
-            cpAddMultiAnswerCard?.isChecked = false
             llAddFlashCardContainer?.isVisible = true
             llAddTrueOrFalseCardContainer?.isVisible = false
             clAddMultiAnswerCardContainer?.isVisible = false
@@ -212,7 +265,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun NewCardDialog.listen() {
+    private fun NewCardDialog.listen( requestCode: Int ) {
         if(ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
             checkPermission()
         } else {
@@ -226,7 +279,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to translate")
 
             try {
-                startActivityForResult(intent, REQUEST_PERMISSION_CODE)
+                startActivityForResult(intent, requestCode)
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
@@ -244,9 +297,36 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_PERMISSION_CODE) {
-            val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            cardContent?.setText(result?.get(0))
+        when (requestCode) {
+            REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                cardContent?.setText(result?.get(0))
+            }
+            REQUEST_PERMISSION_CODE_CONTENT_MAC -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                tieContentMultiAnswerCard?.setText(result?.get(0))
+            }
+            REQUEST_PERMISSION_CODE_DEFINITION_1_MAC -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                tieDefinition1MultiAnswerCard?.setText(result?.get(0))
+            }
+            REQUEST_PERMISSION_CODE_DEFINITION_2_MAC -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                tieDefinition2MultiAnswerCard?.setText(result?.get(0))
+            }
+            REQUEST_PERMISSION_CODE_DEFINITION_3_MAC -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                tieDefinition3MultiAnswerCard?.setText(result?.get(0))
+            }
+            REQUEST_PERMISSION_CODE_DEFINITION_4_MAC -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                tieDefinition4MultiAnswerCard?.setText(result?.get(0))
+            }
+            REQUEST_PERMISSION_CODE_CONTENT_TFC -> {
+                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                tieContentTrueOrFalseCard?.setText(result?.get(0))
+            }
+
         }
     }
 
@@ -307,24 +387,16 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private fun onPositiveAction(action: String) {
 
         val newCard = if (action == Constant.ADD) {
-            val newCardContent = CardContent(
-                null,
-                null,
-                cardContent?.text.toString()
-            )
-            val newCardDefinition = CardDefinition(
-                null,
-                null,
-                null,
-                cardValue?.text.toString(),
-                true
-            )
+
+            val newCardContent = getContent()
+            val newCardDefinition = getDefinitions()
+
              ImmutableCard(
                 null,
-                newCardContent,
-                cardContentDefinition?.text.toString(),
-                listOf(newCardDefinition),
-                cardValueDefinition?.text.toString(),
+                newCardContent!!,
+                null,
+                newCardDefinition,
+                null,
                 deck.deckId,
                  cardBackground,
                  false,
@@ -335,7 +407,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                  L1,
                  null,
                  null,
-                 FLASHCARD,
+                 cardType,
                  now()
             )
         } else {
@@ -377,6 +449,108 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
         listener?.getCard(newCard, action, deck)
     }
+
+    private fun getDefinitions() = when (cardType ) {
+        FLASHCARD -> {getDefinitionOnAddFC()}
+        ONE_OR_MULTI_ANSWER_CARD -> {getDefinitionOnAddMAC()}
+        TRUE_OR_FALSE_CARD -> { getDefinitionOnAddTFC() }
+        else -> {listOf<CardDefinition>()}
+    }
+
+    private fun getContent(): CardContent? {
+        return when (cardType) {
+            FLASHCARD -> {getContentOnAddFC()}
+            ONE_OR_MULTI_ANSWER_CARD -> {getContentOnAddMAC()}
+            TRUE_OR_FALSE_CARD -> { getContentOnAddTFC() }
+            else -> {null}
+        }
+    }
+
+    private fun getContentOnAddFC(): CardContent? {
+        val cardContentText = cardContent?.text.toString()
+        return if (cardContentText.isNotEmpty()) {
+            CardContent(
+                null,
+                null,
+                cardContentText
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun getContentOnAddMAC(): CardContent? {
+        val cardContentText = tieContentMultiAnswerCard?.text.toString()
+        return if (cardContentText.isNotEmpty()) {
+            CardContent(
+                null,
+                null,
+                cardContentText
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun getContentOnAddTFC(): CardContent? {
+        val cardContentText = tieContentTrueOrFalseCard?.text.toString()
+        return if (cardContentText.isNotEmpty()) {
+            CardContent(
+                null,
+                null,
+                cardContentText
+            )
+        } else {
+            null
+        }
+    }
+
+    private fun getDefinitionOnAddMAC(): List<CardDefinition> {
+        definitionList.clear()
+        val definition1Text = tieDefinition1MultiAnswerCard?.text.toString()
+        if (definition1Text.isNotEmpty()) {
+            definitionList.add(createDefinition(definition1Text, cpDefinition1IsTrue?.isChecked!!))
+        }
+        val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
+        if (definition2Text.isNotEmpty()) {
+            definitionList.add(createDefinition(definition2Text, cpDefinition2IsTrue?.isChecked!!))
+        }
+        val definition3Text = tieDefinition3MultiAnswerCard?.text.toString()
+        if (definition3Text.isNotEmpty()) {
+            definitionList.add(createDefinition(definition3Text, cpDefinition3IsTrue?.isChecked!!))
+        }
+        val definition4Text = tieDefinition4MultiAnswerCard?.text.toString()
+        if (definition4Text.isNotEmpty()) {
+            definitionList.add(createDefinition(definition4Text, cpDefinition4IsTrue?.isChecked!!))
+        }
+        return definitionList.toList()
+    }
+
+    private fun getDefinitionOnAddFC(): List<CardDefinition> {
+        definitionList.clear()
+        val definitionText = cardValue?.text.toString()
+        if (definitionText.isNotEmpty()) {
+            definitionList.add(createDefinition(definitionText, true))
+        }
+        return definitionList.toList()
+    }
+
+    private fun getDefinitionOnAddTFC(): List<CardDefinition> {
+        definitionList.clear()
+        val cpFalseState = cpFalse?.isChecked
+        val cpTrueState = cpTrue?.isChecked
+        definitionList.add(createDefinition( "False", cpFalseState!!))
+        definitionList.add(createDefinition( "True", cpTrueState!!))
+        return definitionList.toList()
+    }
+
+    private fun createDefinition(text: String, isCorrect: Boolean) = CardDefinition(
+        null,
+        null,
+        null,
+        text,
+        isCorrect
+    )
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
