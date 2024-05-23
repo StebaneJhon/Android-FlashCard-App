@@ -20,6 +20,7 @@ class TestQuizGameViewModel (
 
     private lateinit var cardList: MutableList<ImmutableCard?>
     private var originalCardList: List<ImmutableCard?>? = null
+    private lateinit var modelCardList: List<ModelCard?>
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     var deck: ImmutableDeck? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
@@ -40,20 +41,29 @@ class TestQuizGameViewModel (
         originalCardList = gameCards
     }
 
+    fun initModelCardList(gameCards: MutableList<ImmutableCard?>) {
+        modelCardList = gameCards.map { ModelCard(it) }
+    }
+
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
 
-    private val _actualCards = MutableStateFlow<UiState<List<ImmutableCard?>>>(UiState.Loading)
-    val actualCards: StateFlow<UiState<List<ImmutableCard?>>> = _actualCards.asStateFlow()
+    private val _modelCards = MutableStateFlow<UiState<List<ModelCard?>>>(UiState.Loading)
+    val modelCards: StateFlow<UiState<List<ModelCard?>>> = _modelCards.asStateFlow()
     private var fetchJob: Job? = null
     fun getCards() {
         if (cardList.size == 0) {
-            _actualCards.value = UiState.Error("No Cards To Revise")
+            _modelCards.value = UiState.Error("No Cards To Revise")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                _actualCards.value = UiState.Success(cardList)
+                _modelCards.value = UiState.Success(modelCardList)
             }
         }
+    }
+
+    fun onFlipCard(cardPosition: Int) {
+        val cardToFlip = modelCardList[cardPosition]
+        cardToFlip?.isFlipped = !cardToFlip?.isFlipped!!
     }
 
     private fun onCardSwiped(isKnown: Boolean) {

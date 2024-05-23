@@ -1,5 +1,7 @@
 package com.example.flashcard.quiz.testQuizGame
 
+import android.animation.AnimatorInflater
+import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +24,7 @@ import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 
 class TestQuizGameActivity : AppCompatActivity() {
@@ -37,6 +41,10 @@ class TestQuizGameActivity : AppCompatActivity() {
     private lateinit var flashCardModel: TrueOrFalseCardModel
 
     private var deckWithCards: ImmutableDeckWithCards? = null
+    lateinit var testQuizGameAdapter: TestQuizGameAdapter
+
+    private lateinit var frontAnim: AnimatorSet
+    private lateinit var backAnim: AnimatorSet
 
     companion object {
         private const val TAG = "TestQuizGameActivity"
@@ -63,6 +71,7 @@ class TestQuizGameActivity : AppCompatActivity() {
                 viewModel.initOriginalCardList(cardList)
                 viewModel.initCardList(cardList)
                 viewModel.initDeck(deck)
+                viewModel.initModelCardList(cardList)
                 viewModel.getCards()
                 //startWritingQuizGame(cardList, deck)
             } else {
@@ -77,7 +86,7 @@ class TestQuizGameActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             viewModel
-                .actualCards
+                .modelCards
                 .collect { state ->
                     when (state) {
                         is UiState.Loading -> {
@@ -95,12 +104,12 @@ class TestQuizGameActivity : AppCompatActivity() {
     }
 
     private fun launchMultiChoiceQuizGame(
-        data: List<ImmutableCard?>
+        data: List<ModelCard?>
     ) {
-        val testQuizGameAdapter = TestQuizGameAdapter(this, data, viewModel.getDeckColorCode()) { userResponseModel ->
-            when (userResponseModel.card.cardType) {
+        testQuizGameAdapter = TestQuizGameAdapter(this, data, viewModel.getDeckColorCode()) { userResponseModel ->
+            when (userResponseModel.modelCard.cardDetails?.cardType) {
                 FLASHCARD -> {
-                    // TODO: Implement onCard clicked
+                    onOneAndOneCardClicked(userResponseModel)
                 }
                 TRUE_OR_FALSE_CARD -> {
                     // TODO: Implement onCard clicked true or false card
@@ -114,6 +123,10 @@ class TestQuizGameActivity : AppCompatActivity() {
             }
         }
         binding.vpCardHolder.adapter = testQuizGameAdapter
+    }
+
+    private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
+        viewModel.onFlipCard(userResponseModel.modelCardPosition)
     }
 
     private fun onNoCardToRevise() {

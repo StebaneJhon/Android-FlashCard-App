@@ -9,13 +9,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
-import com.example.flashcard.backend.Model.ImmutableCard
-import com.example.flashcard.backend.entities.User
 import com.example.flashcard.util.CardType.FLASHCARD
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
@@ -25,7 +22,7 @@ import com.google.android.material.card.MaterialCardView
 
 class TestQuizGameAdapter(
     val context: Context,
-    val cardList: List<ImmutableCard?>,
+    val cardList: List<ModelCard?>,
     val deckColor: String,
     private val cardOnClick: (UserResponseModel) -> Unit
 ): RecyclerView.Adapter<TestQuizGameAdapter.TestQuizGameAdapterViewHolder>() {
@@ -45,6 +42,7 @@ class TestQuizGameAdapter(
             context,
             cardList[position],
             position.plus(1),
+            position,
             cardList.size,
             deckColor,
             cardOnClick
@@ -72,78 +70,93 @@ class TestQuizGameAdapter(
         private val btAlternative4: MaterialButton = view.findViewById(R.id.bt_alternative4)
         private lateinit var frontAnim: AnimatorSet
         private lateinit var backAnim: AnimatorSet
-        var isFront = true
+        var hasFlipped = false
 
 
         fun bind(
             context: Context,
-            card: ImmutableCard?,
+            modelCard: ModelCard?,
             cardNumber: Int,
+            cardPosition: Int,
             cardSum: Int,
             deckColorCode: String,
             cardOnClick: (UserResponseModel) -> Unit
         ) {
 
+            if (modelCard!!.isFlipped) {
+                cvCardContainerBack.alpha = 1f
+                cvCardContainerBack.rotationY = 0f
+                cvCardContainer.alpha = 0f
+            } else {
+                cvCardContainer.alpha = 1f
+                cvCardContainer.rotationY = 0f
+                cvCardContainerBack.alpha = 1f
+            }
+
+            val card = modelCard?.cardDetails
             tvFrontProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvContent.text = card?.cardContent?.content
             tvCardType.text = card?.cardType
             val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
+
+
             when(card?.cardType) {
                 FLASHCARD -> {
-                    onFlashCard(card, deckColorCode, cardNumber, cardSum, cardOnClick)
+                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
                 TRUE_OR_FALSE_CARD -> {
-                    onTrueOrFalseCard(card)
+                    onTrueOrFalseCard(modelCard)
                 }
                 ONE_OR_MULTI_ANSWER_CARD -> {
-                    onOneOrMultiAnswer(card, deckColorCode, cardNumber, cardSum, cardOnClick)
+                    onOneOrMultiAnswer(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
                 else -> {
-                    onFlashCard(card, deckColorCode, cardNumber, cardSum, cardOnClick)
+                    onFlashCard(modelCard!!, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
             }
 
         }
 
         fun onFlashCard(
-            card: ImmutableCard?,
+            modelCard: ModelCard,
             deckColorCode: String,
             cardNumber: Int,
+            cardPosition: Int,
             cardSum: Int,
             cardOnClick: (UserResponseModel) -> Unit
         ) {
-
-            val cardModel = FlashCardModel(card!!, cardList)
+            val card = modelCard.cardDetails
+            val cardModel = FlashCardModel(modelCard, cardList)
             btAlternative1.isVisible = false
             btAlternative2.isVisible = false
             btAlternative3.isVisible = false
             btAlternative4.isVisible = false
             flCardRoot.isClickable = cardModel.isFlippable()
 
+            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+            cvCardContainerBack.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
+            tvBackProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+            tvDefinition.text = card?.cardDefinition?.get(0)?.definition
+            tvCardTypeBack.text = card?.cardType
+
             flCardRoot.setOnClickListener {
-                if (card.cardType == FLASHCARD || card.cardType == "flash_card") {
-                    flipCard(cardModel)
-                }
-
-                val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
-                cvCardContainerBack.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
-                tvBackProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-                tvDefinition.text = card.cardDefinition?.get(0)?.definition
-                tvCardTypeBack.text = card.cardType
-
                 cardOnClick(
                     UserResponseModel(
-                        card,
-                        it
+                        modelCard,
+                        cardPosition,
+                        it,
+                        cvCardContainer,
+                        cvCardContainerBack
                     )
                 )
+                flipCard(modelCard.isFlipped)
             }
 
         }
 
-        private fun flipCard(cardModel: FlashCardModel) {
+        private fun flipCard(isFlipped: Boolean) {
             frontAnim = AnimatorInflater.loadAnimator(
                 context,
                 R.animator.front_animator
@@ -156,24 +169,24 @@ class TestQuizGameAdapter(
             val scale: Float = context.resources.displayMetrics.density
             cvCardContainer.cameraDistance = 8000 * scale
             cvCardContainerBack.cameraDistance = 8000 * scale
-            if (cardModel.isFlipped()) {
+            if (isFlipped) {
                 frontAnim.setTarget(cvCardContainer)
                 backAnim.setTarget(cvCardContainerBack)
                 frontAnim.start()
                 backAnim.start()
-                cardModel.flip()
+                //cardModel.flip()
             } else {
                 frontAnim.setTarget(cvCardContainerBack)
                 backAnim.setTarget(cvCardContainer)
                 frontAnim.start()
                 backAnim.start()
-                cardModel.flip()
+                //cardModel.flip()
             }
         }
 
-        fun onTrueOrFalseCard(card: ImmutableCard?) {
-
-            val cardModel = TrueOrFalseCardModel(card!!, cardList)
+        fun onTrueOrFalseCard(modelCard: ModelCard,) {
+            val card = modelCard.cardDetails
+            val cardModel = TrueOrFalseCardModel(modelCard, cardList)
             val answers = cardModel.getCardAnswers()
             flCardRoot.isClickable = cardModel.isFlippable()
             btAlternative1.apply {
@@ -190,13 +203,15 @@ class TestQuizGameAdapter(
         }
 
         fun onOneOrMultiAnswer(
-            card: ImmutableCard,
+            modelCard: ModelCard,
             deckColorCode: String,
             cardNumber: Int,
+            cardPosition: Int,
             cardSum: Int,
             cardOnClick: (UserResponseModel) -> Unit
         ) {
-            val cardModel = OneOrMultipleAnswerCardModel(card, cardList)
+            val card = modelCard.cardDetails
+            val cardModel = OneOrMultipleAnswerCardModel(modelCard, cardList)
             val answers = cardModel.getCardAnswers()
             flCardRoot.isClickable = cardModel.isFlippable()
             when (answers.size ) {
@@ -246,7 +261,7 @@ class TestQuizGameAdapter(
                     }
                 }
                 else -> {
-                    onFlashCard(card, deckColorCode, cardNumber, cardSum, cardOnClick)
+                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
             }
         }
