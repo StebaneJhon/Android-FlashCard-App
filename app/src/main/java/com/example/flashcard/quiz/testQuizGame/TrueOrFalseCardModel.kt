@@ -19,7 +19,9 @@ class TrueOrFalseCardModel(val modelCard: ModelCard, val cardList: List<ModelCar
         definition -> definition.isCorrectDefinition == false
     } ?: listOf<CardDefinition>()
 
-    fun isAnswerCorrect(userAnswer: CardDefinition) = getCorrectAnswer().contains(userAnswer) ?: false
+    fun getCorrectAnswerSum() = getCorrectAnswer().size
+
+    fun isAnswerCorrect(userAnswer: CardDefinition) = getCorrectAnswer().contains(userAnswer)
 
 
     fun getCardAnswers() = (getWrongAnswer() + getCorrectAnswer()).shuffled()

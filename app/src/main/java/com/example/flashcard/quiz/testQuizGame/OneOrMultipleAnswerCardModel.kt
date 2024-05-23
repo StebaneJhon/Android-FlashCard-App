@@ -15,6 +15,8 @@ class OneOrMultipleAnswerCardModel(val modelCard: ModelCard, val cardList: List<
         definition -> definition.isCorrectDefinition == true
     } ?: listOf<CardDefinition>()
 
+    fun getCorrectAnswerSum() = getCorrectAnswer().size
+
     fun getWrongAnswer() = card?.cardDefinition?.filter {
             definition -> definition.isCorrectDefinition == false
     } ?: listOf<CardDefinition>()

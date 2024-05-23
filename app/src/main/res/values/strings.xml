@@ -42,7 +42,7 @@
     <string name="deck_tab_hint">Deck</string>
     <string name="timed_flash_card_text_button">Timed Flash Card</string>
     <string name="known_button_text">Known</string>
-    <string name="no_button_text">Unknown</string>
+    <string name="no_button_text">known Not</string>
     <string name="total_cards_text">Total cards:</string>
     <string name="multiple_choice_quiz_button_text">Multiple-Choice Quiz</string>
     <string name="warning_icon">Warning Icon</string>
@@ -106,4 +106,6 @@
     <string name="cp_true_text">True</string>
     <string name="cp_false_text">False</string>
     <string name="bt_test_quiz_game_text">Test Quiz Game</string>
+    <string name="on_card_clicked_hint">Choose on of the alternatives below</string>
+    <string name="bt_rewind">REWIND</string>
 </resources>

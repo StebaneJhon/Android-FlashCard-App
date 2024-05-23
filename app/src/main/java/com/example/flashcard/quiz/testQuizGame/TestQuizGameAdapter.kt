@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardType.FLASHCARD
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
@@ -107,7 +108,7 @@ class TestQuizGameAdapter(
                     onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
                 TRUE_OR_FALSE_CARD -> {
-                    onTrueOrFalseCard(modelCard)
+                    onTrueOrFalseCard(modelCard,cardPosition , cardOnClick)
                 }
                 ONE_OR_MULTI_ANSWER_CARD -> {
                     onOneOrMultiAnswer(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
@@ -144,6 +145,7 @@ class TestQuizGameAdapter(
             flCardRoot.setOnClickListener {
                 cardOnClick(
                     UserResponseModel(
+                        null,
                         modelCard,
                         cardPosition,
                         it,
@@ -153,6 +155,127 @@ class TestQuizGameAdapter(
                 )
                 flipCard(modelCard.isFlipped)
             }
+
+        }
+
+        fun onTrueOrFalseCard(
+            modelCard: ModelCard,
+            cardPosition: Int,
+            cardOnClick: (UserResponseModel) -> Unit
+        ) {
+            val card = modelCard.cardDetails
+            val cardModel = TrueOrFalseCardModel(modelCard, cardList)
+            val answers = cardModel.getCardAnswers()
+            flCardRoot.isClickable = cardModel.isFlippable()
+            btAlternative1.apply {
+                isVisible = true
+                text = answers[0].definition
+                onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+            }
+            btAlternative2.apply {
+                isVisible = true
+                text = answers[1].definition
+                onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+            }
+            btAlternative3.isVisible = false
+            btAlternative4.isVisible = false
+
+
+
+        }
+
+        private fun MaterialButton.onAlternativeClicked(
+            answer: CardDefinition,
+            cardOnClick: (UserResponseModel) -> Unit,
+            modelCard: ModelCard,
+            cardPosition: Int
+        ) {
+            setOnClickListener {
+                cardOnClick(
+                    UserResponseModel(
+                        answer,
+                        modelCard,
+                        cardPosition,
+                        this,
+                        cvCardContainer,
+                        cvCardContainerBack
+                    )
+                )
+            }
+        }
+
+        fun onOneOrMultiAnswer(
+            modelCard: ModelCard,
+            deckColorCode: String,
+            cardNumber: Int,
+            cardPosition: Int,
+            cardSum: Int,
+            cardOnClick: (UserResponseModel) -> Unit
+        ) {
+            val card = modelCard.cardDetails
+            val cardModel = OneOrMultipleAnswerCardModel(modelCard, cardList)
+            val answers = cardModel.getCardAnswers()
+            flCardRoot.isClickable = cardModel.isFlippable()
+            when (answers.size ) {
+                2 -> {
+                    btAlternative1.apply {
+                        isVisible = true
+                        text = answers[0].definition
+                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative2.apply {
+                        isVisible = true
+                        text = answers[1].definition
+                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative3.isVisible = false
+                    btAlternative4.isVisible = false
+                }
+                3 -> {
+                    btAlternative1.apply {
+                        isVisible = true
+                        text = answers[0].definition
+                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative2.apply {
+                        isVisible = true
+                        text = answers[1].definition
+                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative3.apply {
+                        isVisible = true
+                        text = answers[2].definition
+                        onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative4.isVisible = false
+                }
+                4 -> {
+                    btAlternative1.apply {
+                        isVisible = true
+                        text = answers[0].definition
+                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative2.apply {
+                        isVisible = true
+                        text = answers[1].definition
+                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative3.apply {
+                        isVisible = true
+                        text = answers[2].definition
+                        onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
+                    }
+                    btAlternative4.apply {
+                        isVisible = true
+                        text = answers[3].definition
+                        onAlternativeClicked(answers[3], cardOnClick, modelCard, cardPosition)
+                    }
+                }
+                else -> {
+                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+                }
+            }
+
 
         }
 
@@ -174,95 +297,11 @@ class TestQuizGameAdapter(
                 backAnim.setTarget(cvCardContainerBack)
                 frontAnim.start()
                 backAnim.start()
-                //cardModel.flip()
             } else {
                 frontAnim.setTarget(cvCardContainerBack)
                 backAnim.setTarget(cvCardContainer)
                 frontAnim.start()
                 backAnim.start()
-                //cardModel.flip()
-            }
-        }
-
-        fun onTrueOrFalseCard(modelCard: ModelCard,) {
-            val card = modelCard.cardDetails
-            val cardModel = TrueOrFalseCardModel(modelCard, cardList)
-            val answers = cardModel.getCardAnswers()
-            flCardRoot.isClickable = cardModel.isFlippable()
-            btAlternative1.apply {
-                isVisible = true
-                text = answers[0].definition
-            }
-            btAlternative2.apply {
-                isVisible = true
-                text = answers[1].definition
-            }
-            btAlternative3.isVisible = false
-            btAlternative4.isVisible = false
-
-        }
-
-        fun onOneOrMultiAnswer(
-            modelCard: ModelCard,
-            deckColorCode: String,
-            cardNumber: Int,
-            cardPosition: Int,
-            cardSum: Int,
-            cardOnClick: (UserResponseModel) -> Unit
-        ) {
-            val card = modelCard.cardDetails
-            val cardModel = OneOrMultipleAnswerCardModel(modelCard, cardList)
-            val answers = cardModel.getCardAnswers()
-            flCardRoot.isClickable = cardModel.isFlippable()
-            when (answers.size ) {
-                2 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = answers[0].definition
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = answers[1].definition
-                    }
-                    btAlternative3.isVisible = false
-                    btAlternative4.isVisible = false
-                }
-                3 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = answers[0].definition
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = answers[1].definition
-                    }
-                    btAlternative3.apply {
-                        isVisible = true
-                        text = answers[2].definition
-                    }
-                    btAlternative4.isVisible = false
-                }
-                4 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = answers[0].definition
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = answers[1].definition
-                    }
-                    btAlternative3.apply {
-                        isVisible = true
-                        text = answers[2].definition
-                    }
-                    btAlternative4.apply {
-                        isVisible = true
-                        text = answers[3].definition
-                    }
-                }
-                else -> {
-                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
-                }
             }
         }
 

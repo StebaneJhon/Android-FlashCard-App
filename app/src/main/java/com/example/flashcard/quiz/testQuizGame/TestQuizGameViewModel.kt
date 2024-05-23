@@ -18,7 +18,7 @@ class TestQuizGameViewModel (
     private val repository: FlashCardRepository
 ): ViewModel() {
 
-    private lateinit var cardList: MutableList<ImmutableCard?>
+    lateinit var cardList: MutableList<ImmutableCard?>
     private var originalCardList: List<ImmutableCard?>? = null
     private lateinit var modelCardList: List<ModelCard?>
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
@@ -47,6 +47,8 @@ class TestQuizGameViewModel (
 
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
 
+    fun getModelCardsNonStream() = modelCardList
+
     private val _modelCards = MutableStateFlow<UiState<List<ModelCard?>>>(UiState.Loading)
     val modelCards: StateFlow<UiState<List<ModelCard?>>> = _modelCards.asStateFlow()
     private var fetchJob: Job? = null
@@ -64,6 +66,11 @@ class TestQuizGameViewModel (
     fun onFlipCard(cardPosition: Int) {
         val cardToFlip = modelCardList[cardPosition]
         cardToFlip?.isFlipped = !cardToFlip?.isFlipped!!
+    }
+
+    fun onCorrectAnswer(cardPosition: Int) {
+        val card = modelCardList[cardPosition]
+        card?.correctAnswerSum = card?.correctAnswerSum?.plus(1)!!
     }
 
     private fun onCardSwiped(isKnown: Boolean) {

@@ -1,7 +1,5 @@
 package com.example.flashcard.quiz.testQuizGame
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -16,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
-import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.databinding.ActivityTestQuizGameBinding
 import com.example.flashcard.util.CardType.FLASHCARD
@@ -24,7 +21,8 @@ import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class TestQuizGameActivity : AppCompatActivity() {
@@ -41,10 +39,7 @@ class TestQuizGameActivity : AppCompatActivity() {
     private lateinit var flashCardModel: TrueOrFalseCardModel
 
     private var deckWithCards: ImmutableDeckWithCards? = null
-    lateinit var testQuizGameAdapter: TestQuizGameAdapter
-
-    private lateinit var frontAnim: AnimatorSet
-    private lateinit var backAnim: AnimatorSet
+    private lateinit var testQuizGameAdapter: TestQuizGameAdapter
 
     companion object {
         private const val TAG = "TestQuizGameActivity"
@@ -79,6 +74,8 @@ class TestQuizGameActivity : AppCompatActivity() {
             }
         }
 
+        binding.vpCardHolder.isUserInputEnabled = false
+
         binding.topAppBar.apply {
             title = getString(R.string.title_flash_card_game, viewModel.deck?.deckName)
             setNavigationOnClickListener { finish() }
@@ -112,13 +109,13 @@ class TestQuizGameActivity : AppCompatActivity() {
                     onOneAndOneCardClicked(userResponseModel)
                 }
                 TRUE_OR_FALSE_CARD -> {
-                    // TODO: Implement onCard clicked true or false card
+                    onTrueOrFalseCardAnswered(userResponseModel)
                 }
                 ONE_OR_MULTI_ANSWER_CARD -> {
-                    // TODO: Implement onCard clicked one or multiple answer card
+                    onOneOrMultiAnswerCardAnswered(userResponseModel)
                 }
                 else -> {
-                    // TODO: Implement onCard clicked
+                    onOneAndOneCardClicked(userResponseModel)
                 }
             }
         }
@@ -126,7 +123,90 @@ class TestQuizGameActivity : AppCompatActivity() {
     }
 
     private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
+
         viewModel.onFlipCard(userResponseModel.modelCardPosition)
+        optionsState(userResponseModel)
+    }
+
+    private fun optionsState(
+        userResponseModel: UserResponseModel
+    ) {
+        var fetchJob1: Job? = null
+        fetchJob1?.cancel()
+        fetchJob1 = lifecycleScope.launch {
+            delay(700)
+            areOptionsEnabled(true)
+        }
+
+        binding.btKnown.setOnClickListener {
+            areOptionsEnabled(false)
+            fetchJob1?.cancel()
+            fetchJob1 = lifecycleScope.launch {
+                delay(50)
+                binding.vpCardHolder.setCurrentItem(
+                    userResponseModel.modelCardPosition.plus(1),
+                    true
+                )
+            }
+        }
+        binding.btKnownNot.setOnClickListener {
+            areOptionsEnabled(false)
+            fetchJob1?.cancel()
+            fetchJob1 = lifecycleScope.launch {
+                delay(50)
+                binding.vpCardHolder.setCurrentItem(
+                    userResponseModel.modelCardPosition.plus(1),
+                    true
+                )
+            }
+        }
+        binding.btRewind.setOnClickListener {
+            areOptionsEnabled(false)
+            fetchJob1?.cancel()
+            fetchJob1 = lifecycleScope.launch {
+                delay(100)
+                if (userResponseModel.modelCardPosition > 0) {
+                    binding.vpCardHolder.setCurrentItem(
+                        userResponseModel.modelCardPosition.minus(1),
+                        true
+                    )
+                } else {
+                    binding.vpCardHolder.setCurrentItem(
+                        0,
+                        true
+                    )
+                }
+
+            }
+        }
+    }
+
+    private fun onTrueOrFalseCardAnswered(userResponseModel: UserResponseModel) {
+        val cardModel = TrueOrFalseCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
+        val temporaryFeedback = if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
+            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
+            "Correct"
+        } else {
+            "Not really"
+        }
+        Toast.makeText(this, temporaryFeedback, Toast.LENGTH_SHORT).show()
+        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
+            optionsState(userResponseModel)
+        }
+    }
+
+    private fun onOneOrMultiAnswerCardAnswered(userResponseModel: UserResponseModel) {
+        val cardModel = OneOrMultipleAnswerCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
+        val temporaryFeedback = if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
+            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
+            "Correct"
+        } else {
+            "Not really"
+        }
+        Toast.makeText(this, temporaryFeedback, Toast.LENGTH_SHORT).show()
+        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
+            optionsState(userResponseModel)
+        }
     }
 
     private fun onNoCardToRevise() {
@@ -144,6 +224,12 @@ class TestQuizGameActivity : AppCompatActivity() {
             }
         }
         //isFlashCardGameScreenHidden(true)
+    }
+
+    private fun areOptionsEnabled(optionsEnabled: Boolean) {
+        binding.lyContainerOptions.isVisible = optionsEnabled
+        binding.btKnown.isClickable = optionsEnabled
+        binding.btKnownNot.isClickable = optionsEnabled
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {

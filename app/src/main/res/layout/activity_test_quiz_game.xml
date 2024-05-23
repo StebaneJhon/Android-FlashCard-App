@@ -32,10 +32,10 @@
         android:id="@+id/vp_card_holder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ly_container_options"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topToolBar"/>
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar" />
 
     <LinearLayout
         android:id="@+id/gameReviewContainerMQ"
@@ -64,6 +64,49 @@
         <include
             android:id="@+id/ly_no_card_error"
             layout="@layout/ly_no_card_error" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ly_container_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="10dp"
+        android:visibility="gone">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_known"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/known_button_text"
+            android:fontFamily="@font/open_sans_bold"
+            app:cornerRadius="6dp"
+            android:backgroundTint="@color/green500"
+            android:clickable="false"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_known_not"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_button_text"
+            android:fontFamily="@font/open_sans_bold"
+            app:cornerRadius="6dp"
+            android:backgroundTint="@color/red500"
+            android:clickable="false"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_rewind"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_rewind"
+            android:fontFamily="@font/open_sans_bold"
+            app:cornerRadius="6dp"
+            android:backgroundTint="?colorSurfaceContainerHighest"
+            android:clickable="false"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
