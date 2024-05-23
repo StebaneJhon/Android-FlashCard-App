@@ -1,141 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cv_card_root"
-    app:cardBackgroundColor="@color/black"
-    app:cardCornerRadius="10dp"
-    android:layout_margin="10dp">
+    android:id="@+id/fl_card_root"
+    app:cardBackgroundColor="@color/black">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_card_container"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_card_container_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_card_flash_card"
-        android:backgroundTint="?colorSurfaceContainer"
-        android:layout_margin="5dp"
-        android:padding="20dp">
-
-        <TextView
-            android:id="@+id/tv_front_progression"
-            tools:text="1/20"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
-            android:textColor="?colorOnSurface"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_card_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
-            android:textColor="?colorOnSurface"
-            android:textSize="15sp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="20dp"
-            app:layout_constraintEnd_toStartOf="@+id/bt_help"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="Flash Card"/>
-
-        <ImageButton
-            android:id="@+id/bt_help"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="30dp"
-            android:layout_height="20dp"
-            android:src="@drawable/icon_help"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/bt_help_button_text" />
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:fontFamily="@font/montserrat_bold"
-            android:gravity="center"
-            android:textAlignment="center"
-            android:textColor="?colorOnSurface"
-            app:autoSizeMaxTextSize="40sp"
-            app:autoSizeMinTextSize="20sp"
-            app:autoSizeStepGranularity="2sp"
-            app:autoSizeTextType="uniform"
-            app:layout_constraintBottom_toTopOf="@+id/ll_definition_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_front_progression"
-            tools:text="1. What is the capital of Madagascar?" />
+        app:cardCornerRadius="10dp"
+        android:layout_margin="10dp"
+        android:alpha="0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_definition_container"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_flash_card"
+            android:backgroundTint="?colorSurfaceContainerHighest"
+            android:layout_margin="5dp"
+            android:padding="20dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_alternative1"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:backgroundTint="?colorSurfaceContainerLowest"
-                android:fontFamily="@font/open_sans_bold"
+            <TextView
+                android:id="@+id/tv_back_progression"
+                tools:text="1/20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
-                app:cornerRadius="5dp"
+                android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_card_type_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintEnd_toStartOf="@+id/bt_help_back"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Flash Card"/>
+
+            <ImageButton
+                android:id="@+id/bt_help_back"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_help"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Alternative1" />
+                android:contentDescription="@string/bt_help_button_text" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_alternative2"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_definition"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="5dp"
-                android:backgroundTint="?colorSurfaceContainerLowest"
-                android:fontFamily="@font/open_sans_bold"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textAlignment="center"
                 android:textColor="?colorOnSurface"
-                app:cornerRadius="5dp"
-                tools:text="Alternative2"
-                app:layout_constraintStart_toStartOf="parent"
+                app:autoSizeMaxTextSize="40sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bt_alternative1"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_alternative3"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="5dp"
-                android:backgroundTint="?colorSurfaceContainerLowest"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                app:cornerRadius="5dp"
-                tools:text="Alternative3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bt_alternative2"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_alternative4"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="5dp"
-                android:backgroundTint="?colorSurfaceContainerLowest"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                app:cornerRadius="5dp"
-                tools:text="Alternative1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bt_alternative3"/>
+                app:layout_constraintTop_toBottomOf="@+id/tv_back_progression"
+                tools:text="1. What is the capital of Madagascar?" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_card_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="10dp"
+        android:layout_margin="10dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_card_flash_card"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:layout_margin="5dp"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/tv_front_progression"
+                tools:text="1/20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_card_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="15sp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="20dp"
+                app:layout_constraintEnd_toStartOf="@+id/bt_help"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Flash Card"/>
+
+            <ImageButton
+                android:id="@+id/bt_help"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:src="@drawable/icon_help"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/bt_help_button_text" />
+
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:fontFamily="@font/montserrat_bold"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textColor="?colorOnSurface"
+                app:autoSizeMaxTextSize="40sp"
+                app:autoSizeMinTextSize="20sp"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/ll_definition_container"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_front_progression"
+                tools:text="1. What is the capital of Madagascar?" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/ll_definition_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_alternative1"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:backgroundTint="?colorSurfaceContainerLowest"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    app:cornerRadius="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Alternative1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_alternative2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="?colorSurfaceContainerLowest"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    app:cornerRadius="5dp"
+                    tools:text="Alternative2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative1"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_alternative3"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="?colorSurfaceContainerLowest"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    app:cornerRadius="5dp"
+                    tools:text="Alternative3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative2"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_alternative4"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:backgroundTint="?colorSurfaceContainerLowest"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    app:cornerRadius="5dp"
+                    tools:text="Alternative1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative3"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 
-</com.google.android.material.card.MaterialCardView>
+</FrameLayout>

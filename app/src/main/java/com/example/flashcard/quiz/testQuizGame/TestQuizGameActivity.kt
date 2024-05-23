@@ -16,6 +16,9 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.databinding.ActivityTestQuizGameBinding
+import com.example.flashcard.util.CardType.FLASHCARD
+import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.launch
@@ -94,8 +97,21 @@ class TestQuizGameActivity : AppCompatActivity() {
     private fun launchMultiChoiceQuizGame(
         data: List<ImmutableCard?>
     ) {
-        val testQuizGameAdapter = TestQuizGameAdapter(this, data, viewModel.getDeckColorCode()) {
-            //TODO: Implement user answer check
+        val testQuizGameAdapter = TestQuizGameAdapter(this, data, viewModel.getDeckColorCode()) { userResponseModel ->
+            when (userResponseModel.card.cardType) {
+                FLASHCARD -> {
+                    // TODO: Implement onCard clicked
+                }
+                TRUE_OR_FALSE_CARD -> {
+                    // TODO: Implement onCard clicked true or false card
+                }
+                ONE_OR_MULTI_ANSWER_CARD -> {
+                    // TODO: Implement onCard clicked one or multiple answer card
+                }
+                else -> {
+                    // TODO: Implement onCard clicked
+                }
+            }
         }
         binding.vpCardHolder.adapter = testQuizGameAdapter
     }
