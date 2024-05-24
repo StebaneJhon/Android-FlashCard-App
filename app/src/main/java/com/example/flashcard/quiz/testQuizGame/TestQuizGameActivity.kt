@@ -15,8 +15,11 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
+import com.example.flashcard.backend.Model.ImmutableCard
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.databinding.ActivityTestQuizGameBinding
+import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.CardType.FLASHCARD
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
@@ -66,10 +69,7 @@ class TestQuizGameActivity : AppCompatActivity() {
             val deck = it.deck
             if (!cardList.isNullOrEmpty() && deck != null) {
                 viewModel.initOriginalCardList(cardList)
-                viewModel.initCardList(cardList)
-                viewModel.initDeck(deck)
-                viewModel.initModelCardList(cardList)
-                viewModel.getCards()
+                startTest(cardList, deck)
                 //startWritingQuizGame(cardList, deck)
             } else {
                 //onNoCardToRevise()
@@ -130,6 +130,46 @@ class TestQuizGameActivity : AppCompatActivity() {
         optionsState(userResponseModel)
     }
 
+    private fun onTrueOrFalseCardAnswered(userResponseModel: UserResponseModel) {
+        val cardModel = TrueOrFalseCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
+        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
+            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                true
+            )
+        } else {
+            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                false
+            )
+        }
+        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
+            optionsState(userResponseModel)
+        }
+    }
+
+    private fun onOneOrMultiAnswerCardAnswered(userResponseModel: UserResponseModel) {
+        val cardModel = OneOrMultipleAnswerCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
+        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
+            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                true
+            )
+        } else {
+            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                false
+            )
+        }
+        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
+            optionsState(userResponseModel)
+        }
+    }
+
     private fun optionsState(
         userResponseModel: UserResponseModel
     ) {
@@ -142,24 +182,50 @@ class TestQuizGameActivity : AppCompatActivity() {
 
         binding.btKnown.setOnClickListener {
             areOptionsEnabled(false)
+            viewModel.upOrDowngradeCard(true, userResponseModel.modelCard.cardDetails)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(50)
-                binding.vpCardHolder.setCurrentItem(
-                    userResponseModel.modelCardPosition.plus(1),
-                    true
-                )
+                if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
+                    displayReview(
+                        viewModel.getKnownCardSum(),
+                        viewModel.getMissedCardSum(),
+                        viewModel.getModelCardsSum(),
+                        viewModel.getProgress(),
+                        viewModel.getMissedCard()
+                    )
+
+                } else {
+                    binding.vpCardHolder.setCurrentItem(
+                        binding.vpCardHolder.currentItem.plus(1),
+                        true
+                    )
+                }
+
             }
         }
         binding.btKnownNot.setOnClickListener {
+            viewModel.upOrDowngradeCard(false, userResponseModel.modelCard.cardDetails)
+            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
             areOptionsEnabled(false)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(50)
-                binding.vpCardHolder.setCurrentItem(
-                    userResponseModel.modelCardPosition.plus(1),
-                    true
-                )
+                if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
+                    displayReview(
+                        viewModel.getKnownCardSum(),
+                        viewModel.getMissedCardSum(),
+                        viewModel.getModelCardsSum(),
+                        viewModel.getProgress(),
+                        viewModel.getMissedCard()
+                    )
+                } else {
+                    viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
+                    binding.vpCardHolder.setCurrentItem(
+                        binding.vpCardHolder.currentItem.plus(1),
+                        true
+                    )
+                }
             }
         }
         if (userResponseModel.modelCardPosition > 0) {
@@ -181,47 +247,71 @@ class TestQuizGameActivity : AppCompatActivity() {
 
     }
 
+    private fun displayReview(
+        knownCardsSum: Int,
+        missedCardsSum: Int,
+        totalCardsSum: Int,
+        progression: Int,
+        missedCardsList: List<ImmutableCard?>
+        ) {
+
+        binding.vpCardHolder.visibility = View.GONE
+        binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
+        binding.lyContainerOptions.visibility = View.GONE
+        binding.gameReviewContainerMQ.visibility = View.VISIBLE
+        binding.gameReviewLayoutMQ.apply {
+            lpiQuizResultDiagramScoreLayout.progress = progression
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Test")
+            tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
+            tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
+            tvKnownCardsSumScoreLayout.text = knownCardsSum.toString()
+
+            btBackToDeckScoreLayout.setOnClickListener {
+                startActivity(Intent(this@TestQuizGameActivity, MainActivity::class.java))
+                finish()
+            }
+
+            btRestartQuizScoreLayout.setOnClickListener {
+                viewModel.initTest()
+                val newCards = viewModel.getOriginalCardList()?.toMutableList()
+                startTest(
+                    newCards!!,
+                    viewModel.deck!!
+                )
+            }
+
+            if (missedCardsSum == 0) {
+                btReviseMissedCardScoreLayout.isActivated = false
+                btReviseMissedCardScoreLayout.isVisible = false
+            } else {
+                btReviseMissedCardScoreLayout.isActivated = true
+                btReviseMissedCardScoreLayout.isVisible = true
+                btReviseMissedCardScoreLayout.setOnClickListener {
+                    val newCards = missedCardsList.toMutableList()
+                    viewModel.initTest()
+                    startTest(newCards, viewModel.deck!!)
+                }
+            }
+        }
+
+    }
+
+    private fun startTest(
+        cardList: MutableList<ImmutableCard?>,
+        deck: ImmutableDeck
+    ) {
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
+        viewModel.initCardList(cardList)
+        viewModel.initDeck(deck)
+        viewModel.initModelCardList(cardList)
+        viewModel.getCards()
+        binding.vpCardHolder.setCurrentItem(0, true)
+    }
+
     private fun isRewindButtonActive(isActive: Boolean) {
         binding.btRewind.isClickable = isActive
         binding.btRewind.isActivated = isActive
-    }
-
-    private fun onTrueOrFalseCardAnswered(userResponseModel: UserResponseModel) {
-        val cardModel = TrueOrFalseCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
-        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
-            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
-            giveFeedback(
-                userResponseModel.view as MaterialButton,
-                true
-            )
-        } else {
-            giveFeedback(
-                userResponseModel.view as MaterialButton,
-                false
-            )
-        }
-        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
-            optionsState(userResponseModel)
-        }
-    }
-
-    private fun onOneOrMultiAnswerCardAnswered(userResponseModel: UserResponseModel) {
-        val cardModel = OneOrMultipleAnswerCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
-        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
-            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
-            giveFeedback(
-                userResponseModel.view as MaterialButton,
-                true
-            )
-        } else {
-            giveFeedback(
-                userResponseModel.view as MaterialButton,
-                false
-            )
-        }
-        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
-            optionsState(userResponseModel)
-        }
     }
 
     private fun giveFeedback(

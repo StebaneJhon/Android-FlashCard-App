@@ -3,6 +3,8 @@ package com.example.flashcard.util
 object Constant {
     val ADD = "add"
     val UPDATE = "update"
+    const val SUCCEED = "SUCCEED"
+    const val FAILED = "FAILED"
 }
 
 object cardBackgroundConst {
