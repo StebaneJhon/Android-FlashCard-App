@@ -10,6 +10,7 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
@@ -21,6 +22,7 @@ import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -160,36 +162,44 @@ class TestQuizGameActivity : AppCompatActivity() {
                 )
             }
         }
-        binding.btRewind.setOnClickListener {
-            areOptionsEnabled(false)
-            fetchJob1?.cancel()
-            fetchJob1 = lifecycleScope.launch {
-                delay(100)
-                if (userResponseModel.modelCardPosition > 0) {
+        if (userResponseModel.modelCardPosition > 0) {
+            isRewindButtonActive(true)
+            binding.btRewind.setOnClickListener {
+                areOptionsEnabled(true)
+                fetchJob1?.cancel()
+                fetchJob1 = lifecycleScope.launch {
+                    delay(100)
                     binding.vpCardHolder.setCurrentItem(
                         userResponseModel.modelCardPosition.minus(1),
                         true
                     )
-                } else {
-                    binding.vpCardHolder.setCurrentItem(
-                        0,
-                        true
-                    )
                 }
-
             }
+        } else {
+            isRewindButtonActive(false)
         }
+
+    }
+
+    private fun isRewindButtonActive(isActive: Boolean) {
+        binding.btRewind.isClickable = isActive
+        binding.btRewind.isActivated = isActive
     }
 
     private fun onTrueOrFalseCardAnswered(userResponseModel: UserResponseModel) {
         val cardModel = TrueOrFalseCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
-        val temporaryFeedback = if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
+        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
             viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
-            "Correct"
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                true
+            )
         } else {
-            "Not really"
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                false
+            )
         }
-        Toast.makeText(this, temporaryFeedback, Toast.LENGTH_SHORT).show()
         if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
             optionsState(userResponseModel)
         }
@@ -197,15 +207,33 @@ class TestQuizGameActivity : AppCompatActivity() {
 
     private fun onOneOrMultiAnswerCardAnswered(userResponseModel: UserResponseModel) {
         val cardModel = OneOrMultipleAnswerCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
-        val temporaryFeedback = if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
+        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
             viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
-            "Correct"
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                true
+            )
         } else {
-            "Not really"
+            giveFeedback(
+                userResponseModel.view as MaterialButton,
+                false
+            )
         }
-        Toast.makeText(this, temporaryFeedback, Toast.LENGTH_SHORT).show()
         if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
             optionsState(userResponseModel)
+        }
+    }
+
+    private fun giveFeedback(
+        button: MaterialButton,
+        isAnswerCorrect: Boolean
+    ) {
+        if (isAnswerCorrect) {
+            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green50)
+            button.strokeColor = ContextCompat.getColorStateList(this, R.color.green500)
+        } else {
+            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.red50)
+            button.strokeColor = ContextCompat.getColorStateList(this, R.color.red500)
         }
     }
 

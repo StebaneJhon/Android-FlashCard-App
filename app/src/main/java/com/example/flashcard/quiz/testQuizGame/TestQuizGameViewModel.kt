@@ -49,6 +49,8 @@ class TestQuizGameViewModel (
 
     fun getModelCardsNonStream() = modelCardList
 
+    fun getModelCardsSum() = modelCardList.size
+
     private val _modelCards = MutableStateFlow<UiState<List<ModelCard?>>>(UiState.Loading)
     val modelCards: StateFlow<UiState<List<ModelCard?>>> = _modelCards.asStateFlow()
     private var fetchJob: Job? = null

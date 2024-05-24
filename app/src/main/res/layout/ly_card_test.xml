@@ -165,7 +165,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Alternative1" />
+                    tools:text="Alternative1"
+                    style="?attr/materialButtonOutlinedStyle"
+                    app:strokeColor="?colorSurfaceContainerHigh"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_alternative2"
@@ -179,7 +181,9 @@
                     tools:text="Alternative2"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative1"/>
+                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative1"
+                    style="?attr/materialButtonOutlinedStyle"
+                    app:strokeColor="?colorSurfaceContainerHigh"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_alternative3"
@@ -193,7 +197,9 @@
                     tools:text="Alternative3"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative2"/>
+                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative2"
+                    style="?attr/materialButtonOutlinedStyle"
+                    app:strokeColor="?colorSurfaceContainerHigh"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_alternative4"
@@ -207,7 +213,9 @@
                     tools:text="Alternative1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative3"/>
+                    app:layout_constraintTop_toBottomOf="@+id/bt_alternative3"
+                    style="?attr/materialButtonOutlinedStyle"
+                    app:strokeColor="?colorSurfaceContainerHigh"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
