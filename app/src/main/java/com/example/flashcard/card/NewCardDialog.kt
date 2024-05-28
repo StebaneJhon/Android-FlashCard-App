@@ -37,6 +37,7 @@ import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -84,6 +85,9 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private var cpDefinition2IsTrue: Chip? = null
     private var cpDefinition3IsTrue: Chip? = null
     private var cpDefinition4IsTrue: Chip? = null
+
+    private var btAdd: MaterialButton? = null
+    private var btCancel: MaterialButton? = null
 
 
     private var listener: NewDialogListener? = null
@@ -145,6 +149,9 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         cpFalse = view?.findViewById(R.id.cp_false)
         cpTrue = view?.findViewById(R.id.cp_true)
 
+        btAdd = view?.findViewById(R.id.bt_add)
+        btCancel = view?.findViewById(R.id.bt_cancel)
+
         if (card != null) {
             cardContent?.setText(card.cardContent?.content)
             cardContentDefinition?.setText(card.contentDescription)
@@ -153,24 +160,33 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
             builder.setView(view)
                 .setTitle("Update Card")
-                .setNegativeButton("Cancel") { _, _ ->  dismiss()}
-                .setPositiveButton("Update"
-                ) { _, _ ->
+
+            btAdd?.apply {
+                text = getString(R.string.bt_text_update)
+                setOnClickListener {
                     onPositiveAction(Constant.UPDATE)
                 }
+            }
+
         } else {
+            onAddFlashCard(true)
             cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
             cardContentDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
             cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
             cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
             builder.setView(view)
                 .setTitle("New Card")
-                .setNegativeButton("Cancel") { _, _ -> dismiss()}
-                .setPositiveButton("Add"
-                ) { _, _ ->
+
+            btAdd?.apply {
+                text = getString(R.string.bt_text_add)
+                setOnClickListener {
                     onPositiveAction(Constant.ADD)
                 }
+            }
+
         }
+
+        btCancel?.setOnClickListener {dismiss()}
 
         cardContentLY?.setEndIconOnClickListener {
             listen(REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD)
@@ -391,6 +407,14 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             val newCardContent = getContent()
             val newCardDefinition = getDefinitions()
 
+            if (newCardContent == null) {
+                return
+            }
+
+            if (newCardDefinition == null) {
+                return
+            }
+
              ImmutableCard(
                 null,
                 newCardContent!!,
@@ -448,6 +472,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
 
         listener?.getCard(newCard, action, deck)
+        dismiss()
     }
 
     private fun getDefinitions() = when (cardType ) {
@@ -475,6 +500,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 cardContentText
             )
         } else {
+            cardContentLY?.error = getString(R.string.til_error_card_definition)
             null
         }
     }
@@ -488,6 +514,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 cardContentText
             )
         } else {
+            tilContentMultiAnswerCard?.error = getString(R.string.til_error_card_content)
             null
         }
     }
@@ -501,36 +528,61 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 cardContentText
             )
         } else {
+            tilContentTrueOrFalseCard?.error = getString(R.string.til_error_card_content)
             null
         }
     }
 
-    private fun getDefinitionOnAddMAC(): List<CardDefinition> {
+    private fun getDefinitionOnAddMAC(): List<CardDefinition>? {
         definitionList.clear()
         val definition1Text = tieDefinition1MultiAnswerCard?.text.toString()
+        val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
+        val definition3Text = tieDefinition3MultiAnswerCard?.text.toString()
+        val definition4Text = tieDefinition4MultiAnswerCard?.text.toString()
+
+        if (
+            definition1Text.isEmpty() &&
+            definition2Text.isEmpty() &&
+            definition3Text.isEmpty() &&
+            definition4Text.isEmpty()
+            ) {
+            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
+            return null
+        }
+
+        if (
+            !cpDefinition1IsTrue?.isChecked!! &&
+            !cpDefinition2IsTrue?.isChecked!! &&
+            !cpDefinition3IsTrue?.isChecked!! &&
+            !cpDefinition4IsTrue?.isChecked!!
+            ) {
+            tilDefinition1MultiAnswerCard?.error = getString(R.string.cp_error_correct_definition)
+            return null
+        }
+
         if (definition1Text.isNotEmpty()) {
             definitionList.add(createDefinition(definition1Text, cpDefinition1IsTrue?.isChecked!!))
         }
-        val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
         if (definition2Text.isNotEmpty()) {
             definitionList.add(createDefinition(definition2Text, cpDefinition2IsTrue?.isChecked!!))
         }
-        val definition3Text = tieDefinition3MultiAnswerCard?.text.toString()
         if (definition3Text.isNotEmpty()) {
             definitionList.add(createDefinition(definition3Text, cpDefinition3IsTrue?.isChecked!!))
         }
-        val definition4Text = tieDefinition4MultiAnswerCard?.text.toString()
         if (definition4Text.isNotEmpty()) {
             definitionList.add(createDefinition(definition4Text, cpDefinition4IsTrue?.isChecked!!))
         }
         return definitionList.toList()
     }
 
-    private fun getDefinitionOnAddFC(): List<CardDefinition> {
+    private fun getDefinitionOnAddFC(): List<CardDefinition>? {
         definitionList.clear()
         val definitionText = cardValue?.text.toString()
         if (definitionText.isNotEmpty()) {
             definitionList.add(createDefinition(definitionText, true))
+        } else {
+            cardValueLY?.error = getString(R.string.til_error_card_definition)
+            return null
         }
         return definitionList.toList()
     }

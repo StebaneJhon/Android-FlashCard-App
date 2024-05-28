@@ -46,6 +46,7 @@ import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
+import com.example.flashcard.quiz.testQuizGame.TestQuizGameActivity
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.UiState
@@ -187,6 +188,45 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         matchingQuizGameButton.setOnClickListener {
             startMatchingQuizGame()
             quizModeDialog?.dismiss()
+        }
+
+        val btTestQuizGame: Button = dialogBinding.findViewById(R.id.bt_test_quiz_game)
+        btTestQuizGame.setOnClickListener {
+            startTestQuizGame()
+            quizModeDialog?.dismiss()
+        }
+    }
+
+    private fun startTestQuizGame() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cardViewModel.getDeckWithCards(deck?.deckId!!)
+                cardViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.cardsActivityProgressBar.isVisible = true
+                        }
+
+                        is UiState.Error -> {
+                            binding.cardsActivityProgressBar.isVisible = false
+                            Toast.makeText(
+                                appContext,
+                                state.errorMessage,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+
+                        is UiState.Success -> {
+                            binding.cardsActivityProgressBar.isVisible = false
+                            val intent = Intent(appContext, TestQuizGameActivity::class.java)
+                            intent.putExtra(TestQuizGameActivity.DECK_ID_KEY, state.data)
+                            startActivity(intent)
+                            this@launch.cancel()
+                            this.cancel()
+                        }
+                    }
+                }
+            }
         }
     }
 

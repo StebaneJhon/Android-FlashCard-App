@@ -108,4 +108,10 @@
     <string name="bt_test_quiz_game_text">Test Quiz Game</string>
     <string name="on_card_clicked_hint">Choose on of the alternatives below</string>
     <string name="bt_rewind">REWIND</string>
+    <string name="bt_text_add">Add</string>
+    <string name="bt_text_update">Update</string>
+    <string name="bt_text_cancel">Cancel</string>
+    <string name="til_error_card_content">Card content required</string>
+    <string name="til_error_card_definition">Card definition required</string>
+    <string name="cp_error_correct_definition">At least one definition must be correct</string>
 </resources>
