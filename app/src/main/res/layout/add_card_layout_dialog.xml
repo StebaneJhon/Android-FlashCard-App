@@ -54,7 +54,6 @@
         </HorizontalScrollView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:visibility="gone"
             android:id="@+id/cl_add_multi_answer_card_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -281,6 +280,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/ll_add_flash_card_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

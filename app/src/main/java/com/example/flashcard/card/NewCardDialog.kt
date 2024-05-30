@@ -153,11 +153,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         btCancel = view?.findViewById(R.id.bt_cancel)
 
         if (card != null) {
-            cardContent?.setText(card.cardContent?.content)
-            cardContentDefinition?.setText(card.contentDescription)
-            cardValue?.setText(card.cardDefinition?.first()?.definition)
-            cardValueDefinition?.setText(card.valueDefinition)
-
+            onUpdateCard(card)
             builder.setView(view)
                 .setTitle("Update Card")
 
@@ -246,6 +242,60 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         return builder.create()
     }
 
+    private fun onUpdateCard(card: ImmutableCard) {
+
+        when(card.cardType) {
+            FLASHCARD -> {
+                onAddFlashCard(true)
+                cardContent?.setText(card.cardContent?.content)
+                cardContentDefinition?.setText(card.contentDescription)
+                cardValue?.setText(card.cardDefinition?.first()?.definition)
+                cardValueDefinition?.setText(card.valueDefinition)
+            }
+            TRUE_OR_FALSE_CARD -> {
+                onAddTrueOrFalseCard(true)
+                tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
+                cpFalse?.isChecked = card.cardDefinition?.get(0)?.isCorrectDefinition!!
+                cpTrue?.isChecked = card.cardDefinition[1].isCorrectDefinition!!
+            }
+            ONE_OR_MULTI_ANSWER_CARD -> {
+                onAddMultiAnswerCard(true)
+                tieContentMultiAnswerCard?.setText(card.cardContent?.content)
+                when(card.cardDefinition?.size) {
+                    1 -> {
+                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+                        cpDefinition1IsTrue?.isChecked = card.cardDefinition[0].isCorrectDefinition!!
+                    }
+                    2 -> {
+                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+                        cpDefinition1IsTrue?.isChecked = card.cardDefinition[0].isCorrectDefinition!!
+                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
+                        cpDefinition2IsTrue?.isChecked = card.cardDefinition[1].isCorrectDefinition!!
+                    }
+                    3 -> {
+                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+                        cpDefinition1IsTrue?.isChecked = card.cardDefinition[0].isCorrectDefinition!!
+                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
+                        cpDefinition2IsTrue?.isChecked = card.cardDefinition[1].isCorrectDefinition!!
+                        tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
+                        cpDefinition3IsTrue?.isChecked = card.cardDefinition[2].isCorrectDefinition!!
+                    }
+                    4 -> {
+                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+                        cpDefinition1IsTrue?.isChecked = card.cardDefinition[0].isCorrectDefinition!!
+                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
+                        cpDefinition2IsTrue?.isChecked = card.cardDefinition[1].isCorrectDefinition!!
+                        tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
+                        cpDefinition3IsTrue?.isChecked = card.cardDefinition[2].isCorrectDefinition!!
+                        tieDefinition4MultiAnswerCard?.setText(card.cardDefinition[3].definition)
+                        cpDefinition4IsTrue?.isChecked = card.cardDefinition[3].isCorrectDefinition!!
+                    }
+                }
+            }
+        }
+
+    }
+
     private fun onIsDefinitionIsTrueClicked(isChecked: Boolean, buttonView: CompoundButton) {
         if (isChecked) {
             buttonView.text = getString(R.string.cp_true_text)
@@ -256,6 +306,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private fun onAddTrueOrFalseCard(isChecked: Boolean) {
         if (isChecked) {
+            cpAddTrueOrFalseCard?.isChecked = true
             llAddTrueOrFalseCardContainer?.isVisible = true
             llAddFlashCardContainer?.isVisible = false
             clAddMultiAnswerCardContainer?.isVisible = false
@@ -265,6 +316,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private fun onAddMultiAnswerCard(isChecked: Boolean) {
         if (isChecked) {
+            cpAddMultiAnswerCard?.isChecked = true
             clAddMultiAnswerCardContainer?.isVisible = true
             llAddTrueOrFalseCardContainer?.isVisible = false
             llAddFlashCardContainer?.isVisible = false
@@ -274,6 +326,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private fun onAddFlashCard(isChecked: Boolean) {
         if (isChecked) {
+            cpAddFlashCard?.isChecked = true
             llAddFlashCardContainer?.isVisible = true
             llAddTrueOrFalseCardContainer?.isVisible = false
             clAddMultiAnswerCardContainer?.isVisible = false
@@ -410,7 +463,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             if (newCardContent == null) {
                 return
             }
-
             if (newCardDefinition == null) {
                 return
             }
