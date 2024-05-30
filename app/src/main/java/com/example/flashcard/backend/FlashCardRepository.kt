@@ -193,7 +193,28 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     suspend fun updateCard(card: ImmutableCard) {
         flashCardDao.updateCardContent(card.cardContent!!)
         card.cardDefinition?.forEach {
-            flashCardDao.updateCardDefinition(it)
+            when {
+                it.definition.isNullOrEmpty() || it.definition == "" -> {
+                    flashCardDao.deleteCardDefinition(it)
+                }
+                it.definitionId == null -> {
+                    val definition = it
+                    definition.cardId = card.cardId
+                    flashCardDao.insertCardDefinition(definition)
+                }
+                else -> {
+                    flashCardDao.updateCardDefinition(it)
+                }
+            }
+
+            /*
+            if (it.definition.isNullOrEmpty() || it.definition == "") {
+                flashCardDao.deleteCardDefinition(it)
+            } else {
+                flashCardDao.updateCardDefinition(it)
+            }
+             */
+
         }
         flashCardDao.updateCard(card.toLocal())
     }
