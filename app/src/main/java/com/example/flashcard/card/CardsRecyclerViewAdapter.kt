@@ -2,9 +2,6 @@ package com.example.flashcard.card
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.InsetDrawable
 import android.os.Build
 import android.util.TypedValue
@@ -13,21 +10,18 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
-import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
-import com.example.flashcard.backend.entities.Card
-import com.example.flashcard.util.CardBackgroundSelector
-import com.example.flashcard.util.DeckColorCategorySelector
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.google.android.material.card.MaterialCardView
 
@@ -67,10 +61,13 @@ class CardsRecyclerViewAdapter(
         private var isCardRevealed = false
 
         private val onCardText: TextView = view.findViewById(R.id.tv_card_content)
-        private val cardDescription: TextView = view.findViewById(R.id.tv_card_description1)
+        private val cardDescription1: TextView = view.findViewById(R.id.tv_card_description1)
+        private val cardDescription2: TextView = view.findViewById(R.id.tv_card_description2)
+        private val cardDescription3: TextView = view.findViewById(R.id.tv_card_description3)
         private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
         private val popUpBT: ImageButton = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
+        private val cvContainerCard: ConstraintLayout = view.findViewById(R.id.cl_container_card)
 
         private val ICON_MARGIN = 5
 
@@ -86,13 +83,41 @@ class CardsRecyclerViewAdapter(
             //val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
             val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
             val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor = SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
             val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
+            val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor!!)
+            cvContainerCard.backgroundTintList = cardBackgroundStateList
             cardStatus.apply {
-                text = card?.cardStatus
+                text = card.cardStatus
                 backgroundTintList = colorStateList
             }
-            onCardText.text = card?.cardContent?.content
-            cardDescription.text = card?.cardDefinition?.first()?.definition
+            onCardText.text = card.cardContent?.content
+
+            val correctDefinition = getCorrectDefinition(card.cardDefinition)
+            when (correctDefinition?.size) {
+                1 -> {
+                    cardDescription1.visibility = View.VISIBLE
+                    cardDescription1.text = correctDefinition[0].definition
+                    cardDescription2.visibility = View.GONE
+                    cardDescription3.visibility = View.GONE
+                }
+                2 -> {
+                    cardDescription1.visibility = View.VISIBLE
+                    cardDescription1.text = correctDefinition[0].definition
+                    cardDescription2.visibility = View.VISIBLE
+                    cardDescription2.text = correctDefinition[1].definition
+                    cardDescription3.visibility = View.GONE
+                }
+                else -> {
+                    cardDescription1.visibility = View.VISIBLE
+                    cardDescription1.text = correctDefinition?.get(0)?.definition
+                    cardDescription2.visibility = View.VISIBLE
+                    cardDescription2.text = correctDefinition?.get(1)?.definition
+                    cardDescription3.visibility = View.VISIBLE
+                    cardDescription3.text = correctDefinition?.get(2)?.definition
+                }
+            }
+            //cardDescription.text = card?.cardDefinition?.first()?.definition
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
@@ -106,9 +131,16 @@ class CardsRecyclerViewAdapter(
                 )
             }
             cardRoot.setOnClickListener {
-                //flipCard(card, deck)
+                //TODO: read card content & definition
             }
 
+        }
+
+        private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
+            definitions?.let { defins ->
+                return defins.filter { it.isCorrectDefinition!! }
+            }
+            return null
         }
 
         @SuppressLint("RestrictedApi")
@@ -179,23 +211,6 @@ class CardsRecyclerViewAdapter(
             popup.show()
 
         }
-
-        /*
-        private fun flipCard(card: Card, deck: ImmutableDeck) {
-            if (!isCardRevealed) {
-                languageHint.text = deck.deckSecondLanguage
-                onCardText.text = card.cardDefinition
-                onCardTextDescription.text = card.valueDefinition
-                isCardRevealed = true
-            } else {
-                languageHint.text = deck.deckFirstLanguage
-                onCardText.text = card.cardContent
-                onCardTextDescription.text = card.contentDescription
-                isCardRevealed = false
-            }
-        }
-
-         */
 
         companion object {
             fun create(parent: ViewGroup): ViewHolder {

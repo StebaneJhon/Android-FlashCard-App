@@ -61,6 +61,16 @@ class SpaceRepetitionAlgorithmHelper{
         GREEN700 to R.color.green700
     )
 
+    private val carBackgroundColors = mapOf(
+        RED to R.color.red50,
+        ORANGE to R.color.orange50,
+        BROWNE to R.color.brown50,
+        YELLOW700 to R.color.yellow15,
+        YELLOW500 to R.color.yellow50,
+        GREEN500 to R.color.green15,
+        GREEN700 to R.color.green50
+    )
+
 
 
     fun selectBoxLevelColor(color: String): Int? {
@@ -68,6 +78,14 @@ class SpaceRepetitionAlgorithmHelper{
             colors[color]
         } else {
             R.color.red700
+        }
+    }
+
+    fun selectBackgroundLevelColor(color: String): Int? {
+        return if (color in carBackgroundColors.keys) {
+            carBackgroundColors[color]
+        } else {
+            R.color.red100
         }
     }
 

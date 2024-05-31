@@ -33,6 +33,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -41,6 +43,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.databinding.FragmentCardBinding
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
@@ -416,11 +419,47 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 })
         }!!
 
+        val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
+        gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return getSpanSize(cardList, position, 12, 16)
+            }
+
+        }
+
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = gridLayoutManager
         }
+    }
+
+    private fun getSpanSize(
+        cardList: List<ImmutableCard?>,
+        cardPosition: Int,
+        minDefinitionLengthForSpam1: Int,
+        minContentLengthForSpam1: Int,
+    ): Int {
+        val contentSize = cardList[cardPosition]?.cardContent?.content?.length ?: 0
+        val definitionSize = getMaxDefinitionLength(cardList[cardPosition]?.cardDefinition)
+        if (contentSize > minContentLengthForSpam1 || definitionSize > minDefinitionLengthForSpam1) {
+            return 2
+        }
+        return 1
+    }
+
+    private fun getMaxDefinitionLength(definitions: List<CardDefinition>?): Int {
+        definitions?.let {
+            var maxLength = 0
+            it.forEach { defin ->
+                val actualLength = defin.definition?.length ?: 0
+                if (actualLength > maxLength) {
+                    maxLength = actualLength
+                }
+            }
+            return maxLength
+        }
+        return 0
     }
 
     private fun onAddNewCard(card: ImmutableCard?) {
