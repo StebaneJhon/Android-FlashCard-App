@@ -82,7 +82,7 @@ class WritingQuizGameAdapter(
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     tiOnWrongAnswer.setText(v.text)
                     val userInput = v.text?.trim().toString().lowercase()
-                    val correctAnswer = card.answer.lowercase()
+                    val correctAnswer = card.answer
                     userAnswer(
                         WritingQuizGameUserResponseModel(
                             userInput,

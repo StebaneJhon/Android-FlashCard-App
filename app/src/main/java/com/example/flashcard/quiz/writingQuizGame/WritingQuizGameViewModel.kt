@@ -7,6 +7,7 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardLevel
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
@@ -88,9 +89,14 @@ class WritingQuizGameViewModel(
 
     fun getCurrentCardPosition() = currentCardPosition
 
-    fun isUserAnswerCorrect(userAnswer: String, correctAnswer: String): Boolean {
-        val isCorrect = userAnswer == correctAnswer
-        if (!isCorrect) {
+    fun isUserAnswerCorrect(userAnswer: String, correctAnswers: List<String>): Boolean {
+        var isCorrect = false
+        correctAnswers.forEach { answer ->
+            if (answer.trim().lowercase() == userAnswer) {
+                isCorrect = true
+            }
+        }
+        if (isCorrect == false) {
             onCardMissed()
             onUserAnswered(isCorrect)
         }
@@ -128,24 +134,35 @@ class WritingQuizGameViewModel(
         val newList = mutableListOf<WritingQuizGameModel>()
         if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             cards.forEach { item ->
+                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition)!!
                 newList.add(
                     WritingQuizGameModel(
                         item?.cardContent?.content!!,
-                        item.cardDefinition?.first()?.definition!!
+                        correctAlternatives
                     )
                 )
             }
         } else {
             cards.forEach { item ->
+                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition)!!
                 newList.add(
                     WritingQuizGameModel(
-                        item?.cardDefinition?.first()?.definition!!,
-                        item.cardContent?.content!!
+                        correctAlternatives.random(),
+                        listOf(item?.cardContent?.content!!)
                     )
                 )
             }
         }
         return newList
+    }
+
+    private fun getCorrectDefinitions(definitions: List<CardDefinition>?): List<String>? {
+        val correctDefinitions = definitions?.let {defins -> defins.filter { it.isCorrectDefinition!! }}
+        val correctAlternative = mutableListOf<String>()
+        correctDefinitions?.forEach {
+            correctAlternative.add(it.definition!!)
+        }
+        return  correctAlternative
     }
 
     fun updateCard(cardOrientation: String) {

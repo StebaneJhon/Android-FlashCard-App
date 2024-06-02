@@ -7,6 +7,7 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Card
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardLevel
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
@@ -56,7 +57,7 @@ class MultiChoiceQuizGameViewModel(
         temporaryList.add(correctAlternative)
         while (temporaryList.size < sum) {
             val randomWordTranslation = if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                cards.random()?.cardDefinition?.first()?.definition
+                cards.random()?.cardDefinition?.random()?.definition
             } else {
                 cards.random()?.cardContent?.content
             }
@@ -67,6 +68,20 @@ class MultiChoiceQuizGameViewModel(
             }
         }
         return temporaryList.shuffled()
+    }
+
+    private fun getRandomCorrectDefinition(definitions: List<CardDefinition>?): String? {
+        val correctDefinitions = definitions?.let {defins -> defins.filter { it.isCorrectDefinition!! }}
+        return correctDefinitions?.random()?.definition
+    }
+
+    private fun getCorrectDefinitions(definitions: List<CardDefinition>?): List<String>? {
+        val correctDefinitions = definitions?.let {defins -> defins.filter { it.isCorrectDefinition!! }}
+        val correctAlternative = mutableListOf<String>()
+        correctDefinitions?.forEach {
+            correctAlternative.add(it.definition!!)
+        }
+        return  correctAlternative
     }
 
     fun increaseAttemptTime() {
@@ -105,8 +120,8 @@ class MultiChoiceQuizGameViewModel(
         increaseAttemptTime()
     }
 
-    fun isUserChoiceCorrect(userChoice: String, correctChoice: String): Boolean {
-        val isCorrect = userChoice == correctChoice
+    fun isUserChoiceCorrect(userChoice: String, correctChoice: List<String>): Boolean {
+        val isCorrect = userChoice in correctChoice
         if (!isCorrect) {
             onCardMissed()
             onUserAnswered(isCorrect)
@@ -120,12 +135,14 @@ class MultiChoiceQuizGameViewModel(
     private fun toListOfMultiChoiceQuizGameCardModel(cards: List<ImmutableCard?>, cardOrientation: String): List<MultiChoiceGameCardModel> {
         val temporaryList = mutableListOf<MultiChoiceGameCardModel>()
         cards.forEach {
+            val correctAlternative = getRandomCorrectDefinition(it?.cardDefinition)!!
+            val correctAlternatives = getCorrectDefinitions(it?.cardDefinition)!!
             if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                val alternatives = getWordAlternatives(originalCardList, it?.cardDefinition?.first()?.definition!!, 4, cardOrientation)
+                val alternatives = getWordAlternatives(originalCardList, correctAlternative, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
-                        it.cardContent?.content!!,
-                        it.cardDefinition.first().definition!!,
+                        it?.cardContent?.content!!,
+                        correctAlternatives,
                         alternatives[0],
                         alternatives[1],
                         alternatives[2],
@@ -136,8 +153,8 @@ class MultiChoiceQuizGameViewModel(
                 val alternatives = getWordAlternatives(originalCardList, it?.cardContent?.content!!, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
-                        it.cardDefinition?.first()?.definition!!,
-                        it.cardContent.content,
+                        correctAlternative,
+                        listOf(it.cardContent.content),
                         alternatives[0],
                         alternatives[1],
                         alternatives[2],

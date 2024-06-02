@@ -79,8 +79,8 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.answers,
                             this.text.toString(),
-                            card.answer,
                             cvCardItem,
                             cvCardItemOnWrongCard
                         )
@@ -93,8 +93,8 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.answers,
                             this.text.toString(),
-                            card.answer,
                             cvCardItem,
                             cvCardItemOnWrongCard
                         )
@@ -107,8 +107,8 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.answers,
                             this.text.toString(),
-                            card.answer,
                             cvCardItem,
                             cvCardItemOnWrongCard
                         )
@@ -121,8 +121,8 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.answers,
                             this.text.toString(),
-                            card.answer,
                             cvCardItem,
                             cvCardItemOnWrongCard
                         )
