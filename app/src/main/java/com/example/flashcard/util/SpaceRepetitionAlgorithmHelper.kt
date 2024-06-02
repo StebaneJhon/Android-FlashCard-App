@@ -65,10 +65,10 @@ class SpaceRepetitionAlgorithmHelper{
         RED to R.color.red50,
         ORANGE to R.color.orange50,
         BROWNE to R.color.brown50,
-        YELLOW700 to R.color.yellow15,
-        YELLOW500 to R.color.yellow50,
-        GREEN500 to R.color.green15,
-        GREEN700 to R.color.green50
+        YELLOW700 to R.color.yellow50,
+        YELLOW500 to R.color.yellow100,
+        GREEN500 to R.color.green50,
+        GREEN700 to R.color.green100
     )
 
 
