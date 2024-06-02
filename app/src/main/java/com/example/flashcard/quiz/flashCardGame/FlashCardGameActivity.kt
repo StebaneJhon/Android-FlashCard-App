@@ -25,6 +25,7 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
+import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
@@ -621,10 +622,49 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     ) {
         binding.cvCardFront.backgroundTintList =
             ContextCompat.getColorStateList(this, deckColorCode)
+
         binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
 
+        val correctDefinitions = getCorrectDefinition(onScreenCards.top.cardDefinition)
+        when (correctDefinitions?.size) {
+            1 -> {
+                binding.tvQuizBack1.visibility = View.VISIBLE
+                binding.tvQuizBack1.text = correctDefinitions[0].definition
+                binding.tvQuizBack2.visibility = View.GONE
+                binding.tvQuizBack3.visibility = View.GONE
+                binding.tvQuizBack4.visibility = View.GONE
+            }
+            2 -> {
+                binding.tvQuizBack1.visibility = View.VISIBLE
+                binding.tvQuizBack1.text = correctDefinitions[0].definition
+                binding.tvQuizBack2.visibility = View.VISIBLE
+                binding.tvQuizBack2.text = correctDefinitions[1].definition
+                binding.tvQuizBack3.visibility = View.GONE
+                binding.tvQuizBack4.visibility = View.GONE
+            }
+            3 -> {
+                binding.tvQuizBack1.visibility = View.VISIBLE
+                binding.tvQuizBack1.text = correctDefinitions[0].definition
+                binding.tvQuizBack2.visibility = View.VISIBLE
+                binding.tvQuizBack2.text = correctDefinitions[1].definition
+                binding.tvQuizBack3.visibility = View.VISIBLE
+                binding.tvQuizBack3.text = correctDefinitions[2].definition
+                binding.tvQuizBack4.visibility = View.GONE
+            }
+            4 -> {
+                binding.tvQuizBack1.visibility = View.VISIBLE
+                binding.tvQuizBack1.text = correctDefinitions[0].definition
+                binding.tvQuizBack2.visibility = View.VISIBLE
+                binding.tvQuizBack2.text = correctDefinitions[1].definition
+                binding.tvQuizBack3.visibility = View.VISIBLE
+                binding.tvQuizBack3.text = correctDefinitions[2].definition
+                binding.tvQuizBack4.visibility = View.VISIBLE
+                binding.tvQuizBack4.text = correctDefinitions[3].definition
+            }
+        }
+        //binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
+
         binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
-        binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
         binding.tvFlashCardFrontProgression.text = getString(
             R.string.tx_flash_card_game_progression,
             "$currentCardNumber",
@@ -660,6 +700,13 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                 ContextCompat.getColorStateList(this, deckColorCode)
             binding.tvQuizBottom.text = "..."
         }
+    }
+
+    private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
+        definitions?.let { defins ->
+            return defins.filter { it.isCorrectDefinition!! }
+        }
+        return null
     }
 
     private fun initFlashCard(
