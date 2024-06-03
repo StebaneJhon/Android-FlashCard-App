@@ -98,8 +98,8 @@
         <item name="colorSurfaceContainer">@color/purple200</item>
         <item name="colorSurfaceContainerHigh">@color/purple300</item>
         <item name="colorSurfaceContainerHighest">@color/purple400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/purple950</item>
+        <item name="colorOnSurfaceVariant">@color/purple950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -126,8 +126,8 @@
         <item name="colorSurfaceContainer">@color/blue200</item>
         <item name="colorSurfaceContainerHigh">@color/blue300</item>
         <item name="colorSurfaceContainerHighest">@color/blue400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/blue950</item>
+        <item name="colorOnSurfaceVariant">@color/blue950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -154,8 +154,8 @@
         <item name="colorSurfaceContainer">@color/pink200</item>
         <item name="colorSurfaceContainerHigh">@color/pink300</item>
         <item name="colorSurfaceContainerHighest">@color/pink400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/pink950</item>
+        <item name="colorOnSurfaceVariant">@color/pink950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -182,8 +182,8 @@
         <item name="colorSurfaceContainer">@color/red200</item>
         <item name="colorSurfaceContainerHigh">@color/red300</item>
         <item name="colorSurfaceContainerHighest">@color/red400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/red950</item>
+        <item name="colorOnSurfaceVariant">@color/red950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -209,8 +209,8 @@
         <item name="colorSurfaceContainer">@color/teal200</item>
         <item name="colorSurfaceContainerHigh">@color/teal300</item>
         <item name="colorSurfaceContainerHighest">@color/teal400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/teal950</item>
+        <item name="colorOnSurfaceVariant">@color/teal950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -236,8 +236,8 @@
         <item name="colorSurfaceContainer">@color/green200</item>
         <item name="colorSurfaceContainerHigh">@color/green300</item>
         <item name="colorSurfaceContainerHighest">@color/green400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/green950</item>
+        <item name="colorOnSurfaceVariant">@color/green950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -263,8 +263,8 @@
         <item name="colorSurfaceContainer">@color/yellow200</item>
         <item name="colorSurfaceContainerHigh">@color/yellow300</item>
         <item name="colorSurfaceContainerHighest">@color/yellow400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/yellow950</item>
+        <item name="colorOnSurfaceVariant">@color/yellow950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -290,8 +290,8 @@
         <item name="colorSurfaceContainer">@color/stone200</item>
         <item name="colorSurfaceContainerHigh">@color/stone300</item>
         <item name="colorSurfaceContainerHighest">@color/stone400</item>
-        <item name="colorOnSurface">@color/black</item>
-        <item name="colorOnSurfaceVariant">@color/grey500</item>
+        <item name="colorOnSurface">@color/stone950</item>
+        <item name="colorOnSurfaceVariant">@color/stone950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>

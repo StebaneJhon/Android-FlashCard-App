@@ -6,7 +6,7 @@
     android:id="@+id/deckRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="@dimen/space_xs"
     app:cardCornerRadius="10dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,8 +14,8 @@
             android:layout_height="match_parent"
             android:backgroundTint="?colorSurfaceContainerLow"
             android:background="@drawable/inner_deck_border"
-            android:layout_margin="4dp"
-            android:padding="10dp">
+            android:layout_margin="@dimen/space_xs"
+            android:padding="@dimen/space_sm">
 
             <TextView
                 android:id="@+id/deckNameTV"
@@ -24,7 +24,7 @@
                 android:layout_alignParentTop="true"
                 android:fontFamily="@font/montserrat_bold"
                 android:textColor="?colorOnSurface"
-                android:textSize="20sp"
+                android:textSize="@dimen/text_xl"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/popup_menu_BT"
                 app:layout_constraintStart_toStartOf="parent"
@@ -38,7 +38,7 @@
                 android:layout_below="@+id/deckNameTV"
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_base"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/deckNameTV"
@@ -51,8 +51,8 @@
                 android:layout_below="@+id/deckDescriptionTV"
                 android:fontFamily="@font/open_sans_light"
                 android:textColor="?colorOnSurface"
-                android:textSize="12sp"
-                android:layout_marginTop="20dp"
+                android:textSize="@dimen/text_xs"
+                android:layout_marginTop="@dimen/space_lg"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/deckDescriptionTV"
                 tools:text="@string/deck_languages" />
@@ -64,7 +64,7 @@
                 android:layout_below="@id/languages"
                 android:fontFamily="@font/open_sans_light"
                 android:textColor="?colorOnSurface"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_xs"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/languages"
@@ -80,7 +80,7 @@
                 android:fontFamily="@font/open_sans_bold"
                 android:text="@string/start_quiz_button_text"
                 android:textColor="?colorOnSurface"
-                android:textSize="10sp"
+                android:textSize="@dimen/text_sm"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/cardsSum"
                 app:layout_constraintEnd_toEndOf="parent"
