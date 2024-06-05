@@ -181,11 +181,11 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
     private fun setClickable(clicked: Boolean) {
         if (!clicked) {
-            binding.addNewCardBT.isClickable = false
-            binding.startQuizBT.isClickable = false
-        } else {
             binding.addNewCardBT.isClickable = true
             binding.startQuizBT.isClickable = true
+        } else {
+            binding.addNewCardBT.isClickable = false
+            binding.startQuizBT.isClickable = false
         }
     }
 
