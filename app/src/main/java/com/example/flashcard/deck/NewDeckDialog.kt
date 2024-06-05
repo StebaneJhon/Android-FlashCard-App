@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -63,6 +64,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
     private var deckSecondLanguageLY: TextInputLayout? = null
     private var buttonDialogueN: MaterialButton? = null
     private var buttonDialogueP: MaterialButton? = null
+    private var tvTitle: TextView? = null
 
     private var listener: NewDialogListener? = null
 
@@ -108,6 +110,8 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         buttonDialogueN = view?.findViewById(R.id.dialogueNegativeBT)
         buttonDialogueP = view?.findViewById(R.id.dialogPositiveBT)
 
+        tvTitle = view?.findViewById(R.id.tv_title)
+
         deckFirstLangET?.setSimpleItems(supportedLanguages)
         deckSecondLangET?.setSimpleItems(supportedLanguages)
 
@@ -123,6 +127,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         categoryColorBlackBT?.setOnClickListener { onColorCategorySelected(BLACK) }
 
         if (deck != null) {
+            tvTitle?.text = getString(R.string.tv_update_deck)
             deckNameET?.setText(deck.deckName)
             deckDescriptionET?.setText(deck.deckDescription)
             deckFirstLangET?.setText(deck.deckFirstLanguage)
@@ -130,7 +135,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
             deck.deckColorCode?.let { onColorCategorySelected(it) }
 
             builder.setView(view)
-                .setTitle("New Deck")
+
 
             buttonDialogueN?.setOnClickListener { dismiss() }
             buttonDialogueP?.apply {
@@ -156,8 +161,8 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
             }
         } else {
             builder.setView(view)
-                .setTitle("New Deck")
 
+            tvTitle?.text = getString(R.string.tv_add_new_deck)
             buttonDialogueN?.setOnClickListener { dismiss() }
             buttonDialogueP?.apply {
                 text = "Add"

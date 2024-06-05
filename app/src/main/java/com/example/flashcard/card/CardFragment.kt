@@ -14,6 +14,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -69,6 +71,11 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
 
+    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.from_bottom_anim) }
+    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.to_bottom_anim) }
+
+    private var actionClicked = false
+
     val args: CardFragmentArgs by navArgs()
     private var deck: ImmutableDeck? = null
 
@@ -119,6 +126,10 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 }
             }
 
+            binding.btAction.setOnClickListener {
+                onBtActonClicked()
+            }
+
             binding.addNewCardBT.setOnClickListener {
                 onAddNewCard(null)
             }
@@ -140,6 +151,42 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                             .build())
                 }
             })
+    }
+
+    private fun onBtActonClicked() {
+        setActionsVisibility(actionClicked)
+        setActionsAnimation(actionClicked)
+        actionClicked = !actionClicked
+    }
+
+    private fun setActionsVisibility(clicked: Boolean) {
+        if (!clicked) {
+            binding.addNewCardBT.visibility = View.VISIBLE
+            binding.startQuizBT.visibility = View.VISIBLE
+        } else {
+            binding.addNewCardBT.visibility = View.GONE
+            binding.startQuizBT.visibility = View.GONE
+        }
+    }
+
+    private fun setActionsAnimation(clicked: Boolean) {
+        if (!clicked) {
+            binding.addNewCardBT.startAnimation(fromBottom)
+            binding.startQuizBT.startAnimation(fromBottom)
+        } else {
+            binding.addNewCardBT.startAnimation(toBottom)
+            binding.startQuizBT.startAnimation(toBottom)
+        }
+    }
+
+    private fun setClickable(clicked: Boolean) {
+        if (!clicked) {
+            binding.addNewCardBT.isClickable = false
+            binding.startQuizBT.isClickable = false
+        } else {
+            binding.addNewCardBT.isClickable = true
+            binding.startQuizBT.isClickable = true
+        }
     }
 
 

@@ -18,7 +18,7 @@
             tools:text="2"
             android:textAlignment="center"
             android:textColor="?colorOnSurface"
-            android:textSize="20sp" />
+            android:textSize="@dimen/text_xl" />
 
         <TextView
             android:id="@+id/tv_space_repetition_level_name"
@@ -28,6 +28,6 @@
             android:fontFamily="@font/open_sans_light"
             tools:text="L2"
             android:textColor="?colorOnSurface"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_base" />
 
 </LinearLayout>

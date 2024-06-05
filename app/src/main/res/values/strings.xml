@@ -46,7 +46,6 @@
     <string name="total_cards_text">Total cards:</string>
     <string name="multiple_choice_quiz_button_text">Multiple-Choice Quiz</string>
     <string name="warning_icon">Warning Icon</string>
-    <string name="this_week_profile_title">This Week</string>
     <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
     <string name="bt_flip_text">Flip</string>
     <string name="bt_start_writing_quiz_game_text">Writing Quiz Game</string>
@@ -114,4 +113,12 @@
     <string name="til_error_card_content">Card content required</string>
     <string name="til_error_card_definition">Card definition required</string>
     <string name="cp_error_correct_definition">At least one definition must be correct</string>
+    <string name="tv_title_data_review">Data review</string>
+    <string name="this_week_profile_title">This week</string>
+    <string name="tv_add_new_deck">Add new deck</string>
+    <string name="tv_update_deck">Update deck</string>
+    <string name="tv_add_new_card">Add new card</string>
+    <string name="tv_update_card">Update card</string>
+    <string name="bt_action">Action</string>
+
 </resources>

@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".settings.SettingsFragment">
+    tools:context=".settings.SettingsFragment"
+    android:background="?colorSurfaceContainerLowest">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,9 +31,9 @@
             android:id="@+id/cl_profile_section_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp">
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_sm">
 
             <TextView
                 android:id="@+id/tv_profile_section_title"
@@ -41,7 +42,7 @@
                 android:fontFamily="@font/open_sans"
                 android:text="@string/profile_tab_title"
                 android:textColor="@color/grey500"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_base"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +67,7 @@
                     android:text="A"
                     android:textAlignment="center"
                     android:textColor="?colorOnPrimary"
-                    android:textSize="25sp"
+                    android:textSize="@dimen/text_xl2"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -77,7 +78,8 @@
                 android:fontFamily="@font/open_sans_bold"
                 android:text="Anonymous"
                 android:textColor="?colorOnSurface"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="@dimen/space_xs"
+                android:textSize="@dimen/text_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -91,6 +93,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans_light"
                 android:text="User"
+                android:textSize="@dimen/text_sm"
                 android:textColor="?colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/tv_profile_section_user_name"
@@ -105,19 +108,18 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:orientation="vertical"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="15dp">
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md">
 
             <TextView
                 android:id="@+id/tv_theme_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:fontFamily="@font/open_sans"
                 android:textColor="@color/grey500"
                 android:text="@string/themes_head_text"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
 
             <GridLayout
@@ -226,20 +228,19 @@
             android:id="@+id/ll_space_repetition_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_space_repetition_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
                 android:fontFamily="@font/open_sans"
                 android:text="@string/tv_space_repetition_title"
                 android:textColor="@color/grey500"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -253,9 +254,9 @@
             android:id="@+id/ll_language_section_root"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
             android:orientation="vertical">
 
             <TextView
@@ -266,7 +267,7 @@
                 android:fontFamily="@font/open_sans"
                 android:textColor="@color/grey500"
                 android:text="@string/tv_language_section_settings"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
 
             <TextView
@@ -274,7 +275,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="English"
-                android:fontFamily="@font/open_sans"/>
+                android:fontFamily="@font/open_sans"
+                android:textSize="@dimen/text_sm"/>
 
         </LinearLayout>
 
@@ -282,9 +284,9 @@
             android:id="@+id/ll_others_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
             android:orientation="vertical">
 
             <TextView
@@ -295,7 +297,7 @@
                 android:fontFamily="@font/open_sans"
                 android:textColor="@color/grey500"
                 android:text="@string/tv_others_section_settings"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
 
             <com.google.android.material.button.MaterialButton
@@ -304,7 +306,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorSurfaceContainer"
                 app:cornerRadius="6dp"
-                android:text="@string/bt_privacy_text"/>
+                android:text="@string/bt_privacy_text"
+                android:textSize="@dimen/text_sm"
+                android:textColor="?colorOnSurface"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_contact_others_section"
@@ -312,7 +316,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorSurfaceContainer"
                 app:cornerRadius="6dp"
-                android:text="@string/bt_contact_text"/>
+                android:text="@string/bt_contact_text"
+                android:textSize="@dimen/text_sm"
+                android:textColor="?colorOnSurface"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_help_others_section"
@@ -320,7 +326,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorSurfaceContainer"
                 app:cornerRadius="6dp"
-                android:text="@string/bt_help_text"/>
+                android:text="@string/bt_help_text"
+                android:textSize="@dimen/text_sm"
+                android:textColor="?colorOnSurface"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_rate_others_section"
@@ -328,7 +336,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorSurfaceContainer"
                 app:cornerRadius="6dp"
-                android:text="@string/bt_rate_the_app_text"/>
+                android:text="@string/bt_rate_the_app_text"
+                android:textSize="@dimen/text_sm"
+                android:textColor="?colorOnSurface"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_about_others_section"
@@ -336,7 +346,9 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorSurfaceContainer"
                 app:cornerRadius="6dp"
-                android:text="@string/bt_about_the_quizeo_text"/>
+                android:text="@string/bt_about_the_quizeo_text"
+                android:textSize="@dimen/text_sm"
+                android:textColor="?colorOnSurface"/>
 
         </LinearLayout>
 

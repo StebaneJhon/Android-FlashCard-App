@@ -3,20 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:backgroundTint="?colorSurfaceContainerLow">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:backgroundTint="?colorSurfaceContainerLowest">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_margin="10dp">
+        android:layout_margin="@dimen/space_sm">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="New deck"
+            android:textSize="@dimen/text_xl"
+            android:textStyle="bold"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans_bold"
+            android:layout_marginTop="@dimen/space_md"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/deckNameLY"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="@dimen/space_xs"
+            android:layout_marginTop="@dimen/space_md">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/deckNameET"
                 android:layout_width="match_parent"
@@ -33,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="@dimen/space_xs">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/deckDescriptionET"
                 android:layout_width="match_parent"
@@ -50,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/space_xs"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
             <AutoCompleteTextView
                 android:id="@+id/deckFirstLanguageET"
@@ -68,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="@dimen/space_xs"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
             <AutoCompleteTextView
                 android:id="@+id/deckSecondLanguageET"
@@ -93,7 +106,8 @@
                 android:text="@string/category_color_picker_title"
                 android:textColor="?colorOnSurface"
                 android:textStyle="bold"
-                android:fontFamily="@font/open_sans_bold"/>
+                android:fontFamily="@font/open_sans_bold"
+                android:textSize="@dimen/text_base"/>
 
             <GridLayout
                 android:id="@+id/colorPickerGD"
@@ -314,28 +328,30 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginStart="@dimen/space_xs"
+                android:layout_marginTop="@dimen/space_md"
                 android:background="@color/transparent"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="Add"
                 android:textColor="?colorOnSurface"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="@dimen/text_sm"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/dialogueNegativeBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginTop="@dimen/space_md"
+                android:layout_marginEnd="@dimen/space_xs"
+                android:layout_marginBottom="@dimen/space_sm"
                 android:layout_toStartOf="@+id/dialogPositiveBT"
                 android:background="@color/transparent"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="Cancel"
                 android:textColor="?colorOnSurface"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textSize="@dimen/text_sm"/>
         </RelativeLayout>
 
     </LinearLayout>

@@ -16,6 +16,7 @@ import android.util.TypedValue
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
@@ -91,6 +92,8 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     private var btAdd: MaterialButton? = null
     private var btCancel: MaterialButton? = null
 
+    private var tvTitle: TextView? = null
+
 
     private var listener: NewDialogListener? = null
 
@@ -157,10 +160,12 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         btAdd = view?.findViewById(R.id.bt_add)
         btCancel = view?.findViewById(R.id.bt_cancel)
 
+        tvTitle = view?.findViewById(R.id.tv_title)
+
         if (card != null) {
             onUpdateCard(card)
             builder.setView(view)
-                .setTitle("Update Card")
+            tvTitle?.text = getString(R.string.tv_update_card)
 
             btAdd?.apply {
                 text = getString(R.string.bt_text_update)
@@ -178,7 +183,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             cardValueDefinition?.hint =
                 getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
             builder.setView(view)
-                .setTitle("New Card")
+            tvTitle?.text = getString(R.string.tv_add_new_card)
 
             btAdd?.apply {
                 text = getString(R.string.bt_text_add)
