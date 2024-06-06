@@ -718,7 +718,13 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
 
     private fun isCardEnabled(isEnabled: Boolean) {
         binding.clOnScreenCardRoot.isEnabled = isEnabled
-        binding.tvCardFrontFlipHint.isVisible = isEnabled
+        if (!isEnabled) {
+            binding.tvCardFrontFlipHint.visibility = View.INVISIBLE
+        } else {
+            binding.tvCardFrontFlipHint.visibility = View.VISIBLE
+
+        }
+
         binding.tvFlipHint.isVisible = isEnabled
         binding.btKnow.isEnabled = isEnabled
         binding.btRewind.isEnabled = isEnabled

@@ -66,47 +66,67 @@
             layout="@layout/ly_no_card_error" />
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/ly_container_options"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/space_sm"
         android:visibility="gone">
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/bt_known"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/known_button_text"
-            android:fontFamily="@font/open_sans_bold"
-            app:cornerRadius="6dp"
+            android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/space_sm"
+            android:background="@drawable/bt_quiz_action"
             android:backgroundTint="@color/green500"
+            android:padding="@dimen/space_xl"
+            android:src="@drawable/icon_check"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/bt_rewind"
+            android:contentDescription="@string/no_button_text"
             android:clickable="false"/>
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/bt_known_not"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/no_button_text"
-            android:fontFamily="@font/open_sans_bold"
-            app:cornerRadius="6dp"
+            android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/space_sm"
+            android:background="@drawable/bt_quiz_action"
             android:backgroundTint="@color/red500"
+            android:padding="@dimen/space_xl"
+            android:src="@drawable/icon_exit"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bt_rewind"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            android:contentDescription="@string/known_button_text"
             android:clickable="false"/>
 
-        <com.google.android.material.button.MaterialButton
+        <ImageButton
             android:id="@+id/bt_rewind"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/bt_rewind"
-            android:fontFamily="@font/open_sans_bold"
-            app:cornerRadius="6dp"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/bt_quiz_action"
             android:backgroundTint="?colorSurfaceContainerHighest"
+            android:padding="@dimen/space_xl"
+            android:layout_margin="@dimen/space_sm"
+            android:src="@drawable/icon_rewind"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bt_known"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/bt_known_not"
+            android:contentDescription="@string/bt_rewind"
             android:clickable="false"/>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,7 +12,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:cardBackgroundColor="@color/red500"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/card_radius"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -22,10 +22,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            android:layout_margin="@dimen/space_sm"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="@color/red50"
-            android:padding="20dp">
+            android:padding="@dimen/space_lg">
 
             <TextView
                 android:id="@+id/tv_writing_quiz_progression_on_wrong_answer"
@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_sm"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,8 +47,8 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="?colorOnSurface"
-                app:autoSizeMaxTextSize="40sp"
-                app:autoSizeMinTextSize="20sp"
+                app:autoSizeMaxTextSize="@dimen/text_xl3"
+                app:autoSizeMinTextSize="@dimen/text_base"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toTopOf="@+id/til_card_content_on_wrong_answer"
@@ -83,7 +83,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:cardBackgroundColor="?colorPrimaryContainer"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/card_radius"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -92,10 +92,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="5dp"
+            android:layout_margin="@dimen/space_sm"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="?colorSurfaceContainer"
-            android:padding="20dp">
+            android:padding="@dimen/space_lg">
 
             <TextView
                 android:id="@+id/tv_writing_quiz_front_progression"
@@ -104,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_sm"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -117,8 +117,8 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:textColor="?colorOnSurface"
-                app:autoSizeMaxTextSize="40sp"
-                app:autoSizeMinTextSize="20sp"
+                app:autoSizeMaxTextSize="@dimen/text_xl3"
+                app:autoSizeMinTextSize="@dimen/text_base"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform"
                 app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
