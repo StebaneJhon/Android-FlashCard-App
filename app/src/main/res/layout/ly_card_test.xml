@@ -11,7 +11,7 @@
         android:id="@+id/cv_card_container_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/card_radius"
         android:layout_margin="10dp"
         android:alpha="0">
 

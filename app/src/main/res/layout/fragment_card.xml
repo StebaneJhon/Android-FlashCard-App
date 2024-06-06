@@ -113,17 +113,18 @@
         app:layout_constraintBottom_toTopOf="@+id/bt_action"
         app:layout_constraintEnd_toEndOf="@+id/bt_action" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <ImageButton
         android:id="@+id/bt_action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
+        android:background="@drawable/add_new_deck_button_background"
         android:backgroundTint="?colorPrimary"
         android:clickable="true"
         android:focusable="true"
+        android:padding="@dimen/space_xl"
         android:src="@drawable/icon_action"
-        android:tint="?colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:contentDescription="@string/bt_action" />
