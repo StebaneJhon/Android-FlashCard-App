@@ -31,9 +31,9 @@
         android:id="@+id/cv_card_bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/space_sm"
         android:backgroundTint="?colorPrimary"
-        app:cardCornerRadius="10dp"
+        app:cardCornerRadius="@dimen/card_radius"
         app:layout_constraintBottom_toTopOf="@+id/bt_rewind"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,7 +47,6 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:padding="20dp">
 
-            <!--
             <TextView
                 android:id="@+id/tv_card_bottom_orientation"
                 android:layout_width="wrap_content"
@@ -58,7 +57,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="@string/tx_flash_card_game_card_orientation_front" />
-                -->
 
             <TextView
                 android:id="@+id/tv_flash_card_bottom_progression"
@@ -123,23 +121,23 @@
         android:id="@+id/cl_on_screen_card_root"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_margin="@dimen/space_sm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+
+        <!-- to calculate the margin bottom: action buttons height (icon height + padding ) plus margin * 2 -->
+        <!-- in this case (24 + 16) + 8 + 8 -->
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_card_back"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:alpha="0"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="68.4dp"
+            android:layout_marginBottom="64dp"
             android:backgroundTint="?colorPrimary"
-            app:cardCornerRadius="10dp"
+            app:cardCornerRadius="@dimen/card_radius"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -282,10 +280,9 @@
             android:id="@+id/cv_card_front"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="68.4dp"
+            android:layout_marginBottom="64dp"
             android:backgroundTint="?colorPrimary"
-            app:cardCornerRadius="10dp"
+            app:cardCornerRadius="@dimen/card_radius"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -376,46 +373,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_margin="15dp"
-        android:background="@drawable/rounded_background"
-        android:backgroundTint="@color/red200"
-        android:padding="10dp"
+        android:layout_margin="@dimen/space_sm"
+        android:background="@drawable/bt_quiz_action"
+        android:backgroundTint="@color/red500"
+        android:padding="@dimen/space_xl"
         android:src="@drawable/icon_exit"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bt_rewind"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/known_button_text" />
 
     <ImageButton
         android:id="@+id/bt_rewind"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:background="@drawable/rounded_background"
+        android:background="@drawable/bt_quiz_action"
         android:backgroundTint="?colorSurfaceContainerHighest"
-        android:padding="10dp"
-        android:layout_margin="15dp"
+        android:padding="@dimen/space_xl"
+        android:layout_margin="@dimen/space_sm"
         android:src="@drawable/icon_rewind"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/bt_Know"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/bt_not_Know" />
+        app:layout_constraintStart_toEndOf="@+id/bt_not_Know"
+        android:contentDescription="@string/bt_rewind" />
 
     <ImageButton
         android:id="@+id/bt_Know"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_margin="15dp"
-        android:layout_marginBottom="16dp"
-        android:background="@drawable/rounded_background"
-        android:backgroundTint="@color/green200"
-        android:padding="10dp"
+        android:layout_margin="@dimen/space_sm"
+        android:background="@drawable/bt_quiz_action"
+        android:backgroundTint="@color/green500"
+        android:padding="@dimen/space_xl"
         android:src="@drawable/icon_check"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/bt_rewind" />
+        app:layout_constraintStart_toEndOf="@+id/bt_rewind"
+        android:contentDescription="@string/no_button_text" />
 
     <LinearLayout
         android:id="@+id/ly_game_review_container"
