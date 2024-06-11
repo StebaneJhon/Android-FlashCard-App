@@ -6,6 +6,7 @@
     <dimen name="space_md">12dp</dimen>
     <dimen name="space_lg">16dp</dimen>
     <dimen name="space_xl">16dp</dimen>
+
     <dimen name="text_xs">12sp</dimen>
     <dimen name="text_sm">14sp</dimen>
     <dimen name="text_base">16sp</dimen>
@@ -13,6 +14,13 @@
     <dimen name="text_xl">20sp</dimen>
     <dimen name="text_xl2">24sp</dimen>
     <dimen name="text_xl3">30sp</dimen>
+
     <dimen name="bt_radius">6dp</dimen>
     <dimen name="card_radius">10dp</dimen>
+
+    <dimen name="icon_base">25dp</dimen>
+    <dimen name="icon_lg">30dp</dimen>
+    <dimen name="icon_card_top_width">39dp</dimen>
+    <dimen name="icon_card_top_height">20dp</dimen>
+
 </resources>

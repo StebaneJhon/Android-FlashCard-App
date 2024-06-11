@@ -43,16 +43,16 @@
                 android:textSize="@dimen/text_sm"
                 android:layout_marginEnd="@dimen/space_sm"
                 android:layout_marginStart="@dimen/space_sm"
-                app:layout_constraintEnd_toStartOf="@+id/bt_help_back"
+                app:layout_constraintEnd_toStartOf="@+id/bt_speak_back"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Flash Card"/>
 
             <ImageButton
-                android:id="@+id/bt_help_back"
+                android:id="@+id/bt_speak_back"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="30dp"
                 android:layout_height="20dp"
-                android:src="@drawable/icon_help"
+                android:src="@drawable/icon_speak"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/bt_help_button_text" />
@@ -114,16 +114,16 @@
                 android:textSize="@dimen/text_sm"
                 android:layout_marginEnd="@dimen/space_sm"
                 android:layout_marginStart="@dimen/space_sm"
-                app:layout_constraintEnd_toStartOf="@+id/bt_help"
+                app:layout_constraintEnd_toStartOf="@+id/bt_speak"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Flash Card"/>
 
             <ImageButton
-                android:id="@+id/bt_help"
+                android:id="@+id/bt_speak"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="30dp"
                 android:layout_height="20dp"
-                android:src="@drawable/icon_help"
+                android:src="@drawable/icon_speak"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/bt_help_button_text" />

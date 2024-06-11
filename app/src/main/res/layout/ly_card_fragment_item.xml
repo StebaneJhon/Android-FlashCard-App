@@ -76,6 +76,21 @@
             tools:text="Test deck description" />
 
         <TextView
+            android:id="@+id/tv_card_description_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="@color/red500"
+            android:textSize="@dimen/text_sm"
+            android:layout_marginTop="2dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_card_description3"
+            tools:text="Test deck description" />
+
+        <TextView
             android:id="@+id/tv_card_status"
             android:layout_width="wrap_content"
             android:layout_height="24dp"
@@ -87,7 +102,6 @@
             android:paddingEnd="@dimen/space_md"
             android:paddingTop="@dimen/space_xxs"
             android:paddingBottom="@dimen/space_xs"
-            android:layout_marginEnd="@dimen/space_xs"
             android:layout_marginTop="@dimen/space_xs"
             android:textColor="?colorSurfaceContainerLowest"
             android:textSize="@dimen/text_xs"
@@ -96,17 +110,19 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_card_description3"
             tools:text="L1" />
 
-        <ImageButton
+        <Button
             android:id="@+id/pupUpBT"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="30dp"
+            android:layout_height="20dp"
+            android:layout_marginBottom="3dp"
             android:background="@color/transparent"
             android:contentDescription="@string/full_screen_button_description_text"
-            android:src="@drawable/icon_popup_menu"
+            app:icon="@drawable/icon_popup_menu"
             app:layout_constraintBottom_toBottomOf="@+id/tv_card_status"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_card_status" />
+            app:layout_constraintTop_toTopOf="@+id/tv_card_status"
+            app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

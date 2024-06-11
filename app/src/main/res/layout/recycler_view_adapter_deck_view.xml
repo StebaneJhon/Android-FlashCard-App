@@ -88,14 +88,15 @@
                 app:layout_constraintVertical_bias="1.0"
                 tools:ignore="SmallSp" />
 
-            <ImageButton
+            <Button
                 android:id="@+id/popup_menu_BT"
-                android:layout_width="40dp"
-                android:layout_height="25dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
                 android:layout_below="@+id/cardsSum"
                 android:layout_alignParentStart="true"
                 android:background="@color/transparent"
-                android:src="@drawable/icon_popup_menu"
+                app:icon="@drawable/icon_popup_menu"
                 app:layout_constraintBottom_toBottomOf="@+id/deckNameTV"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/deckNameTV" />

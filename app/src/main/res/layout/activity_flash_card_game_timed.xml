@@ -102,6 +102,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/hint_flash_card_game_flip" />
 
+            <Button
+                android:id="@+id/bt_card_bottom_speak"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="39dp"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/bt_description_button_speak"
+                app:icon="@drawable/icon_speak"
+                app:iconSize="@dimen/icon_base"
+                app:iconTint="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_card_bottom_flip_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_card_bottom_flip_hint" />
+
             <TextView
                 android:id="@+id/tv_card_bottom_timer"
                 android:layout_width="wrap_content"
@@ -261,6 +274,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/hint_flash_card_game_flip" />
 
+                <Button
+                    android:id="@+id/bt_card_back_speak"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="39dp"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/bt_description_button_speak"
+                    app:icon="@drawable/icon_speak"
+                    app:iconSize="@dimen/icon_base"
+                    app:iconTint="?colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_flip_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_flip_hint" />
+
                 <TextView
                     android:id="@+id/tv_card_back_timer"
                     android:layout_width="wrap_content"
@@ -351,6 +377,19 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/hint_flash_card_game_flip" />
+
+                <Button
+                    android:id="@+id/bt_card_front_speak"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="39dp"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/bt_description_button_speak"
+                    app:icon="@drawable/icon_speak"
+                    app:iconSize="@dimen/icon_base"
+                    app:iconTint="?colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_card_front_flip_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_card_front_flip_hint" />
 
                 <TextView
                     android:id="@+id/tv_card_front_timer"

@@ -18,12 +18,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/space_sm"
             android:fontFamily="@font/open_sans"
             android:text="@string/text_on_no_more_cards_error"
             android:textAlignment="center"
             android:textColor="?colorOnError"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_base" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_unable_unknown_card_only"
@@ -32,8 +32,8 @@
             android:backgroundTint="?colorOnError"
             android:text="@string/bt_unable_unknown_cards_only_text"
             android:textColor="@color/red100"
-            app:cornerRadius="6dp"
-            android:layout_marginTop="10dp"
+            app:cornerRadius="@dimen/bt_radius"
+            android:layout_marginTop="@dimen/space_sm"
             android:fontFamily="@font/open_sans"/>
 
     <com.google.android.material.button.MaterialButton
@@ -43,7 +43,7 @@
         android:backgroundTint="?colorOnError"
         android:text="@string/back_to_deck_text_button"
         android:textColor="@color/red100"
-        app:cornerRadius="6dp"
+        app:cornerRadius="@dimen/bt_radius"
         android:fontFamily="@font/open_sans"/>
 
 </LinearLayout>

@@ -38,6 +38,19 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <Button
+                android:id="@+id/bt_card_speak_on_wrong"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="@dimen/icon_card_top_width"
+                android:layout_height="@dimen/icon_card_top_height"
+                android:contentDescription="@string/bt_description_button_speak"
+                app:icon="@drawable/icon_speak"
+                app:iconSize="@dimen/icon_base"
+                app:iconTint="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_multi_choice_quiz_front_progression_on_wrong_answer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_multi_choice_quiz_front_progression_on_wrong_answer" />
+
 
             <TextView
                 android:id="@+id/tv_on_card_word_on_wrong_answer"
@@ -150,6 +163,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <Button
+                android:id="@+id/bt_card_front_speak"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="@dimen/icon_card_top_width"
+                android:layout_height="@dimen/icon_card_top_height"
+                android:contentDescription="@string/bt_description_button_speak"
+                app:icon="@drawable/icon_speak"
+                app:iconSize="@dimen/icon_base"
+                app:iconTint="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_multi_Choice_quiz_front_progression"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_multi_Choice_quiz_front_progression" />
 
             <TextView
                 android:id="@+id/tv_on_card_word"

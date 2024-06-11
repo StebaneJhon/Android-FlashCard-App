@@ -8,6 +8,8 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -21,10 +23,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -36,15 +38,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.Model.toExternal
-import com.example.flashcard.backend.Model.toLocal
-import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.databinding.FragmentCardBinding
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
@@ -56,8 +53,11 @@ import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.UiState
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.util.Locale
+
 
 class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
@@ -65,6 +65,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
     private val binding get() = _binding!!
     private var appContext: Context? = null
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
+    lateinit var tts: TextToSpeech
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -449,7 +450,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         binding.cardsActivityProgressBar.isVisible = false
         binding.onNoDeckTextError.isVisible = false
         binding.cardRecyclerView.isVisible = true
-        recyclerViewAdapter = appContext?.let {
+        recyclerViewAdapter = appContext?.let { it ->
             CardsRecyclerViewAdapter(
                 it,
                 cardList,
@@ -463,6 +464,19 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 },
                 {selectedCard ->
                     cardViewModel.deleteCard(selectedCard, deck)
+                },
+                {text ->
+                    text?.let {t ->
+                        //val a = Locale.getAvailableLocales()
+                        readText(t, deck.deckFirstLanguage!!)
+                    }
+                },
+                {text ->
+                    text?.let {t ->
+                        //val a = Locale.getAvailableLocales()
+                        readText(t, deck.deckSecondLanguage!!)
+                    }
+
                 })
         }!!
 
@@ -479,6 +493,52 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
             setHasFixedSize(true)
             layoutManager = gridLayoutManager
         }
+    }
+
+    fun readText(textAndView: TextClickedModel, language: String) {
+
+        val text = textAndView.text
+        val view = textAndView.view
+        val textColor = view.textColors
+        val onReadColor = MaterialColors.getColor(appContext!!, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+
+        val speechListener = object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                view.setTextColor(onReadColor)
+            }
+
+            override fun onDone(utteranceId: String?) {
+                view.setTextColor(textColor)
+            }
+
+            override fun onError(utteranceId: String?) {
+                TODO("Not yet implemented")
+            }
+        }
+
+        val params = Bundle()
+
+        tts = TextToSpeech(appContext ,  TextToSpeech.OnInitListener {
+            when (it) {
+                TextToSpeech.SUCCESS -> {
+                    if (tts.isSpeaking) {
+                        tts.stop()
+                        tts.shutdown()
+                    } else {
+                        tts.language = Locale.forLanguageTag(TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!)
+                        tts.setSpeechRate(1.0f)
+                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+                        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
+                    }
+                }
+                 else -> {
+                     Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                 }
+            }
+        })
+
+        tts.setOnUtteranceProgressListener(speechListener)
+
     }
 
     private fun getSpanSize(

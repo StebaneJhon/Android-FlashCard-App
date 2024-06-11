@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.annotation.MenuRes
@@ -34,6 +35,8 @@ class CardsRecyclerViewAdapter(
     private val fullScreenClickListener: (ImmutableCard?) -> Unit,
     private val editCardClickListener: (ImmutableCard?) -> Unit,
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
+    private val onCardContentClicked: (TextClickedModel) -> Unit,
+    private val onCardDefinitionClicked: (TextClickedModel) -> Unit,
 ) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -52,7 +55,9 @@ class CardsRecyclerViewAdapter(
             boxLevels,
             fullScreenClickListener,
             editCardClickListener,
-            deleteCardClickListener
+            deleteCardClickListener,
+            onCardContentClicked,
+            onCardDefinitionClicked,
         )
     }
 
@@ -65,9 +70,10 @@ class CardsRecyclerViewAdapter(
         private val cardDescription2: TextView = view.findViewById(R.id.tv_card_description2)
         private val cardDescription3: TextView = view.findViewById(R.id.tv_card_description3)
         private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
-        private val popUpBT: ImageButton = view.findViewById(R.id.pupUpBT)
+        private val popUpBT: Button = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
         private val cvContainerCard: ConstraintLayout = view.findViewById(R.id.cl_container_card)
+        private val cardDescriptionError: TextView = view.findViewById(R.id.tv_card_description_error)
 
         private val ICON_MARGIN = 5
 
@@ -78,7 +84,9 @@ class CardsRecyclerViewAdapter(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             fullScreenClickListener: (ImmutableCard?) -> Unit,
             editCardClickListener: (ImmutableCard?) -> Unit,
-            deleteCardClickListener: (ImmutableCard?) -> Unit
+            deleteCardClickListener: (ImmutableCard?) -> Unit,
+            onCardContentClicked: (TextClickedModel) -> Unit,
+            onCardDefinitionClicked: (TextClickedModel) -> Unit,
         ) {
             //val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
             val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
@@ -94,28 +102,49 @@ class CardsRecyclerViewAdapter(
             onCardText.text = card.cardContent?.content
 
             val correctDefinition = getCorrectDefinition(card.cardDefinition)
-            when (correctDefinition?.size) {
+            val definitionTexts = cardDefinitionsToStrings(correctDefinition)
+
+            when (definitionTexts.size) {
+                0 -> {
+                    cardDescription1.visibility = View.GONE
+                    cardDescriptionError.text = context.getString(R.string.error_no_card_definition)
+                    cardDescriptionError.visibility = View.VISIBLE
+                    cardDescription2.visibility = View.GONE
+                    cardDescription3.visibility = View.GONE
+                }
                 1 -> {
+                    cardDescriptionError.visibility = View.GONE
                     cardDescription1.visibility = View.VISIBLE
-                    cardDescription1.text = correctDefinition[0].definition
+                    cardDescription1.text = definitionTexts[0]
                     cardDescription2.visibility = View.GONE
                     cardDescription3.visibility = View.GONE
                 }
                 2 -> {
+                    cardDescriptionError.visibility = View.GONE
                     cardDescription1.visibility = View.VISIBLE
-                    cardDescription1.text = correctDefinition[0].definition
+                    cardDescription1.text = definitionTexts[0]
                     cardDescription2.visibility = View.VISIBLE
-                    cardDescription2.text = correctDefinition[1].definition
+                    cardDescription2.text = definitionTexts[1]
                     cardDescription3.visibility = View.GONE
                 }
-                else -> {
+                3 -> {
+                    cardDescriptionError.visibility = View.GONE
                     cardDescription1.visibility = View.VISIBLE
-                    cardDescription1.text = correctDefinition?.get(0)?.definition
+                    cardDescription1.text = definitionTexts[0]
                     cardDescription2.visibility = View.VISIBLE
-                    cardDescription2.text = correctDefinition?.get(1)?.definition
+                    cardDescription2.text = definitionTexts[1]
                     cardDescription3.visibility = View.VISIBLE
-                    cardDescription3.text = correctDefinition?.get(2)?.definition
+                    cardDescription3.text = definitionTexts[2]
                 }
+                else -> {
+                     cardDescriptionError.visibility = View.GONE
+                     cardDescription1.visibility = View.VISIBLE
+                     cardDescription1.text = definitionTexts[0]
+                     cardDescription2.visibility = View.VISIBLE
+                     cardDescription2.text = definitionTexts[1]
+                     cardDescription3.visibility = View.VISIBLE
+                     cardDescription3.text = definitionTexts[2]
+                 }
             }
             //cardDescription.text = card?.cardDefinition?.first()?.definition
 
@@ -134,6 +163,31 @@ class CardsRecyclerViewAdapter(
                 //TODO: read card content & definition
             }
 
+            onCardText.setOnClickListener {it as TextView
+                onCardContentClicked(TextClickedModel(it.text.toString().lowercase(), it))
+            }
+
+            cardDescription1.setOnClickListener { it as TextView
+                onCardDefinitionClicked(TextClickedModel(it.text.toString().lowercase(), it))
+            }
+            cardDescription2.setOnClickListener { it as TextView
+                onCardDefinitionClicked(TextClickedModel(it.text.toString().lowercase(), it))
+            }
+            cardDescription3.setOnClickListener { it as TextView
+                onCardDefinitionClicked(TextClickedModel(it.text.toString().lowercase(), it))
+            }
+
+
+        }
+
+        private fun cardDefinitionsToStrings(cardDefinitions: List<CardDefinition>?): List<String> {
+            val definitionStrings = mutableListOf<String>()
+            cardDefinitions?.let { defins ->
+                defins.forEach {
+                    definitionStrings.add(it.definition!!)
+                }
+            }
+            return definitionStrings
         }
 
         private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {

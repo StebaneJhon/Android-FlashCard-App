@@ -63,7 +63,7 @@ class DecksRecyclerViewAdapter(
         private val deckRoot: MaterialCardView? = view.findViewById(R.id.deckRoot)
         private val deckLanguages: TextView? = view.findViewById(R.id.languages)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
-        private val popupMenuBT: ImageButton? = view.findViewById(R.id.popup_menu_BT)
+        private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
         private val startQuizButton: Button? = view.findViewById(R.id.startGameButton)
 
         private val ICON_MARGIN = 5

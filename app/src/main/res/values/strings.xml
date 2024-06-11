@@ -120,5 +120,7 @@
     <string name="tv_add_new_card">Add new card</string>
     <string name="tv_update_card">Update card</string>
     <string name="bt_action">Action</string>
-
+    <string name="error_no_card_definition">No definition found</string>
+    <string name="error_read">Failed to read this text</string>
+    <string name="bt_description_button_speak">Button speak</string>
 </resources>
