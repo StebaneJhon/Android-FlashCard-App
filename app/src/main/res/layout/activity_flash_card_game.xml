@@ -47,7 +47,7 @@
             android:padding="@dimen/space_lg">
 
             <TextView
-                android:id="@+id/tv_card_bottom_orientation"
+                android:id="@+id/tv_flash_card_bottom_progression"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
@@ -57,16 +57,18 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="@string/tx_flash_card_game_card_orientation_front" />
 
-            <TextView
-                android:id="@+id/tv_flash_card_bottom_progression"
-                android:layout_width="wrap_content"
+            <Button
+                android:id="@+id/bt_card_bottom_speak"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="39dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:text="1/20"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
+                android:contentDescription="@string/bt_description_button_speak"
+                app:icon="@drawable/icon_speak"
+                app:iconSize="@dimen/icon_base"
+                app:iconTint="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_bottom_progression"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/tv_flash_card_bottom_progression"/>
 
 
             <TextView
@@ -99,19 +101,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/hint_flash_card_game_flip" />
-
-            <Button
-                android:id="@+id/bt_card_bottom_speak"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="39dp"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/bt_description_button_speak"
-                app:icon="@drawable/icon_speak"
-                app:iconSize="@dimen/icon_base"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_card_bottom_flip_hint"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_card_bottom_flip_hint" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -151,7 +140,7 @@
                 android:padding="@dimen/space_lg">
 
                 <TextView
-                    android:id="@+id/tv_card_back_orientation"
+                    android:id="@+id/tv_flash_card_back_progression"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans"
@@ -159,19 +148,20 @@
                     android:textSize="@dimen/text_sm"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="@string/tx_flash_card_game_card_orientation_back" />
+                    tools:text="1/20" />
 
-                <TextView
-                    android:id="@+id/tv_flash_card_back_progression"
-                    android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/bt_card_back_speak"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="39dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_card_back_orientation"
+                    android:contentDescription="@string/bt_description_button_speak"
+                    app:icon="@drawable/icon_speak"
+                    app:iconSize="@dimen/icon_base"
+                    app:iconTint="?colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_back_progression"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_card_back_orientation"
-                    android:text="1/20" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_flash_card_back_progression" />
 
 
                 <TextView
@@ -189,7 +179,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_card_back_orientation"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_flash_card_back_progression"
                     tools:text="1. What is the capital of Madagascar?" />
 
                 <TextView
@@ -259,19 +249,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/hint_flash_card_game_flip" />
 
-                <Button
-                    android:id="@+id/bt_card_back_speak"
-                    style="?attr/materialIconButtonStyle"
-                    android:layout_width="39dp"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/bt_description_button_speak"
-                    app:icon="@drawable/icon_speak"
-                    app:iconSize="@dimen/icon_base"
-                    app:iconTint="?colorOnSurface"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_flip_hint"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_flip_hint" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -296,7 +273,7 @@
                 android:padding="@dimen/space_lg">
 
                 <TextView
-                    android:id="@+id/tv_card_front_orientation"
+                    android:id="@+id/tv_flash_card_front_progression"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans"
@@ -304,19 +281,21 @@
                     android:textSize="@dimen/text_sm"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:text="@string/tx_flash_card_game_card_orientation_front" />
-
-                <TextView
-                    android:id="@+id/tv_flash_card_front_progression"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_card_front_orientation"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_card_front_orientation"
                     tools:text="1/20" />
+
+                <Button
+                    android:id="@+id/bt_card_front_speak"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="39dp"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/bt_description_button_speak"
+                    app:icon="@drawable/icon_speak"
+                    app:iconSize="@dimen/icon_base"
+                    app:iconTint="?colorOnSurface"
+                    app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_front_progression"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tv_flash_card_front_progression"
+                     />
 
 
                 <TextView
@@ -334,7 +313,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tv_card_front_flip_hint"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_card_front_orientation"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_flash_card_front_progression"
                     tools:text="1. What is the capital of Madagascar?" />
 
                 <TextView
@@ -349,19 +328,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:text="@string/hint_flash_card_game_flip" />
-
-                <Button
-                    android:id="@+id/bt_card_front_speak"
-                    style="?attr/materialIconButtonStyle"
-                    android:layout_width="39dp"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/bt_description_button_speak"
-                    app:icon="@drawable/icon_speak"
-                    app:iconSize="@dimen/icon_base"
-                    app:iconTint="?colorOnSurface"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_card_front_flip_hint"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_card_front_flip_hint" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

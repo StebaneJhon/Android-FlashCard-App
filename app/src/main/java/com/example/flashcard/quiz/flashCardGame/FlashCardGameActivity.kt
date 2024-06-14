@@ -9,12 +9,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -26,6 +31,8 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.entities.CardDefinition
+import com.example.flashcard.card.TextClickedModel
+import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
@@ -45,6 +52,7 @@ import com.example.flashcard.util.UiState
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
 
@@ -65,6 +73,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
     private var dy: Float = 0.0f
 
     private var modalBottomSheet: MiniGameSettingsSheet? = null
+    private lateinit var tts: TextToSpeech
 
     companion object {
         private val MIN_SWIPE_DISTANCE = -275
@@ -612,6 +621,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
         bindCardFrontAndBack(deckColorCode, onScreenCards, currentCardNumber, sumCardsInDeck)
 
+
     }
 
     private fun bindCardFrontAndBack(
@@ -675,7 +685,99 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
             "$currentCardNumber",
             "$sumCardsInDeck"
         )
+
+        binding.btCardFrontSpeak.setOnClickListener {
+            readText(listOf(onScreenCards.top.cardContent?.content!!), listOf(binding.tvQuizFront), viewModel.deck?.deckFirstLanguage!!)
+        }
+        binding.btCardBackSpeak.setOnClickListener {
+            val views = listOf(
+                binding.tvQuizBack1,
+                binding.tvQuizBack2,
+                binding.tvQuizBack3,
+            )
+            val definitions = cardDefinitionsToStrings(correctDefinitions)
+            readText(definitions, views, viewModel.deck?.deckSecondLanguage!!)
+        }
     }
+
+    private fun cardDefinitionsToStrings(definitions: List<CardDefinition>?): List<String> {
+        val correctAlternative = mutableListOf<String>()
+        definitions?.forEach {
+            correctAlternative.add(it.definition!!)
+        }
+        return  correctAlternative
+    }
+
+    private fun readText(
+        text: List<String>,
+        view: List<TextView>,
+        language: String
+    ) {
+
+        var position = 0
+        val textSum = text.size
+        val textColor = view[0].textColors
+        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+
+        val params = Bundle()
+
+        val speechListener = object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                view[position].setTextColor(onReadColor)
+            }
+
+            override fun onDone(utteranceId: String?) {
+                view[position].setTextColor(textColor)
+                position += 1
+                if (position < textSum) {
+                    speak(language, params, text, position, this)
+                } else {
+                    position = 0
+                    return
+                }
+            }
+
+            override fun onError(utteranceId: String?) {
+                TODO("Not yet implemented")
+            }
+        }
+
+        speak(language, params, text, position, speechListener)
+
+    }
+
+    private fun speak(
+        language: String,
+        params: Bundle,
+        text: List<String>,
+        position: Int,
+        speechListener: UtteranceProgressListener
+    ) {
+        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
+            when (it) {
+                TextToSpeech.SUCCESS -> {
+                    if (tts.isSpeaking) {
+                        tts.stop()
+                        tts.shutdown()
+                    } else {
+                        tts.language = Locale.forLanguageTag(
+                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+                        )
+                        tts.setSpeechRate(1.0f)
+                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+                        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+                    }
+                }
+
+                else -> {
+                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        tts.setOnUtteranceProgressListener(speechListener)
+    }
+
 
     private fun bindCardBottom(
         onFlippedBackgroundColor: ColorStateList?,

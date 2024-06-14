@@ -495,7 +495,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    fun readText(textAndView: TextClickedModel, language: String) {
+    private fun readText(textAndView: TextClickedModel, language: String) {
 
         val text = textAndView.text
         val view = textAndView.view
