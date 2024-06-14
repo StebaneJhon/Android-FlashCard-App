@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +19,8 @@ class MultiChoiceQuizGameAdapter(
     val context: Context,
     val cardList: List<MultiChoiceGameCardModel>,
     val deckColorCode: String,
-    private val userChoiceModel: (MultiChoiceQuizGameUserChoiceModel) -> Unit
+    private val userChoiceModel: (MultiChoiceQuizGameUserChoiceModel) -> Unit,
+    private val onSpeak: (SpeakModel) -> Unit,
 ): RecyclerView.Adapter<MultiChoiceQuizGameAdapter.MultiChoiceQuizGameAdapterViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -37,7 +40,8 @@ class MultiChoiceQuizGameAdapter(
             position.plus(1),
             cardList.size,
             userChoiceModel,
-            deckColorCode
+            deckColorCode,
+            onSpeak
         )
     }
 
@@ -57,6 +61,7 @@ class MultiChoiceQuizGameAdapter(
         val btAlternative2OnWrongCard: MaterialButton = view.findViewById(R.id.bt_alternative2_on_wrong_answer)
         val btAlternative3OnWrongCard: MaterialButton = view.findViewById(R.id.bt_alternative3_on_wrong_answer)
         val btAlternative4OnWrongCard: MaterialButton = view.findViewById(R.id.bt_alternative4_on_wrong_answer)
+        val btSpeakFront: Button = view.findViewById(R.id.bt_card_front_speak)
 
         fun bind(
             context: Context,
@@ -64,7 +69,8 @@ class MultiChoiceQuizGameAdapter(
             cardNumber: Int,
             cardSum: Int,
             userChoiceModel: (MultiChoiceQuizGameUserChoiceModel) -> Unit,
-            deckColorCode: String
+            deckColorCode: String,
+            onSpeak: (SpeakModel) -> Unit
         ) {
 
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
@@ -134,6 +140,29 @@ class MultiChoiceQuizGameAdapter(
             btAlternative2OnWrongCard.text = card.alternative2
             btAlternative3OnWrongCard.text = card.alternative3
             btAlternative4OnWrongCard.text = card.alternative4
+
+            btSpeakFront.setOnClickListener {
+                val views = listOf(
+                    tvOnCardWord,
+                    btAlternative1,
+                    btAlternative2,
+                    btAlternative3,
+                    btAlternative4,
+                )
+                val texts = listOf(
+                    card.onCardWord,
+                    card.alternative1,
+                    card.alternative2,
+                    card.alternative3,
+                    card.alternative4,
+                )
+                onSpeak(
+                    SpeakModel(
+                        text = texts,
+                        views = views,
+                        tvOnCardWord.textColors
+                    ))
+            }
 
         }
 
