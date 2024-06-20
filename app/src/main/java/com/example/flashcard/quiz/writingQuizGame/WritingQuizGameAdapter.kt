@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -20,7 +21,8 @@ class WritingQuizGameAdapter(
     val context: Context,
     val cardList: List<WritingQuizGameModel>,
     val deckColorCode: String,
-    private val userAnswerAndView: (WritingQuizGameUserResponseModel) -> Unit
+    private val userAnswerAndView: (WritingQuizGameUserResponseModel) -> Unit,
+    private val onSpeak: (WritingQuizSpeakModel) -> Unit,
 ): RecyclerView.Adapter<WritingQuizGameAdapter.WritingQuizGameAdapterViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -40,7 +42,8 @@ class WritingQuizGameAdapter(
             position.plus(1),
             cardList.size,
             userAnswerAndView,
-            deckColorCode
+            deckColorCode,
+            onSpeak,
         )
     }
 
@@ -58,6 +61,7 @@ class WritingQuizGameAdapter(
         private val cvCardOnWrongAnswer: MaterialCardView = itemView.findViewById(R.id.cv_card_on_wrong_answer)
         private val tvProgressionFrontCard: TextView = itemView.findViewById(R.id.tv_writing_quiz_front_progression)
         private val tvProgressionOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_writing_quiz_progression_on_wrong_answer)
+        private val btSpeak: Button = itemView.findViewById(R.id.bt_card_front_speak)
 
         fun bind(
             context: Context,
@@ -65,7 +69,8 @@ class WritingQuizGameAdapter(
             cardNumber: Int,
             cardSum: Int,
             userAnswer: (WritingQuizGameUserResponseModel) -> Unit,
-            deckColorCode: String
+            deckColorCode: String,
+            onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
 
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -95,6 +100,16 @@ class WritingQuizGameAdapter(
                 } else {
                     false
                 }
+            }
+
+            btSpeak.setOnClickListener {
+                onSpeak(
+                    WritingQuizSpeakModel(
+                        text = card.onCardWord,
+                        views = tvOnCardWord,
+                        tvOnCardWord.textColors,
+                    )
+                )
             }
 
         }

@@ -3,13 +3,19 @@ package com.example.flashcard.quiz.writingQuizGame
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.speech.tts.TextToSpeech
+import android.speech.tts.UtteranceProgressListener
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +26,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.relations.DeckWithCards
+import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
@@ -27,9 +34,12 @@ import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
 
@@ -48,6 +58,8 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
+
+    private lateinit var tts: TextToSpeech
 
 
     companion object {
@@ -201,18 +213,103 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     ) ?: CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
-        val writingQuizGameAdapter = WritingQuizGameAdapter(this, cards, viewModel.deck.deckColorCode!!) {
-            if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer)) {
-                if (viewModel.swipe()) {
-                    binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+        val writingQuizGameAdapter = WritingQuizGameAdapter(
+            this,
+            cards,
+            viewModel.deck.deckColorCode!!,
+            {
+                if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer)) {
+                    if (viewModel.swipe()) {
+                        binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                    } else {
+                        onQuizComplete()
+                    }
                 } else {
-                    onQuizComplete()
+                    onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
                 }
-            } else {
-                onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
+            },
+            {dataToRead ->
+                readText(
+                    dataToRead.text,
+                    dataToRead.views,
+                    dataToRead.originalTextColor,
+                    viewModel.deck.deckFirstLanguage!!
+                )
+            })
+        binding.vpCardHolder.adapter = writingQuizGameAdapter
+    }
+
+    private fun readText(
+        text: String,
+        view: View,
+        viewColor: ColorStateList,
+        language: String,
+    ) {
+        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+
+        val params = Bundle()
+
+        val speechListener = object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                onReading(view, onReadColor)
+            }
+
+            override fun onDone(utteranceId: String?) {
+                onReadingStop(view, viewColor)
+            }
+
+            override fun onError(utteranceId: String?) {
+                TODO("Not yet implemented")
             }
         }
-        binding.vpCardHolder.adapter = writingQuizGameAdapter
+
+        speak(language, params, text, speechListener)
+
+    }
+
+    private fun onReading(
+        view: View,
+        onReadColor: Int,
+    ) {
+        (view as TextView).setTextColor(onReadColor)
+    }
+
+    private fun onReadingStop(
+        view: View,
+        onReadColor: ColorStateList
+    ) {
+        (view as TextView).setTextColor(onReadColor)
+    }
+
+    private fun speak(
+        language: String,
+        params: Bundle,
+        text: String,
+        speechListener: UtteranceProgressListener
+    ) {
+        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
+            when (it) {
+                TextToSpeech.SUCCESS -> {
+                    if (tts.isSpeaking) {
+                        tts.stop()
+                        tts.shutdown()
+                    } else {
+                        tts.language = Locale.forLanguageTag(
+                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+                        )
+                        tts.setSpeechRate(1.0f)
+                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+                        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
+                    }
+                }
+
+                else -> {
+                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        tts.setOnUtteranceProgressListener(speechListener)
     }
 
     private fun onWrongAnswer(

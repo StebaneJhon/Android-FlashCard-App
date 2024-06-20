@@ -336,53 +336,59 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageButton
+    <Button
         android:id="@+id/bt_not_Know"
+        style="?attr/materialIconButtonFilledTonalStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_margin="@dimen/space_sm"
-        android:background="@drawable/bt_quiz_action"
-        android:backgroundTint="@color/red500"
+        android:backgroundTint="@color/red100"
+        android:contentDescription="@string/known_button_text"
         android:padding="@dimen/space_xl"
-        android:src="@drawable/icon_exit"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:icon="@drawable/icon_exit"
+        app:iconTint="@color/red700"
+        app:rippleColor="@color/red400"
+        app:layout_constraintBottom_toBottomOf="@+id/cl_on_screen_card_root"
         app:layout_constraintEnd_toStartOf="@+id/bt_rewind"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        android:contentDescription="@string/known_button_text" />
+        app:layout_constraintTop_toTopOf="@+id/bt_rewind" />
 
-    <ImageButton
+    <Button
         android:id="@+id/bt_rewind"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/bt_quiz_action"
-        android:backgroundTint="?colorSurfaceContainerHighest"
-        android:padding="@dimen/space_xl"
-        android:layout_margin="@dimen/space_sm"
-        android:src="@drawable/icon_rewind"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/bt_Know"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/bt_not_Know"
-        android:contentDescription="@string/bt_rewind" />
-
-    <ImageButton
-        android:id="@+id/bt_Know"
+        style="?attr/materialIconButtonFilledTonalStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_margin="@dimen/space_sm"
-        android:background="@drawable/bt_quiz_action"
-        android:backgroundTint="@color/green500"
+        android:backgroundTint="?colorSurfaceContainerLow"
+        android:contentDescription="@string/bt_rewind"
         android:padding="@dimen/space_xl"
-        android:src="@drawable/icon_check"
+        app:icon="@drawable/icon_rewind"
+        app:iconTint="?colorPrimary"
+        app:rippleColor="?colorSurfaceContainerHighest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_Know"
+        style="?attr/materialIconButtonFilledTonalStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_margin="@dimen/space_sm"
+        android:backgroundTint="@color/green100"
+        android:contentDescription="@string/no_button_text"
+        android:padding="@dimen/space_xl"
+        app:icon="@drawable/icon_check"
+        app:iconTint="@color/green700"
+        app:rippleColor="@color/green400"
+        app:layout_constraintBottom_toBottomOf="@+id/cl_on_screen_card_root"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/bt_rewind"
-        android:contentDescription="@string/no_button_text" />
+        app:layout_constraintTop_toTopOf="@+id/bt_rewind" />
 
     <LinearLayout
         android:id="@+id/ly_game_review_container"
