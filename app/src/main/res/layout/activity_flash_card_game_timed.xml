@@ -66,6 +66,7 @@
                 android:contentDescription="@string/bt_description_button_speak"
                 app:icon="@drawable/icon_speak"
                 app:iconSize="@dimen/icon_base"
+                app:rippleColor="@color/transparent"
                 app:iconTint="?colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_bottom_progression"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -171,6 +172,7 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_speak"
+                    app:rippleColor="@color/transparent"
                     app:iconSize="@dimen/icon_base"
                     app:iconTint="?colorOnSurface"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_back_progression"
@@ -319,6 +321,7 @@
                     app:icon="@drawable/icon_speak"
                     app:iconSize="@dimen/icon_base"
                     app:iconTint="?colorOnSurface"
+                    app:rippleColor="@color/transparent"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_front_progression"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/tv_flash_card_front_progression" />

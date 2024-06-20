@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainerHighest"
+            android:backgroundTint="?colorSurfaceContainerHigh"
             android:layout_margin="@dimen/space_sm"
             android:padding="@dimen/space_lg">
 
@@ -47,12 +47,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Flash Card"/>
 
-            <ImageButton
+            <Button
                 android:id="@+id/bt_speak_back"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="30dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="39dp"
                 android:layout_height="20dp"
-                android:src="@drawable/icon_speak"
+                app:icon="@drawable/icon_speak"
+                app:iconSize="@dimen/icon_base"
+                app:rippleColor="@color/transparent"
+                app:iconTint="?colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/bt_help_button_text" />
@@ -118,12 +121,15 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Flash Card"/>
 
-            <ImageButton
+            <Button
                 android:id="@+id/bt_speak"
-                style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="30dp"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="39dp"
                 android:layout_height="20dp"
-                android:src="@drawable/icon_speak"
+                app:icon="@drawable/icon_speak"
+                app:iconSize="@dimen/icon_base"
+                app:rippleColor="@color/transparent"
+                app:iconTint="?colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:contentDescription="@string/bt_help_button_text" />

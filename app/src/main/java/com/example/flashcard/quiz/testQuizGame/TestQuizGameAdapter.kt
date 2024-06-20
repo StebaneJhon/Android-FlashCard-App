@@ -3,9 +3,11 @@ package com.example.flashcard.quiz.testQuizGame
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.TextView
@@ -13,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
+import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardType.FLASHCARD
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
@@ -25,7 +28,9 @@ class TestQuizGameAdapter(
     val context: Context,
     val cardList: List<ModelCard?>,
     val deckColor: String,
-    private val cardOnClick: (UserResponseModel) -> Unit
+    val deck: ImmutableDeck,
+    private val cardOnClick: (UserResponseModel) -> Unit,
+    private val onSpeak: (TestQuizSpeakModel) -> Unit,
 ): RecyclerView.Adapter<TestQuizGameAdapter.TestQuizGameAdapterViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -46,7 +51,9 @@ class TestQuizGameAdapter(
             position,
             cardList.size,
             deckColor,
-            cardOnClick
+            deck,
+            cardOnClick,
+            onSpeak,
         )
     }
 
@@ -61,8 +68,8 @@ class TestQuizGameAdapter(
         private val tvBackProgression: TextView = view.findViewById(R.id.tv_back_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val tvCardTypeBack: TextView = view.findViewById(R.id.tv_card_type_back)
-        private val btRead: ImageButton = view.findViewById(R.id.bt_speak)
-        private val btSpeakBack: ImageButton = view.findViewById(R.id.bt_speak_back)
+        private val btSpeak: Button = view.findViewById(R.id.bt_speak)
+        private val btSpeakBack: Button = view.findViewById(R.id.bt_speak_back)
         private val tvContent: TextView = view.findViewById(R.id.tv_content)
         private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
         private val btAlternative1: MaterialButton = view.findViewById(R.id.bt_alternative1)
@@ -81,7 +88,9 @@ class TestQuizGameAdapter(
             cardPosition: Int,
             cardSum: Int,
             deckColorCode: String,
-            cardOnClick: (UserResponseModel) -> Unit
+            deck: ImmutableDeck,
+            cardOnClick: (UserResponseModel) -> Unit,
+            onSpeak: (TestQuizSpeakModel) -> Unit,
         ) {
 
             if (modelCard!!.isFlipped) {
@@ -156,6 +165,31 @@ class TestQuizGameAdapter(
                 flipCard(modelCard.isFlipped)
             }
 
+            btSpeak.setOnClickListener {
+                val views = listOf(tvContent)
+                val texts = listOf(card?.cardContent?.content!!)
+                onSpeak(
+                    TestQuizSpeakModel(
+                        text = texts,
+                        views = views,
+                        tvContent.textColors,
+                        deck.deckFirstLanguage!!
+                    )
+                )
+            }
+            btSpeakBack.setOnClickListener {
+                val views = listOf(tvDefinition)
+                val texts = listOf(card?.cardDefinition?.get(0)?.definition!!)
+                onSpeak(
+                    TestQuizSpeakModel(
+                        text = texts,
+                        views = views,
+                        tvDefinition.textColors,
+                        deck.deckSecondLanguage!!
+                    )
+                )
+            }
+
         }
 
         fun onTrueOrFalseCard(
@@ -180,7 +214,18 @@ class TestQuizGameAdapter(
             btAlternative3.isVisible = false
             btAlternative4.isVisible = false
 
-
+            btSpeak.setOnClickListener {
+                val views = listOf(tvContent)
+                val texts = listOf(card?.cardContent?.content!!)
+                onSpeak(
+                    TestQuizSpeakModel(
+                        text = texts,
+                        views = views,
+                        tvContent.textColors,
+                        deck.deckFirstLanguage!!
+                    )
+                )
+            }
 
         }
 
@@ -230,6 +275,25 @@ class TestQuizGameAdapter(
                     }
                     btAlternative3.isVisible = false
                     btAlternative4.isVisible = false
+
+                    val texts = listOf(
+                        card?.cardContent?.content!!,
+                        answers[0].definition!!,
+                        answers[1].definition!!
+                    )
+                    val views = listOf(
+                        tvContent,
+                        btAlternative1,
+                        btAlternative2
+                    )
+
+                    frontSpeak(
+                        views,
+                        texts,
+                        tvContent.textColors,
+                        deck.deckFirstLanguage!!
+                    )
+
                 }
                 3 -> {
                     btAlternative1.apply {
@@ -248,6 +312,25 @@ class TestQuizGameAdapter(
                         onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
                     }
                     btAlternative4.isVisible = false
+                    val texts = listOf(
+                        card?.cardContent?.content!!,
+                        answers[0].definition!!,
+                        answers[1].definition!!,
+                        answers[2].definition!!,
+                    )
+                    val views = listOf(
+                        tvContent,
+                        btAlternative1,
+                        btAlternative2,
+                        btAlternative3,
+                    )
+
+                    frontSpeak(
+                        views,
+                        texts,
+                        tvContent.textColors,
+                        deck.deckFirstLanguage!!
+                    )
                 }
                 4 -> {
                     btAlternative1.apply {
@@ -270,6 +353,28 @@ class TestQuizGameAdapter(
                         text = answers[3].definition
                         onAlternativeClicked(answers[3], cardOnClick, modelCard, cardPosition)
                     }
+                    val texts = listOf(
+                        card?.cardContent?.content!!,
+                        answers[0].definition!!,
+                        answers[1].definition!!,
+                        answers[2].definition!!,
+                        answers[3].definition!!,
+                    )
+                    val views = listOf(
+                        tvContent,
+                        btAlternative1,
+                        btAlternative2,
+                        btAlternative3,
+                        btAlternative4,
+                    )
+
+                    frontSpeak(
+                        views,
+                        texts,
+                        tvContent.textColors,
+                        deck.deckFirstLanguage!!
+                    )
+
                 }
                 else -> {
                     onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
@@ -277,6 +382,24 @@ class TestQuizGameAdapter(
             }
 
 
+        }
+
+        private fun frontSpeak(
+            views: List<View>,
+            texts: List<String>,
+            textColor: ColorStateList,
+            language: String,
+        ) {
+            btSpeak.setOnClickListener {
+                onSpeak(
+                    TestQuizSpeakModel(
+                        text = texts,
+                        views = views,
+                        textColor,
+                        language
+                    )
+                )
+            }
         }
 
         private fun flipCard(isFlipped: Boolean) {
