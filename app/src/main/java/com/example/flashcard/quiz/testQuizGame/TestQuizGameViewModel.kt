@@ -61,7 +61,7 @@ class TestQuizGameViewModel(
 
     fun getOriginalCardList() = originalCardList
 
-    fun getProgress() = getMissedCardSum() * 100 / getModelCardsSum()
+    fun getProgress() = getKnownCardSum() * 100 / getModelCardsSum()
 
     fun getMissedCardSum() = missedCards.size
 
@@ -108,8 +108,9 @@ class TestQuizGameViewModel(
     }
 
     fun isNextCardAnswered(actualCardPosition: Int): Boolean {
-        if (actualCardPosition > modelCardList.size) {
-            val nextCard = modelCardList[actualCardPosition.plus(1)]
+        val nextCardPosition = actualCardPosition.plus(1)
+        if (nextCardPosition < modelCardList.size) {
+            val nextCard = modelCardList[nextCardPosition]
             return nextCard?.isAnswered ?: false
         }
         return false
