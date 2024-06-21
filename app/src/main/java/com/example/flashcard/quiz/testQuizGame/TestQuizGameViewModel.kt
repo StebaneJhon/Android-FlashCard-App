@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.util.CardLevel
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
@@ -21,7 +22,7 @@ class TestQuizGameViewModel(
 
     lateinit var cardList: MutableList<ImmutableCard?>
     private var originalCardList: List<ImmutableCard?>? = null
-    private lateinit var modelCardList: List<ModelCard?>
+    private lateinit var modelCardList: MutableList<ModelCard?>
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     var deck: ImmutableDeck? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
@@ -44,7 +45,7 @@ class TestQuizGameViewModel(
     }
 
     fun initModelCardList(gameCards: MutableList<ImmutableCard?>) {
-        modelCardList = gameCards.map { ModelCard(it) }
+        modelCardList = gameCards.map { ModelCard(it) }.toMutableList()
     }
 
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
@@ -80,6 +81,27 @@ class TestQuizGameViewModel(
                 _modelCards.value = UiState.Success(modelCardList)
             }
         }
+    }
+
+
+    fun sortCardsByLevel() {
+        modelCardList.sortBy { it?.cardDetails?.cardStatus }
+    }
+
+    fun shuffleCards() {
+        modelCardList.shuffle()
+    }
+
+    fun sortByCreationDate() {
+        modelCardList.sortBy { it?.cardDetails?.cardId }
+    }
+
+    fun unknownCardsOnly() {
+        modelCardList = modelCardList.filter { it?.cardDetails?.cardStatus == CardLevel.L1 } as MutableList<ModelCard?>
+    }
+
+    fun cardToReviseOnly() {
+        modelCardList = modelCardList.filter { spaceRepetitionHelper.isToBeRevised(it?.cardDetails!!) } as MutableList<ModelCard?>
     }
 
     fun onFlipCard(cardPosition: Int) {

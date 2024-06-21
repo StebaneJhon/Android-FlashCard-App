@@ -27,9 +27,11 @@ import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityTestQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
+import com.example.flashcard.settings.MiniGameSettingsSheet
 import com.example.flashcard.util.CardType.FLASHCARD
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
+import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.button.MaterialButton
@@ -39,7 +41,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class TestQuizGameActivity : AppCompatActivity() {
+class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
 
     private lateinit var binding: ActivityTestQuizGameBinding
     private val viewModel: TestQuizGameViewModel by viewModels {
@@ -47,6 +49,10 @@ class TestQuizGameActivity : AppCompatActivity() {
     }
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
+
+    private var modalBottomSheet: MiniGameSettingsSheet? = null
+    private var miniGamePref: SharedPreferences? = null
+    private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     private lateinit var oneOrMultipleAnswerCardModel: OneOrMultipleAnswerCardModel
     private lateinit var trueOrFalseCardModel: TrueOrFalseCardModel
@@ -68,6 +74,8 @@ class TestQuizGameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
+        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
@@ -96,6 +104,8 @@ class TestQuizGameActivity : AppCompatActivity() {
             setNavigationOnClickListener { finish() }
         }
 
+        applySettings()
+
         lifecycleScope.launch {
             viewModel
                 .modelCards
@@ -112,6 +122,70 @@ class TestQuizGameActivity : AppCompatActivity() {
                     }
                 }
         }
+
+        modalBottomSheet = MiniGameSettingsSheet()
+
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.mn_bt_settings) {
+                modalBottomSheet?.show(supportFragmentManager, MiniGameSettingsSheet.TAG)
+                true
+            } else {
+                false
+            }
+        }
+
+    }
+
+    override fun onSettingsApplied() {
+        applySettings()
+    }
+
+    private fun applySettings() {
+
+        val filter = miniGamePref?.getString(
+            FlashCardMiniGameRef.CHECKED_FILTER,
+            FlashCardMiniGameRef.FILTER_RANDOM
+        )
+
+        val unKnownCardFirst = miniGamePref?.getBoolean(
+            FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST,
+            true
+        )
+        val unKnownCardOnly = miniGamePref?.getBoolean(
+            FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY,
+            false
+        )
+
+        if (unKnownCardOnly == true) {
+            viewModel.cardToReviseOnly()
+        } else {
+            viewModel.restoreCardList()
+        }
+
+        when (filter) {
+            FlashCardMiniGameRef.FILTER_RANDOM -> {
+                viewModel.shuffleCards()
+            }
+
+            FlashCardMiniGameRef.FILTER_BY_LEVEL -> {
+                viewModel.sortCardsByLevel()
+            }
+
+            FlashCardMiniGameRef.FILTER_CREATION_DATE -> {
+                viewModel.sortByCreationDate()
+            }
+        }
+
+        if (unKnownCardFirst == true) {
+            viewModel.sortCardsByLevel()
+        }
+
+//        restartMultiChoiceQuiz()
+        viewModel.initTest()
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
+        viewModel.getCards()
+        binding.vpCardHolder.setCurrentItem(0, true)
 
     }
 

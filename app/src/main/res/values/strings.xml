@@ -44,13 +44,13 @@
     <string name="known_button_text">Known</string>
     <string name="no_button_text">known Not</string>
     <string name="total_cards_text">Total cards:</string>
-    <string name="multiple_choice_quiz_button_text">Multiple-Choice Quiz</string>
+    <string name="multiple_choice_quiz_button_text">Multiple-choice quiz</string>
     <string name="warning_icon">Warning Icon</string>
     <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
     <string name="bt_flip_text">Flip</string>
-    <string name="bt_start_writing_quiz_game_text">Writing Quiz Game</string>
+    <string name="bt_start_writing_quiz_game_text">Writing quiz</string>
     <string name="et_user_answer_hint">Write your anwere here</string>
-    <string name="bt_match_quiz_mode_text">Match Quiz Mode</string>
+    <string name="bt_match_quiz_mode_text">Matching cards</string>
     <string name="title_match_quiz_score">You did it!</string>
     <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
     <string name="bt_continue_match_quiz_score">%1$s CARDS LEFT CONTINUE ?</string>
@@ -63,10 +63,10 @@
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
     <string name="tx_flash_card_game_card_orientation_back">Back</string>
     <string name="hint_flash_card_game_flip">Tap to flip</string>
-    <string name="bt_flash_card_game_start">Flash Card Game</string>
+    <string name="bt_flash_card_game_start">Flash card</string>
     <string name="text_move">Move Sum:</string>
     <string name="text_missed_move_sum">Missed move:</string>
-    <string name="bt_text_flash_card_timed">Flash Card Timed</string>
+    <string name="bt_text_flash_card_timed">Timed flash card</string>
     <string name="tv_settings_title">Settings</string>
     <string name="rb_random_settings">Random</string>
     <string name="rb_creation_time_settings">Creation date</string>
@@ -104,7 +104,7 @@
     <string name="til_card_definition_4_hint">Card definition 4</string>
     <string name="cp_true_text">True</string>
     <string name="cp_false_text">False</string>
-    <string name="bt_test_quiz_game_text">Test Quiz Game</string>
+    <string name="bt_test_quiz_game_text">Quiz</string>
     <string name="on_card_clicked_hint">Choose on of the alternatives below</string>
     <string name="bt_rewind">REWIND</string>
     <string name="bt_text_add">Add</string>
@@ -123,4 +123,5 @@
     <string name="error_no_card_definition">No definition found</string>
     <string name="error_read">Failed to read this text</string>
     <string name="bt_description_button_speak">Button speak</string>
+    <string name="tv_quiz_mode_title">How do you want to review your cards?</string>
 </resources>
