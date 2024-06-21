@@ -102,6 +102,19 @@ class TestQuizGameViewModel(
         return Constant.SUCCEED
     }
 
+    fun onDrag(cardPosition: Int) {
+        val answeredCard = modelCardList[cardPosition]
+        answeredCard?.isAnswered = true
+    }
+
+    fun isNextCardAnswered(actualCardPosition: Int): Boolean {
+        if (actualCardPosition > modelCardList.size) {
+            val nextCard = modelCardList[actualCardPosition.plus(1)]
+            return nextCard?.isAnswered ?: false
+        }
+        return false
+    }
+
     fun restoreCardList() {
         cardList = originalCardList!!.toMutableList()
     }

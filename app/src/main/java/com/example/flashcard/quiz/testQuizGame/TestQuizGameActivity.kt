@@ -60,6 +60,8 @@ class TestQuizGameActivity : AppCompatActivity() {
     companion object {
         private const val TAG = "TestQuizGameActivity"
         const val DECK_ID_KEY = "Deck_id_key"
+        const val TIME_BEFORE_HIDING_ACTIONS = 200L
+        const val TIME_BEFORE_SHOWING_ACTIONS = 700L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +123,7 @@ class TestQuizGameActivity : AppCompatActivity() {
             data,
             viewModel.getDeckColorCode(),
             viewModel.deck!!,
-            { userResponseModel ->
+            {userResponseModel ->
                 when (userResponseModel.modelCard.cardDetails?.cardType) {
                     FLASHCARD -> {
                         onOneAndOneCardClicked(userResponseModel)
@@ -148,105 +150,9 @@ class TestQuizGameActivity : AppCompatActivity() {
         binding.vpCardHolder.adapter = testQuizGameAdapter
     }
 
-    private fun readText(
-        text: List<String>,
-        view: List<View>,
-        viewColor: ColorStateList,
-        firstLanguage: String,
-        secondLanguage: String
-    ) {
-
-        var position = 0
-        val textSum = text.size
-        //val textColor = view[0].textColors
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
-
-        val params = Bundle()
-
-        val speechListener = object : UtteranceProgressListener() {
-            override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor)
-            }
-
-            override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, viewColor)
-                position += 1
-                if (position < textSum) {
-                    speak(secondLanguage, params, text, position, this)
-                } else {
-                    position = 0
-                    return
-                }
-            }
-
-            override fun onError(utteranceId: String?) {
-                TODO("Not yet implemented")
-            }
-        }
-
-        speak(firstLanguage, params, text, position, speechListener)
-
-    }
-
-    private fun onReading(
-        position: Int,
-        view: List<View>,
-        onReadColor: Int,
-    ) {
-        if (position == 0) {
-            (view[position] as TextView).setTextColor(onReadColor)
-        } else {
-            (view[position] as MaterialButton).setTextColor(onReadColor)
-        }
-    }
-
-    private fun onReadingStop(
-        position: Int,
-        view: List<View>,
-        onReadColor: ColorStateList
-    ) {
-        if (position == 0) {
-            (view[position] as TextView).setTextColor(onReadColor)
-        } else {
-            (view[position] as MaterialButton).setTextColor(onReadColor)
-        }
-    }
-
-    private fun speak(
-        language: String,
-        params: Bundle,
-        text: List<String>,
-        position: Int,
-        speechListener: UtteranceProgressListener
-    ) {
-        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
-            when (it) {
-                TextToSpeech.SUCCESS -> {
-                    if (tts.isSpeaking) {
-                        tts.stop()
-                        tts.shutdown()
-                    } else {
-                        tts.language = Locale.forLanguageTag(
-                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
-                        )
-                        tts.setSpeechRate(1.0f)
-                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-                        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-                    }
-                }
-
-                else -> {
-                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
-        tts.setOnUtteranceProgressListener(speechListener)
-    }
-
     private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
-
         viewModel.onFlipCard(userResponseModel.modelCardPosition)
+        specifyActions(userResponseModel)
         optionsState(userResponseModel)
     }
 
@@ -268,6 +174,7 @@ class TestQuizGameActivity : AppCompatActivity() {
         if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
             optionsState(userResponseModel)
         }
+        specifyActions(userResponseModel)
     }
 
     private fun onOneOrMultiAnswerCardAnswered(userResponseModel: UserResponseModel) {
@@ -288,24 +195,25 @@ class TestQuizGameActivity : AppCompatActivity() {
         if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
             optionsState(userResponseModel)
         }
+        specifyActions(userResponseModel)
     }
 
-    private fun optionsState(
-        userResponseModel: UserResponseModel
-    ) {
+    private fun specifyActions(userResponseModel: UserResponseModel) {
         var fetchJob1: Job? = null
-        fetchJob1?.cancel()
-        fetchJob1 = lifecycleScope.launch {
-            delay(700)
-            areOptionsEnabled(true)
-        }
+//        fetchJob1?.cancel()
+//        fetchJob1 = lifecycleScope.launch {
+//            delay(TIME_BEFORE_SHOWING_ACTIONS)
+//            areOptionsEnabled(true)
+//        }
+
+        viewModel.onDrag(binding.vpCardHolder.currentItem)
 
         binding.btKnown.setOnClickListener {
-            areOptionsEnabled(false)
+            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             viewModel.upOrDowngradeCard(true, userResponseModel.modelCard.cardDetails)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
-                delay(50)
+                delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
                     displayReview(
                         viewModel.getKnownCardSum(),
@@ -316,8 +224,14 @@ class TestQuizGameActivity : AppCompatActivity() {
                     )
 
                 } else {
+//                    binding.vpCardHolder.apply {
+//                        beginFakeDrag()
+//                        fakeDragBy(-10f)
+//                        endFakeDrag()
+//                    }
+                    val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
-                        binding.vpCardHolder.currentItem.plus(1),
+                        itemPosition.plus(1),
                         true
                     )
                 }
@@ -327,10 +241,10 @@ class TestQuizGameActivity : AppCompatActivity() {
         binding.btKnownNot.setOnClickListener {
             viewModel.upOrDowngradeCard(false, userResponseModel.modelCard.cardDetails)
             viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
-            areOptionsEnabled(false)
+            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
-                delay(50)
+                delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
                     displayReview(
                         viewModel.getKnownCardSum(),
@@ -341,8 +255,14 @@ class TestQuizGameActivity : AppCompatActivity() {
                     )
                 } else {
                     viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
+//                    binding.vpCardHolder.apply {
+//                        beginFakeDrag()
+//                        fakeDragBy(-10f)
+//                        endFakeDrag()
+//                    }
+                    val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
-                        binding.vpCardHolder.currentItem.plus(1),
+                        itemPosition.plus(1),
                         true
                     )
                 }
@@ -352,18 +272,117 @@ class TestQuizGameActivity : AppCompatActivity() {
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
                 areOptionsEnabled(true)
+                val b = userResponseModel.modelCardPosition.minus(1)
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
-                    delay(100)
-                    binding.vpCardHolder.setCurrentItem(
-                        userResponseModel.modelCardPosition.minus(1),
-                        true
-                    )
+                    delay(TIME_BEFORE_HIDING_ACTIONS)
+//                    binding.vpCardHolder.setCurrentItem(
+//                        userResponseModel.modelCardPosition.minus(1),
+//                        true
+//                    )
+                    binding.vpCardHolder.apply {
+                        beginFakeDrag()
+                        fakeDragBy(10f)
+                        endFakeDrag()
+                    }
                 }
             }
         } else {
             isRewindButtonActive(false)
         }
+    }
+
+    private fun optionsState(
+        userResponseModel: UserResponseModel
+    ) {
+        var fetchJob1: Job? = null
+        fetchJob1?.cancel()
+        fetchJob1 = lifecycleScope.launch {
+            delay(TIME_BEFORE_SHOWING_ACTIONS)
+            areOptionsEnabled(true)
+        }
+
+//        viewModel.onDrag(binding.vpCardHolder.currentItem)
+//
+//        binding.btKnown.setOnClickListener {
+//            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+//            viewModel.upOrDowngradeCard(true, userResponseModel.modelCard.cardDetails)
+//            fetchJob1?.cancel()
+//            fetchJob1 = lifecycleScope.launch {
+//                delay(TIME_BEFORE_HIDING_ACTIONS)
+//                if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
+//                    displayReview(
+//                        viewModel.getKnownCardSum(),
+//                        viewModel.getMissedCardSum(),
+//                        viewModel.getModelCardsSum(),
+//                        viewModel.getProgress(),
+//                        viewModel.getMissedCard()
+//                    )
+//
+//                } else {
+////                    binding.vpCardHolder.setCurrentItem(
+////                        binding.vpCardHolder.currentItem.plus(1),
+////                        true
+////                    )
+//                    binding.vpCardHolder.apply {
+//                        beginFakeDrag()
+//                        fakeDragBy(-10f)
+//                        endFakeDrag()
+//                    }
+//                }
+//
+//            }
+//        }
+//        binding.btKnownNot.setOnClickListener {
+//            viewModel.upOrDowngradeCard(false, userResponseModel.modelCard.cardDetails)
+//            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
+//            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+//            fetchJob1?.cancel()
+//            fetchJob1 = lifecycleScope.launch {
+//                delay(TIME_BEFORE_HIDING_ACTIONS)
+//                if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
+//                    displayReview(
+//                        viewModel.getKnownCardSum(),
+//                        viewModel.getMissedCardSum(),
+//                        viewModel.getModelCardsSum(),
+//                        viewModel.getProgress(),
+//                        viewModel.getMissedCard()
+//                    )
+//                } else {
+//                    viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
+////                    binding.vpCardHolder.setCurrentItem(
+////                        binding.vpCardHolder.currentItem.plus(1),
+////                        true
+////                    )
+//                    binding.vpCardHolder.apply {
+//                        beginFakeDrag()
+//                        fakeDragBy(-10f)
+//                        endFakeDrag()
+//                    }
+//                }
+//            }
+//        }
+//        if (userResponseModel.modelCardPosition > 0) {
+//            isRewindButtonActive(true)
+//            binding.btRewind.setOnClickListener {
+//                areOptionsEnabled(true)
+//                fetchJob1?.cancel()
+//                fetchJob1 = lifecycleScope.launch {
+//                    delay(TIME_BEFORE_HIDING_ACTIONS)
+////                    binding.vpCardHolder.setCurrentItem(
+////                        userResponseModel.modelCardPosition.minus(1),
+////                        true
+////                    )
+//                    binding.vpCardHolder.apply {
+//                        beginFakeDrag()
+//                        fakeDragBy(10f)
+//                        endFakeDrag()
+//                    }
+//                }
+//            }
+//        } else {
+//            isRewindButtonActive(false)
+//        }
 
     }
 
@@ -468,6 +487,102 @@ class TestQuizGameActivity : AppCompatActivity() {
         binding.lyContainerOptions.isVisible = optionsEnabled
         binding.btKnown.isClickable = optionsEnabled
         binding.btKnownNot.isClickable = optionsEnabled
+    }
+
+    private fun readText(
+        text: List<String>,
+        view: List<View>,
+        viewColor: ColorStateList,
+        firstLanguage: String,
+        secondLanguage: String
+    ) {
+
+        var position = 0
+        val textSum = text.size
+        //val textColor = view[0].textColors
+        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+
+        val params = Bundle()
+
+        val speechListener = object : UtteranceProgressListener() {
+            override fun onStart(utteranceId: String?) {
+                onReading(position, view, onReadColor)
+            }
+
+            override fun onDone(utteranceId: String?) {
+                onReadingStop(position, view, viewColor)
+                position += 1
+                if (position < textSum) {
+                    speak(secondLanguage, params, text, position, this)
+                } else {
+                    position = 0
+                    return
+                }
+            }
+
+            override fun onError(utteranceId: String?) {
+                TODO("Not yet implemented")
+            }
+        }
+
+        speak(firstLanguage, params, text, position, speechListener)
+
+    }
+
+    private fun onReading(
+        position: Int,
+        view: List<View>,
+        onReadColor: Int,
+    ) {
+        if (position == 0) {
+            (view[position] as TextView).setTextColor(onReadColor)
+        } else {
+            (view[position] as MaterialButton).setTextColor(onReadColor)
+        }
+    }
+
+    private fun onReadingStop(
+        position: Int,
+        view: List<View>,
+        onReadColor: ColorStateList
+    ) {
+        if (position == 0) {
+            (view[position] as TextView).setTextColor(onReadColor)
+        } else {
+            (view[position] as MaterialButton).setTextColor(onReadColor)
+        }
+    }
+
+    private fun speak(
+        language: String,
+        params: Bundle,
+        text: List<String>,
+        position: Int,
+        speechListener: UtteranceProgressListener
+    ) {
+        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
+            when (it) {
+                TextToSpeech.SUCCESS -> {
+                    if (tts.isSpeaking) {
+                        tts.stop()
+                        tts.shutdown()
+                    } else {
+                        tts.language = Locale.forLanguageTag(
+                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+                        )
+                        tts.setSpeechRate(1.0f)
+                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+                        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+                    }
+                }
+
+                else -> {
+                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+
+        tts.setOnUtteranceProgressListener(speechListener)
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
