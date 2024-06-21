@@ -88,7 +88,9 @@ class MultiChoiceQuizGameAdapter(
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
-                            cvCardItemOnWrongCard
+                            cvCardItemOnWrongCard,
+                            btAlternative1,
+                            btAlternative1OnWrongCard,
                         )
                     )
                 }
@@ -102,7 +104,9 @@ class MultiChoiceQuizGameAdapter(
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
-                            cvCardItemOnWrongCard
+                            cvCardItemOnWrongCard,
+                            btAlternative2,
+                            btAlternative2OnWrongCard,
                         )
                     )
                 }
@@ -116,7 +120,9 @@ class MultiChoiceQuizGameAdapter(
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
-                            cvCardItemOnWrongCard
+                            cvCardItemOnWrongCard,
+                            btAlternative3,
+                            btAlternative3OnWrongCard,
                         )
                     )
                 }
@@ -130,7 +136,9 @@ class MultiChoiceQuizGameAdapter(
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
-                            cvCardItemOnWrongCard
+                            cvCardItemOnWrongCard,
+                            btAlternative4,
+                            btAlternative4OnWrongCard,
                         )
                     )
                 }

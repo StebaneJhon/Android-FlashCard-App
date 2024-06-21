@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
@@ -37,6 +38,7 @@ import com.example.flashcard.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -59,10 +61,13 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     private lateinit var tts: TextToSpeech
+    private var fetchJob: Job? = null
 
     companion object {
         private const val TAG = "MultiChoiceQuizGameActivity"
         const val DECK_ID_KEY = "Deck_id_key"
+        const val WAITING_TIME_ON_CORRECT_ANSWER_BEFORE_SWIPE = 700L
+        const val WAITING_TIME_ON_WRONG_ANSWER_BEFORE_FEEDBACK = 150L
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -212,13 +217,24 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     private fun launchMultiChoiceQuizGame(data: List<MultiChoiceGameCardModel>) {
         val multiChoiceGameAdapter = MultiChoiceQuizGameAdapter(this, data, viewModel.deck.deckColorCode!!, {
             if (viewModel.isUserChoiceCorrect(it.userChoice, it.answer)) {
-                if (viewModel.swipe()) {
-                    binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
-                } else {
-                    onQuizComplete()
+                giveFeedback(it.selectedButton, true)
+                fetchJob?.cancel()
+                fetchJob = lifecycleScope.launch {
+                    delay(WAITING_TIME_ON_CORRECT_ANSWER_BEFORE_SWIPE)
+                    if (viewModel.swipe()) {
+                        binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                    } else {
+                        onQuizComplete()
+                    }
                 }
             } else {
                 onWrongAnswer(it.cvCard, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
+                fetchJob?.cancel()
+                fetchJob = lifecycleScope.launch {
+                    delay(WAITING_TIME_ON_WRONG_ANSWER_BEFORE_FEEDBACK)
+                    giveFeedback(it.selectedButton, false)
+                    giveFeedback(it.selectedButtonOnWrong, false)
+                }
             }
         }) {
             val cardOrientation = getCardOrientation()
@@ -242,6 +258,19 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
 
         }
         binding.vpCardHolder.adapter = multiChoiceGameAdapter
+    }
+
+    private fun giveFeedback(
+        button: MaterialButton,
+        isAnswerCorrect: Boolean
+    ) {
+        if (isAnswerCorrect) {
+            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green50)
+            button.strokeColor = ContextCompat.getColorStateList(this, R.color.green500)
+        } else {
+            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.red50)
+            button.strokeColor = ContextCompat.getColorStateList(this, R.color.red500)
+        }
     }
 
     private fun readText(

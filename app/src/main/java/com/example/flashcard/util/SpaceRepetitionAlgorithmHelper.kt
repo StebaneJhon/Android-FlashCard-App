@@ -37,6 +37,7 @@ class SpaceRepetitionAlgorithmHelper{
     init {
         initSpaceRepetitionAlgorithmHelper()
     }
+
     @OptIn(DelicateCoroutinesApi::class)
     fun initSpaceRepetitionAlgorithmHelper() {
         fetchJob?.cancel()
@@ -105,7 +106,6 @@ class SpaceRepetitionAlgorithmHelper{
         if (repeatDay == 0) {
             return 1
         }
-        //val levelModel = box.getOrDefault(cardLevel, L2) as LevelModel
         var result: Double = repeatDay / 2.0
         result = result.toBigDecimal().setScale(0, RoundingMode.UP).toDouble()
         return result.toInt()

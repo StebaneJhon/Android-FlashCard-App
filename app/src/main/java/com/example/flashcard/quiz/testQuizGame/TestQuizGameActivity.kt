@@ -200,14 +200,7 @@ class TestQuizGameActivity : AppCompatActivity() {
 
     private fun specifyActions(userResponseModel: UserResponseModel) {
         var fetchJob1: Job? = null
-//        fetchJob1?.cancel()
-//        fetchJob1 = lifecycleScope.launch {
-//            delay(TIME_BEFORE_SHOWING_ACTIONS)
-//            areOptionsEnabled(true)
-//        }
-
         viewModel.onDrag(binding.vpCardHolder.currentItem)
-
         binding.btKnown.setOnClickListener {
             areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             viewModel.upOrDowngradeCard(true, userResponseModel.modelCard.cardDetails)
@@ -222,20 +215,13 @@ class TestQuizGameActivity : AppCompatActivity() {
                         viewModel.getProgress(),
                         viewModel.getMissedCard()
                     )
-
                 } else {
-//                    binding.vpCardHolder.apply {
-//                        beginFakeDrag()
-//                        fakeDragBy(-10f)
-//                        endFakeDrag()
-//                    }
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
                         itemPosition.plus(1),
                         true
                     )
                 }
-
             }
         }
         binding.btKnownNot.setOnClickListener {
@@ -255,11 +241,6 @@ class TestQuizGameActivity : AppCompatActivity() {
                     )
                 } else {
                     viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
-//                    binding.vpCardHolder.apply {
-//                        beginFakeDrag()
-//                        fakeDragBy(-10f)
-//                        endFakeDrag()
-//                    }
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
                         itemPosition.plus(1),
@@ -276,10 +257,6 @@ class TestQuizGameActivity : AppCompatActivity() {
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
-//                    binding.vpCardHolder.setCurrentItem(
-//                        userResponseModel.modelCardPosition.minus(1),
-//                        true
-//                    )
                     binding.vpCardHolder.apply {
                         beginFakeDrag()
                         fakeDragBy(10f)
@@ -301,89 +278,6 @@ class TestQuizGameActivity : AppCompatActivity() {
             delay(TIME_BEFORE_SHOWING_ACTIONS)
             areOptionsEnabled(true)
         }
-
-//        viewModel.onDrag(binding.vpCardHolder.currentItem)
-//
-//        binding.btKnown.setOnClickListener {
-//            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-//            viewModel.upOrDowngradeCard(true, userResponseModel.modelCard.cardDetails)
-//            fetchJob1?.cancel()
-//            fetchJob1 = lifecycleScope.launch {
-//                delay(TIME_BEFORE_HIDING_ACTIONS)
-//                if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
-//                    displayReview(
-//                        viewModel.getKnownCardSum(),
-//                        viewModel.getMissedCardSum(),
-//                        viewModel.getModelCardsSum(),
-//                        viewModel.getProgress(),
-//                        viewModel.getMissedCard()
-//                    )
-//
-//                } else {
-////                    binding.vpCardHolder.setCurrentItem(
-////                        binding.vpCardHolder.currentItem.plus(1),
-////                        true
-////                    )
-//                    binding.vpCardHolder.apply {
-//                        beginFakeDrag()
-//                        fakeDragBy(-10f)
-//                        endFakeDrag()
-//                    }
-//                }
-//
-//            }
-//        }
-//        binding.btKnownNot.setOnClickListener {
-//            viewModel.upOrDowngradeCard(false, userResponseModel.modelCard.cardDetails)
-//            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
-//            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-//            fetchJob1?.cancel()
-//            fetchJob1 = lifecycleScope.launch {
-//                delay(TIME_BEFORE_HIDING_ACTIONS)
-//                if (binding.vpCardHolder.currentItem >= viewModel.getModelCardsSum() - 1) {
-//                    displayReview(
-//                        viewModel.getKnownCardSum(),
-//                        viewModel.getMissedCardSum(),
-//                        viewModel.getModelCardsSum(),
-//                        viewModel.getProgress(),
-//                        viewModel.getMissedCard()
-//                    )
-//                } else {
-//                    viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
-////                    binding.vpCardHolder.setCurrentItem(
-////                        binding.vpCardHolder.currentItem.plus(1),
-////                        true
-////                    )
-//                    binding.vpCardHolder.apply {
-//                        beginFakeDrag()
-//                        fakeDragBy(-10f)
-//                        endFakeDrag()
-//                    }
-//                }
-//            }
-//        }
-//        if (userResponseModel.modelCardPosition > 0) {
-//            isRewindButtonActive(true)
-//            binding.btRewind.setOnClickListener {
-//                areOptionsEnabled(true)
-//                fetchJob1?.cancel()
-//                fetchJob1 = lifecycleScope.launch {
-//                    delay(TIME_BEFORE_HIDING_ACTIONS)
-////                    binding.vpCardHolder.setCurrentItem(
-////                        userResponseModel.modelCardPosition.minus(1),
-////                        true
-////                    )
-//                    binding.vpCardHolder.apply {
-//                        beginFakeDrag()
-//                        fakeDragBy(10f)
-//                        endFakeDrag()
-//                    }
-//                }
-//            }
-//        } else {
-//            isRewindButtonActive(false)
-//        }
-
     }
 
     private fun displayReview(

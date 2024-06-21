@@ -1,5 +1,6 @@
 package com.example.flashcard.quiz.multichoiceQuizGame
 
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
 data class MultiChoiceQuizGameUserChoiceModel(
@@ -7,4 +8,6 @@ data class MultiChoiceQuizGameUserChoiceModel(
     val userChoice: String,
     val cvCard: MaterialCardView,
     val cvCardOnWrongAnswer: MaterialCardView,
+    val selectedButton: MaterialButton,
+    val selectedButtonOnWrong: MaterialButton
 )
