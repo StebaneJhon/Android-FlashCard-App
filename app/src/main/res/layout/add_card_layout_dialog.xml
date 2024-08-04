@@ -96,7 +96,8 @@
                     android:id="@+id/tie_content_multi_answer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -119,7 +120,8 @@
                     android:id="@+id/tie_definition_1_multi_answer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -155,7 +157,8 @@
                     android:id="@+id/tie_definition_2_multi_answer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -191,7 +194,8 @@
                     android:id="@+id/tie_definition_3_multi_answer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -227,7 +231,8 @@
                     android:id="@+id/tie_definition_4_multi_answer_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="10"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -269,7 +274,8 @@
                     android:id="@+id/tie_content_true_or_false_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="20"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -325,22 +331,8 @@
                     android:id="@+id/cardContentTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_sm"
-                android:textColorHint="?colorOnSurface">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/cardContentDefinitionTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="20"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -358,22 +350,8 @@
                     android:id="@+id/cardValueTV"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/space_sm"
-                android:textColorHint="?colorOnSurface">
-
-                <EditText
-                    android:id="@+id/cardValueDefinitionTV"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
+                    android:maxLines="20"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>

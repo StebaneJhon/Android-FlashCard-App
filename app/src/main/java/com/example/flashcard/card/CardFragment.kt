@@ -483,7 +483,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
         gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return getSpanSize(cardList, position, 12, 16)
+                return getSpanSize(cardList, position, 50, 200)
             }
 
         }
@@ -549,7 +549,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
     ): Int {
         val contentSize = cardList[cardPosition]?.cardContent?.content?.length ?: 0
         val definitionSize = getMaxDefinitionLength(cardList[cardPosition]?.cardDefinition)
-        if (contentSize > minContentLengthForSpam1 || definitionSize > minDefinitionLengthForSpam1) {
+        if (definitionSize > minDefinitionLengthForSpam1 || contentSize > minContentLengthForSpam1 ) {
             return 2
         }
         return 1

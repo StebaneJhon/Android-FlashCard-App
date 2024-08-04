@@ -125,9 +125,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         appContext = activity?.applicationContext
 
         cardContent = view?.findViewById(R.id.cardContentTV)
-        cardContentDefinition = view?.findViewById(R.id.cardContentDefinitionTV)
         cardValue = view?.findViewById(R.id.cardValueTV)
-        cardValueDefinition = view?.findViewById(R.id.cardValueDefinitionTV)
         tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
         tieDefinition1MultiAnswerCard = view?.findViewById(R.id.tie_definition_1_multi_answer_card)
         tieDefinition2MultiAnswerCard = view?.findViewById(R.id.tie_definition_2_multi_answer_card)

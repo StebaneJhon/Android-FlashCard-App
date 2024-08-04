@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="?colorOnError"
             android:text="@string/bt_unable_unknown_cards_only_text"
-            android:textColor="@color/red100"
+            android:textColor="@color/red200"
             app:cornerRadius="@dimen/bt_radius"
             android:layout_marginTop="@dimen/space_sm"
             android:fontFamily="@font/open_sans"/>
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="?colorOnError"
         android:text="@string/back_to_deck_text_button"
-        android:textColor="@color/red100"
+        android:textColor="@color/red200"
         app:cornerRadius="@dimen/bt_radius"
         android:fontFamily="@font/open_sans"/>
 
