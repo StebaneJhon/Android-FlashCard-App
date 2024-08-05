@@ -398,6 +398,16 @@
         <item name="android:color">?colorPrimary</item>
     </style>
 
+    <style name="QuizeoFullscreenDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+        <!-- to cover the entire screen
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        -->
+    </style>
+
     <!--Text field style
     <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>

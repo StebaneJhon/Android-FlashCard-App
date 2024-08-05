@@ -1,8 +1,6 @@
 package com.example.flashcard.card
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +11,9 @@ import android.os.Build
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.util.TypedValue
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -26,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
@@ -40,14 +42,12 @@ import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -113,17 +113,29 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         private const val RecordAudioRequestCode = 3455
     }
 
-    @SuppressLint("MissingInflatedId")
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = MaterialAlertDialogBuilder(
-            requireActivity(),
-            R.style.ThemeOverlay_App_MaterialAlertDialog
-        )
-        val inflater = activity?.layoutInflater
-        val view = inflater?.inflate(R.layout.add_card_layout_dialog, null)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.QuizeoFullscreenDialogTheme)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val dialog = dialog
+        if (dialog != null) {
+            val width = ViewGroup.LayoutParams.MATCH_PARENT
+            val height = ViewGroup.LayoutParams.MATCH_PARENT
+            dialog.window!!.setLayout(width, height)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.add_card_layout_dialog, container, false)
 
         appContext = activity?.applicationContext
-
         cardContent = view?.findViewById(R.id.cardContentTV)
         cardValue = view?.findViewById(R.id.cardValueTV)
         tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
@@ -157,12 +169,11 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
         btAdd = view?.findViewById(R.id.bt_add)
         btCancel = view?.findViewById(R.id.bt_cancel)
-
         tvTitle = view?.findViewById(R.id.tv_title)
 
         if (card != null) {
             onUpdateCard(card)
-            builder.setView(view)
+//            builder.setView(view)
             tvTitle?.text = getString(R.string.tv_update_card)
 
             btAdd?.apply {
@@ -175,12 +186,10 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         } else {
             onAddFlashCard(true)
             cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
-            cardContentDefinition?.hint =
-                getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
+            cardContentDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
             cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
-            cardValueDefinition?.hint =
-                getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
-            builder.setView(view)
+            cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
+//            builder.setView(view)
             tvTitle?.text = getString(R.string.tv_add_new_card)
 
             btAdd?.apply {
@@ -249,8 +258,147 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             onIsDefinitionIsTrueClicked(isChecked, buttonView)
         }
 
-        return builder.create()
+        return view
     }
+
+//    @SuppressLint("MissingInflatedId")
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        val builder = MaterialAlertDialogBuilder(
+//            requireActivity(),
+//            R.style.ThemeOverlay_App_MaterialAlertDialog
+//        )
+//        val inflater = activity?.layoutInflater
+//        val view = inflater?.inflate(R.layout.add_card_layout_dialog, null)
+//
+//        appContext = activity?.applicationContext
+//
+//        cardContent = view?.findViewById(R.id.cardContentTV)
+//        cardValue = view?.findViewById(R.id.cardValueTV)
+//        tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
+//        tieDefinition1MultiAnswerCard = view?.findViewById(R.id.tie_definition_1_multi_answer_card)
+//        tieDefinition2MultiAnswerCard = view?.findViewById(R.id.tie_definition_2_multi_answer_card)
+//        tieDefinition3MultiAnswerCard = view?.findViewById(R.id.tie_definition_3_multi_answer_card)
+//        tieDefinition4MultiAnswerCard = view?.findViewById(R.id.tie_definition_4_multi_answer_card)
+//        tieContentTrueOrFalseCard = view?.findViewById(R.id.tie_content_true_or_false_card)
+//
+//        cardContentLY = view?.findViewById(R.id.cardContentLY)
+//        cardValueLY = view?.findViewById(R.id.cardValueLY)
+//        tilContentMultiAnswerCard = view?.findViewById(R.id.til_content_multi_answer_card)
+//        tilDefinition1MultiAnswerCard = view?.findViewById(R.id.til_definition_1_multi_answer_card)
+//        tilDefinition2MultiAnswerCard = view?.findViewById(R.id.til_definition_2_multi_answer_card)
+//        tilDefinition3MultiAnswerCard = view?.findViewById(R.id.til_definition_3_multi_answer_card)
+//        tilDefinition4MultiAnswerCard = view?.findViewById(R.id.til_definition_4_multi_answer_card)
+//        tilContentTrueOrFalseCard = view?.findViewById(R.id.til_content_true_or_false_card)
+//
+//        cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
+//        cpAddTrueOrFalseCard = view?.findViewById(R.id.cp_add_true_or_false_card)
+//        cpAddMultiAnswerCard = view?.findViewById(R.id.cp_add_multi_answer)
+//        llAddFlashCardContainer = view?.findViewById(R.id.ll_add_flash_card_container)
+//        llAddTrueOrFalseCardContainer = view?.findViewById(R.id.ll_add_true_or_false_card_container)
+//        clAddMultiAnswerCardContainer = view?.findViewById(R.id.cl_add_multi_answer_card_container)
+//        cpDefinition1IsTrue = view?.findViewById(R.id.cp_definition_1_is_true)
+//        cpDefinition2IsTrue = view?.findViewById(R.id.cp_definition_2_is_true)
+//        cpDefinition3IsTrue = view?.findViewById(R.id.cp_definition_3_is_true)
+//        cpDefinition4IsTrue = view?.findViewById(R.id.cp_definition_4_is_true)
+//        cpFalse = view?.findViewById(R.id.cp_false)
+//        cpTrue = view?.findViewById(R.id.cp_true)
+//
+//        btAdd = view?.findViewById(R.id.bt_add)
+//        btCancel = view?.findViewById(R.id.bt_cancel)
+//
+//        tvTitle = view?.findViewById(R.id.tv_title)
+//
+//        if (card != null) {
+//            onUpdateCard(card)
+//            builder.setView(view)
+//            tvTitle?.text = getString(R.string.tv_update_card)
+//
+//            btAdd?.apply {
+//                text = getString(R.string.bt_text_update)
+//                setOnClickListener {
+//                    onPositiveAction(Constant.UPDATE)
+//                }
+//            }
+//
+//        } else {
+//            onAddFlashCard(true)
+//            cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
+//            cardContentDefinition?.hint =
+//                getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
+//            cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
+//            cardValueDefinition?.hint =
+//                getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
+//            builder.setView(view)
+//            tvTitle?.text = getString(R.string.tv_add_new_card)
+//
+//            btAdd?.apply {
+//                text = getString(R.string.bt_text_add)
+//                setOnClickListener {
+//                    onPositiveAction(Constant.ADD)
+//                }
+//            }
+//
+//        }
+//
+//        btCancel?.setOnClickListener { dismiss() }
+//
+//        cardContentLY?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD)
+//        }
+//        tilContentMultiAnswerCard?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_CONTENT_MAC)
+//        }
+//        tilDefinition1MultiAnswerCard?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_DEFINITION_1_MAC)
+//        }
+//        tilDefinition2MultiAnswerCard?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_DEFINITION_2_MAC)
+//        }
+//        tilDefinition3MultiAnswerCard?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_DEFINITION_3_MAC)
+//        }
+//        tilDefinition4MultiAnswerCard?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_DEFINITION_4_MAC)
+//        }
+//        tilContentTrueOrFalseCard?.setEndIconOnClickListener {
+//            listen(REQUEST_PERMISSION_CODE_CONTENT_TFC)
+//        }
+//
+//        cardValueLY?.setEndIconOnClickListener {
+//            val contentText = cardContent?.text.toString()
+//            onTranslateText(contentText)
+//        }
+//
+//        cpAddFlashCard?.setOnCheckedChangeListener { _, isChecked ->
+//            onAddFlashCard(isChecked)
+//        }
+//
+//        cpAddMultiAnswerCard?.setOnCheckedChangeListener { _, isChecked ->
+//            onAddMultiAnswerCard(isChecked)
+//        }
+//
+//        cpAddTrueOrFalseCard?.setOnCheckedChangeListener { _, isChecked ->
+//            onAddTrueOrFalseCard(isChecked)
+//        }
+//
+//        cpDefinition1IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//
+//        cpDefinition2IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//
+//        cpDefinition3IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//
+//        cpDefinition4IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//
+//        return builder.create()
+//    }
 
     private fun onUpdateCard(card: ImmutableCard) {
 
