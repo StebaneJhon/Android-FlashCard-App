@@ -223,7 +223,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             }
         }
 
-        btCancel?.setOnClickListener { dismiss() }
+        btCancel?.setOnClickListener { dismiss()  }
 
         cardContentLY?.setEndIconOnClickListener {
             listen(REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD)
