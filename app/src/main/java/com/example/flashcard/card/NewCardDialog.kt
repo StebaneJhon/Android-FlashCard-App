@@ -40,6 +40,7 @@ import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
 import com.google.android.material.textfield.TextInputEditText
@@ -94,6 +95,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private var tvTitle: TextView? = null
 
+    private var tabAddAndUpdateNewCard: MaterialToolbar? = null
 
     private var listener: NewDialogListener? = null
 
@@ -171,10 +173,12 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         btCancel = view?.findViewById(R.id.bt_cancel)
         tvTitle = view?.findViewById(R.id.tv_title)
 
+        tabAddAndUpdateNewCard = view?.findViewById(R.id.tab_add_new_update_card)
+
         if (card != null) {
             onUpdateCard(card)
 //            builder.setView(view)
-            tvTitle?.text = getString(R.string.tv_update_card)
+            tabAddAndUpdateNewCard?.title  = getString(R.string.tv_update_card)
 
             btAdd?.apply {
                 text = getString(R.string.bt_text_update)
@@ -190,7 +194,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
             cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
 //            builder.setView(view)
-            tvTitle?.text = getString(R.string.tv_add_new_card)
+            tabAddAndUpdateNewCard?.title = getString(R.string.tv_add_new_card)
 
             btAdd?.apply {
                 text = getString(R.string.bt_text_add)
@@ -198,7 +202,25 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                     onPositiveAction(Constant.ADD)
                 }
             }
+        }
 
+        tabAddAndUpdateNewCard?.setNavigationOnClickListener {
+            dismiss()
+        }
+
+        tabAddAndUpdateNewCard?.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.save -> {
+                    // Handle saving
+                    if (card != null) {
+                        onPositiveAction(Constant.UPDATE)
+                    } else {
+                        onPositiveAction(Constant.ADD)
+                    }
+                    true
+                }
+                else -> false
+            }
         }
 
         btCancel?.setOnClickListener { dismiss() }

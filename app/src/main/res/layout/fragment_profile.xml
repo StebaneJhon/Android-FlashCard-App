@@ -268,7 +268,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="S"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 
@@ -290,7 +290,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="M"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 
@@ -312,7 +312,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="T"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 
@@ -334,7 +334,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="W"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 
@@ -356,7 +356,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="T"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 
@@ -378,7 +378,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="F"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 
@@ -400,7 +400,7 @@
                         android:fontFamily="@font/open_sans_bold"
                         android:text="S"
                         android:textAlignment="center"
-                        android:textColor="?colorOnSurface"
+                        android:textColor="?colorOnSurfaceVariant"
                         android:textSize="@dimen/text_xl" />
                 </LinearLayout>
 

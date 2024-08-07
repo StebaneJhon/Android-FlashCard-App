@@ -124,4 +124,6 @@
     <string name="error_read">Failed to read this text</string>
     <string name="bt_description_button_speak">Button speak</string>
     <string name="tv_quiz_mode_title">How do you want to review your cards?</string>
+    <string name="bt_save">SAVE</string>
+    <string name="content_description_save">Save the all created cards</string>
 </resources>

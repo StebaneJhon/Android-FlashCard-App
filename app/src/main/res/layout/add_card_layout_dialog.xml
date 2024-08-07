@@ -8,9 +8,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_sm">
+        android:layout_height="wrap_content">
 
+        <!--
         <TextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
@@ -24,16 +24,37 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+            -->
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/ly_tab_add_new_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorSurfaceContainerLow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/tab_add_new_update_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="?attr/actionBarSize"
+                app:title="New deck"
+                style="@style/Widget.App.Toolbar.Add.Edit.Card"
+                app:menu="@menu/menu_add_new_card_top_app_bar"
+                app:navigationIcon="@drawable/icon_exit" />
+
+        </com.google.android.material.appbar.AppBarLayout>
 
         <HorizontalScrollView
             android:id="@+id/hs_scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_xs"
-            android:layout_marginTop="@dimen/space_md"
+            android:layout_margin="@dimen/space_sm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_title">
+            app:layout_constraintTop_toBottomOf="@id/ly_tab_add_new_card">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/cg_card_type_container"
@@ -76,6 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_margin="@dimen/space_sm"
             app:layout_constraintBottom_toTopOf="@+id/bt_add"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -259,6 +281,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_margin="@dimen/space_sm"
             app:layout_constraintBottom_toTopOf="@+id/bt_add"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -317,6 +340,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_margin="@dimen/space_sm"
             app:layout_constraintBottom_toTopOf="@+id/bt_add"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -369,6 +393,7 @@
             android:fontFamily="@font/open_sans_bold"
             android:layout_marginStart="@dimen/space_xs"
             android:layout_marginTop="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_sm"
             android:textColor="?colorOnSurface"
             android:textStyle="bold"
             android:textSize="@dimen/text_sm"

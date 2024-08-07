@@ -24,6 +24,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -54,6 +55,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
@@ -71,7 +73,7 @@
         <item name="colorSurfaceContainerHigh">@color/grey200</item>
         <item name="colorSurfaceContainerHighest">@color/grey100</item>
         <item name="colorOnSurface">@color/white</item>
-        <item name="colorOnSurfaceVariant">@color/white</item>
+        <item name="colorOnSurfaceVariant">@color/black</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
@@ -84,6 +86,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -112,6 +115,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -140,6 +144,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -168,6 +173,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -196,6 +202,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -223,6 +230,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -250,6 +258,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -277,6 +286,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -305,6 +315,7 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -359,6 +370,32 @@
         <item name="android:textColor">?colorOnSurface</item>
     </style>
 
+    <!-- Toolbar edit&add theme -->
+    <style name="Widget.App.Toolbar.Add.Edit.Card" parent="Widget.Material3.Toolbar">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="subtitleTextColor">?attr/colorOnSurface</item>
+        <item name="titleTextAppearance">@style/TextAppearance.App.Medium</item>
+        <item name="actionMenuTextAppearance">@style/TextAppearance.App.Small</item>
+        <item name="actionMenuTextColor">@color/red950</item>
+        <item name="android:actionMenuTextColor">@color/red950</item>
+
+    </style>
+
+    <style name="ThemeOverlay.App.Toolbar.Add.Edit.Card" parent="">
+
+    </style>
+    <style name="TextAppearance.App.Medium" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+    <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans_light</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+
 
     <!--Progress bar style-->
     <style name="Widget.App.LinearProgressIndicator" parent="Widget.Material3.LinearProgressIndicator">
@@ -388,14 +425,15 @@
     <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
         <item name="itemActiveIndicatorStyle">@style/App.Custom.Indicator</item>
+        <item name="itemTextColor">?colorOnSurface</item>
+        <item name="itemIconTint">?colorOnSurface</item>
     </style>
 
     <style name="ThemeOverlay.App.BottomNavigationView" parent="">
-        <item name="colorOnSurface">?colorPrimary</item>
     </style>
 
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">?colorPrimary</item>
+        <item name="android:color">?colorSurfaceContainerHigh</item>
     </style>
 
     <style name="QuizeoFullscreenDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">
@@ -408,22 +446,6 @@
         -->
     </style>
 
-    <!--Text field style
-    <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
-        <item name="hintTextColor">?colorSurfaceContainerLowest</item>
-    </style>
 
-    <style name="ThemeOverlay.App.TextInputLayout" parent="">
-        <item name="colorPrimary">?colorSurfaceContainerLowest</item>
-        <item name="colorOnSurface">?colorSurfaceContainerLowest</item>
-        <item name="colorOnSurfaceVariant">?colorSurfaceContainerLowest</item>
-        <item name="colorError">?colorOnErrorContainer</item>
-        <item name="colorOutline">?colorSurfaceContainerLowest</item>
-        <item name="colorSecondary">?colorSurfaceContainerLowest</item>
-        <item name="hintTextColor">?colorSurfaceContainerLowest</item>
-        <item name="editTextStyle">@style/Widget.Material3.TextInputLayout.FilledBox</item>
-    </style>
-    -->
 
 </resources>
