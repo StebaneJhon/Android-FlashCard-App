@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/start_quiz_DM"
+        android:icon="@drawable/icon_quiz"
+        android:title="@string/start_quiz_button_text" />
     <item android:id="@+id/edit_deck_DM"
         android:icon="@drawable/icon_edit"
         android:title="@string/edit_deck_menu_hint" />

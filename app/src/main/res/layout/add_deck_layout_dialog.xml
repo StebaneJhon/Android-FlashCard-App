@@ -29,7 +29,11 @@
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
             android:layout_marginBottom="@dimen/space_xs"
-            android:layout_marginTop="@dimen/space_md">
+            android:layout_marginTop="@dimen/space_md"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/deckNameET"
                 android:layout_width="match_parent"
@@ -46,7 +50,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="@dimen/space_xs">
+            android:layout_marginBottom="@dimen/space_xs"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/deckDescriptionET"
                 android:layout_width="match_parent"
@@ -65,7 +73,11 @@
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
             android:layout_marginBottom="@dimen/space_xs"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius">
             <AutoCompleteTextView
                 android:id="@+id/deckFirstLanguageET"
                 android:layout_width="match_parent"
@@ -83,7 +95,11 @@
             android:layout_height="wrap_content"
             android:textColorHint="?colorOnSurface"
             android:layout_marginBottom="@dimen/space_xs"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius">
             <AutoCompleteTextView
                 android:id="@+id/deckSecondLanguageET"
                 android:layout_width="match_parent"

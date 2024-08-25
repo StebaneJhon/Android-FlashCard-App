@@ -5,8 +5,10 @@
     <dimen name="space_sm">8dp</dimen>
     <dimen name="space_md">12dp</dimen>
     <dimen name="space_lg">16dp</dimen>
-    <dimen name="space_xl">16dp</dimen>
+    <dimen name="space_xl">20dp</dimen>
+    <dimen name="space_xxl">24dp</dimen>
 
+    <dimen name="text_xxs">10sp</dimen>
     <dimen name="text_xs">12sp</dimen>
     <dimen name="text_sm">14sp</dimen>
     <dimen name="text_base">16sp</dimen>
@@ -15,8 +17,11 @@
     <dimen name="text_xl2">24sp</dimen>
     <dimen name="text_xl3">30sp</dimen>
 
-    <dimen name="bt_radius">6dp</dimen>
+    <dimen name="bt_radius">2dp</dimen>
     <dimen name="card_radius">10dp</dimen>
+    <dimen name="popUpMenu_radius">2dp</dimen>
+    <dimen name="ed_radius">2dp</dimen>
+    <dimen name="cp_radius">2dp</dimen>
 
     <dimen name="icon_base">25dp</dimen>
     <dimen name="icon_lg">30dp</dimen>

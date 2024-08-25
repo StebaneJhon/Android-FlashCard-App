@@ -10,22 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="New deck"
-            android:textSize="@dimen/text_xl"
-            android:textStyle="bold"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans_bold"
-            android:layout_marginTop="@dimen/space_md"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-            -->
-
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/ly_tab_add_new_card"
             android:layout_width="match_parent"
@@ -71,7 +55,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/ch_flash_card_text"
-                    android:checked="true"/>
+                    android:checked="true" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/cp_add_true_or_false_card"
@@ -112,7 +96,11 @@
                 app:endIconDrawable="@drawable/icon_mic"
                 app:endIconMode="custom"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_content_multi_answer_card"
@@ -136,7 +124,11 @@
                 android:layout_marginTop="@dimen/space_sm"
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
+                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_1_multi_answer_card"
@@ -174,7 +166,11 @@
                 android:layout_marginTop="@dimen/space_sm"
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card">
+                app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_2_multi_answer_card"
@@ -212,7 +208,11 @@
                 android:layout_marginTop="@dimen/space_sm"
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card">
+                app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_3_multi_answer_card"
@@ -250,7 +250,11 @@
                 android:layout_marginTop="@dimen/space_sm"
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card">
+                app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_4_multi_answer_card"
@@ -295,7 +299,11 @@
                 android:layout_marginBottom="@dimen/space_md"
                 android:textColorHint="?colorOnSurface"
                 app:endIconDrawable="@drawable/icon_mic"
-                app:endIconMode="custom">
+                app:endIconMode="custom"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_content_true_or_false_card"
@@ -353,7 +361,11 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:textColorHint="?colorOnSurface"
                 app:endIconDrawable="@drawable/icon_mic"
-                app:endIconMode="custom">
+                app:endIconMode="custom"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/cardContentTV"
@@ -372,7 +384,11 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:textColorHint="?colorOnSurface"
                 app:endIconDrawable="@drawable/icon_translate"
-                app:endIconMode="custom">
+                app:endIconMode="custom"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/cardValueTV"

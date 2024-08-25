@@ -25,6 +25,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -56,6 +57,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
@@ -87,6 +89,7 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -116,6 +119,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -145,6 +149,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -174,6 +179,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -203,6 +209,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -231,6 +238,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -259,6 +267,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -287,6 +296,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -316,6 +326,7 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="chipCornerRadius">@dimen/cp_radius</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -342,7 +353,7 @@
 
     <style name="DialogCorners">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">10dp</item>
+        <item name="cornerSize">@dimen/card_radius</item>
     </style>
 
     <!-- PopUpMenu theme -->
@@ -351,6 +362,7 @@
         <item name="android:fontFamily">@font/open_sans</item>
         <item name="android:textColor">?colorOnSurface</item>
         <item name="android:textSize">@dimen/text_base</item>
+        <item name="android:radius">@dimen/card_radius</item>
     </style>
 
     <!-- Toolbar theme -->
@@ -423,17 +435,14 @@
 
     <!--Bottom navigation bar -->
     <style name="Widget.App.BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.BottomNavigationView</item>
         <item name="itemActiveIndicatorStyle">@style/App.Custom.Indicator</item>
         <item name="itemTextColor">?colorOnSurface</item>
         <item name="itemIconTint">?colorOnSurface</item>
-    </style>
-
-    <style name="ThemeOverlay.App.BottomNavigationView" parent="">
+        <item name="itemRippleColor">?colorSurfaceContainerLow</item>
     </style>
 
     <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-        <item name="android:color">?colorSurfaceContainerHigh</item>
+        <item name="android:color">?colorSurfaceContainerLow</item>
     </style>
 
     <style name="QuizeoFullscreenDialogTheme" parent="ThemeOverlay.Material3.MaterialAlertDialog">

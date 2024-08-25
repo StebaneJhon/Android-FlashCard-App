@@ -123,7 +123,7 @@
         android:backgroundTint="?colorPrimary"
         android:clickable="true"
         android:focusable="true"
-        android:padding="@dimen/space_xl"
+        android:padding="@dimen/space_xxl"
         android:src="@drawable/icon_action"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

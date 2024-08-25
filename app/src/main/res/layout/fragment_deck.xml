@@ -86,7 +86,7 @@
         android:layout_margin="@dimen/space_sm"
         android:background="@drawable/add_new_deck_button_background"
         android:backgroundTint="?colorPrimary"
-        android:padding="@dimen/space_xl"
+        android:padding="@dimen/space_xxl"
         android:src="@drawable/add_icon_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

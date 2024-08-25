@@ -224,7 +224,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:text="@string/bt_apply_and_restart_quiz_settings_text"
             android:textColor="?colorOnSurface"
-            app:cornerRadius="5dp"
+            app:cornerRadius="@dimen/bt_radius"
             android:layout_marginTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

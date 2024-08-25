@@ -58,7 +58,6 @@ class ProfileFragmentDecksSectionRecyclerViewAdapter(
         private val deckLanguages: TextView? = view.findViewById(R.id.languages)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
         private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
-        private val startQuizButton: Button? = view.findViewById(R.id.startGameButton)
 
         private val ICON_MARGIN = 5
 
@@ -84,7 +83,6 @@ class ProfileFragmentDecksSectionRecyclerViewAdapter(
                 )
             } ?: R.color.red700
             popupMenuBT?.visibility = View.GONE
-            startQuizButton?.visibility = View.GONE
             deckRoot?.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
             deckRoot?.setOnClickListener { deckClickListener(deck) }
         }

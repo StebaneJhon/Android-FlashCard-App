@@ -218,7 +218,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 20
         val currentX = card.x
         val currentY = card.y
         completeSwipeToRight(card, currentX)
@@ -237,7 +237,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 20
         val currentX = card.x
         val currentY = card.y
         completeSwipeToLeft(card, currentX)
@@ -331,7 +331,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
             val cardWidth = view.width
             val cardHeight = binding.cvCardFront.height
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)
+            val cardStartY = ((displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)) - 20
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {

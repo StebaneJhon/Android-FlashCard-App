@@ -3,6 +3,6 @@
     <solid
         android:color="?colorSurfaceContainer"/>
     <corners
-        android:radius="5dp" />
+        android:radius="@dimen/popUpMenu_radius" />
     <stroke android:color="?colorPrimary" />
 </shape>

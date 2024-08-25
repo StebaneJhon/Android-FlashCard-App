@@ -64,8 +64,6 @@ class DecksRecyclerViewAdapter(
         private val deckLanguages: TextView? = view.findViewById(R.id.languages)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
         private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
-        private val startQuizButton: Button? = view.findViewById(R.id.startGameButton)
-
         private val ICON_MARGIN = 5
 
 
@@ -96,7 +94,6 @@ class DecksRecyclerViewAdapter(
             deckRoot?.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
 
             deckRoot?.setOnClickListener { deckClickListener(deck) }
-            startQuizButton?.setOnClickListener { startQuizListener(deck) }
             popupMenuBT?.setOnClickListener { v: View ->
                 showMenu(
                     context,
@@ -104,6 +101,7 @@ class DecksRecyclerViewAdapter(
                     R.menu.deck_popup_menu,
                     editDeckClickListener,
                     deleteDeckClickListener,
+                    startQuizListener,
                     deck
                 )
             }
@@ -116,6 +114,7 @@ class DecksRecyclerViewAdapter(
             @MenuRes menuRes: Int,
             editDeckClickListener: (ImmutableDeck) -> Unit,
             deleteDeckClickListener: (ImmutableDeck) -> Unit,
+            startQuizListener: (ImmutableDeck) -> Unit,
             deck: ImmutableDeck
         ) {
             val popup = PopupMenu(context, v)
@@ -154,6 +153,9 @@ class DecksRecyclerViewAdapter(
                     true
                 } else if (menuItem.itemId == R.id.delete_deck_DM) {
                     deleteDeckClickListener(deck)
+                    true
+                } else if (menuItem.itemId == R.id.start_quiz_DM) {
+                    startQuizListener(deck)
                     true
                 } else {
                     false

@@ -3,7 +3,7 @@
     android:id="@+id/root_card"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
+    android:layout_margin="@dimen/space_md"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_xl"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="@color/red50"
             android:padding="@dimen/space_lg">
@@ -77,6 +77,10 @@
                 android:hint="@string/et_user_answer_hint"
                 android:textColorHint="?colorOnSurface"
                 app:boxBackgroundColor="?colorSurfaceContainerLowest"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -106,10 +110,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_sm"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="?colorSurfaceContainer"
-            android:padding="@dimen/space_lg">
+            android:layout_marginTop="@dimen/space_xl"
+            android:padding="@dimen/space_sm">
 
             <TextView
                 android:id="@+id/tv_writing_quiz_front_progression"
@@ -149,6 +153,8 @@
                 app:autoSizeMinTextSize="@dimen/text_base"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform"
+                android:layout_marginTop="@dimen/space_sm"
+                android:layout_marginBottom="@dimen/space_sm"
                 app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -161,6 +167,10 @@
                 android:hint="@string/et_user_answer_hint"
                 android:textColorHint="?colorOnSurface"
                 app:boxBackgroundColor="?colorSurfaceContainerLowest"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
