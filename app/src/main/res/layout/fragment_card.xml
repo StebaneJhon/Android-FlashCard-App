@@ -79,39 +79,36 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:visibility="gone"
+        style="?attr/materialIconButtonFilledStyle"
         android:id="@+id/startQuizBT"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:contentDescription="@string/start_quiz_button_text"
+        app:icon="@drawable/icon_quiz"
+        app:iconTint="?colorSurfaceContainerLowest"
+        android:layout_marginBottom="@dimen/space_sm"
         android:backgroundTint="?colorSurfaceContainerHighest"
-        android:fontFamily="@font/open_sans_bold"
-        android:text="@string/start_quiz_button_text"
-        android:layout_marginBottom="@dimen/space_xxs"
-        android:textColor="?colorOnPrimary"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_base"
-        app:cornerRadius="@dimen/bt_radius"
         app:layout_constraintBottom_toTopOf="@+id/addNewCardBT"
-        app:layout_constraintEnd_toEndOf="@+id/addNewCardBT" />
+        app:layout_constraintEnd_toEndOf="@+id/addNewCardBT"
+        app:layout_constraintStart_toStartOf="@+id/addNewCardBT" />
 
-    <com.google.android.material.button.MaterialButton
+    <Button
         android:visibility="gone"
+        style="?attr/materialIconButtonFilledStyle"
         android:id="@+id/addNewCardBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/space_xs"
-        android:backgroundTint="?colorSurfaceContainerHighest"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:contentDescription="@string/add_new_card_button_description"
-        android:text="@string/bt_text_add"
-        android:textColor="?colorOnPrimary"
-        android:textStyle="bold"
-        android:textSize="@dimen/text_base"
+        android:backgroundTint="?colorSurfaceContainerHighest"
         android:fontFamily="@font/open_sans_bold"
-        app:cornerRadius="@dimen/bt_radius"
+        app:icon="@drawable/add_icon_button"
+        app:iconTint="?colorSurfaceContainerLowest"
+        android:layout_marginBottom="@dimen/space_sm"
         app:layout_constraintBottom_toTopOf="@+id/bt_action"
-        app:layout_constraintEnd_toEndOf="@+id/bt_action" />
+        app:layout_constraintEnd_toEndOf="@+id/bt_action"
+        app:layout_constraintStart_toStartOf="@+id/bt_action" />
 
     <ImageButton
         android:id="@+id/bt_action"

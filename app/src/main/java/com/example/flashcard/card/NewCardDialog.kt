@@ -177,7 +177,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
         if (card != null) {
             onUpdateCard(card)
-//            builder.setView(view)
             tabAddAndUpdateNewCard?.title  = getString(R.string.tv_update_card)
 
             btAdd?.apply {
@@ -193,7 +192,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             cardContentDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
             cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
             cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
-//            builder.setView(view)
             tabAddAndUpdateNewCard?.title = getString(R.string.tv_add_new_card)
 
             btAdd?.apply {
@@ -431,6 +429,14 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 cardContentDefinition?.setText(card.contentDescription)
                 cardValue?.setText(card.cardDefinition?.first()?.definition)
                 cardValueDefinition?.setText(card.valueDefinition)
+                cpAddMultiAnswerCard?.apply {
+                    isCheckable = false
+                    isChecked = false
+                }
+                cpAddTrueOrFalseCard?.apply {
+                    isCheckable = false
+                    isChecked = false
+                }
             }
 
             TRUE_OR_FALSE_CARD -> {
@@ -438,6 +444,14 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
                 cpFalse?.isChecked = card.cardDefinition?.get(0)?.isCorrectDefinition!!
                 cpTrue?.isChecked = card.cardDefinition[1].isCorrectDefinition!!
+                cpAddMultiAnswerCard?.apply {
+                    isCheckable = false
+                    isChecked = false
+                }
+                cpAddFlashCard?.apply {
+                    isCheckable = false
+                    isChecked = false
+                }
             }
 
             ONE_OR_MULTI_ANSWER_CARD -> {
@@ -485,6 +499,14 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                         cpDefinition4IsTrue?.isChecked =
                             card.cardDefinition[3].isCorrectDefinition!!
                     }
+                }
+                cpAddFlashCard?.apply {
+                    isCheckable = false
+                    isChecked = false
+                }
+                cpAddTrueOrFalseCard?.apply {
+                    isCheckable = false
+                    isChecked = false
                 }
             }
         }

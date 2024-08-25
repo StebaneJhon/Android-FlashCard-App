@@ -155,8 +155,8 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
     }
 
     private fun onBtActonClicked() {
-        setActionsVisibility(actionClicked)
         setActionsAnimation(actionClicked)
+        setActionsVisibility(actionClicked)
         actionClicked = !actionClicked
     }
 
@@ -168,6 +168,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
             binding.addNewCardBT.visibility = View.GONE
             binding.startQuizBT.visibility = View.GONE
         }
+        setClickable(clicked)
     }
 
     private fun setActionsAnimation(clicked: Boolean) {
