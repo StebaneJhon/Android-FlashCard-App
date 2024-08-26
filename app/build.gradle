@@ -87,4 +87,7 @@ dependencies {
     implementation 'com.github.yuyakaido:CardStackView:v2.3.4'
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 
+    // Splash screen
+    implementation "androidx.core:core-splashscreen:1.0.1"
+
 }

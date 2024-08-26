@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -82,74 +83,81 @@ class MainActivity :
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                activityViewModel.isLoading.value
+            }
+        }
+
         setContentView(view)
 
         navController = findNavController(R.id.fragmentContainerView)
         binding.mainActivityBNV.setupWithNavController(navController)
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                activityViewModel.getAllCards()
-                activityViewModel.allCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-
-                        }
-                        is UiState.Error -> {
-                            Log.i(TAG, state.errorMessage)
-                        }
-                        is UiState.Success -> {
-                            updateCardsStatus(state.data)
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-
-    private fun updateCardsStatus(data: List<ImmutableCard?>) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                data.forEach { card ->
-                    updateCardStatus(card)
-                }
-            }
-        }
-    }
-
-    private fun updateCardStatus(card: ImmutableCard?) {
-        if (card != null) {
-            val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
-            val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
-            if (isCardForgotten) {
-                val newStatus = spaceRepetitionHelper.status(card, false)
-                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
-                val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
-                val newCard = ImmutableCard(
-                    card.cardId,
-                    card.cardContent,
-                    card.contentDescription,
-                    card.cardDefinition,
-                    card.valueDefinition,
-                    card.deckId,
-                    card.backgroundImg,
-                    card.isFavorite,
-                    card.revisionTime,
-                    card.missedTime,
-                    card.creationDate,
-                    card.lastRevisionDate,
-                    newStatus,
-                    nextForgettingDate,
-                    nextRevision,
-                    card.cardType,
-                    card.creationDateTime
-                )
-                activityViewModel.updateCard(newCard)
-            }
-        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                activityViewModel.getAllCards()
+//                activityViewModel.allCards.collect { state ->
+//                    when (state) {
+//                        is UiState.Loading -> {
+//
+//                        }
+//                        is UiState.Error -> {
+//                            Log.i(TAG, state.errorMessage)
+//                        }
+//                        is UiState.Success -> {
+//                            updateCardsStatus(state.data)
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
     }
+
+//    private fun updateCardsStatus(data: List<ImmutableCard?>) {
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                data.forEach { card ->
+//                    updateCardStatus(card)
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun updateCardStatus(card: ImmutableCard?) {
+//        if (card != null) {
+//            val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+//            val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
+//            if (isCardForgotten) {
+//                val newStatus = spaceRepetitionHelper.status(card, false)
+//                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
+//                val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
+//                val newCard = ImmutableCard(
+//                    card.cardId,
+//                    card.cardContent,
+//                    card.contentDescription,
+//                    card.cardDefinition,
+//                    card.valueDefinition,
+//                    card.deckId,
+//                    card.backgroundImg,
+//                    card.isFavorite,
+//                    card.revisionTime,
+//                    card.missedTime,
+//                    card.creationDate,
+//                    card.lastRevisionDate,
+//                    newStatus,
+//                    nextForgettingDate,
+//                    nextRevision,
+//                    card.cardType,
+//                    card.creationDateTime
+//                )
+//                activityViewModel.updateCard(newCard)
+//            }
+//        }
+//
+//    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
