@@ -10,7 +10,7 @@
         <item name="colorSurfaceContainer">@color/grey50</item>
         <item name="colorSurfaceContainerHigh">@color/grey100</item>
         <item name="colorSurfaceContainerHighest">@color/grey200</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnSurface">@color/grey700</item>
         <item name="colorOnSurfaceVariant">@color/grey700</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/white</item>
@@ -43,7 +43,7 @@
         <item name="colorSurfaceContainerHigh">@color/stale300</item>
         <item name="colorSurfaceContainerHighest">@color/stale400</item>
         <item name="colorOnSurface">@color/stale950</item>
-        <item name="colorOnSurfaceVariant">@color/stale50</item>
+        <item name="colorOnSurfaceVariant">@color/stale950</item>
         <item name="colorError">@color/red700</item>
         <item name="colorOnError">@color/stale400</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>

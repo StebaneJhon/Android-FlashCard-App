@@ -79,7 +79,7 @@
                 android:layout_alignParentStart="true"
                 android:background="@color/transparent"
                 app:icon="@drawable/icon_more"
-                app:iconTint="?colorOnSurfaceVariant"
+                app:iconTint="?colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="@+id/cardsSum"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/languages"
