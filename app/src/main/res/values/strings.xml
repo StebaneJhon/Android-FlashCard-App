@@ -126,4 +126,13 @@
     <string name="tv_quiz_mode_title">How do you want to review your cards?</string>
     <string name="bt_save">SAVE</string>
     <string name="content_description_save">Save the all created cards</string>
+    <string name="title_welcome_to_quizeo">Welcome to Quizeo</string>
+    <string name="content_welcome_to_quizeo">A Quiz app that lets you create your own questions and revise them in multiple ways.</string>
+    <string name="title_cards">Cards</string>
+    <string name="content_cards">In Quizeo questions are represented as cards, and there are multiple type of them: \n Single answer cards.\n True or false cards.\n Multiple answered cards.</string>
+    <string name="next">Next</string>
+    <string name="title_quiz">Quiz</string>
+    <string name="content_quiz">There are multiple ways to revise your cards including:\n Flash cards \n Timed Flash Cards \n Multichoice quiz \n Writing quiz \n Matching cards \n Test \n</string>
+    <string name="title_space_repetition">Space repetition</string>
+    <string name="content_space_repetition">Quizeo is powered by a space repetition algorithm that sorts your cards by memorisation level and shows them or not during revision depending on the level. This algorithm is highly customisable.</string>
 </resources>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/deckFragment">
+    app:startDestination="@id/hostFragment">
 
     <fragment
         android:id="@+id/cardFragment"
@@ -49,5 +49,34 @@
         <action
             android:id="@+id/action_profileFragment_to_cardFragment"
             app:destination="@id/cardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onBoardingViewPagerFragment"
+        android:name="com.example.flashcard.onboarding.OnBoardingViewPagerFragment"
+        android:label="fragment_on_boarding_view_pager"
+        tools:layout="@layout/fragment_on_boarding_view_pager" >
+
+        <action
+            android:id="@+id/action_onBoardingViewPagerFragment_to_deckFragment2"
+            app:destination="@id/deckFragment"
+            app:popUpTo="@id/onBoardingViewPagerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/hostFragment"
+        android:name="com.example.flashcard.mainActivity.HostFragment"
+        android:label="fragment_host"
+        tools:layout="@layout/fragment_host" >
+        <action
+            android:id="@+id/action_hostFragment_to_onBoardingViewPagerFragment"
+            app:destination="@id/onBoardingViewPagerFragment"
+            app:popUpTo="@id/hostFragment"
+            app:popUpToInclusive="true" />
+
+        <action
+            android:id="@+id/action_hostFragment_to_deckFragment2"
+            app:destination="@id/deckFragment"
+            app:popUpTo="@id/hostFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -45,6 +45,7 @@ import com.example.flashcard.quiz.testQuizGame.TestQuizGameActivity
 import com.example.flashcard.quiz.testQuizGame.TestQuizGameAdapter
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.UiState
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -69,6 +70,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
     ): View {
         _binding = FragmentDeckBinding.inflate(inflater, container, false)
         appContext = container?.context
+        activity?.findViewById<BottomNavigationView>(R.id.mainActivityBNV)?.isVisible = true
         return binding.root
     }
 
