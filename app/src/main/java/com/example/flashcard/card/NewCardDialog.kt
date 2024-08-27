@@ -28,7 +28,12 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -43,6 +48,7 @@ import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.Chip
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
@@ -97,12 +103,17 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
     private var tabAddAndUpdateNewCard: MaterialToolbar? = null
 
+    private var rvAddedCard: RecyclerView? = null
+    private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
+
     private var listener: NewDialogListener? = null
 
     private var cardBackground: String? = null
     private var appContext: Context? = null
     private var cardType: String? = null
     private var definitionList = mutableSetOf<CardDefinition>()
+
+    private val newCardViewModel: NewCardDialogViewModel by viewModels()
 
     companion object {
         private const val REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD = 12
@@ -171,9 +182,10 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
 
         btAdd = view?.findViewById(R.id.bt_add)
         btCancel = view?.findViewById(R.id.bt_cancel)
-        tvTitle = view?.findViewById(R.id.tv_title)
 
         tabAddAndUpdateNewCard = view?.findViewById(R.id.tab_add_new_update_card)
+
+        rvAddedCard = view?.findViewById(R.id.rv_added_card)
 
         if (card != null) {
             onUpdateCard(card)
@@ -183,6 +195,8 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 text = getString(R.string.bt_text_update)
                 setOnClickListener {
                     onPositiveAction(Constant.UPDATE)
+                    listener?.getCard(newCardViewModel.addedCards.value, Constant.UPDATE, deck)
+                    dismiss()
                 }
             }
 
@@ -203,7 +217,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
         }
 
         tabAddAndUpdateNewCard?.setNavigationOnClickListener {
-            dismiss()
+            onCloseDialog()
         }
 
         tabAddAndUpdateNewCard?.setOnMenuItemClickListener { menuItem ->
@@ -211,9 +225,13 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
                 R.id.save -> {
                     // Handle saving
                     if (card != null) {
-                        onPositiveAction(Constant.UPDATE)
+                        //onPositiveAction(Constant.UPDATE)
+                        listener?.getCard(newCardViewModel.addedCards.value, Constant.UPDATE, deck)
+                        dismiss()
                     } else {
-                        onPositiveAction(Constant.ADD)
+                        //onPositiveAction(Constant.ADD)
+                        listener?.getCard(newCardViewModel.addedCards.value, Constant.ADD, deck)
+                        dismiss()
                     }
                     true
                 }
@@ -221,7 +239,7 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             }
         }
 
-        btCancel?.setOnClickListener { dismiss()  }
+        btCancel?.setOnClickListener { initCardAdditionPanel()  }
 
         cardContentLY?.setEndIconOnClickListener {
             listen(REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD)
@@ -278,7 +296,81 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             onIsDefinitionIsTrueClicked(isChecked, buttonView)
         }
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.addedCards.collect { cards ->
+                    displayAddedCard(cards, deck)
+                }
+            }
+        }
+
+
+
         return view
+    }
+
+    private fun displayAddedCard(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
+        rvAddedCardRecyclerViewAdapter = appContext?.let { it ->
+            AddedCardRecyclerViewAdapter(
+                it,
+                cardList,
+                deck,
+                {
+                    // TODO: ON CARD ROOT PRESSED
+                },
+                {
+                    // TODO: ON DELETE CARD
+                },
+            ){
+                // TODO: ON EDIT CARD
+            }
+        }!!
+        rvAddedCard?.apply {
+            adapter = rvAddedCardRecyclerViewAdapter
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(appContext)
+        }
+    }
+
+    private fun initCardAdditionPanel() {
+        tieContentMultiAnswerCard?.text?.clear()
+        tieContentTrueOrFalseCard?.text?.clear()
+        cardContent?.text?.clear()
+        cardValue?.text?.clear()
+        tieDefinition1MultiAnswerCard?.text?.clear()
+        tieDefinition2MultiAnswerCard?.text?.clear()
+        tieDefinition3MultiAnswerCard?.text?.clear()
+        tieDefinition4MultiAnswerCard?.text?.clear()
+        cpTrue?.isChecked = true
+        cpFalse?.isChecked = false
+        cpDefinition1IsTrue?.isChecked = false
+        cpDefinition2IsTrue?.isChecked = false
+        cpDefinition3IsTrue?.isChecked = false
+        cpDefinition4IsTrue?.isChecked = false
+    }
+
+    private fun onCloseDialog() {
+        if (newCardViewModel.addedCards.value.isEmpty()) {
+            dismiss()
+        } else {
+            MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_App_MaterialAlertDialog)
+                .setTitle(getString(R.string.title_unsaved_cards))
+                .setMessage(getString(R.string.message_unsaved_cards))
+                .setPositiveButton("Yes") { _, _ ->
+                    listener?.getCard(newCardViewModel.addedCards.value, Constant.ADD, deck)
+                    Toast.makeText(appContext, getString(R.string.message_card_registered), Toast.LENGTH_LONG).show()
+                    dismiss()
+                }
+                .setNegativeButton("No") {_, _ ->
+                    Toast.makeText(appContext, getString(R.string.message_card_not_registered), Toast.LENGTH_LONG).show()
+                    dismiss()
+                }
+                .setNeutralButton("Keep adding") {dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+
     }
 
 //    @SuppressLint("MissingInflatedId")
@@ -772,8 +864,11 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
             )
         }
 
-        listener?.getCard(newCard, action, deck)
-        dismiss()
+        newCardViewModel.addCard(newCard)
+        rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
+        initCardAdditionPanel()
+        //listener?.getCard(newCard, action, deck)
+        //dismiss()
     }
 
     private fun getDefinitions() = when (cardType) {
@@ -965,6 +1060,6 @@ class NewCardDialog(private val card: ImmutableCard?, private val deck: Immutabl
     }
 
     interface NewDialogListener {
-        fun getCard(card: ImmutableCard, action: String, deck: ImmutableDeck)
+        fun getCard(cards: List<ImmutableCard>, action: String, deck: ImmutableDeck)
     }
 }

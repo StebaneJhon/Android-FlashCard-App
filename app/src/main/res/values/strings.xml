@@ -135,4 +135,9 @@
     <string name="content_quiz">There are multiple ways to revise your cards including:\n Flash cards \n Timed Flash Cards \n Multichoice quiz \n Writing quiz \n Matching cards \n Test \n</string>
     <string name="title_space_repetition">Space repetition</string>
     <string name="content_space_repetition">Quizeo is powered by a space repetition algorithm that sorts your cards by memorisation level and shows them or not during revision depending on the level. This algorithm is highly customisable.</string>
+    <string name="error_message_on_no_description_found">No description found</string>
+    <string name="title_unsaved_cards">Unsaved cards</string>
+    <string name="message_unsaved_cards">You have some unsaved cards do you want to save them?</string>
+    <string name="message_card_registered">Your cards has been registered</string>
+    <string name="message_card_not_registered">Your cards has not been registered</string>
 </resources>

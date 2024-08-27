@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_on_add_new_card_item_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardBackgroundColor="?colorSurfaceContainerLowest"
+    android:layout_margin="@dimen/space_xs"
+    app:cardCornerRadius="@dimen/card_radius">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_container_added_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/inner_deck_border"
+        android:backgroundTint="?colorSurfaceContainer"
+        android:padding="@dimen/space_sm">
+
+        <TextView
+            android:id="@+id/tv_added_card_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans_bold"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurfaceVariant"
+            android:textSize="@dimen/text_sm"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/bt_added_edit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Init Deck" />
+
+        <TextView
+            android:id="@+id/tv_added_card_description1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurfaceVariant"
+            android:textSize="@dimen/text_xs"
+            android:layout_marginTop="@dimen/space_xs"
+            android:background="@drawable/tv_background_on_added_cards"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:padding="@dimen/space_xs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_added_card_content"
+            tools:text="Test deck description" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_added_card_description2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurfaceVariant"
+            android:textSize="@dimen/text_xs"
+            android:layout_marginTop="@dimen/space_xxs"
+            android:background="@drawable/tv_background_on_added_cards"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:padding="@dimen/space_xs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description1"
+            tools:text="Test deck description" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_added_card_description3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurfaceVariant"
+            android:textSize="@dimen/text_xs"
+            android:layout_marginTop="@dimen/space_xxs"
+            android:background="@drawable/tv_background_on_added_cards"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:padding="@dimen/space_xs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description2"
+            tools:text="Test deck description" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_added_card_description4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurfaceVariant"
+            android:textSize="@dimen/text_xs"
+            android:layout_marginTop="@dimen/space_xxs"
+            android:background="@drawable/tv_background_on_added_cards"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:padding="@dimen/space_xs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description3"
+            tools:text="Test deck description" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/tv_added_card_description_error"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnError"
+            android:textSize="@dimen/text_xs"
+            android:layout_marginTop="@dimen/space_xxs"
+            android:background="@drawable/tv_background_on_added_cards"
+            android:backgroundTint="?colorErrorContainer"
+            android:padding="@dimen/space_xs"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description4"
+            android:text="@string/error_message_on_no_description_found" />
+
+        <Button
+            android:id="@+id/bt_added_edit"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="20dp"
+            android:background="@color/transparent"
+            android:contentDescription="@string/full_screen_button_description_text"
+            android:paddingStart="17dp"
+            android:paddingTop="0dp"
+            android:paddingEnd="0dp"
+            android:paddingBottom="0dp"
+            app:icon="@drawable/icon_edit"
+            app:iconGravity="start"
+            app:iconTint="?colorOnSurfaceVariant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -123,6 +123,13 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
+    suspend fun insertCards(cards: List<ImmutableCard>, deck: Deck) {
+        cards.forEach { card ->
+            insertCard(card, deck)
+        }
+    }
+
+    @WorkerThread
     fun searchCard(searchQuery: String, deckId: Int): Flow<List<ImmutableCard>> {
         return flashCardDao.searchCard(searchQuery, deckId).map {cardList ->
             cardList.map { card ->

@@ -579,12 +579,12 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         FullScreenCardDialog(card, deck).show(parentFragmentManager, "Full Screen Card")
     }
 
-    override fun getCard(card: ImmutableCard, action: String, deck: ImmutableDeck) {
+    override fun getCard(cards: List<ImmutableCard>, action: String, deck: ImmutableDeck) {
         if (action == Constant.ADD) {
             //card.deckId = deck.deckId
-            cardViewModel.insertCard(card, deck)
+            cardViewModel.insertCards(cards, deck)
         } else {
-            cardViewModel.updateCard(card)
+            cardViewModel.updateCard(cards.first())
         }
     }
 
