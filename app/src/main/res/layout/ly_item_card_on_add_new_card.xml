@@ -26,7 +26,7 @@
             android:textColor="?colorOnSurfaceVariant"
             android:textSize="@dimen/text_sm"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/bt_added_edit"
+            app:layout_constraintEnd_toStartOf="@+id/bt_added_delete"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Init Deck" />
@@ -121,17 +121,17 @@
             android:text="@string/error_message_on_no_description_found" />
 
         <Button
-            android:id="@+id/bt_added_edit"
+            android:id="@+id/bt_added_delete"
             style="?attr/materialIconButtonStyle"
             android:layout_width="40dp"
             android:layout_height="20dp"
             android:background="@color/transparent"
             android:contentDescription="@string/full_screen_button_description_text"
-            android:paddingStart="17dp"
+            android:paddingStart="20dp"
             android:paddingTop="0dp"
             android:paddingEnd="0dp"
             android:paddingBottom="0dp"
-            app:icon="@drawable/icon_edit"
+            app:icon="@drawable/icon_delete"
             app:iconGravity="start"
             app:iconTint="?colorOnSurfaceVariant"
             app:layout_constraintEnd_toEndOf="parent"

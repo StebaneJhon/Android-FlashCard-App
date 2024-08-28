@@ -52,8 +52,8 @@ class SettingsFragmentEditBoxLevelDialog(
             MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_App_MaterialAlertDialog)
                 .setTitle("Repeat Day")
                 .setMessage("Number of days after which, cards in this level will be forgotten. It has to be superior to the previous level and inferior to the nex. Ex. L1 -> 0, L2 -> 1, L3 -> 4, ...")
-                .setNeutralButton("Ok") { _, _ ->
-                    dismiss()
+                .setNeutralButton("Ok") { dialog, _ ->
+                    dialog.dismiss()
                 }
                 .show()
 

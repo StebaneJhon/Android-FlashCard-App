@@ -2,25 +2,32 @@ package com.example.flashcard.card
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.getColorOrThrow
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardDefinition
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 
 class AddedCardRecyclerViewAdapter(
     private val context: Context,
     private val cardList: List<ImmutableCard?>,
     private val deck: ImmutableDeck,
-    private val cardRootClickListener: (ImmutableCard?) -> Unit,
+    private val editCardClickListener: (ModelCardWithPositionOnLocalEdit) -> Unit,
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
-    private val editCardClickListener: (ImmutableCard?) -> Unit,
 ) : RecyclerView.Adapter<AddedCardRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,16 +42,17 @@ class AddedCardRecyclerViewAdapter(
         return holder.bind(
             context,
             cardList[position],
+            position,
             deck,
-            cardRootClickListener,
+            editCardClickListener,
             deleteCardClickListener,
-            editCardClickListener
         )
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val cardRoot: MaterialCardView = view.findViewById(R.id.cv_on_add_new_card_item_root)
+        private val btDelete: Button = view.findViewById(R.id.bt_added_delete)
         private val tvAddedCardContent: TextView = view.findViewById(R.id.tv_added_card_content)
         private val tvAddedCardDescription1: TextView = view.findViewById(R.id.tv_added_card_description1)
         private val tvAddedCardDescription2: TextView = view.findViewById(R.id.tv_added_card_description2)
@@ -55,17 +63,15 @@ class AddedCardRecyclerViewAdapter(
         fun bind(
             context: Context,
             card: ImmutableCard?,
+            cardPosition: Int,
             deck: ImmutableDeck,
-            cardRootClickListener: (ImmutableCard?) -> Unit,
+            editCardClickListener: (ModelCardWithPositionOnLocalEdit) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
-            editCardClickListener: (ImmutableCard?) -> Unit
         ) {
 
             tvAddedCardContent.text = card?.cardContent?.content
 
-            val definitionTexts = cardDefinitionsToStrings(card?.cardDefinition)
-
-            when (definitionTexts.size) {
+            when (card?.cardDefinition?.size) {
                 1 -> {
                     tvAddedCardDescriptionError.visibility = View.GONE
                     displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
@@ -103,6 +109,15 @@ class AddedCardRecyclerViewAdapter(
                 }
             }
 
+            cardRoot.setOnClickListener {
+                editCardClickListener(
+                    ModelCardWithPositionOnLocalEdit(
+                        card!!, cardPosition
+                    )
+                )
+            }
+            btDelete.setOnClickListener { deleteCardClickListener(card) }
+
         }
 
         @SuppressLint("ResourceType")
@@ -114,29 +129,21 @@ class AddedCardRecyclerViewAdapter(
                     view.backgroundTintList = textBackgroundColorStateList
                     view.text = it.definition
                 } else {
-//                    val textBackgroundColorStateList = ContextCompat.getColorStateList(context, com.google.android.material.R.attr.colorSurfaceContainerLow)
-//                    view.backgroundTintList = textBackgroundColorStateList
+                    view.background.setTint(context.getColorFromAttr(com.google.android.material.R.attr.colorSurfaceContainerLow))
                     view.text = it.definition
                 }
             }
 
         }
 
-        private fun cardDefinitionsToStrings(cardDefinitions: List<CardDefinition>?): List<String> {
-            val definitionStrings = mutableListOf<String>()
-            cardDefinitions?.let { defins ->
-                defins.forEach {
-                    definitionStrings.add(it.definition!!)
-                }
-            }
-            return definitionStrings
-        }
-
-        private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
-            definitions?.let { defins ->
-                return defins.filter { it.isCorrectDefinition!! }
-            }
-            return null
+        @ColorInt
+        fun Context.getColorFromAttr(
+            @AttrRes attrColor: Int,
+            typedValue: TypedValue = TypedValue(),
+            resolveRefs: Boolean = true
+        ): Int {
+            theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+            return typedValue.data
         }
 
         companion object {

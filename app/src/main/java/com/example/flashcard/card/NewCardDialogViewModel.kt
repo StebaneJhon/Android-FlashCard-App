@@ -9,9 +9,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-class NewCardDialogViewModel(): ViewModel() {
+class NewCardDialogViewModel() : ViewModel() {
 
-    private var _addedCards = MutableStateFlow<ArrayList<ImmutableCard>>(arrayListOf<ImmutableCard>())
+    private var _addedCards =
+        MutableStateFlow<ArrayList<ImmutableCard>>(arrayListOf<ImmutableCard>())
     val addedCards: StateFlow<ArrayList<ImmutableCard>> = _addedCards.asStateFlow()
     private var fetchJob: Job? = null
 
@@ -19,8 +20,18 @@ class NewCardDialogViewModel(): ViewModel() {
         _addedCards.value.add(card)
     }
 
-    fun removeCard(card: ImmutableCard) {
-        _addedCards.value.remove(card)
+    fun removeCard(cardToBeRemoved: ImmutableCard?) {
+        _addedCards.value.forEach { card ->
+            if (card.cardDefinition == cardToBeRemoved?.cardDefinition &&
+                card.cardContent == cardToBeRemoved?.cardContent
+            ) {
+                _addedCards.value.remove(card)
+            }
+        }
+    }
+
+    fun updateCard(updatedCard: ImmutableCard, indexCardToUpdate: Int) {
+        _addedCards.value[indexCardToUpdate] = updatedCard
     }
 
 }
