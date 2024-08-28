@@ -17,7 +17,7 @@ class NewCardDialogViewModel() : ViewModel() {
     private var fetchJob: Job? = null
 
     fun addCard(card: ImmutableCard) {
-        _addedCards.value.add(card)
+        _addedCards.value.add(0, card)
     }
 
     fun removeCard(cardToBeRemoved: ImmutableCard?) {
