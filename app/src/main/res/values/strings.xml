@@ -54,7 +54,8 @@
     <string name="title_match_quiz_score">You did it!</string>
     <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
     <string name="bt_continue_match_quiz_score">%1$s CARDS LEFT CONTINUE ?</string>
-    <string name="bt_restart_match_quiz_score">RSTART</string>
+    <string name="bt_restart_match_quiz_score">RESTART</string>
+    <string name="bt_start">START</string>
     <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
@@ -129,10 +130,10 @@
     <string name="title_welcome_to_quizeo">Welcome to Quizeo</string>
     <string name="content_welcome_to_quizeo">A Quiz app that lets you create your own questions and revise them in multiple ways.</string>
     <string name="title_cards">Cards</string>
-    <string name="content_cards">In Quizeo questions are represented as cards, and there are multiple type of them: \n Single answer cards.\n True or false cards.\n Multiple answered cards.</string>
+    <string name="content_cards">In Quizeo questions are represented as cards, and there are multiple type of them: Single answer cards, true or false cards multiple answered cards, …</string>
     <string name="next">Next</string>
     <string name="title_quiz">Quiz</string>
-    <string name="content_quiz">There are multiple ways to revise your cards including:\n Flash cards \n Timed Flash Cards \n Multichoice quiz \n Writing quiz \n Matching cards \n Test \n</string>
+    <string name="content_quiz">There are multiple ways to revise your cards including: flash cards, timed flash cards, multi choice quiz, writing quiz, matching cards, test, …</string>
     <string name="title_space_repetition">Space repetition</string>
     <string name="content_space_repetition">Quizeo is powered by a space repetition algorithm that sorts your cards by memorisation level and shows them or not during revision depending on the level. This algorithm is highly customisable.</string>
     <string name="error_message_on_no_description_found">No description found</string>

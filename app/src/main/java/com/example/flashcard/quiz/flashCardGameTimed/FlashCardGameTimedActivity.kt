@@ -97,7 +97,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
             val cardList = it.cards?.toMutableList()
             val deck = it.deck
             if (!cardList.isNullOrEmpty() && deck != null) {
-                initFlashCard(cardList, deck)
+                initFlashCard(cardList, deck, true)
             } else {
                 onNoCardToRevise()
             }
@@ -114,15 +114,6 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
                         }
 
                         is UiState.Error -> {
-                            /*
-                            onQuizComplete()
-                            Toast.makeText(
-                                this@FlashCardGameTimedActivity,
-                                "FlashCard Completed",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                             */
                             onNoCardToRevise()
                         }
 
@@ -278,6 +269,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         binding.lyGameReviewContainer.isVisible = false
         viewModel.initFlashCard()
         viewModel.updateOnScreenCards()
+        initFlashCard(viewModel.getOriginalCardList()?.toMutableList()!!, viewModel.deck!!)
         if (orientation == FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK) {
             initCardLayout()
         } else {
@@ -533,7 +525,6 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         isFlashCardGameScreenHidden(true)
         binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
-//            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Flash Card")
             tvTotalCardsSumScoreLayout.text = viewModel.getTotalCards().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
@@ -869,12 +860,16 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
 
     private fun initFlashCard(
         cardList: MutableList<ImmutableCard?>,
-        deck: ImmutableDeck
+        deck: ImmutableDeck,
+        initOriginalCardList: Boolean = false
     ) {
         isFlashCardGameScreenHidden(false)
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+        binding.lyGameReviewContainer.isVisible = false
         initCardLayout()
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
+        if (initOriginalCardList) { viewModel.initOriginalCardList(cardList) }
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
             setNavigationOnClickListener { finish() }

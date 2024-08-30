@@ -90,6 +90,7 @@ class MainActivity :
             }
         }
 
+
         setContentView(view)
 
         navController = findNavController(R.id.fragmentContainerView)

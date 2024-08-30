@@ -3,5 +3,14 @@
     <style name="Theme.App.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/royal_blue</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="android:navigationBarColor">
+            @android:color/transparent
+        </item>
+        <item name="android:statusBarColor">
+            @android:color/transparent
+        </item>
+        <item name="android:windowLightStatusBar">
+            true
+        </item>
     </style>
 </resources>

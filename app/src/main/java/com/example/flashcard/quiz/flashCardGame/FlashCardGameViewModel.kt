@@ -34,8 +34,12 @@ class FlashCardGameViewModel(
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
+    }
+
+    fun initOriginalCardList(gameCards: MutableList<ImmutableCard?>) {
         originalCardList = gameCards
     }
+
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
     }
@@ -48,6 +52,8 @@ class FlashCardGameViewModel(
     fun sortCardsByLevel() {
         cardList?.sortBy { it?.cardStatus }
     }
+
+    fun getOriginalCardList() = originalCardList
 
     fun shuffleCards() {
         cardList?.shuffle()

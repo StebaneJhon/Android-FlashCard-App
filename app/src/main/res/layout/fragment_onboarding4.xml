@@ -9,6 +9,21 @@
     android:padding="@dimen/space_xxl">
 
     <TextView
+        android:id="@+id/tv_progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
+        android:text="4/4"
+        android:textAlignment="center"
+        android:textColor="@color/blue50"
+        android:textSize="@dimen/text_lg"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title_4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
         android:id="@+id/tv_title_4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,14 +53,12 @@
 
     <Button
         android:id="@+id/bt_next_4"
-        style="?attr/materialIconButtonFilledStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/blue50"
-        android:contentDescription="@string/next"
-        android:padding="@dimen/space_xxl"
-        app:icon="@drawable/icon_chevron_right"
-        app:iconTint="@color/royal_blue"
+
+        android:text="@string/bt_start"
+        android:textColor="@color/royal_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

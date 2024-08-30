@@ -9,6 +9,21 @@
     android:padding="@dimen/space_xxl">
 
     <TextView
+        android:id="@+id/tv_progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
+        android:text="3/4"
+        android:textAlignment="center"
+        android:textColor="@color/blue50"
+        android:textSize="@dimen/text_lg"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/tv_title_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
         android:id="@+id/tv_title_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

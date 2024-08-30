@@ -60,12 +60,18 @@ class FlashCardGameTimedViewModel(
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
+    }
+
+    fun initOriginalCardList(gameCards: MutableList<ImmutableCard?>) {
         originalCardList = gameCards
     }
+
 
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
     }
+
+    fun getOriginalCardList() = originalCardList
 
     private val topCard
         get() = cardList?.get(currentCardPosition)
