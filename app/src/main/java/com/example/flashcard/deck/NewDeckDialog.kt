@@ -12,11 +12,19 @@ import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.card.NewCardDialog
+import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.example.flashcard.util.deckCategoryColorConst.BLACK
 import com.example.flashcard.util.deckCategoryColorConst.BLUE
@@ -32,48 +40,36 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.launch
 
-class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
+class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
     private var deckNameET: EditText? = null
     private var deckDescriptionET: EditText? = null
     private var deckFirstLangET: MaterialAutoCompleteTextView? = null
     private var deckSecondLangET: MaterialAutoCompleteTextView? = null
-    private var categoryWhiteBT: LinearLayout? = null
-    private var categoryColorRedBT: LinearLayout? = null
-    private var categoryColorPinkBT: LinearLayout? = null
-    private var categoryColorPurpleBT: LinearLayout? = null
-    private var categoryColorBlueBT: LinearLayout? = null
-    private var categoryColorTealBT: LinearLayout? = null
-    private var categoryColorGreenBT: LinearLayout? = null
-    private var categoryColorYellowBT: LinearLayout? = null
-    private var categoryColorBrownBT: LinearLayout? = null
-    private var categoryColorBlackBT: LinearLayout? = null
-    private var whiteCheck: View? = null
-    private var redCheck: View? = null
-    private var pinkCheck: View? = null
-    private var purpleCheck: View? = null
-    private var blueCheck: View? = null
-    private var tealCheck: View? = null
-    private var greenCheck: View? = null
-    private var yellowCheck: View? = null
-    private var brownCheck: View? = null
-    private var blackCheck: View? = null
     private var deckNameLY: TextInputLayout? = null
     private var deckFirstLanguageLY: TextInputLayout? = null
     private var deckSecondLanguageLY: TextInputLayout? = null
     private var buttonDialogueN: MaterialButton? = null
     private var buttonDialogueP: MaterialButton? = null
     private var tvTitle: TextView? = null
+    private var rvDeckColorPicker: RecyclerView? = null
 
     private var listener: NewDialogListener? = null
 
     private var deckCategoryColor: String? = null
     private val supportedLanguages = FirebaseTranslatorHelper().getSupportedLang()
+    private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
+
+    private val newDeckDialogViewModel: NewDeckDialogViewModel by viewModels()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_App_MaterialAlertDialog)
+        val builder = MaterialAlertDialogBuilder(
+            requireActivity(),
+            R.style.ThemeOverlay_App_MaterialAlertDialog
+        )
         val inflater = activity?.layoutInflater
         val view = inflater?.inflate(R.layout.add_deck_layout_dialog, null)
 
@@ -82,49 +78,27 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         deckFirstLangET = view?.findViewById(R.id.deckFirstLanguageET)
         deckDescriptionET = view?.findViewById(R.id.deckDescriptionET)
 
-        categoryWhiteBT = view?.findViewById(R.id.whiteCategoryButton)
-        categoryColorRedBT = view?.findViewById(R.id.redCategoryButton)
-        categoryColorPinkBT = view?.findViewById(R.id.pinkCategoryButton)
-        categoryColorPurpleBT = view?.findViewById(R.id.purpleCategoryButton)
-        categoryColorBlueBT = view?.findViewById(R.id.blueCategoryButton)
-        categoryColorTealBT = view?.findViewById(R.id.tealCategoryButton)
-        categoryColorGreenBT = view?.findViewById(R.id.greenCategoryButton)
-        categoryColorYellowBT = view?.findViewById(R.id.yellowCategoryButton)
-        categoryColorBrownBT = view?.findViewById(R.id.brownCategoryButton)
-        categoryColorBlackBT = view?.findViewById(R.id.blackCategoryButton)
-
-        whiteCheck = view?.findViewById(R.id.whiteChecked)
-        redCheck = view?.findViewById(R.id.redChecked)
-        pinkCheck = view?.findViewById(R.id.pinkChecked)
-        purpleCheck = view?.findViewById(R.id.purpleChecked)
-        blueCheck = view?.findViewById(R.id.blueChecked)
-        tealCheck = view?.findViewById(R.id.tealChecked)
-        greenCheck = view?.findViewById(R.id.greenChecked)
-        yellowCheck = view?.findViewById(R.id.yellowChecked)
-        brownCheck = view?.findViewById(R.id.brownChecked)
-        blackCheck = view?.findViewById(R.id.blackChecked)
-
         deckNameLY = view?.findViewById(R.id.deckNameLY)
         deckFirstLanguageLY = view?.findViewById(R.id.deckFirstLanguageLY)
         deckSecondLanguageLY = view?.findViewById(R.id.deckSecondLanguageLY)
         buttonDialogueN = view?.findViewById(R.id.dialogueNegativeBT)
         buttonDialogueP = view?.findViewById(R.id.dialogPositiveBT)
+        rvDeckColorPicker = view?.findViewById(R.id.rv_deck_color_picker)
 
         tvTitle = view?.findViewById(R.id.tv_title)
 
         deckFirstLangET?.setSimpleItems(supportedLanguages)
         deckSecondLangET?.setSimpleItems(supportedLanguages)
 
-        categoryWhiteBT?.setOnClickListener { onColorCategorySelected(WHITE) }
-        categoryColorRedBT?.setOnClickListener { onColorCategorySelected(RED) }
-        categoryColorPinkBT?.setOnClickListener { onColorCategorySelected(PINK) }
-        categoryColorPurpleBT?.setOnClickListener { onColorCategorySelected(PURPLE) }
-        categoryColorBlueBT?.setOnClickListener { onColorCategorySelected(BLUE) }
-        categoryColorTealBT?.setOnClickListener { onColorCategorySelected(TEAL) }
-        categoryColorGreenBT?.setOnClickListener { onColorCategorySelected(GREEN) }
-        categoryColorYellowBT?.setOnClickListener { onColorCategorySelected(YELLOW) }
-        categoryColorBrownBT?.setOnClickListener { onColorCategorySelected(BROWN) }
-        categoryColorBlackBT?.setOnClickListener { onColorCategorySelected(BLACK) }
+        // Show Color Picker
+        lifecycleScope.launch {
+            newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors())
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
+                    displayColorPicker(listOfColors)
+                }
+            }
+        }
 
         if (deck != null) {
             tvTitle?.text = getString(R.string.tv_update_deck)
@@ -132,7 +106,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
             deckDescriptionET?.setText(deck.deckDescription)
             deckFirstLangET?.setText(deck.deckFirstLanguage)
             deckSecondLangET?.setText(deck.deckSecondLanguage)
-            deck.deckColorCode?.let { onColorCategorySelected(it) }
+            deck.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
 
             builder.setView(view)
 
@@ -192,53 +166,22 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         return builder.create()
     }
 
-    private fun onColorCategorySelected(
-        color: String
-    ) {
-        val checkButtonList = arrayListOf(
-            whiteCheck, redCheck, pinkCheck, purpleCheck, blueCheck,
-            tealCheck, greenCheck, yellowCheck, brownCheck, blackCheck
-        )
-
-        resetCheckBT(checkButtonList)
-        when (color) {
-            WHITE -> {
-                whiteCheck?.visibility = View.VISIBLE
+    private fun displayColorPicker(listOfColors: List<ColorModel>) {
+        deckColorPickerAdapter = context?.let { ctx ->
+            DeckColorPickerAdapter(
+                ctx,
+                listOfColors
+            ) { selectedColor ->
+                newDeckDialogViewModel.selectColor(selectedColor.id)
+                deckCategoryColor = selectedColor.id
+                deckColorPickerAdapter.notifyDataSetChanged()
             }
-            RED -> {
-                redCheck?.visibility = View.VISIBLE
-            }
-            PURPLE -> {
-                purpleCheck?.visibility = View.VISIBLE
-            }
-            BLUE -> {
-                blueCheck?.visibility = View.VISIBLE
-            }
-            TEAL -> {
-                tealCheck?.visibility = View.VISIBLE
-            }
-            GREEN -> {
-                greenCheck?.visibility = View.VISIBLE
-            }
-            YELLOW -> {
-                yellowCheck?.visibility = View.VISIBLE
-            }
-            BROWN -> {
-                brownCheck?.visibility = View.VISIBLE
-            }
-            BLACK -> {
-                blackCheck?.visibility = View.VISIBLE
-            }
-            else -> {
-                resetCheckBT(checkButtonList)
-            }
+        }!!
+        rvDeckColorPicker?.apply {
+            adapter = deckColorPickerAdapter
+            setHasFixedSize(true)
+            layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
         }
-
-        deckCategoryColor = color
-    }
-
-    private fun resetCheckBT(checkButtonList: ArrayList<View?>) {
-        checkButtonList.forEach { checkMK -> checkMK?.visibility = View.GONE }
     }
 
     private fun checkError(): Boolean {
@@ -266,6 +209,7 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
             deckSecondLang !in supportedLanguages -> {
                 deckSecondLanguageLY?.error = "Language not supported"
             }
+
             else -> {
                 error = false
             }
@@ -278,8 +222,10 @@ class NewDeckDialog(val deck: ImmutableDeck?): AppCompatDialogFragment() {
         try {
             listener = context as NewDialogListener
         } catch (e: ClassCastException) {
-            throw ClassCastException((context.toString() +
-                    " must implement NoticeDialogListener"))
+            throw ClassCastException(
+                (context.toString() +
+                        " must implement NoticeDialogListener")
+            )
         }
     }
 

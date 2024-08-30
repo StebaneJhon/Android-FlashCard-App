@@ -10,16 +10,6 @@
     <color name="transparent">#00000000</color>
     <color name="royal_blue">#0F2167</color>
 
-    <!--
-    <color name="purple700">#5c00d7</color>
-    <color name="purple500">#8000ff</color>
-    <color name="purple200">#c59aff</color>
-    <color name="purple100">#dcc3ff</color>
-    <color name="purple50">#f2e7ff</color>
-    <color name="purple25">#faf5ff</color>
-    <color name="purple15">#fffaff</color>
-    -->
-
     <color name="grey700">#434343</color>
     <color name="grey500">#7b7b7b</color>
     <color name="grey200">#d9d9d9</color>
@@ -27,66 +17,6 @@
     <color name="grey50">#f1f1f1</color>
     <color name="grey25">#f6f6f6</color>
     <color name="grey15">#fbfbfb</color>
-
-    <!--
-    <color name="blue700">#056ece</color>
-    <color name="blue500">#038def</color>
-    <color name="blue200">#8bc5f7</color>
-    <color name="blue100">#b9dbfa</color>
-    <color name="blue50">#e2f1fd</color>
-    <color name="blue25">#f2f7ff</color>
-    <color name="blue15">#f7fcff</color>
-    -->
-
-    <!--
-    <color name="pink700">#c2185b</color>
-    <color name="pink500">#e91e63</color>
-    <color name="pink200">#f48fb1</color>
-    <color name="pink100">#f8bbd0</color>
-    <color name="pink50">#fce4ec</color>
-    <color name="pink25">#fef3f9</color>
-    <color name="pink15">#fff7fe</color>
-    -->
-
-    <!--
-    <color name="red700">#d32f2f</color>
-    <color name="red500">#f44336</color>
-    <color name="red200">#ef9a9a</color>
-    <color name="red100">#ffcdd2</color>
-    <color name="red50">#ffebee</color>
-    <color name="red25">#fff2f2</color>
-    <color name="red15">#fff7f7</color>
-    -->
-
-    <!--
-    <color name="teal700">#00796b</color>
-    <color name="teal500">#009688</color>
-    <color name="teal200">#80cbc4</color>
-    <color name="teal100">#b2dfdb</color>
-    <color name="teal50">#e0f2f1</color>
-    <color name="teal25">#f4f8f7</color>
-    <color name="teal15">#f9fdfc</color>
-    -->
-
-    <!--
-    <color name="green700">#388e3b</color>
-    <color name="green500">#4caf4f</color>
-    <color name="green200">#a5d6a7</color>
-    <color name="green100">#c8e6c9</color>
-    <color name="green50">#e8f5e9</color>
-    <color name="green25">#eefbef</color>
-    <color name="green15">#f3fff4</color>
-    -->
-
-    <!--
-    <color name="yellow700">#fbc02d</color>
-    <color name="yellow500">#fae635</color>
-    <color name="yellow200">#fff59d</color>
-    <color name="yellow100">#fff9c4</color>
-    <color name="yellow50">#fffde7</color>
-    <color name="yellow25">#fff6ef</color>
-    <color name="yellow15">#fffbf4</color>
-    -->
 
     <color name="brown700">#5d4037</color>
     <color name="brown500">#795548</color>

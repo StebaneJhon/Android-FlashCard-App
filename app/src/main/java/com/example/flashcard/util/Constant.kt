@@ -17,16 +17,26 @@ object cardBackgroundConst {
 }
 
 object deckCategoryColorConst {
-    val WHITE = "white"
-    val RED = "red"
-    val PINK = "pink"
-    val PURPLE = "purple"
-    val BLUE = "blue"
-    val TEAL = "teal"
-    val GREEN = "green"
-    val YELLOW = "yellow"
-    val BROWN = "brown"
-    val BLACK = "black"
+    const val WHITE = "white"
+    const val RED = "red"
+    const val PINK = "pink"
+    const val PURPLE = "purple"
+    const val BLUE = "blue"
+    const val TEAL = "teal"
+    const val GREEN = "green"
+    const val YELLOW = "yellow"
+    const val BROWN = "brown"
+    const val BLACK = "black"
+    const val GREY = "grey"
+    const val ORANGE = "orange"
+    const val LIME = "lime"
+    const val EMERALD = "emerald"
+    const val CYAN = "cyan"
+    const val SKY = "sky"
+    const val INDIGO = "indigo"
+    const val VIOLET = "violet"
+    const val FUCHSIA = "fuchsia"
+    const val ROSE = "rose"
 }
 
 object themeConst {

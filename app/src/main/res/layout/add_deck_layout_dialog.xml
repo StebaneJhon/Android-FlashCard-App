@@ -1,376 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:backgroundTint="?colorSurfaceContainerLowest">
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="@dimen/space_sm">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_title"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="New deck"
-            android:textSize="@dimen/text_xl"
-            android:textStyle="bold"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans_bold"
-            android:layout_marginTop="@dimen/space_md"/>
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/space_sm"
+            android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/deckNameLY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="@dimen/space_xs"
-            android:layout_marginTop="@dimen/space_md"
-            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-            app:boxCornerRadiusTopStart="@dimen/ed_radius">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/deckNameET"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:hint="@string/deck_name_hint"
-                android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:autofillHints="@string/deck_name_hint"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/deckDescriptionLY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="@dimen/space_xs"
-            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-            app:boxCornerRadiusTopStart="@dimen/ed_radius">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/deckDescriptionET"
+            <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/deck_description_hint"
-                android:textColorHint="?colorOnSurface"
+                android:layout_marginTop="@dimen/space_md"
+                android:fontFamily="@font/open_sans_bold"
                 android:textColor="?colorOnSurface"
-                android:autofillHints="@string/deck_description_hint"
-                android:inputType="textMultiLine"
-                android:maxLines="3"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:textSize="@dimen/text_xl"
+                android:textStyle="bold"
+                tools:text="New deck" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/deckFirstLanguageLY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="@dimen/space_xs"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-            app:boxCornerRadiusTopStart="@dimen/ed_radius">
-            <AutoCompleteTextView
-                android:id="@+id/deckFirstLanguageET"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/deckNameLY"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/deck_first_language_hint"
+                android:layout_marginTop="@dimen/space_md"
+                android:layout_marginBottom="@dimen/space_xs"
                 android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:autofillHints="@string/deck_first_language_hint"
-                android:inputType="text"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/deckSecondLanguageLY"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:layout_marginBottom="@dimen/space_xs"
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-            app:boxCornerRadiusTopStart="@dimen/ed_radius">
-            <AutoCompleteTextView
-                android:id="@+id/deckSecondLanguageET"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/deckNameET"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:autofillHints="@string/deck_name_hint"
+                    android:hint="@string/deck_name_hint"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/deckDescriptionLY"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/deck_second_language_hint"
+                android:layout_marginBottom="@dimen/space_xs"
                 android:textColorHint="?colorOnSurface"
-                android:textColor="?colorOnSurface"
-                android:autofillHints="@string/deck_second_language_hint"
-                android:inputType="text"
-                android:layout_marginBottom="10dp"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/deckDescriptionET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/deck_description_hint"
+                    android:hint="@string/deck_description_hint"
+                    android:inputType="textMultiLine"
+                    android:maxLines="3"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/deckFirstLanguageLY"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_xs"
+                android:textColorHint="?colorOnSurface"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
+
+                <AutoCompleteTextView
+                    android:id="@+id/deckFirstLanguageET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autofillHints="@string/deck_first_language_hint"
+                    android:hint="@string/deck_first_language_hint"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/deckSecondLanguageLY"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_xs"
+                android:textColorHint="?colorOnSurface"
+                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                app:boxCornerRadiusTopStart="@dimen/ed_radius">
+
+                <AutoCompleteTextView
+                    android:id="@+id/deckSecondLanguageET"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:autofillHints="@string/deck_second_language_hint"
+                    android:hint="@string/deck_second_language_hint"
+                    android:inputType="text"
+                    android:textColor="?colorOnSurface"
+                    android:textColorHint="?colorOnSurface" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/colorPickerTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans_bold"
                 android:text="@string/category_color_picker_title"
                 android:textColor="?colorOnSurface"
-                android:textStyle="bold"
-                android:fontFamily="@font/open_sans_bold"
-                android:textSize="@dimen/text_base"/>
+                android:textSize="@dimen/text_base"
+                android:layout_marginTop="@dimen/text_lg"
+                android:textStyle="bold" />
 
-            <GridLayout
-                android:id="@+id/colorPickerGD"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_deck_color_picker"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:layout_below="@+id/colorPickerTitle"
-                android:layout_margin="2dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="-17dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="2dp"
-                android:columnCount="5"
-                android:rowCount="5"
-                android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <LinearLayout
-                    android:id="@+id/whiteCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/white"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/whiteChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check_black"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/redCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/red700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/redChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/pinkCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/pink700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/pinkChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/purpleCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/purple700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/purpleChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/blueCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/blue700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/blueChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tealCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/teal700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/tealChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/greenCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/green700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/greenChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/yellowCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/yellow700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/yellowChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/brownCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/brown700"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/brownChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/blackCategoryButton"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/black"
-                    android:orientation="horizontal"
-                    android:gravity="center">
-                    <ImageView
-                        android:id="@+id/blackChecked"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/icon_check"
-                        android:visibility="gone"/>
-                </LinearLayout>
-
-            </GridLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/dialogPositiveBT"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="@dimen/space_xs"
-                android:layout_marginTop="@dimen/space_md"
-                android:background="@color/transparent"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="Add"
-                android:textColor="?colorOnSurface"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_sm"/>
+                android:layout_marginTop="@dimen/space_xs"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/dialogueNegativeBT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="@dimen/space_md"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:layout_marginBottom="@dimen/space_sm"
-                android:layout_toStartOf="@+id/dialogPositiveBT"
-                android:background="@color/transparent"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="Cancel"
-                android:textColor="?colorOnSurface"
-                android:textStyle="bold"
-                android:textSize="@dimen/text_sm"/>
-        </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dialogPositiveBT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/space_xs"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:background="@color/transparent"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="Add"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_sm"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dialogueNegativeBT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="@dimen/space_md"
+                    android:layout_marginEnd="@dimen/space_xs"
+                    android:layout_marginBottom="@dimen/space_sm"
+                    android:layout_toStartOf="@+id/dialogPositiveBT"
+                    android:background="@color/transparent"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="Cancel"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_sm"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
 
 </androidx.cardview.widget.CardView>
