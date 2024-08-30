@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -86,7 +87,10 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         super.onCreate(savedInstanceState)
 
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePref = getSharedPreferences(
+            FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
+            Context.MODE_PRIVATE
+        )
         editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "DARK THEM")
@@ -275,11 +279,42 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         isFlashCardGameScreenHidden(true)
         binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
-            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
-            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Flash Card")
+            //lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
+            tvScoreTitleScoreLayout.text =
+                getString(R.string.flashcard_score_title_text, "Flash Card")
             tvTotalCardsSumScoreLayout.text = viewModel.getTotalCards().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
+
+            val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getKnownCardSum().toFloat() / viewModel.getTotalCards(),
+                ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50),
+                ContextCompat.getColor(this@FlashCardGameActivity, R.color.green400),
+            ) as Int
+
+            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getMissedCardSum().toFloat() / viewModel.getTotalCards(),
+                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50),
+                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400),
+            ) as Int
+
+            val textColorKnownCards =
+                if (viewModel.getTotalCards() / 2 < viewModel.getKnownCardSum())
+                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50)
+                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.green400)
+
+            val textColorMissedCards =
+                if (viewModel.getTotalCards() / 2 < viewModel.getMissedCardSum())
+                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50)
+                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400)
+
+            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
+            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
+            tvKnownCardsSumScoreLayout.setTextColor(textColorKnownCards)
+            tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
+
+            cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
+            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
@@ -348,11 +383,19 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                     var currentY = view.y
                     when {
                         currentX > MIN_SWIPE_DISTANCE && currentX <= 0 || currentX < (MIN_SWIPE_DISTANCE * -1) && currentX >= 0
-                            -> { flipCardOnClicked(view, cardStartX, cardStartY, currentX, currentY) }
+                        -> {
+                            flipCardOnClicked(view, cardStartX, cardStartY, currentX, currentY)
+                        }
+
                         currentX < MIN_SWIPE_DISTANCE
-                            -> {onCardKnownNot(view, currentX, cardStartX, cardStartY, currentY)}
+                        -> {
+                            onCardKnownNot(view, currentX, cardStartX, cardStartY, currentY)
+                        }
+
                         currentX > (MIN_SWIPE_DISTANCE * (-1))
-                            -> { onCardKnown(view, currentX, cardStartX, cardStartY, currentY) }
+                        -> {
+                            onCardKnown(view, currentX, cardStartX, cardStartY, currentY)
+                        }
                     }
                 }
             }
@@ -455,7 +498,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                             if (!isFront) {
                                 initCardLayout()
                             }
-                            if(viewModel.swipe(false)) {
+                            if (viewModel.swipe(false)) {
                                 onQuizComplete()
                             }
                             currentY11 = 0f
@@ -508,7 +551,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                             if (!isFront) {
                                 initCardLayout()
                             }
-                            if(viewModel.swipe(true)) {
+                            if (viewModel.swipe(true)) {
                                 onQuizComplete()
                             }
                             currentY11 = 0f
@@ -594,7 +637,10 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
         if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {
             onCardOrientationBackFront()
-            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainerHigh)
+            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(
+                this,
+                com.google.android.material.R.attr.colorSurfaceContainerHigh
+            )
             val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
             bindCardBottom(
                 onFlippedBackgroundColor,
@@ -605,7 +651,10 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                 sumCardsInDeck
             )
         } else {
-            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(this, com.google.android.material.R.attr.colorSurfaceContainer)
+            val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(
+                this,
+                com.google.android.material.R.attr.colorSurfaceContainer
+            )
             val text = onScreenCards.bottom?.cardContent?.content
             bindCardBottom(
                 onFlippedBackgroundColor,
@@ -644,6 +693,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                 binding.tvQuizBack3.visibility = View.GONE
                 binding.tvQuizBack4.visibility = View.GONE
             }
+
             2 -> {
                 binding.tvQuizBack1.visibility = View.VISIBLE
                 binding.tvQuizBack1.text = correctDefinitions[0].definition
@@ -652,6 +702,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                 binding.tvQuizBack3.visibility = View.GONE
                 binding.tvQuizBack4.visibility = View.GONE
             }
+
             3 -> {
                 binding.tvQuizBack1.visibility = View.VISIBLE
                 binding.tvQuizBack1.text = correctDefinitions[0].definition
@@ -661,6 +712,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
                 binding.tvQuizBack3.text = correctDefinitions[2].definition
                 binding.tvQuizBack4.visibility = View.GONE
             }
+
             4 -> {
                 binding.tvQuizBack1.visibility = View.VISIBLE
                 binding.tvQuizBack1.text = correctDefinitions[0].definition
@@ -687,7 +739,11 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         )
 
         binding.btCardFrontSpeak.setOnClickListener {
-            readText(listOf(onScreenCards.top.cardContent?.content!!), listOf(binding.tvQuizFront), viewModel.deck?.deckFirstLanguage!!)
+            readText(
+                listOf(onScreenCards.top.cardContent?.content!!),
+                listOf(binding.tvQuizFront),
+                viewModel.deck?.deckFirstLanguage!!
+            )
         }
         binding.btCardBackSpeak.setOnClickListener {
             val views = listOf(
@@ -705,7 +761,7 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         definitions?.forEach {
             correctAlternative.add(it.definition!!)
         }
-        return  correctAlternative
+        return correctAlternative
     }
 
     private fun readText(
@@ -717,7 +773,8 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         var position = 0
         val textSum = text.size
         val textColor = view[0].textColors
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onReadColor =
+            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
 
         val params = Bundle()
 

@@ -28,4 +28,6 @@
     <dimen name="icon_card_top_width">39dp</dimen>
     <dimen name="icon_card_top_height">20dp</dimen>
 
+    <dimen name="stroke_card">2dp</dimen>
+
 </resources>

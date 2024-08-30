@@ -26,8 +26,8 @@
     <string name="exit_button_text_hint">Exit Button</string>
     <string name="flash_card_button_text">Flash Card</string>
     <string name="flashcard_score_title_text">%1$s Complete:</string>
-    <string name="known_cards_text">Known cards:</string>
-    <string name="missed_cards_text">Missed cards:</string>
+    <string name="known_cards_text">Known cards</string>
+    <string name="missed_cards_text">Missed cards</string>
     <string name="revise_missed_cards_button_txt">REVISE MISSED CARDS</string>
     <string name="restart_flashcard_button_text">RESTART FLASHCARD</string>
     <string name="back_to_deck_text_button">BACK TO DECK</string>

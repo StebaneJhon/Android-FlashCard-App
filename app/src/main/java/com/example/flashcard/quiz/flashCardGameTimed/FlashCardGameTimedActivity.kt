@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
+import android.animation.ArgbEvaluator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
@@ -532,11 +533,41 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         isFlashCardGameScreenHidden(true)
         binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
-            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
+//            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Flash Card")
             tvTotalCardsSumScoreLayout.text = viewModel.getTotalCards().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
+
+            val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getKnownCardSum().toFloat() / viewModel.getTotalCards(),
+                ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.green50),
+                ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.green400),
+            ) as Int
+
+            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getMissedCardSum().toFloat() / viewModel.getTotalCards(),
+                ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.red50),
+                ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.red400),
+            ) as Int
+
+            val textColorKnownCards =
+                if (viewModel.getTotalCards() / 2 < viewModel.getKnownCardSum())
+                    ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.green50)
+                else ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.green400)
+
+            val textColorMissedCards =
+                if (viewModel.getTotalCards() / 2 < viewModel.getMissedCardSum())
+                    ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.red50)
+                else ContextCompat.getColor(this@FlashCardGameTimedActivity, R.color.red400)
+
+            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
+            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
+            tvKnownCardsSumScoreLayout.setTextColor(textColorKnownCards)
+            tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
+
+            cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
+            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@FlashCardGameTimedActivity, MainActivity::class.java))

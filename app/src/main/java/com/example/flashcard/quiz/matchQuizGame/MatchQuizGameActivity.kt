@@ -1,5 +1,6 @@
 package com.example.flashcard.quiz.matchQuizGame
 
+import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -10,6 +11,7 @@ import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
@@ -179,8 +181,38 @@ class MatchQuizGameActivity : AppCompatActivity() {
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Matching Quiz")
             tvMoveNumberSumLayout.text = viewModel.getNumMove().toString()
             tvMissedMoveSumLayout.text = viewModel.getNumMiss().toString()
-            tvTotalCardsSumScoreLayout.text = viewModel.getOnBoardCardSum().toString()
-            lpiQuizResultDiagramScoreLayout.progress = viewModel.getUserPerformance()
+            tvTotalCardSumScoreLayout.text = viewModel.getOnBoardCardSum().toString()
+
+            val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getNumMove().toFloat() / viewModel.getOnBoardCardSum(),
+                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50),
+                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400),
+            ) as Int
+
+            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getNumMiss().toFloat() / viewModel.getOnBoardCardSum(),
+                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50),
+                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400),
+            ) as Int
+
+            val textColorKnownCards =
+                if (viewModel.getOnBoardCardSum() / 2 < viewModel.getNumMove())
+                    ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50)
+                else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400)
+
+            val textColorMissedCards =
+                if (viewModel.getOnBoardCardSum() / 2 < viewModel.getNumMiss())
+                    ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50)
+                else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400)
+
+            tvMissedMoveSumLayout.setTextColor(textColorMissedCards)
+            tvMissedMoveLayout.setTextColor(textColorMissedCards)
+            tvMoveNumberSumLayout.setTextColor(textColorKnownCards)
+            tvMoveNumberLayout.setTextColor(textColorKnownCards)
+
+            cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
+            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
+
             btBackToDeck.setOnClickListener {
                 startActivity(Intent(this@MatchQuizGameActivity, MainActivity::class.java))
             }

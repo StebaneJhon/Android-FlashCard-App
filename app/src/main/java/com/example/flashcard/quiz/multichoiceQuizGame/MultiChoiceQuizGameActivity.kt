@@ -1,5 +1,6 @@
 package com.example.flashcard.quiz.multichoiceQuizGame
 
+import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -392,11 +393,41 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
-            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
+//            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Multi Choice Quiz")
             tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
+
+            val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getKnownCardSum().toFloat() / viewModel.cardSum(),
+                ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green50),
+                ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green400),
+            ) as Int
+
+            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getMissedCardSum().toFloat() / viewModel.cardSum(),
+                ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red50),
+                ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red400),
+            ) as Int
+
+            val textColorKnownCards =
+                if (viewModel.cardSum() / 2 < viewModel.getKnownCardSum())
+                    ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green50)
+                else ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green400)
+
+            val textColorMissedCards =
+                if (viewModel.cardSum() / 2 < viewModel.getMissedCardSum())
+                    ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red50)
+                else ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red400)
+
+            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
+            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
+            tvKnownCardsSumScoreLayout.setTextColor(textColorKnownCards)
+            tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
+
+            cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
+            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@MultiChoiceQuizGameActivity, MainActivity::class.java))

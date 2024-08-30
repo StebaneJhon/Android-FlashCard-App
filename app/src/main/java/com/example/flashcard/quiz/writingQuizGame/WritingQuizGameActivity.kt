@@ -1,5 +1,6 @@
 package com.example.flashcard.quiz.writingQuizGame
 
+import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -17,6 +18,7 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
@@ -336,11 +338,42 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
-            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
+//            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
             tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
+
+
+            val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getKnownCardSum().toFloat() / viewModel.cardSum(),
+                ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green50),
+                ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green400),
+            ) as Int
+
+            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
+                viewModel.getMissedCardSum().toFloat() / viewModel.cardSum(),
+                ContextCompat.getColor(this@WritingQuizGameActivity, R.color.red50),
+                ContextCompat.getColor(this@WritingQuizGameActivity, R.color.red400),
+            ) as Int
+
+            val textColorKnownCards =
+                if (viewModel.cardSum() / 2 < viewModel.getKnownCardSum())
+                    ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green50)
+                else ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green400)
+
+            val textColorMissedCards =
+                if (viewModel.cardSum() / 2 < viewModel.getMissedCardSum())
+                    ContextCompat.getColor(this@WritingQuizGameActivity, R.color.red50)
+                else ContextCompat.getColor(this@WritingQuizGameActivity, R.color.red400)
+
+            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
+            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
+            tvKnownCardsSumScoreLayout.setTextColor(textColorKnownCards)
+            tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
+
+            cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
+            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@WritingQuizGameActivity, MainActivity::class.java))
