@@ -34,8 +34,8 @@ class CardsRecyclerViewAdapter(
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
     private val editCardClickListener: (ImmutableCard?) -> Unit,
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
-    private val onCardContentClicked: (TextClickedModel) -> Unit,
-    private val onCardDefinitionClicked: (TextClickedModel) -> Unit,
+    private val onReadContent: (TextClickedModel) -> Unit,
+    private val onReadDefinition: (TextClickedModel) -> Unit,
 ) : RecyclerView.Adapter<CardsRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -54,8 +54,8 @@ class CardsRecyclerViewAdapter(
             boxLevels,
             editCardClickListener,
             deleteCardClickListener,
-            onCardContentClicked,
-            onCardDefinitionClicked,
+            onReadContent,
+            onReadDefinition,
         )
     }
 
@@ -82,8 +82,8 @@ class CardsRecyclerViewAdapter(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             editCardClickListener: (ImmutableCard?) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
-            onCardContentClicked: (TextClickedModel) -> Unit,
-            onCardDefinitionClicked: (TextClickedModel) -> Unit,
+            onReadContent: (TextClickedModel) -> Unit,
+            onReadDefinition: (TextClickedModel) -> Unit,
         ) {
             val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
             val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
@@ -158,17 +158,17 @@ class CardsRecyclerViewAdapter(
             }
 
             onCardText.setOnClickListener {it as TextView
-                onCardContentClicked(TextClickedModel(it.text.toString().lowercase(), it))
+                onReadContent(TextClickedModel(it.text.toString().lowercase(), it))
             }
 
             cardDescription1.setOnClickListener { it as TextView
-                onCardDefinitionClicked(TextClickedModel(it.text.toString().lowercase(), it))
+                onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
             }
             cardDescription2.setOnClickListener { it as TextView
-                onCardDefinitionClicked(TextClickedModel(it.text.toString().lowercase(), it))
+                onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
             }
             cardDescription3.setOnClickListener { it as TextView
-                onCardDefinitionClicked(TextClickedModel(it.text.toString().lowercase(), it))
+                onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
             }
 
 

@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 
-class CardFragment : Fragment(), MenuProvider {
+class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
 
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
@@ -78,8 +78,18 @@ class CardFragment : Fragment(), MenuProvider {
         ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
 
-    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.from_bottom_anim) }
-    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(requireContext(), R.anim.to_bottom_anim) }
+    private val fromBottom: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.from_bottom_anim
+        )
+    }
+    private val toBottom: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            requireContext(),
+            R.anim.to_bottom_anim
+        )
+    }
 
     private var actionClicked = false
 
@@ -97,6 +107,7 @@ class CardFragment : Fragment(), MenuProvider {
     ): View {
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         appContext = container?.context
+        tts = TextToSpeech(appContext, this)
         return binding.root
     }
 
@@ -107,7 +118,7 @@ class CardFragment : Fragment(), MenuProvider {
         (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
 
         deck = args.selectedDeck
-        deck?.let {_deck ->
+        deck?.let { _deck ->
             view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
                 title = _deck.deckName
                 setNavigationOnClickListener {
@@ -116,7 +127,8 @@ class CardFragment : Fragment(), MenuProvider {
                         null,
                         NavOptions.Builder()
                             .setPopUpTo(R.id.cardFragment, true)
-                            .build())
+                            .build()
+                    )
                 }
             }
             lifecycleScope.launch {
@@ -127,9 +139,11 @@ class CardFragment : Fragment(), MenuProvider {
                             is UiState.Loading -> {
                                 binding.cardsActivityProgressBar.isVisible = true
                             }
+
                             is UiState.Error -> {
                                 onDeckEmpty()
                             }
+
                             is UiState.Success -> {
                                 displayCards(state.data.cards!!, state.data.deck!!)
                             }
@@ -160,7 +174,8 @@ class CardFragment : Fragment(), MenuProvider {
                         null,
                         NavOptions.Builder()
                             .setPopUpTo(R.id.cardFragment, true)
-                            .build())
+                            .build()
+                    )
                 }
             })
     }
@@ -201,7 +216,6 @@ class CardFragment : Fragment(), MenuProvider {
             binding.startQuizBT.isClickable = false
         }
     }
-
 
 
     private fun onDeckEmpty() {
@@ -471,29 +485,29 @@ class CardFragment : Fragment(), MenuProvider {
                 { selectedCard ->
                     onEditCard(selectedCard!!)
                 },
-                {selectedCard ->
+                { selectedCard ->
                     cardViewModel.deleteCard(selectedCard, deck)
                 },
-                {text ->
-                    text?.let {t ->
-                        //val a = Locale.getAvailableLocales()
-                        readText(t, deck.deckFirstLanguage!!)
+                { text ->
+                    if (tts.isSpeaking) {
+                        stopReading(text)
+                    } else {
+                        readText(text, deck.deckFirstLanguage!!)
                     }
-                },
-                {text ->
-                    text?.let {t ->
-                        //val a = Locale.getAvailableLocales()
-                        readText(t, deck.deckSecondLanguage!!)
-                    }
-                })
+                }) { text ->
+                if (tts.isSpeaking) {
+                    stopReading(text)
+                } else {
+                    readText(text, deck.deckSecondLanguage!!)
+                }
+            }
         }!!
 
         val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
-        gridLayoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return getSpanSize(cardList, position, 50, 200)
             }
-
         }
 
         binding.cardRecyclerView.apply {
@@ -508,7 +522,11 @@ class CardFragment : Fragment(), MenuProvider {
         val text = textAndView.text
         val view = textAndView.view
         val textColor = view.textColors
-        val onReadColor = MaterialColors.getColor(appContext!!, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onReadColor = MaterialColors.getColor(
+            appContext!!,
+            androidx.appcompat.R.attr.colorPrimary,
+            Color.GRAY
+        )
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
@@ -520,33 +538,30 @@ class CardFragment : Fragment(), MenuProvider {
             }
 
             override fun onError(utteranceId: String?) {
-                TODO("Not yet implemented")
             }
         }
 
         val params = Bundle()
 
-        tts = TextToSpeech(appContext ,  TextToSpeech.OnInitListener {
-            when (it) {
-                TextToSpeech.SUCCESS -> {
-                    if (tts.isSpeaking) {
-                        tts.stop()
-                        tts.shutdown()
-                    } else {
-                        tts.language = Locale.forLanguageTag(TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!)
-                        tts.setSpeechRate(1.0f)
-                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-                        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
-                    }
-                }
-                 else -> {
-                     Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG).show()
-                 }
-            }
-        })
+        tts.language = Locale.forLanguageTag(
+            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+        )
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
 
         tts.setOnUtteranceProgressListener(speechListener)
 
+    }
+
+    private fun stopReading(textAndView: TextClickedModel) {
+        val view = textAndView.view
+        val textColor = MaterialColors.getColor(
+            appContext!!,
+            com.google.android.material.R.attr.colorOnSurfaceVariant,
+            Color.GRAY
+        )
+        view.setTextColor(textColor)
+        tts.stop()
     }
 
     private fun getSpanSize(
@@ -557,7 +572,7 @@ class CardFragment : Fragment(), MenuProvider {
     ): Int {
         val contentSize = cardList[cardPosition]?.cardContent?.content?.length ?: 0
         val definitionSize = getMaxDefinitionLength(cardList[cardPosition]?.cardDefinition)
-        if (definitionSize > minDefinitionLengthForSpam1 || contentSize > minContentLengthForSpam1 ) {
+        if (definitionSize > minDefinitionLengthForSpam1 || contentSize > minContentLengthForSpam1) {
             return 2
         }
         return 1
@@ -580,8 +595,11 @@ class CardFragment : Fragment(), MenuProvider {
     private fun onAddNewCard() {
 
         val newCardDialog = NewCardDialog(null, deck!!)
-         newCardDialog.show(childFragmentManager, "New Card Dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE_CARD, this) { requestQuey, bundle ->
+        newCardDialog.show(childFragmentManager, "New Card Dialog")
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_CODE_CARD,
+            this
+        ) { requestQuey, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
             result?.let { it ->
                 cardViewModel.insertCards(it, deck!!)
@@ -592,7 +610,10 @@ class CardFragment : Fragment(), MenuProvider {
     private fun onEditCard(card: ImmutableCard) {
         val newCardDialog = NewCardDialog(card, deck!!)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE_CARD, this) { requestQuey, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_CODE_CARD,
+            this
+        ) { requestQuey, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let { it ->
                 cardViewModel.updateCard(it.first())
@@ -607,22 +628,50 @@ class CardFragment : Fragment(), MenuProvider {
         val searchView = search?.actionView as SearchView
 
         val searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button) as ImageView
-        searchIcon.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
+        searchIcon.setColorFilter(
+            ThemeUtils.getThemeAttrColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorOnSurface
+            ), PorterDuff.Mode.SRC_IN
+        )
 
-        val searchIconClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
-        searchIconClose.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
+        val searchIconClose =
+            searchView.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+        searchIconClose.setColorFilter(
+            ThemeUtils.getThemeAttrColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorOnSurface
+            ), PorterDuff.Mode.SRC_IN
+        )
 
-        val searchIconMag = searchView.findViewById(androidx.appcompat.R.id.search_go_btn) as ImageView
-        searchIconMag.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
+        val searchIconMag =
+            searchView.findViewById(androidx.appcompat.R.id.search_go_btn) as ImageView
+        searchIconMag.setColorFilter(
+            ThemeUtils.getThemeAttrColor(
+                requireContext(),
+                com.google.android.material.R.attr.colorOnSurface
+            ), PorterDuff.Mode.SRC_IN
+        )
 
-        val topAppBarEditText = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+        val topAppBarEditText =
+            searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
         topAppBarEditText.apply {
-            setTextColor(ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface))
-            setHintTextColor(ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurfaceVariant))
+            setTextColor(
+                ThemeUtils.getThemeAttrColor(
+                    requireContext(),
+                    com.google.android.material.R.attr.colorOnSurface
+                )
+            )
+            setHintTextColor(
+                ThemeUtils.getThemeAttrColor(
+                    requireContext(),
+                    com.google.android.material.R.attr.colorOnSurfaceVariant
+                )
+            )
             hint = getText(R.string.hint_deck_search_field)
         }
 
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 binding.cardsActivityProgressBar.visibility = View.VISIBLE
                 if (p0 != null) {
@@ -646,9 +695,10 @@ class CardFragment : Fragment(), MenuProvider {
         val searchQuery = "%$query%"
         lifecycleScope.launch {
             deck?.let { cardDeck ->
-                cardViewModel.searchCard(searchQuery, cardDeck.deckId!!).observe(this@CardFragment) { cardList ->
-                    cardList?.let { displayCards(it, cardDeck) }
-                }
+                cardViewModel.searchCard(searchQuery, cardDeck.deckId!!)
+                    .observe(this@CardFragment) { cardList ->
+                        cardList?.let { displayCards(it, cardDeck) }
+                    }
             }
         }
     }
@@ -657,9 +707,28 @@ class CardFragment : Fragment(), MenuProvider {
         return true
     }
 
-    private inline fun <reified T: Parcelable> Bundle.parcelable(key: String): ArrayList<T>? = when {
-        Build.VERSION.SDK_INT >= 33 -> getParcelableArrayList(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getParcelableArrayList<T>(key)
+    private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): ArrayList<T>? =
+        when {
+            Build.VERSION.SDK_INT >= 33 -> getParcelableArrayList(key, T::class.java)
+            else -> @Suppress("DEPRECATION") getParcelableArrayList<T>(key)
+        }
+
+    override fun onInit(status: Int) {
+        when (status) {
+            TextToSpeech.SUCCESS -> {
+                tts.setSpeechRate(1.0f)
+            }
+            else -> {
+                Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.stop()
+        tts.shutdown()
     }
 
 }
