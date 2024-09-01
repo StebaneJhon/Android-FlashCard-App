@@ -7,7 +7,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -51,7 +53,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 
-class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
+class DeckFragment : Fragment(), MenuProvider {
 
     private var _binding: FragmentDeckBinding? = null
     private val binding get() = _binding!!
@@ -63,6 +65,11 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
     }
 
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
+
+    companion object {
+        const val TAG = "DeckFragment"
+        const val REQUEST_CODE = "0"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -102,7 +109,7 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         }
 
 
-        binding.addNewDeckButton.setOnClickListener { onAddNewDeck(null) }
+        binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
     }
 
     private fun onNoDeckError() {
@@ -117,13 +124,13 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         binding.onNoDeckTextError.visibility = View.GONE
         if (appContext != null) {
             recyclerViewAdapter = DecksRecyclerViewAdapter(listOfDecks, appContext!!, {
-                onAddNewDeck(it)
+                onEditDeck(it)
             }, {deck ->
                 onDeleteDeck(deck)
             }, { deck ->
                 onStartQuiz(deck.deckId!!)
             }) {
-                navigateTo(it)
+                navigateTo(it, TAG)
             }
             val recyclerView = binding.deckRecycleView
             recyclerView.apply {
@@ -134,10 +141,9 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun navigateTo(data: ImmutableDeck) {
-        val action = DeckFragmentDirections.navigateToCardFragment(data)
+    private fun navigateTo(data: ImmutableDeck, opener: String) {
+        val action = DeckFragmentDirections.navigateToCardFragment(data, opener)
         findNavController().navigate(action, NavOptions.Builder().setPopUpTo(R.id.deckFragment, true).build())
-
     }
 
     private fun onDeleteDeck(deck: ImmutableDeck) {
@@ -157,19 +163,33 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
         }
     }
 
-    private fun onAddNewDeck(deck: ImmutableDeck?) {
-        val newDeckDialog = NewDeckDialog(deck)
-        newDeckDialog.show(parentFragmentManager, "New Deck Dialog")
-    }
-
-    override fun getDeck(deck: Deck, action: String) {
-        if (action == "Add") {
-            deckViewModel.insertDeck(deck)
-        } else {
-            deckViewModel.updateDeck(deck)
+    private fun onAddNewDeck() {
+        val newDeckDialog = NewDeckDialog(null)
+        newDeckDialog.show(childFragmentManager, "New Deck Dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
+            val result = bundle.parcelable<Deck>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
+            result?.let { it ->
+                deckViewModel.insertDeck(it)
+            }
         }
-
     }
+
+    private fun onEditDeck(deck: ImmutableDeck?) {
+        val newDeckDialog = NewDeckDialog(deck)
+        newDeckDialog.show(childFragmentManager, "Edit Deck Dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
+            val result = bundle.parcelable<Deck>(NewDeckDialog.EDIT_DECK_BUNDLE_KEY)
+            result?.let { it ->
+                deckViewModel.updateDeck(it)
+            }
+        }
+    }
+
+//    override fun getDeckAndAddCards(deck: Deck, opener: String) {
+//        deckViewModel.insertDeck(deck)
+//        val externalDeck = deckViewModel.getDeckByName(deck.deckName!!)
+//        navigateTo(externalDeck, opener)
+//    }
 
     private fun searchDeck(query: String) {
         val searchQuery = "%$query%"
@@ -465,4 +485,10 @@ class DeckFragment : Fragment(), NewDeckDialog.NewDialogListener, MenuProvider {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return true
     }
+
+    private inline fun <reified T: Parcelable> Bundle.parcelable(key: String): T? = when {
+        Build.VERSION.SDK_INT >= 33 -> getParcelable(key, T::class.java)
+        else -> @Suppress("DEPRECATION") getParcelable<T>(key)
+    }
+
 }

@@ -45,6 +45,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         }
     }
 
+    @WorkerThread
+    fun getDeckByName(title: String): ImmutableDeck {
+        val deck = flashCardDao.getDeckName(title)
+        return deck.toExternal()
+    }
+
     // Cards
 
     /*

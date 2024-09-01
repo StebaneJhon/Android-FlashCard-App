@@ -6,6 +6,7 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.AutoCompleteTextView
@@ -14,6 +15,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -53,16 +56,22 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
     private var deckSecondLanguageLY: TextInputLayout? = null
     private var buttonDialogueN: MaterialButton? = null
     private var buttonDialogueP: MaterialButton? = null
+    private var btAddCard: MaterialButton? = null
     private var tvTitle: TextView? = null
     private var rvDeckColorPicker: RecyclerView? = null
-
-    private var listener: NewDialogListener? = null
 
     private var deckCategoryColor: String? = null
     private val supportedLanguages = FirebaseTranslatorHelper().getSupportedLang()
     private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
     private val newDeckDialogViewModel: NewDeckDialogViewModel by viewModels()
+
+    companion object {
+        const val TAG = "NewDeckDialog"
+        const val SAVE_DECK_BUNDLE_KEY = "1"
+        const val EDIT_DECK_BUNDLE_KEY = "2"
+        const val REQUEST_CODE = "0"
+    }
 
     @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -83,6 +92,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         deckSecondLanguageLY = view?.findViewById(R.id.deckSecondLanguageLY)
         buttonDialogueN = view?.findViewById(R.id.dialogueNegativeBT)
         buttonDialogueP = view?.findViewById(R.id.dialogPositiveBT)
+        btAddCard = view?.findViewById(R.id.bt_add_card)
         rvDeckColorPicker = view?.findViewById(R.id.rv_deck_color_picker)
 
         tvTitle = view?.findViewById(R.id.tv_title)
@@ -92,8 +102,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
         // Show Color Picker
         lifecycleScope.launch {
-            newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors())
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors())
                 newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
                     displayColorPicker(listOfColors)
                 }
@@ -101,6 +111,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         }
 
         if (deck != null) {
+            btAddCard?.isVisible =  false
             tvTitle?.text = getString(R.string.tv_update_deck)
             deckNameET?.setText(deck.deckName)
             deckDescriptionET?.setText(deck.deckDescription)
@@ -128,14 +139,14 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                             deck.isFavorite
                         )
 
-                        listener?.getDeck(newDeck, "Update")
+                        sendDeckOnEdit(REQUEST_CODE, newDeck)
                         dismiss()
                     }
                 }
             }
         } else {
             builder.setView(view)
-
+            btAddCard?.isVisible = true
             tvTitle?.text = getString(R.string.tv_add_new_deck)
             buttonDialogueN?.setOnClickListener { dismiss() }
             buttonDialogueP?.apply {
@@ -154,9 +165,27 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                             false
                         )
 
-                        listener?.getDeck(newDeck, "Add")
+                        sendDeckOnSave(REQUEST_CODE, newDeck)
                         dismiss()
                     }
+                }
+            }
+            btAddCard?.setOnClickListener {
+                if (!checkError()) {
+                    val newDeck = Deck(
+                        null,
+                        deckNameET?.text.toString(),
+                        deckDescriptionET?.text.toString(),
+                        deckFirstLangET?.text.toString(),
+                        deckSecondLangET?.text.toString(),
+                        deckCategoryColor,
+                        0,
+                        null,
+                        false
+                    )
+
+//                    listener?.getDeckAndAddCards(newDeck, "NewDeckDialog")
+                    dismiss()
                 }
             }
         }
@@ -217,19 +246,13 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         return error
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            listener = context as NewDialogListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(
-                (context.toString() +
-                        " must implement NoticeDialogListener")
-            )
-        }
+    private fun sendDeckOnSave(requestCode: String, deck: Deck) {
+        parentFragmentManager.setFragmentResult(requestCode, bundleOf(SAVE_DECK_BUNDLE_KEY to deck))
     }
 
-    interface NewDialogListener {
-        fun getDeck(deck: Deck, action: String)
+    private fun sendDeckOnEdit(requestCode: String, deck: Deck) {
+        parentFragmentManager.setFragmentResult(requestCode, bundleOf(EDIT_DECK_BUNDLE_KEY to deck))
+
     }
+
 }

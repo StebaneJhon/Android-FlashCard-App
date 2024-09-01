@@ -53,6 +53,10 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.insertDeck(deck)
     }
 
+    fun getDeckByName(deckName: String): ImmutableDeck {
+        return repository.getDeckByName(deckName)
+    }
+
     fun deleteDeck(deck: ImmutableDeck) {
         /*
         fetchCardDeletionJob?.cancel()

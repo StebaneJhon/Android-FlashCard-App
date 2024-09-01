@@ -22,6 +22,9 @@
         <action
             android:id="@+id/action_cardFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <argument
+            android:name="opener"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/deckFragment"

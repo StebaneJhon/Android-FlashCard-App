@@ -217,6 +217,7 @@
         </GridLayout>
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/textView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -233,6 +234,8 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_general_data_info" />
 
         <FrameLayout
+            android:clickable="false"
+            android:visibility="gone"
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -243,6 +246,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView3">
 
             <GridLayout
+                android:clickable="false"
                 android:layout_width="match_parent"
                 android:layout_height="65dp"
                 android:layout_margin="@dimen/space_xxs"

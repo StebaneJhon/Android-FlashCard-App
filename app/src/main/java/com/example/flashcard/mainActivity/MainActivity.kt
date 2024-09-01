@@ -39,19 +39,9 @@ import kotlinx.coroutines.launch
 
 class MainActivity :
     AppCompatActivity(),
-    NewDeckDialog.NewDialogListener,
-    NewCardDialog.NewDialogListener,
     SettingsFragmentEditBoxLevelDialog.SettingsFragmentEditBoxLevelDialogListener {
 
     private lateinit var binding: ActivityMainBinding
-
-    private val deckViewModel: DeckViewModel by viewModels {
-        DeckViewModelFactory((application as FlashCardApplication).repository)
-    }
-
-    private val cardViewModel: CardViewModel by viewModels {
-        CardViewModelFactory((application as FlashCardApplication).repository)
-    }
 
     private val settingsViewModel: SettingsFragmentViewModel by viewModels {
         SettingsFragmentViewModelFactory((application as FlashCardApplication).repository)
@@ -102,24 +92,6 @@ class MainActivity :
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SETTINGS_CODE) {
             this.recreate()
-        }
-    }
-
-    override fun getDeck(deck: Deck, action: String) {
-        if (action == "Add") {
-            deckViewModel.insertDeck(deck)
-        } else {
-            deckViewModel.updateDeck(deck)
-        }
-
-    }
-
-    override fun getCard(cards: List<ImmutableCard>, action: String, deck: ImmutableDeck) {
-        if (action == Constant.ADD) {
-            //card.deckId = deck.deckId
-            cardViewModel.insertCards(cards, deck)
-        } else {
-            cardViewModel.updateCard(cards.first())
         }
     }
 

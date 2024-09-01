@@ -141,4 +141,10 @@
     <string name="message_unsaved_cards">You have some unsaved cards do you want to save them?</string>
     <string name="message_card_registered">Your cards has been registered</string>
     <string name="message_card_not_registered">Your cards has not been registered</string>
+    <string name="title_on_no_card_to_show">No card yet!</string>
+    <string name="title_on_no_deck_to_show">No deck yet!</string>
+    <string name="title_added_cards">Added cards</string>
+    <string name="bt_cancel">Cancel</string>
+    <string name="bt_add_deck">Add deck</string>
+    <string name="bt_add_card">Add card</string>
 </resources>

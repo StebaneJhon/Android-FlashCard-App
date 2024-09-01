@@ -126,7 +126,7 @@
                 android:fontFamily="@font/open_sans_bold"
                 android:text="@string/category_color_picker_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_base"
+                android:textSize="@dimen/text_sm"
                 android:layout_marginTop="@dimen/text_lg"
                 android:textStyle="bold" />
 
@@ -136,41 +136,56 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_xs"/>
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_marginTop="@dimen/space_lg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/dialogPositiveBT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="@dimen/space_xs"
-                    android:layout_marginTop="@dimen/space_md"
-                    android:background="@color/transparent"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="Add"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/dialogueNegativeBT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="@dimen/space_md"
-                    android:layout_marginEnd="@dimen/space_xs"
-                    android:layout_marginBottom="@dimen/space_sm"
-                    android:layout_toStartOf="@+id/dialogPositiveBT"
                     android:background="@color/transparent"
                     android:fontFamily="@font/open_sans_bold"
-                    android:text="Cancel"
+                    android:text="@string/bt_cancel"
                     android:textColor="?colorOnSurface"
                     android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
-            </RelativeLayout>
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/dialogPositiveBT"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/bt_add_deck"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_sm"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/bt_add_card"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_add_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/transparent"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/bt_add_card"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_sm"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 

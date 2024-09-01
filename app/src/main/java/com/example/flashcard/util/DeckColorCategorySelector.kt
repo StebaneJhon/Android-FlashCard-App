@@ -3,7 +3,6 @@ package com.example.flashcard.util
 import com.example.flashcard.R
 import com.example.flashcard.util.deckCategoryColorConst.BLACK
 import com.example.flashcard.util.deckCategoryColorConst.BLUE
-import com.example.flashcard.util.deckCategoryColorConst.BROWN
 import com.example.flashcard.util.deckCategoryColorConst.CYAN
 import com.example.flashcard.util.deckCategoryColorConst.EMERALD
 import com.example.flashcard.util.deckCategoryColorConst.GREEN
@@ -24,20 +23,8 @@ import com.example.flashcard.util.deckCategoryColorConst.FUCHSIA
 
 class DeckColorCategorySelector {
 
-    private val colors = mapOf(
-        WHITE to R.color.white,
-        RED to R.color.red700,
-        PINK to R.color.pink700,
-        PURPLE to R.color.purple700,
-        BLUE to R.color.blue700,
-        TEAL to R.color.teal700,
-        GREEN to R.color.green700,
-        YELLOW to R.color.yellow700,
-        BROWN to R.color.brown700,
-        BLACK to R.color.black
-    )
 
-    private val colors2 = mapOf(
+    private val colors = mapOf(
         WHITE to R.color.neutral50,
         GREY to R.color.neutral400,
         BLACK to R.color.neutral950,
@@ -59,11 +46,11 @@ class DeckColorCategorySelector {
         ROSE to R.color.rose900,
     )
 
-    fun getColors() = colors2
+    fun getColors() = colors
 
     fun selectColor(color: String): Int? {
-        return if (color in colors2.keys) {
-            colors2[color]
+        return if (color in colors.keys) {
+            colors[color]
         } else {
             null
         }

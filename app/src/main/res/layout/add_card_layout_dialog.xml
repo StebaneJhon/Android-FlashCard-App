@@ -452,14 +452,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/fml_card_addition_panel" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/tv_title_added_cards"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/space_sm"
                     android:layout_marginTop="@dimen/space_md"
                     android:layout_marginEnd="@dimen/space_sm"
                     android:fontFamily="@font/open_sans_bold"
-                    android:text="Added cards"
+                    android:text="@string/title_added_cards"
                     android:textColor="?colorOnSurface"
                     android:textSize="@dimen/text_base"
                     android:textStyle="bold"
@@ -477,7 +477,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+                    app:layout_constraintTop_toBottomOf="@+id/tv_title_added_cards" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

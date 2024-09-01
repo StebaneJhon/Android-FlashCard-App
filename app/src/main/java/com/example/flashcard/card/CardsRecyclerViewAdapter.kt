@@ -32,7 +32,6 @@ class CardsRecyclerViewAdapter(
     private val cardList: List<ImmutableCard?>,
     private val deck: ImmutableDeck,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
-    private val fullScreenClickListener: (ImmutableCard?) -> Unit,
     private val editCardClickListener: (ImmutableCard?) -> Unit,
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
     private val onCardContentClicked: (TextClickedModel) -> Unit,
@@ -53,7 +52,6 @@ class CardsRecyclerViewAdapter(
             cardList[position],
             deck,
             boxLevels,
-            fullScreenClickListener,
             editCardClickListener,
             deleteCardClickListener,
             onCardContentClicked,
@@ -82,13 +80,11 @@ class CardsRecyclerViewAdapter(
             card: ImmutableCard?,
             deck: ImmutableDeck,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
-            fullScreenClickListener: (ImmutableCard?) -> Unit,
             editCardClickListener: (ImmutableCard?) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
             onCardContentClicked: (TextClickedModel) -> Unit,
             onCardDefinitionClicked: (TextClickedModel) -> Unit,
         ) {
-            //val statusColor = SpaceRepetitionAlgorithmHelper().box[card.cardStatus]?.color
             val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
             val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
             val cardBackgroundStatusColor = SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
@@ -146,14 +142,12 @@ class CardsRecyclerViewAdapter(
                      cardDescription3.text = definitionTexts[2]
                  }
             }
-            //cardDescription.text = card?.cardDefinition?.first()?.definition
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
                     context,
                     v,
                     R.menu.card_popup_menu,
-                    fullScreenClickListener,
                     editCardClickListener,
                     deleteCardClickListener,
                     card
@@ -202,7 +196,6 @@ class CardsRecyclerViewAdapter(
             context: Context,
             v: View,
             @MenuRes menuRes: Int,
-            fullScreenClickListener: (ImmutableCard?) -> Unit,
             editCardClickListener: (ImmutableCard?) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
             card: ImmutableCard?
@@ -246,10 +239,6 @@ class CardsRecyclerViewAdapter(
                     }
                     R.id.delete_card_DM -> {
                         deleteCardClickListener(card)
-                        true
-                    }
-                    R.id.fullscrean_card_DM -> {
-                        fullScreenClickListener(card)
                         true
                     }
                     else -> {

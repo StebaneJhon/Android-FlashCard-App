@@ -7,7 +7,9 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.LayoutInflater
@@ -42,8 +44,12 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.CardDefinition
+import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentCardBinding
+import com.example.flashcard.deck.DeckFragment.Companion.REQUEST_CODE
+import com.example.flashcard.deck.NewDeckDialog
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
@@ -59,7 +65,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 
-class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
+class CardFragment : Fragment(), MenuProvider {
 
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
@@ -79,6 +85,11 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
 
     val args: CardFragmentArgs by navArgs()
     private var deck: ImmutableDeck? = null
+
+    companion object {
+        const val TAG = "CardFragment"
+        const val REQUEST_CODE_CARD = "0"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -132,7 +143,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
             }
 
             binding.addNewCardBT.setOnClickListener {
-                onAddNewCard(null)
+                onAddNewCard()
             }
 
             binding.startQuizBT.setOnClickListener {
@@ -458,10 +469,7 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                 deck,
                 cardViewModel.getBoxLevels()!!,
                 { selectedCard ->
-                    onFullScreen(selectedCard, deck)
-                },
-                { selectedCard ->
-                    onAddNewCard(selectedCard)
+                    onEditCard(selectedCard!!)
                 },
                 {selectedCard ->
                     cardViewModel.deleteCard(selectedCard, deck)
@@ -477,7 +485,6 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
                         //val a = Locale.getAvailableLocales()
                         readText(t, deck.deckSecondLanguage!!)
                     }
-
                 })
         }!!
 
@@ -570,21 +577,26 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
         return 0
     }
 
-    private fun onAddNewCard(card: ImmutableCard?) {
-        val newCardDialog = deck?.let { NewCardDialog(card, it) }
-         newCardDialog?.show(parentFragmentManager, "New Deck Dialog")
+    private fun onAddNewCard() {
+
+        val newCardDialog = NewCardDialog(null, deck!!)
+         newCardDialog.show(childFragmentManager, "New Card Dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE_CARD, this) { requestQuey, bundle ->
+            val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
+            result?.let { it ->
+                cardViewModel.insertCards(it, deck!!)
+            }
+        }
     }
 
-    private fun onFullScreen(card: ImmutableCard?, deck: ImmutableDeck) {
-        FullScreenCardDialog(card, deck).show(parentFragmentManager, "Full Screen Card")
-    }
-
-    override fun getCard(cards: List<ImmutableCard>, action: String, deck: ImmutableDeck) {
-        if (action == Constant.ADD) {
-            //card.deckId = deck.deckId
-            cardViewModel.insertCards(cards, deck)
-        } else {
-            cardViewModel.updateCard(cards.first())
+    private fun onEditCard(card: ImmutableCard) {
+        val newCardDialog = NewCardDialog(card, deck!!)
+        newCardDialog.show(childFragmentManager, "New Card Dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE_CARD, this) { requestQuey, bundle ->
+            val result = bundle.parcelable<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
+            result?.let { it ->
+                cardViewModel.updateCard(it.first())
+            }
         }
     }
 
@@ -644,4 +656,10 @@ class CardFragment : Fragment(), NewCardDialog.NewDialogListener, MenuProvider {
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return true
     }
+
+    private inline fun <reified T: Parcelable> Bundle.parcelable(key: String): ArrayList<T>? = when {
+        Build.VERSION.SDK_INT >= 33 -> getParcelableArrayList(key, T::class.java)
+        else -> @Suppress("DEPRECATION") getParcelableArrayList<T>(key)
+    }
+
 }

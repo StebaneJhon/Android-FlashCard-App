@@ -26,6 +26,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -99,14 +100,12 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     private var btAdd: MaterialButton? = null
     private var btCancel: MaterialButton? = null
 
-    private var tvTitle: TextView? = null
+    private var tvTitleAddedCards: TextView? = null
 
     private var tabAddAndUpdateNewCard: MaterialToolbar? = null
 
     private var rvAddedCard: RecyclerView? = null
     private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
-
-    private var listener: NewDialogListener? = null
 
     private var cardBackground: String? = null
     private var appContext: Context? = null
@@ -124,6 +123,10 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         private const val REQUEST_PERMISSION_CODE_DEFINITION_4_MAC = 17
         private const val REQUEST_PERMISSION_CODE_CONTENT_TFC = 18
         private const val RecordAudioRequestCode = 3455
+        const val TAG = "NewCardDialog"
+        const val SAVE_CARDS_BUNDLE_KEY = "1"
+        const val EDIT_CARD_BUNDLE_KEY = "2"
+        const val REQUEST_CODE_CARD = "0"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,10 +190,25 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
 
         rvAddedCard = view?.findViewById(R.id.rv_added_card)
 
+        tvTitleAddedCards = view?.findViewById(R.id.tv_title_added_cards)
+
         // Add or update card
         if (card != null) {
+            tvTitleAddedCards?.isVisible = false
+            rvAddedCard?.isVisible = false
+            tabAddAndUpdateNewCard?.title = getString(R.string.tv_update_card)
             onUpdateCard(card!!)
         } else {
+            tvTitleAddedCards?.isVisible = true
+            rvAddedCard?.isVisible = true
+            tabAddAndUpdateNewCard?.title = getString(R.string.tv_add_new_card)
+
+            btAdd?.apply {
+                text = getString(R.string.bt_text_add)
+                setOnClickListener {
+                    onPositiveAction(Constant.ADD)
+                }
+            }
             onAddFlashCard(true)
         }
 
@@ -204,12 +222,10 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
                 R.id.save -> {
                     // Handle saving
                     if (card != null && card?.cardId != null) {
-                        //onPositiveAction(Constant.UPDATE)
-                        listener?.getCard(newCardViewModel.addedCards.value, Constant.UPDATE, deck)
+                        sendCardsOnEdit(REQUEST_CODE_CARD, EDIT_CARD_BUNDLE_KEY, newCardViewModel.addedCards.value)
                         dismiss()
                     } else {
-                        //onPositiveAction(Constant.ADD)
-                        listener?.getCard(newCardViewModel.addedCards.value, Constant.ADD, deck)
+                        sendCardsOnSave(REQUEST_CODE_CARD, SAVE_CARDS_BUNDLE_KEY, newCardViewModel.addedCards.value)
                         dismiss()
                     }
                     true
@@ -332,7 +348,8 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
                 .setTitle(getString(R.string.title_unsaved_cards))
                 .setMessage(getString(R.string.message_unsaved_cards))
                 .setPositiveButton("Yes") { _, _ ->
-                    listener?.getCard(newCardViewModel.addedCards.value, Constant.ADD, deck)
+//                    listener?.getCard(newCardViewModel.addedCards.value, Constant.ADD, deck)
+                    sendCardsOnSave(REQUEST_CODE_CARD, SAVE_CARDS_BUNDLE_KEY, newCardViewModel.addedCards.value)
                     Toast.makeText(appContext, getString(R.string.message_card_registered), Toast.LENGTH_LONG).show()
                     dismiss()
                 }
@@ -349,15 +366,12 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     }
 
     private fun onUpdateCard(card: ImmutableCard, indexCard: Int? = null) {
-
-        tabAddAndUpdateNewCard?.title  = getString(R.string.tv_update_card)
-
         btAdd?.apply {
             text = getString(R.string.bt_text_update)
             setOnClickListener {
                 if (indexCard == null) {
                     onPositiveAction(Constant.UPDATE)
-                    listener?.getCard(newCardViewModel.addedCards.value, Constant.UPDATE, deck)
+                    sendCardsOnEdit(REQUEST_CODE_CARD, EDIT_CARD_BUNDLE_KEY, newCardViewModel.addedCards.value)
                     dismiss()
                 } else {
                     onPositiveAction(Constant.UPDATE, indexCard)
@@ -495,14 +509,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         cardContentDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
         cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
         cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
-        tabAddAndUpdateNewCard?.title = getString(R.string.tv_add_new_card)
 
-        btAdd?.apply {
-            text = getString(R.string.bt_text_add)
-            setOnClickListener {
-                onPositiveAction(Constant.ADD)
-            }
-        }
     }
 
     private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null) {
@@ -760,15 +767,6 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         isCorrect
     )
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        try {
-            listener = context as NewDialogListener
-        } catch (e: ClassCastException) {
-            throw ClassCastException(context.toString() + "must implement NewDialogListener")
-        }
-    }
-
     private fun today(): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return formatter.format(LocalDate.now())
@@ -931,7 +929,20 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         return color
     }
 
-    interface NewDialogListener {
-        fun getCard(cards: List<ImmutableCard>, action: String, deck: ImmutableDeck)
+    private fun sendCardsOnSave(
+        requestCode: String,
+        bundleCode: String,
+        cards: List<ImmutableCard>
+    ) {
+        parentFragmentManager.setFragmentResult(requestCode, bundleOf(bundleCode to cards))
     }
+
+    private fun sendCardsOnEdit(
+        requestCode: String,
+        bundleCode: String,
+        cards: List<ImmutableCard>
+    ) {
+        parentFragmentManager.setFragmentResult(requestCode, bundleOf(bundleCode to cards))
+    }
+
 }

@@ -45,11 +45,14 @@ interface FlashCardDao {
     @Query("SELECT * FROM deck WHERE deck_name LIKE :searchQuery OR deck_description LIKE :searchQuery OR deck_first_language LIKE :searchQuery OR deck_second_language LIKE :searchQuery OR deck_color_code LIKE :searchQuery")
     fun searchDeck(searchQuery: String): Flow<List<Deck>>
 
-    @Query("DELETE FROM card WHERE deckId = :deckId")
-    suspend fun deleteCards(deckId: Int)
+    @Query("SELECT * FROM deck WHERE deck_name = :deckName")
+    fun getDeckName(deckName: String): Deck
 
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
     suspend fun getDeckById(deckId: Int): Deck
+
+    @Query("DELETE FROM card WHERE deckId = :deckId")
+    suspend fun deleteCards(deckId: Int)
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
