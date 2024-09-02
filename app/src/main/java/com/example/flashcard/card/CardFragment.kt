@@ -95,6 +95,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
 
     val args: CardFragmentArgs by navArgs()
     private var deck: ImmutableDeck? = null
+    private var opener: String? = null
 
     companion object {
         const val TAG = "CardFragment"
@@ -118,6 +119,8 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
         (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
 
         deck = args.selectedDeck
+        opener = args.opener
+
         deck?.let { _deck ->
             view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
                 title = _deck.deckName
@@ -163,6 +166,11 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
             binding.startQuizBT.setOnClickListener {
                 _deck.deckId?.let { it1 -> onStartQuiz(it1) }
             }
+
+            if (opener == NewDeckDialog.TAG) {
+                onAddNewCard()
+            }
+
         }
 
         requireActivity()

@@ -46,6 +46,7 @@ import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivit
 import com.example.flashcard.quiz.testQuizGame.TestQuizGameActivity
 import com.example.flashcard.quiz.testQuizGame.TestQuizGameAdapter
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
+import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
 import com.example.flashcard.util.UiState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -167,9 +168,9 @@ class DeckFragment : Fragment(), MenuProvider {
         val newDeckDialog = NewDeckDialog(null)
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
-            val result = bundle.parcelable<Deck>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
+            val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
             result?.let { it ->
-                deckViewModel.insertDeck(it)
+                deckViewModel.insertDeck(it.deck)
             }
         }
     }

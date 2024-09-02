@@ -15,6 +15,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -24,7 +25,7 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
     val allDecks: StateFlow<UiState<List<ImmutableDeck>>> = _allDecks.asStateFlow()
 
     private var fetchJob: Job? = null
-    private var fetchCardDeletionJob: Job? = null
+    private var fetchGetJob: Job? = null
     private var fetchDeckDeletionJob: Job? = null
 
     fun getAllDecks() {
@@ -53,16 +54,7 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.insertDeck(deck)
     }
 
-    fun getDeckByName(deckName: String): ImmutableDeck {
-        return repository.getDeckByName(deckName)
-    }
-
     fun deleteDeck(deck: ImmutableDeck) {
-        /*
-        fetchCardDeletionJob?.cancel()
-        fetchCardDeletionJob = viewModelScope.launch {
-        }
-         */
         fetchDeckDeletionJob?.cancel()
         fetchDeckDeletionJob = viewModelScope.launch {
             repository.deleteCards(deck)

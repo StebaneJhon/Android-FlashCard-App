@@ -26,7 +26,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
+import com.example.flashcard.card.AddedCardRecyclerViewAdapter
 import com.example.flashcard.card.NewCardDialog
+import com.example.flashcard.util.DeckAdditionAction.ADD
+import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.example.flashcard.util.deckCategoryColorConst.BLACK
@@ -165,7 +168,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                             false
                         )
 
-                        sendDeckOnSave(REQUEST_CODE, newDeck)
+                        sendDeckOnSave(REQUEST_CODE, ADD, newDeck)
                         dismiss()
                     }
                 }
@@ -183,8 +186,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                         null,
                         false
                     )
-
-//                    listener?.getDeckAndAddCards(newDeck, "NewDeckDialog")
+                    sendDeckOnSave(REQUEST_CODE, ADD_DECK_FORWARD_TO_CARD_ADDITION, newDeck)
                     dismiss()
                 }
             }
@@ -246,13 +248,13 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         return error
     }
 
-    private fun sendDeckOnSave(requestCode: String, deck: Deck) {
-        parentFragmentManager.setFragmentResult(requestCode, bundleOf(SAVE_DECK_BUNDLE_KEY to deck))
+    private fun sendDeckOnSave(requestCode: String, action: String, deck: Deck) {
+        val result = OnSaveDeckWithCationModel(deck, action)
+        parentFragmentManager.setFragmentResult(requestCode, bundleOf(SAVE_DECK_BUNDLE_KEY to result))
     }
 
     private fun sendDeckOnEdit(requestCode: String, deck: Deck) {
         parentFragmentManager.setFragmentResult(requestCode, bundleOf(EDIT_DECK_BUNDLE_KEY to deck))
-
     }
 
 }
