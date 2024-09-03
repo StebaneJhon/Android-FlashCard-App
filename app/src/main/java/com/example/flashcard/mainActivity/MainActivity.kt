@@ -6,13 +6,19 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -35,6 +41,7 @@ import com.example.flashcard.util.Constant
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.launch
 
 class MainActivity :
@@ -80,11 +87,27 @@ class MainActivity :
             }
         }
 
+        enableEdgeToEdge()
 
         setContentView(view)
 
-        navController = findNavController(R.id.fragmentContainerView)
-        binding.mainActivityBNV.setupWithNavController(navController)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.mainActivityRoot) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                0)
+            WindowInsetsCompat.CONSUMED
+        }
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
+        val navController = navHostFragment.navController
+        findViewById<NavigationView>(R.id.nvv_drawer)
+            .setupWithNavController(navController)
+
+//        navController = findNavController(R.id.fragmentContainerView)
+//        binding.mainActivityBNV.setupWithNavController(navController)
 
     }
 

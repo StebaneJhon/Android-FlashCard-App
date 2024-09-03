@@ -73,6 +73,10 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             activity?.setTheme(themRef)
         }
 
+        binding.settingsTopAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
+        }
+
         binding.blackThemeButton.setOnClickListener {
             setAppTheme(DARK_THEME)
             updateAppTheme()

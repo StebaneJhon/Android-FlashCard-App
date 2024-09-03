@@ -19,7 +19,6 @@ class OnboardingFragment2 : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_onboarding2, container, false)
-        activity?.findViewById<BottomNavigationView>(R.id.mainActivityBNV)?.isVisible = false
         val viewPager = activity?.findViewById<ViewPager2>(R.id.vp_onBoarding)
         view.findViewById<Button>(R.id.bt_next_2).setOnClickListener {
             viewPager?.currentItem = 2

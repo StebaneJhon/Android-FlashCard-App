@@ -18,7 +18,6 @@ class OnboardingFragment3 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_onboarding3, container, false)
-        activity?.findViewById<BottomNavigationView>(R.id.mainActivityBNV)?.isVisible = false
         val viewPager = activity?.findViewById<ViewPager2>(R.id.vp_onBoarding)
         view.findViewById<Button>(R.id.bt_next_3).setOnClickListener {
             viewPager?.currentItem = 3

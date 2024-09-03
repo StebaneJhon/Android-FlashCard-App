@@ -19,11 +19,12 @@
             android:background="?colorSurfaceContainerLow">
 
             <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/cardsTopAppBar"
+                android:id="@+id/settingsTopAppBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIconTint="?colorOnSurface"
-                app:title="@string/settings_hint" />
+                app:title="@string/settings_hint"
+                app:navigationIcon="@drawable/icon_chevron_left" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableWeeklyReviewModel
 import com.example.flashcard.databinding.FragmentProfileBinding
@@ -42,6 +44,10 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.profileTopAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_deckFragment)
+        }
 
         lifecycleScope.launch {
             profileViewModel.getWeeklyReview()

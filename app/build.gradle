@@ -90,4 +90,7 @@ dependencies {
     // Splash screen
     implementation "androidx.core:core-splashscreen:1.0.1"
 
+    // Edge to edge
+    implementation("androidx.activity:activity-ktx:1.9.1")
+
 }

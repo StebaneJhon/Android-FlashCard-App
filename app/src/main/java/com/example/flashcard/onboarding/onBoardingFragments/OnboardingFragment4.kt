@@ -22,7 +22,6 @@ class OnboardingFragment4 : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_onboarding4, container, false)
 
-        activity?.findViewById<BottomNavigationView>(R.id.mainActivityBNV)?.isVisible = false
         view.findViewById<Button>(R.id.bt_next_4).setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
             onBoardingFinished()

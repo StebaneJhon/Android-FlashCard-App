@@ -32,7 +32,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -50,6 +53,7 @@ import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_AD
 import com.example.flashcard.util.UiState
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -78,7 +82,6 @@ class DeckFragment : Fragment(), MenuProvider {
     ): View {
         _binding = FragmentDeckBinding.inflate(inflater, container, false)
         appContext = container?.context
-        activity?.findViewById<BottomNavigationView>(R.id.mainActivityBNV)?.isVisible = true
         return binding.root
     }
 
@@ -87,6 +90,28 @@ class DeckFragment : Fragment(), MenuProvider {
         super.onViewCreated(view, savedInstanceState)
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.deckTopAppBar)
+
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph, binding.drawerLayout)
+
+        binding.deckTopAppBar.setNavigationOnClickListener {
+            binding.drawerLayout.open()
+        }
+
+        binding.nvvDrawer.setNavigationItemSelectedListener { menuItem ->
+            when(menuItem.itemId) {
+                R.id.deckFragment -> {
+                }
+                R.id.profileFragment -> {
+                    findNavController().navigate(R.id.action_deckFragment_to_profileFragment)
+                }
+                R.id.settingsFragment -> {
+                    findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
+                }
+            }
+            menuItem.isChecked = true
+            binding.drawerLayout.close()
+            true
+        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
