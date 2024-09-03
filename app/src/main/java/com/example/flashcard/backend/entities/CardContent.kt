@@ -9,7 +9,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity
 data class CardContent(
-    @PrimaryKey(autoGenerate = true) val contentId: Int?,
-    @ColumnInfo(name = "cardId") var cardId: Int?,
+    @PrimaryKey(autoGenerate = false) val contentId: String,
+    @ColumnInfo(name = "cardId") var cardId: String,
+    @ColumnInfo(name = "deckId") var deckId: String?,
     @ColumnInfo(name = "content") val content: String?,
 ): Parcelable

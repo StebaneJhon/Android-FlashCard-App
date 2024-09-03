@@ -12,13 +12,13 @@ class OneOrMultipleAnswerCardModel(val modelCard: ModelCard, val cardList: List<
     fun getCardSum() = cardList.size
 
     fun getCorrectAnswer() = card?.cardDefinition?.filter {
-        definition -> definition.isCorrectDefinition == true
+        definition -> definition.isCorrectDefinition == 1
     } ?: listOf<CardDefinition>()
 
     fun getCorrectAnswerSum() = getCorrectAnswer().size
 
     fun getWrongAnswer() = card?.cardDefinition?.filter {
-            definition -> definition.isCorrectDefinition == false
+            definition -> definition.isCorrectDefinition == 0
     } ?: listOf<CardDefinition>()
 
     fun isAnswerCorrect(userAnswer: CardDefinition) = getCorrectAnswer().contains(userAnswer) ?: false

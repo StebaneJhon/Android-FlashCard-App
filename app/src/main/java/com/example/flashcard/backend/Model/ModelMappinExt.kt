@@ -17,9 +17,8 @@ fun ImmutableDeck.toLocal() = Deck (
     deckSecondLanguage = deckSecondLanguage,
     deckColorCode = deckColorCode,
     cardSum = cardSum,
-    category = category,
-    isFavorite = isFavorite,
-    deckCreationDate = deckCreationDate
+    deckCategory = deckCategory,
+    isFavorite = isCorrectRevers(isFavorite),
 )
 
 fun List<ImmutableDeck>.toLocal() = map(ImmutableDeck::toLocal)
@@ -33,9 +32,8 @@ fun Deck.toExternal() = ImmutableDeck(
     deckSecondLanguage = deckSecondLanguage,
     deckColorCode = deckColorCode,
     cardSum = cardSum,
-    category = category,
-    isFavorite = isFavorite,
-    deckCreationDate = deckCreationDate,
+    deckCategory = deckCategory,
+    isFavorite = isCorrect(isFavorite),
 )
 
 @JvmName("localToExternal")
@@ -45,12 +43,9 @@ fun List<Deck>.toExternal() = map(Deck::toExternal)
 fun ImmutableCard.toLocal() = Card (
     cardId = cardId,
     cardContent = null,
-    contentDescription = contentDescription,
     cardDefinition = null,
-    valueDefinition = valueDefinition,
     deckId = deckId,
-    backgroundImg = backgroundImg,
-    isFavorite = isFavorite,
+    isFavorite = isCorrectRevers(isFavorite),
     revisionTime = revisionTime,
     missedTime = missedTime,
     creationDate = creationDate,
@@ -59,7 +54,6 @@ fun ImmutableCard.toLocal() = Card (
     nextMissMemorisationDate = nextMissMemorisationDate,
     nextRevisionDate = nextRevisionDate,
     cardType = cardType,
-    creationDateTime = creationDateTime,
 )
 
 @JvmName("cardExternalToLocal")
@@ -69,12 +63,9 @@ fun List<ImmutableCard>.toLocal() = map(ImmutableCard::toLocal)
 fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = ImmutableCard (
     cardId = cardId,
     cardContent = cardContent,
-    contentDescription = contentDescription,
     cardDefinition = cardDefinitions,
-    valueDefinition = valueDefinition,
     deckId = deckId,
-    backgroundImg = backgroundImg,
-    isFavorite = isFavorite,
+    isFavorite = isCorrect(isFavorite),
     revisionTime = revisionTime,
     missedTime = missedTime,
     creationDate = creationDate,
@@ -83,7 +74,6 @@ fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefiniti
     nextMissMemorisationDate = nextMissMemorisationDate,
     nextRevisionDate = nextRevisionDate,
     cardType = cardType,
-    creationDateTime = creationDateTime,
 )
 @JvmName("cardLocalToExternal")
 fun List<Card>.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = map{card -> card.toExternal(cardContent, cardDefinitions)}
@@ -137,3 +127,5 @@ fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard?>) =
     deck = deck,
     cards = cards
 )
+fun isCorrect(index: Int?) = index == 1
+fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0

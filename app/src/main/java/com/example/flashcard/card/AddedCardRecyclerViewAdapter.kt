@@ -124,7 +124,7 @@ class AddedCardRecyclerViewAdapter(
         fun displayCardDefinition(context: Context, view: TextView, definition: CardDefinition?) {
             definition?.let {
                 view.visibility = View.VISIBLE
-                if (it.isCorrectDefinition == true) {
+                if (it.isCorrectDefinition == 1) {
                     val textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green100)
                     view.backgroundTintList = textBackgroundColorStateList
                     view.text = it.definition

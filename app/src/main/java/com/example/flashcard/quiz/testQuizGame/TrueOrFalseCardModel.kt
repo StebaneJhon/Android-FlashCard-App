@@ -12,11 +12,11 @@ class TrueOrFalseCardModel(val modelCard: ModelCard, val cardList: List<ModelCar
     fun getCardSum() = cardList.size
 
     fun getCorrectAnswer() = card?.cardDefinition?.filter {
-        definition -> definition.isCorrectDefinition == true
+        definition -> definition.isCorrectDefinition == 1
     } ?: listOf<CardDefinition>()
 
     fun getWrongAnswer() = card?.cardDefinition?.filter {
-        definition -> definition.isCorrectDefinition == false
+        definition -> definition.isCorrectDefinition == 0
     } ?: listOf<CardDefinition>()
 
     fun getCorrectAnswerSum() = getCorrectAnswer().size

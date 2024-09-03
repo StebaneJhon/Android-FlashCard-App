@@ -863,10 +863,13 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
 
     private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
         definitions?.let { defins ->
-            return defins.filter { it.isCorrectDefinition!! }
+            return defins.filter { isCorrect(it.isCorrectDefinition!!) }
         }
         return null
     }
+
+    fun isCorrect(index: Int?) = index == 1
+    fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
     private fun initFlashCard(
         cardList: MutableList<ImmutableCard?>,

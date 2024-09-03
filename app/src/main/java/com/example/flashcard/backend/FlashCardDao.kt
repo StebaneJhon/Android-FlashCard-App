@@ -49,14 +49,14 @@ interface FlashCardDao {
     fun getDeckName(deckName: String): Deck
 
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    suspend fun getDeckById(deckId: Int): Deck
+    suspend fun getDeckById(deckId: String): Deck
 
     @Query("DELETE FROM card WHERE deckId = :deckId")
     suspend fun deleteCards(deckId: Int)
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    fun getDeckWithCards(deckId: Int): Flow<DeckWithCards>
+    fun getDeckWithCards(deckId: String): Flow<DeckWithCards>
 
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
@@ -64,26 +64,26 @@ interface FlashCardDao {
 
     @Transaction
     @Query("SELECT * FROM cardContent WHERE cardId = :cardId")
-    suspend fun getCardAndContent(cardId: Int): CardAndContent
+    suspend fun getCardAndContent(cardId: String): CardAndContent
 
     @Transaction
     @Query("SELECT * FROM cardDefinition WHERE cardId = :cardId")
-    suspend fun getCardWithDefinition(cardId: Int): CardWithDefinitions
+    suspend fun getCardWithDefinition(cardId: String): CardWithDefinitions
 
-    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR content_definition LIKE :searchQuery OR card_value LIKE :searchQuery OR value_definition LIKE :searchQuery)")
+    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR card_value LIKE :searchQuery)")
     fun searchCard(searchQuery: String, deckId: Int): Flow<List<Card>>
 
-    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR content_definition LIKE :searchQuery OR card_value LIKE :searchQuery OR value_definition LIKE :searchQuery)")
-    fun searchCardNoFlow(searchQuery: String, deckId: Int): List<Card>
+    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR card_value LIKE :searchQuery)")
+    fun searchCardNoFlow(searchQuery: String, deckId: String): List<Card>
 
     @Query("SELECT * FROM card WHERE deckId = :deckId")
     fun getCard(deckId: Int): Card
 
     @Query("SELECT * FROM card WHERE deckId = :deckId")
-    suspend fun getCards(deckId: Int): List<Card>
+    suspend fun getCards(deckId: String): List<Card>
 
-    @Query("SELECT * FROM card WHERE creationDateTime = :creationDateTime")
-    suspend fun getCardByCreationDateTime(creationDateTime: String): Card
+    @Query("SELECT * FROM card WHERE cardId = :cardId")
+    suspend fun getCardById(cardId: String): Card
 
     @Query("SELECT * FROM card")
     fun getAllCards(): Flow<List<Card>>

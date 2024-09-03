@@ -157,13 +157,16 @@ class WritingQuizGameViewModel(
     }
 
     private fun getCorrectDefinitions(definitions: List<CardDefinition>?): List<String>? {
-        val correctDefinitions = definitions?.let {defins -> defins.filter { it.isCorrectDefinition!! }}
+        val correctDefinitions = definitions?.let {defins -> defins.filter { isCorrect(it.isCorrectDefinition!!) }}
         val correctAlternative = mutableListOf<String>()
         correctDefinitions?.forEach {
             correctAlternative.add(it.definition!!)
         }
         return  correctAlternative
     }
+
+    fun isCorrect(index: Int?) = index == 1
+    fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
     fun updateCard(cardOrientation: String) {
         if (cardList.size == 0) {
@@ -190,11 +193,8 @@ class WritingQuizGameViewModel(
                 val newCard = ImmutableCard(
                     card.cardId,
                     card.cardContent,
-                    card.contentDescription,
                     card.cardDefinition,
-                    card.valueDefinition,
                     card.deckId,
-                    card.backgroundImg,
                     card.isFavorite,
                     card.revisionTime,
                     card.missedTime,
@@ -204,7 +204,6 @@ class WritingQuizGameViewModel(
                     nextForgettingDate,
                     nextRevision,
                     card.cardType,
-                    card.creationDateTime
                 )
                 updateCard(newCard)
             }

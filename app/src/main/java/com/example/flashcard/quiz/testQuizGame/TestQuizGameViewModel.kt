@@ -160,11 +160,8 @@ class TestQuizGameViewModel(
             val newCard = ImmutableCard(
                 card.cardId,
                 card.cardContent,
-                card.contentDescription,
                 card.cardDefinition,
-                card.valueDefinition,
                 card.deckId,
-                card.backgroundImg,
                 card.isFavorite,
                 card.revisionTime,
                 card.missedTime,
@@ -174,7 +171,6 @@ class TestQuizGameViewModel(
                 nextForgettingDate,
                 nextRevision,
                 card.cardType,
-                card.creationDateTime
             )
             updateCard(newCard)
         }

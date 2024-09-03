@@ -31,6 +31,7 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
+import com.example.flashcard.backend.Model.isCorrect
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.backend.entities.relations.DeckWithCards
@@ -853,7 +854,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
 
     private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
         definitions?.let { defins ->
-            return defins.filter { it.isCorrectDefinition!! }
+            return defins.filter { isCorrect(it.isCorrectDefinition!! ) }
         }
         return null
     }

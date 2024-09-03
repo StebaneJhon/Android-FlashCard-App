@@ -68,7 +68,7 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     private var _deckWithAllCards = MutableStateFlow<UiState<ImmutableDeckWithCards>>(UiState.Loading)
     val deckWithAllCards: StateFlow<UiState<ImmutableDeckWithCards>> = _deckWithAllCards.asStateFlow()
-    fun getDeckWithCards(deckId: Int) {
+    fun getDeckWithCards(deckId: String) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {

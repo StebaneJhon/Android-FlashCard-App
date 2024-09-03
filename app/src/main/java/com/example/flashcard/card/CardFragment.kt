@@ -136,7 +136,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
             }
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    cardViewModel.getDeckWithCards(_deck.deckId!!)
+                    cardViewModel.getDeckWithCards(_deck.deckId)
                     cardViewModel.deckWithAllCards.collect { state ->
                         when (state) {
                             is UiState.Loading -> {
@@ -233,7 +233,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun onStartQuiz(deckId: Int) {
+    private fun onStartQuiz(deckId: String) {
         val viewGroup = binding.cardsActivityRoot
         val dialogBinding = layoutInflater.inflate(R.layout.quiz_mode_fragment, viewGroup, false)
         val quizModeDialog = appContext?.let { Dialog(it) }
@@ -703,7 +703,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
         val searchQuery = "%$query%"
         lifecycleScope.launch {
             deck?.let { cardDeck ->
-                cardViewModel.searchCard(searchQuery, cardDeck.deckId!!)
+                cardViewModel.searchCard(searchQuery, cardDeck.deckId)
                     .observe(this@CardFragment) { cardList ->
                         cardList?.let { displayCards(it, cardDeck) }
                     }

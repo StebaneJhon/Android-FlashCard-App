@@ -129,7 +129,7 @@ class DeckFragment : Fragment(), MenuProvider {
             }, {deck ->
                 onDeleteDeck(deck)
             }, { deck ->
-                onStartQuiz(deck.deckId!!)
+                onStartQuiz(deck.deckId)
             }) {
                 navigateTo(it, TAG)
             }
@@ -200,7 +200,7 @@ class DeckFragment : Fragment(), MenuProvider {
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun onStartQuiz(deckId: Int) {
+    private fun onStartQuiz(deckId: String) {
         val viewGroup = binding.mainActivityRoot
         val dialogBinding = layoutInflater.inflate(R.layout.quiz_mode_fragment, viewGroup, false)
         val quizModeDialog = appContext?.let { Dialog(it) }
@@ -243,7 +243,7 @@ class DeckFragment : Fragment(), MenuProvider {
         }
     }
 
-    private fun startFlashCardGameTimed(deckId: Int, quizModeDialog: Dialog?) {
+    private fun startFlashCardGameTimed(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)
@@ -275,7 +275,7 @@ class DeckFragment : Fragment(), MenuProvider {
         }
     }
 
-    private fun startFlashCardGame(deckId: Int, quizModeDialog: Dialog?) {
+    private fun startFlashCardGame(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)
@@ -309,7 +309,7 @@ class DeckFragment : Fragment(), MenuProvider {
 
 
 
-    private fun startMultiChoiceQuizGame(deckId: Int, quizModeDialog: Dialog?) {
+    private fun startMultiChoiceQuizGame(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)
@@ -341,7 +341,7 @@ class DeckFragment : Fragment(), MenuProvider {
         }
     }
 
-    private fun startWritingQuizGame(deckId: Int, quizModeDialog: Dialog?) {
+    private fun startWritingQuizGame(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)
@@ -373,7 +373,7 @@ class DeckFragment : Fragment(), MenuProvider {
         }
     }
 
-    private fun startMatchingQuizGame(deckId: Int, quizModeDialog: Dialog?) {
+    private fun startMatchingQuizGame(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)
@@ -405,7 +405,7 @@ class DeckFragment : Fragment(), MenuProvider {
         }
     }
 
-    private fun startTestQuizGame(deckId: Int, quizModeDialog: Dialog?) {
+    private fun startTestQuizGame(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)

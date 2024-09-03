@@ -7,13 +7,10 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ImmutableCard(
-    val cardId: Int? = null,
+    val cardId: String = "",
     val cardContent: CardContent? = null,
-    val contentDescription: String? = "",
     val cardDefinition: List<CardDefinition>? = null,
-    val valueDefinition: String? = "",
-    val deckId: Int? = null,
-    val backgroundImg: String? = "",
+    val deckId: String = "",
     val isFavorite: Boolean? = false,
     val revisionTime: Int? = 0,
     val missedTime: Int? = 0,
@@ -23,5 +20,4 @@ data class ImmutableCard(
     val nextMissMemorisationDate: String? = null,
     val nextRevisionDate: String? = null,
     val cardType: String? = null,
-    val creationDateTime: String? = null
 ): Parcelable

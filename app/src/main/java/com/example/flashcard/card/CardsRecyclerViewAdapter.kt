@@ -186,7 +186,7 @@ class CardsRecyclerViewAdapter(
 
         private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
             definitions?.let { defins ->
-                return defins.filter { it.isCorrectDefinition!! }
+                return defins.filter { it.isCorrectDefinition == 1 }
             }
             return null
         }

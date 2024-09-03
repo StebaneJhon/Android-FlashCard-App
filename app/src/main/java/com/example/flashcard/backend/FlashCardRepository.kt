@@ -62,7 +62,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
      */
 
     @WorkerThread
-    suspend fun getImmutableDeckWithCards(deckId: Int): Flow<ImmutableDeckWithCards> {
+    suspend fun getImmutableDeckWithCards(deckId: String): Flow<ImmutableDeckWithCards> {
         val deckWithCards = flashCardDao.getDeckWithCards(deckId)
         val immutableDeckWithCards =
             deckWithCards.map { localDeckWithCards ->
@@ -109,21 +109,20 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
             deckSecondLanguage = localDeck.deckSecondLanguage,
             deckColorCode = localDeck.deckColorCode,
             cardSum = localDeck.cardSum?.plus(1),
-            category = localDeck.category,
+            deckCategory = localDeck.deckCategory,
             isFavorite = localDeck.isFavorite,
-            deckCreationDate = localDeck.deckCreationDate
         )
         flashCardDao.updateDeck(newDeck)
 
         val localCard = card.toLocal()
         flashCardDao.insertCard(localCard)
-        val actualCard = card.creationDateTime?.let { flashCardDao.getCardByCreationDateTime(it) }
+        val actualCard = flashCardDao.getCardById(card.cardId)
         val cardContent = card.cardContent
-        cardContent?.cardId = actualCard?.cardId
+        cardContent?.cardId = actualCard.cardId
         flashCardDao.insertCardContent(cardContent!!)
         val cardDefinition = card.cardDefinition
         cardDefinition?.forEach {
-            it.cardId = actualCard?.cardId
+            it.cardId = actualCard.cardId
             flashCardDao.insertCardDefinition(it)
         }
     }
@@ -147,7 +146,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun searchCardImmutable(searchQuery: String, deckId: Int): Flow<List<ImmutableCard?>> {
+    suspend fun searchCardImmutable(searchQuery: String, deckId: String): Flow<List<ImmutableCard?>> {
 
         val cards = flashCardDao.searchCardNoFlow(searchQuery, deckId)
         val immutableCardList = cards.map { card ->
@@ -173,7 +172,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun getCards(deckId: Int): List<ImmutableCard?> {
+    suspend fun getCards(deckId: String): List<ImmutableCard?> {
         val cards = flashCardDao.getCards(deckId)
         return cards.map { card ->
             card.cardId?.let {cardId ->

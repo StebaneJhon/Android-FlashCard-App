@@ -47,6 +47,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
@@ -138,8 +140,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                             deckSecondLangET?.text.toString(),
                             deckCategoryColor,
                             deck.cardSum,
-                            deck.category,
-                            deck.isFavorite
+                            deck.deckCategory,
+                            isCorrectRevers(deck.isFavorite)
                         )
 
                         sendDeckOnEdit(REQUEST_CODE, newDeck)
@@ -157,7 +159,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 setOnClickListener {
                     if (!checkError()) {
                         val newDeck = Deck(
-                            null,
+                            now(),
                             deckNameET?.text.toString(),
                             deckDescriptionET?.text.toString(),
                             deckFirstLangET?.text.toString(),
@@ -165,7 +167,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                             deckCategoryColor,
                             0,
                             null,
-                            false
+                            0
                         )
 
                         sendDeckOnSave(REQUEST_CODE, ADD, newDeck)
@@ -176,7 +178,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             btAddCard?.setOnClickListener {
                 if (!checkError()) {
                     val newDeck = Deck(
-                        null,
+                        now(),
                         deckNameET?.text.toString(),
                         deckDescriptionET?.text.toString(),
                         deckFirstLangET?.text.toString(),
@@ -184,7 +186,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                         deckCategoryColor,
                         0,
                         null,
-                        false
+                        0
                     )
                     sendDeckOnSave(REQUEST_CODE, ADD_DECK_FORWARD_TO_CARD_ADDITION, newDeck)
                     dismiss()
@@ -196,6 +198,9 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
         return builder.create()
     }
+
+    fun isCorrect(index: Int?) = index == 1
+    fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
     private fun displayColorPicker(listOfColors: List<ColorModel>) {
         deckColorPickerAdapter = context?.let { ctx ->
@@ -213,6 +218,11 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
         }
+    }
+
+    private fun now(): String {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
+        return LocalDateTime.now().format(formatter)
     }
 
     private fun checkError(): Boolean {

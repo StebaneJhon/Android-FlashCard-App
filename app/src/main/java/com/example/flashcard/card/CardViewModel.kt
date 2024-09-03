@@ -29,7 +29,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     private var fetchJob: Job? = null
     val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
-    fun getDeckWithCards(deckId: Int) {
+    fun getDeckWithCards(deckId: String) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
@@ -71,7 +71,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.deleteCard(card, externalDeck)
     }
 
-    suspend fun searchCard(searchQuery: String, deckId: Int): LiveData<List<ImmutableCard?>> {
+    suspend fun searchCard(searchQuery: String, deckId: String): LiveData<List<ImmutableCard?>> {
         return repository.searchCardImmutable(searchQuery, deckId).asLiveData()
     }
 

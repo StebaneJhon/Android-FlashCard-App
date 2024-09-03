@@ -36,7 +36,9 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
                 when (state) {
                     is UiState.Error -> {}
                     is UiState.Loading -> {}
-                    is UiState.Success -> { updateAllCardsStatus(state.data) }
+                    is UiState.Success -> {
+                        updateAllCardsStatus(state.data)
+                    }
                 }
             }
         }
@@ -48,11 +50,7 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
         fetchJob = viewModelScope.launch {
             repository.allCards().collect {
                 try {
-                    if (it.isEmpty()) {
-                        _allCards.value = UiState.Error("Card Update Failed")
-                    } else {
-                        _allCards.value = UiState.Success(it)
-                    }
+                    _allCards.value = success(it)
                 } catch (e: IOException) {
                     _allCards.value = UiState.Error(e.toString())
                 }
@@ -60,6 +58,9 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
             }
         }
     }
+
+    private fun success(it: List<ImmutableCard?>) =
+        UiState.Success(it)
 
     private fun updateAllCardsStatus(data: List<ImmutableCard?>) {
         data.forEach { card ->
@@ -80,11 +81,8 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
                 val newCard = ImmutableCard(
                     card.cardId,
                     card.cardContent,
-                    card.contentDescription,
                     card.cardDefinition,
-                    card.valueDefinition,
                     card.deckId,
-                    card.backgroundImg,
                     card.isFavorite,
                     card.revisionTime,
                     card.missedTime,
@@ -94,7 +92,6 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
                     nextForgettingDate,
                     nextRevision,
                     card.cardType,
-                    card.creationDateTime
                 )
                 updateCard(newCard)
             }

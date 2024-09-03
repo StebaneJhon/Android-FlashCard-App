@@ -383,9 +383,9 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             FLASHCARD -> {
                 onAddFlashCard(true)
                 cardContent?.setText(card.cardContent?.content)
-                cardContentDefinition?.setText(card.contentDescription)
+//                cardContentDefinition?.setText(card.contentDescription)
                 cardValue?.setText(card.cardDefinition?.first()?.definition)
-                cardValueDefinition?.setText(card.valueDefinition)
+//                cardValueDefinition?.setText(card.valueDefinition)
                 cpAddMultiAnswerCard?.apply {
                     isCheckable = false
                     isChecked = false
@@ -399,8 +399,8 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             TRUE_OR_FALSE_CARD -> {
                 onAddTrueOrFalseCard(true)
                 tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
-                cpFalse?.isChecked = card.cardDefinition?.get(0)?.isCorrectDefinition!!
-                cpTrue?.isChecked = card.cardDefinition[1].isCorrectDefinition!!
+                cpFalse?.isChecked = isCorrect(card.cardDefinition?.get(0)?.isCorrectDefinition!!)
+                cpTrue?.isChecked = isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
                 cpAddMultiAnswerCard?.apply {
                     isCheckable = false
                     isChecked = false
@@ -417,43 +417,43 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
                 when (card.cardDefinition?.size) {
                     1 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
-                        cpDefinition1IsTrue?.isChecked = card.cardDefinition[0].isCorrectDefinition!!
+                        cpDefinition1IsTrue?.isChecked = isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
                     }
 
                     2 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            card.cardDefinition[0].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
                         tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
                         cpDefinition2IsTrue?.isChecked =
-                            card.cardDefinition[1].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
                     }
 
                     3 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            card.cardDefinition[0].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
                         tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
                         cpDefinition2IsTrue?.isChecked =
-                            card.cardDefinition[1].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
                         tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
                         cpDefinition3IsTrue?.isChecked =
-                            card.cardDefinition[2].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[2].isCorrectDefinition!!)
                     }
 
                     4 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            card.cardDefinition[0].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
                         tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
                         cpDefinition2IsTrue?.isChecked =
-                            card.cardDefinition[1].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
                         tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
                         cpDefinition3IsTrue?.isChecked =
-                            card.cardDefinition[2].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[2].isCorrectDefinition!!)
                         tieDefinition4MultiAnswerCard?.setText(card.cardDefinition[3].definition)
                         cpDefinition4IsTrue?.isChecked =
-                            card.cardDefinition[3].isCorrectDefinition!!
+                            isCorrect(card.cardDefinition[3].isCorrectDefinition!!)
                     }
                 }
                 cpAddFlashCard?.apply {
@@ -468,6 +468,9 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
 
     }
+
+    fun isCorrect(index: Int?) = index == 1
+    fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
     private fun onIsDefinitionIsTrueClicked(isChecked: Boolean, buttonView: CompoundButton) {
         if (isChecked) {
@@ -532,26 +535,28 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     }
 
     fun generateCardOnUpdate(): ImmutableCard? {
-        val content = getContent() ?: return null
+        val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
         val updatedContent = CardContent(
-            card?.cardContent?.contentId,
-            card?.cardContent?.cardId,
+            card?.cardContent?.contentId!!,
+            card?.cardContent?.cardId!!,
+            card?.deckId,
             content?.content
         )
 
-        val definitions = getDefinitions() ?: return null
+        val definitions = getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
         val updateCardDefinitions = mutableListOf<CardDefinition>()
         for (i in 0..card?.cardDefinition?.size?.minus(1)!!) {
             val definition = try {
                 definitions[i]
             } catch (e: java.lang.IndexOutOfBoundsException) {
-                createDefinition("", false)
+                createDefinition("", false, card!!.cardId, card!!.cardContent?.contentId!!, card?.deckId!!)
             }
 
             val updatedDefinition = CardDefinition(
                 card!!.cardDefinition?.get(i)?.definitionId,
-                card!!.cardDefinition?.get(i)?.cardId,
-                card!!.cardDefinition?.get(i)?.contentId,
+                card!!.cardDefinition?.get(i)?.cardId!!,
+                card!!.cardDefinition?.get(i)?.deckId!!,
+                card!!.cardDefinition?.get(i)?.contentId!!,
                 definition.definition,
                 definition.isCorrectDefinition
             )
@@ -566,11 +571,8 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         return ImmutableCard(
             card!!.cardId,
             updatedContent,
-            cardContentDefinition?.text.toString(),
             updateCardDefinitions,
-            cardValueDefinition?.text.toString(),
             card!!.deckId,
-            cardBackground,
             card!!.isFavorite,
             card!!.revisionTime,
             card!!.missedTime,
@@ -580,13 +582,14 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             card!!.nextMissMemorisationDate,
             card!!.nextRevisionDate,
             card!!.cardType,
-            card!!.creationDateTime,
         )
     }
 
     fun generateCardOnAdd(): ImmutableCard? {
-        val newCardContent = getContent()
-        val newCardDefinition = getDefinitions()
+        val cardId = now()
+        val contentId = now()
+        val newCardContent = getContent(cardId, contentId, deck.deckId)
+        val newCardDefinition = getDefinitions(cardId, contentId, deck.deckId)
 
         if (newCardContent == null) {
             return null
@@ -596,14 +599,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
 
         return ImmutableCard(
-            null,
-            newCardContent!!,
-            null,
+            cardId,
+            newCardContent,
             newCardDefinition,
-            null,
             deck.deckId,
-            cardBackground,
-            false,
+            isCorrect(0),
             0,
             0,
             today(),
@@ -612,21 +612,20 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             null,
             null,
             cardType,
-            now()
         )
     }
 
-    private fun getDefinitions() = when (cardType) {
+    private fun getDefinitions(cardId: String, contentId: String, deckId: String) = when (cardType) {
         FLASHCARD -> {
-            getDefinitionOnAddFC()
+            getDefinitionOnAddFC(cardId, contentId, deckId)
         }
 
         ONE_OR_MULTI_ANSWER_CARD -> {
-            getDefinitionOnAddMAC()
+            getDefinitionOnAddMAC(cardId, contentId, deckId)
         }
 
         TRUE_OR_FALSE_CARD -> {
-            getDefinitionOnAddTFC()
+            getDefinitionOnAddTFC(cardId, contentId, deckId)
         }
 
         else -> {
@@ -634,18 +633,18 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getContent(): CardContent? {
+    private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
         return when (cardType) {
             FLASHCARD -> {
-                getContentOnAddFC()
+                getContentOnAddFC(cardId, contentId, deckId)
             }
 
             ONE_OR_MULTI_ANSWER_CARD -> {
-                getContentOnAddMAC()
+                getContentOnAddMAC(cardId, contentId, deckId)
             }
 
             TRUE_OR_FALSE_CARD -> {
-                getContentOnAddTFC()
+                getContentOnAddTFC(cardId, contentId, deckId)
             }
 
             else -> {
@@ -654,12 +653,13 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getContentOnAddFC(): CardContent? {
+    private fun getContentOnAddFC(cardId: String, contentId: String, deckId: String): CardContent? {
         val cardContentText = cardContent?.text.toString()
         return if (cardContentText.isNotEmpty()) {
             CardContent(
-                null,
-                null,
+                contentId,
+                cardId,
+                deckId,
                 cardContentText
             )
         } else {
@@ -668,12 +668,13 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getContentOnAddMAC(): CardContent? {
+    private fun getContentOnAddMAC(cardId: String, contentId: String, deckId: String): CardContent? {
         val cardContentText = tieContentMultiAnswerCard?.text.toString()
         return if (cardContentText.isNotEmpty()) {
             CardContent(
-                null,
-                null,
+                contentId,
+                cardId,
+                deckId,
                 cardContentText
             )
         } else {
@@ -682,12 +683,13 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getContentOnAddTFC(): CardContent? {
+    private fun getContentOnAddTFC(cardId: String, contentId: String, deckId: String): CardContent? {
         val cardContentText = tieContentTrueOrFalseCard?.text.toString()
         return if (cardContentText.isNotEmpty()) {
             CardContent(
-                null,
-                null,
+                contentId,
+                cardId,
+                deckId,
                 cardContentText
             )
         } else {
@@ -696,7 +698,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getDefinitionOnAddMAC(): List<CardDefinition>? {
+    private fun getDefinitionOnAddMAC(cardId: String, contentId: String, deckId: String): List<CardDefinition>? {
         definitionList.clear()
         val definition1Text = tieDefinition1MultiAnswerCard?.text.toString()
         val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
@@ -724,25 +726,25 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
 
         if (definition1Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition1Text, cpDefinition1IsTrue?.isChecked!!))
+            definitionList.add(createDefinition(definition1Text, cpDefinition1IsTrue?.isChecked!!, cardId, contentId, deckId))
         }
         if (definition2Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition2Text, cpDefinition2IsTrue?.isChecked!!))
+            definitionList.add(createDefinition(definition2Text, cpDefinition2IsTrue?.isChecked!!, cardId, contentId, deckId))
         }
         if (definition3Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition3Text, cpDefinition3IsTrue?.isChecked!!))
+            definitionList.add(createDefinition(definition3Text, cpDefinition3IsTrue?.isChecked!!, cardId, contentId, deckId))
         }
         if (definition4Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition4Text, cpDefinition4IsTrue?.isChecked!!))
+            definitionList.add(createDefinition(definition4Text, cpDefinition4IsTrue?.isChecked!!, cardId, contentId, deckId))
         }
         return definitionList.toList()
     }
 
-    private fun getDefinitionOnAddFC(): List<CardDefinition>? {
+    private fun getDefinitionOnAddFC(cardId: String, contentId: String, deckId: String): List<CardDefinition>? {
         definitionList.clear()
         val definitionText = cardValue?.text.toString()
         if (definitionText.isNotEmpty()) {
-            definitionList.add(createDefinition(definitionText, true))
+            definitionList.add(createDefinition(definitionText, true, cardId, contentId, deckId))
         } else {
             cardValueLY?.error = getString(R.string.til_error_card_definition)
             return null
@@ -750,21 +752,22 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         return definitionList.toList()
     }
 
-    private fun getDefinitionOnAddTFC(): List<CardDefinition> {
+    private fun getDefinitionOnAddTFC(cardId: String, contentId: String, deckId: String): List<CardDefinition> {
         definitionList.clear()
         val cpFalseState = cpFalse?.isChecked
         val cpTrueState = cpTrue?.isChecked
-        definitionList.add(createDefinition("False", cpFalseState!!))
-        definitionList.add(createDefinition("True", cpTrueState!!))
+        definitionList.add(createDefinition("False", cpFalseState!!, cardId, contentId, deckId))
+        definitionList.add(createDefinition("True", cpTrueState!!, cardId, contentId, deckId))
         return definitionList.toList()
     }
 
-    private fun createDefinition(text: String, isCorrect: Boolean) = CardDefinition(
+    private fun createDefinition(text: String, isCorrect: Boolean, cardId: String, contentId: String, deckId: String) = CardDefinition(
         null,
-        null,
-        null,
+        cardId,
+        deckId,
+        contentId,
         text,
-        isCorrect
+        isCorrectRevers(isCorrect)
     )
 
     private fun today(): String {

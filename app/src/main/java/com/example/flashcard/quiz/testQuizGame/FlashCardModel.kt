@@ -14,7 +14,7 @@ class FlashCardModel(val modelCard: ModelCard, val cardList: List<ModelCard?>) {
     fun isFlipped() = isFlipped
     fun flip() = !isFlipped
     fun getCorrectAnswer() = card?.cardDefinition?.filter {
-        definition -> definition.isCorrectDefinition == true
+        definition -> definition.isCorrectDefinition == 1
     } ?: listOf<CardDefinition>()
 
     fun getCardAnswers() = getCorrectAnswer()
