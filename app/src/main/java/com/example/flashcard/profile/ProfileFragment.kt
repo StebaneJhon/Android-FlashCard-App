@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -46,7 +47,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.profileTopAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_deckFragment)
+            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
         lifecycleScope.launch {

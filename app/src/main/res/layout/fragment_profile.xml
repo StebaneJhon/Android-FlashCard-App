@@ -26,7 +26,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIconTint="?colorOnSurface"
                 app:title="@string/profile_tab_title"
-                app:navigationIcon="@drawable/icon_chevron_left" />
+                app:navigationIcon="@drawable/icon_menu" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

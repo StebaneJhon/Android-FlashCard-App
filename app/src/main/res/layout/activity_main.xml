@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainActivityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLow"
-    tools:context=".mainActivity.MainActivity">
+    tools:context=".mainActivity.MainActivity"
+    tools:openDrawer="start"
+    android:fitsSystemWindows="true">
 
     <fragment
         android:id="@+id/fragmentContainerView"
@@ -22,4 +24,15 @@
         app:layout_constraintVertical_bias="0.5"
         app:navGraph="@navigation/my_nav" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nvv_drawer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        android:paddingTop="50dp"
+        app:headerLayout="@layout/header_navigation_drawer"
+        app:menu="@menu/menu_navigation_drawer"
+        android:background="?colorSurfaceContainerLow"/>
+
+</androidx.drawerlayout.widget.DrawerLayout>

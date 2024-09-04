@@ -3,6 +3,7 @@
     <style name="Base.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/grey700</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/grey500</item>
         <item name="colorOnPrimaryContainer">@color/white</item>
         <item name="colorSurfaceContainerLowest">@color/grey15</item>
@@ -21,7 +22,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -33,7 +34,7 @@
     <style name="Stale.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/stale600</item>
         <item name="colorOnPrimary">@color/stale50</item>
-        <item name="colorPrimaryDark">@color/stale900</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="android:textColorPrimary">@color/stale50</item>
         <item name="colorPrimaryContainer">@color/stale700</item>
         <item name="colorOnPrimaryContainer">@color/stale50</item>
@@ -53,7 +54,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -65,7 +66,7 @@
     <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/grey15</item>
         <item name="colorOnPrimary">@color/black</item>
-        <item name="colorPrimaryDark">@color/black</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/grey25</item>
         <item name="colorOnPrimaryContainer">@color/black</item>
@@ -85,7 +86,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -97,6 +98,7 @@
     <style name="Purple.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/purple700</item>
         <item name="colorOnPrimary">@color/purple50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/purple600</item>
         <item name="colorOnPrimaryContainer">@color/purple50</item>
         <item name="colorSurfaceContainerLowest">@color/purple50</item>
@@ -115,7 +117,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -127,6 +129,7 @@
     <style name="Blue.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/blue700</item>
         <item name="colorOnPrimary">@color/blue50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/blue600</item>
         <item name="colorOnPrimaryContainer">@color/blue50</item>
         <item name="colorSurfaceContainerLowest">@color/blue50</item>
@@ -145,7 +148,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -157,6 +160,7 @@
     <style name="Pink.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/pink700</item>
         <item name="colorOnPrimary">@color/pink50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/pink600</item>
         <item name="colorOnPrimaryContainer">@color/pink50</item>
         <item name="colorSurfaceContainerLowest">@color/pink50</item>
@@ -175,7 +179,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -187,6 +191,7 @@
     <style name="Red.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/red700</item>
         <item name="colorOnPrimary">@color/red50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/red600</item>
         <item name="colorOnPrimaryContainer">@color/red50</item>
         <item name="colorSurfaceContainerLowest">@color/red50</item>
@@ -205,7 +210,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -216,6 +221,7 @@
     <style name="Teal.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/teal700</item>
         <item name="colorOnPrimary">@color/teal50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/teal600</item>
         <item name="colorOnPrimaryContainer">@color/teal50</item>
         <item name="colorSurfaceContainerLowest">@color/teal50</item>
@@ -234,7 +240,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -245,6 +251,7 @@
     <style name="Green.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/green700</item>
         <item name="colorOnPrimary">@color/green50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/teal600</item>
         <item name="colorOnPrimaryContainer">@color/green50</item>
         <item name="colorSurfaceContainerLowest">@color/green50</item>
@@ -263,7 +270,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -274,6 +281,7 @@
     <style name="Yellow.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/yellow700</item>
         <item name="colorOnPrimary">@color/yellow50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/yellow600</item>
         <item name="colorOnPrimaryContainer">@color/yellow50</item>
         <item name="colorSurfaceContainerLowest">@color/yellow50</item>
@@ -292,7 +300,7 @@
         <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
@@ -303,6 +311,7 @@
     <style name="Brown.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/stone700</item>
         <item name="colorOnPrimary">@color/stone50</item>
+        <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/stone600</item>
         <item name="colorOnPrimaryContainer">@color/stone50</item>
         <item name="colorSurfaceContainerLowest">@color/stone50</item>
@@ -322,7 +331,7 @@
         <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
         <item name="colorControlActivated">@color/black</item>
         <item name="endIconTint">@color/black</item>
-        <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>

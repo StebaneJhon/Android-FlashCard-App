@@ -25,6 +25,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -91,26 +92,8 @@ class DeckFragment : Fragment(), MenuProvider {
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.deckTopAppBar)
 
-        val appBarConfiguration = AppBarConfiguration(findNavController().graph, binding.drawerLayout)
-
         binding.deckTopAppBar.setNavigationOnClickListener {
-            binding.drawerLayout.open()
-        }
-
-        binding.nvvDrawer.setNavigationItemSelectedListener { menuItem ->
-            when(menuItem.itemId) {
-                R.id.deckFragment -> {
-                }
-                R.id.profileFragment -> {
-                    findNavController().navigate(R.id.action_deckFragment_to_profileFragment)
-                }
-                R.id.settingsFragment -> {
-                    findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
-                }
-            }
-            menuItem.isChecked = true
-            binding.drawerLayout.close()
-            true
+            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
         lifecycleScope.launch {
