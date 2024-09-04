@@ -27,7 +27,6 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.entities.Card
-import com.example.flashcard.util.CardBackgroundSelector
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.google.android.material.card.MaterialCardView

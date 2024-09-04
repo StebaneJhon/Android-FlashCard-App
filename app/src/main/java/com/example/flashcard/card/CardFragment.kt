@@ -133,6 +133,32 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
                             .build()
                     )
                 }
+
+                binding.bottomAppBar.apply {
+                    setNavigationOnClickListener {
+                        onStartQuiz(_deck.deckId)
+                    }
+                    setOnMenuItemClickListener { menuItem ->
+                        when(menuItem.itemId) {
+                            R.id.bt_flash_card_game -> {
+                                startFlashCardGame()
+                                true
+                            }
+                            R.id.bt_multiple_choice_quiz -> {
+                                startMultiChoiceQuizGame()
+                                true
+                            }
+                            R.id.bt_test_quiz_game -> {
+                                startTestQuizGame()
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                }
+
+
+
             }
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -155,16 +181,8 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
                 }
             }
 
-            binding.btAction.setOnClickListener {
-                onBtActonClicked()
-            }
-
-            binding.addNewCardBT.setOnClickListener {
+            binding.fabAddCard.setOnClickListener {
                 onAddNewCard()
-            }
-
-            binding.startQuizBT.setOnClickListener {
-                _deck.deckId?.let { it1 -> onStartQuiz(it1) }
             }
 
             if (opener == NewDeckDialog.TAG) {
@@ -187,44 +205,6 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
                 }
             })
     }
-
-    private fun onBtActonClicked() {
-        setActionsAnimation(actionClicked)
-        setActionsVisibility(actionClicked)
-        actionClicked = !actionClicked
-    }
-
-    private fun setActionsVisibility(clicked: Boolean) {
-        if (!clicked) {
-            binding.addNewCardBT.visibility = View.VISIBLE
-            binding.startQuizBT.visibility = View.VISIBLE
-        } else {
-            binding.addNewCardBT.visibility = View.GONE
-            binding.startQuizBT.visibility = View.GONE
-        }
-        setClickable(clicked)
-    }
-
-    private fun setActionsAnimation(clicked: Boolean) {
-        if (!clicked) {
-            binding.addNewCardBT.startAnimation(fromBottom)
-            binding.startQuizBT.startAnimation(fromBottom)
-        } else {
-            binding.addNewCardBT.startAnimation(toBottom)
-            binding.startQuizBT.startAnimation(toBottom)
-        }
-    }
-
-    private fun setClickable(clicked: Boolean) {
-        if (!clicked) {
-            binding.addNewCardBT.isClickable = true
-            binding.startQuizBT.isClickable = true
-        } else {
-            binding.addNewCardBT.isClickable = false
-            binding.startQuizBT.isClickable = false
-        }
-    }
-
 
     private fun onDeckEmpty() {
         binding.cardsActivityProgressBar.isVisible = false

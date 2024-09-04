@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardsActivityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="?colorSurfaceContainerLowest"
     tools:context=".card.CardFragment">
 
@@ -12,45 +12,24 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:background="?colorSurfaceContainerLow"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="?colorSurfaceContainerLow">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/cardsTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/deck_activity_title"
             app:navigationIcon="@drawable/icon_chevron_left"
-            app:navigationIconTint="?colorOnSurface" />
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/deck_activity_title" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ProgressBar
-        android:id="@+id/cardsActivityProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        android:visibility="gone"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/cardRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:transitionGroup="true"
-        android:layout_margin="@dimen/space_xs"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-        android:visibility="gone"/>
-
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/onNoDeckTextError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,10 +37,12 @@
         android:gravity="center"
         android:orientation="vertical"
         android:padding="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/addNewCardBT"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -70,6 +51,7 @@
             android:textAlignment="center"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_base" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,51 +63,56 @@
             android:textSize="@dimen/text_base" />
     </LinearLayout>
 
-    <Button
-        android:visibility="gone"
-        style="?attr/materialIconButtonFilledStyle"
-        android:id="@+id/startQuizBT"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/start_quiz_button_text"
-        app:icon="@drawable/icon_quiz"
-        app:iconTint="?colorSurfaceContainerLowest"
-        android:layout_marginBottom="@dimen/space_sm"
-        android:backgroundTint="?colorSurfaceContainerHighest"
-        app:layout_constraintBottom_toTopOf="@+id/addNewCardBT"
-        app:layout_constraintEnd_toEndOf="@+id/addNewCardBT"
-        app:layout_constraintStart_toStartOf="@+id/addNewCardBT" />
-
-    <Button
-        android:visibility="gone"
-        style="?attr/materialIconButtonFilledStyle"
-        android:id="@+id/addNewCardBT"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:contentDescription="@string/add_new_card_button_description"
-        android:backgroundTint="?colorSurfaceContainerHighest"
-        android:fontFamily="@font/open_sans_bold"
-        app:icon="@drawable/add_icon_button"
-        app:iconTint="?colorSurfaceContainerLowest"
-        android:layout_marginBottom="@dimen/space_sm"
-        app:layout_constraintBottom_toTopOf="@+id/bt_action"
-        app:layout_constraintEnd_toEndOf="@+id/bt_action"
-        app:layout_constraintStart_toStartOf="@+id/bt_action" />
-
-    <ImageButton
-        android:id="@+id/bt_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/space_sm"
-        android:layout_marginEnd="@dimen/space_sm"
-        android:background="@drawable/add_new_deck_button_background"
-        android:backgroundTint="?colorPrimary"
-        android:clickable="true"
-        android:focusable="true"
-        android:padding="@dimen/space_xxl"
-        android:src="@drawable/icon_action"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@string/bt_action" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <ProgressBar
+            android:id="@+id/cardsActivityProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cardRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/space_xs"
+            android:transitionGroup="true"
+            android:visibility="gone" />
+
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            style="@style/Widget.Material3.BottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:menu="@menu/menu_bottom_appbar_cards"
+            app:navigationIcon="@drawable/icon_category"
+            app:navigationIconTint="?colorOnSurface"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            app:hideOnScroll="true"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?colorPrimary"
+            app:layout_anchor="@id/bottomAppBar"
+            app:srcCompat="@drawable/add_icon_button" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
