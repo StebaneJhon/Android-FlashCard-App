@@ -11,6 +11,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.flashcard.R
+import com.example.flashcard.backend.FlashCardApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class OnboardingFragment4 : Fragment() {

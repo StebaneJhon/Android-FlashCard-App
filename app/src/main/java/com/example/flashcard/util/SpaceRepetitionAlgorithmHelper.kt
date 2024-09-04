@@ -4,6 +4,7 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
+import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardLevel.L2
@@ -31,7 +32,7 @@ import java.time.format.DateTimeFormatter
 class SpaceRepetitionAlgorithmHelper{
 
     var boxLevels: List<ImmutableSpaceRepetitionBox>? = null
-    private val box = FlashCardApplication().repository.getBox()
+    private val repo = FlashCardApplication().repository
     private var fetchJob: Job? = null
 
     init {
@@ -42,8 +43,17 @@ class SpaceRepetitionAlgorithmHelper{
     fun initSpaceRepetitionAlgorithmHelper() {
         fetchJob?.cancel()
         fetchJob = GlobalScope.launch {
+            val box = repo.getBox()
             box.collect {
-                boxLevels = it
+                if (it.isEmpty()) {
+                    val localBoxLevel = getInitialSpaceRepetitionBox()
+                    localBoxLevel.forEach { boxLevel ->
+                        repo.insertBoxLevel(boxLevel)
+                    }
+                    boxLevels = localBoxLevel.toExternal()
+                } else {
+                    boxLevels = it
+                }
             }
         }
     }
