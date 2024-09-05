@@ -32,15 +32,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
@@ -48,13 +45,10 @@ import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.testQuizGame.TestQuizGameActivity
-import com.example.flashcard.quiz.testQuizGame.TestQuizGameAdapter
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
 import com.example.flashcard.util.UiState
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationView
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -179,6 +173,9 @@ class DeckFragment : Fragment(), MenuProvider {
             val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
             result?.let { it ->
                 deckViewModel.insertDeck(it.deck)
+                if(it.action == ADD_DECK_FORWARD_TO_CARD_ADDITION) {
+                    navigateTo(it.deck.toExternal(), NewDeckDialog.TAG)
+                }
             }
         }
     }
