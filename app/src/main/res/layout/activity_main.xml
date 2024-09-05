@@ -33,6 +33,6 @@
         android:paddingTop="50dp"
         app:headerLayout="@layout/header_navigation_drawer"
         app:menu="@menu/menu_navigation_drawer"
-        android:background="?colorSurfaceContainerLow"/>
+        android:background="?colorSurfaceContainerLowest"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
