@@ -17,8 +17,8 @@
     <string name="start_quiz_button_text">Quiz</string>
     <string name="deck_languages">%1$s &amp; %2$s</string>
     <string name="cards_sum">%1$s Cards</string>
-    <string name="on_no_deck_text_hint">Start by adding a new deck by pressing at the + button below</string>
-    <string name="on_no_card_text_hint">Start by adding a card by pressing at the + button below</string>
+    <string name="on_no_deck_text_hint">Add a new deck by pressing at the + button below</string>
+    <string name="on_no_card_text_hint">Add a card by pressing at the + button below</string>
     <string name="card_image_bg_hint">card image background</string>
     <string name="settings_hint">Settings</string>
     <string name="themes_head_text">Theme</string>
@@ -148,6 +148,6 @@
     <string name="bt_add_deck">Add deck</string>
     <string name="bt_add_card">Add card</string>
     <string name="dialog_title_delete_deck">Delete Deck?</string>
-    <string name="dialog_message_delete_deck">The deck an all cards in it will be deleted</string>
+    <string name="dialog_message_delete_deck">The deck an all %1$s cards in it will be deleted</string>
     <string name="bt_text_delete">Delete</string>
 </resources>

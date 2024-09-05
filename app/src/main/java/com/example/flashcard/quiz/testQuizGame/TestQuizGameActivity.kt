@@ -92,9 +92,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
             if (!cardList.isNullOrEmpty() && deck != null) {
                 viewModel.initOriginalCardList(cardList)
                 startTest(cardList, deck)
-                //startWritingQuizGame(cardList, deck)
             } else {
-                //onNoCardToRevise()
             }
         }
 
@@ -181,7 +179,6 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
             viewModel.sortCardsByLevel()
         }
 
-//        restartMultiChoiceQuiz()
         viewModel.initTest()
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
@@ -368,7 +365,6 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
         binding.lyContainerOptions.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
-//            lpiQuizResultDiagramScoreLayout.progress = progression
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Test")
             tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
             tvMissedCardSumScoreLayout.text = missedCardsSum.toString()

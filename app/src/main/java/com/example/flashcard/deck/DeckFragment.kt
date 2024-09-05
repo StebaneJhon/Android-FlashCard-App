@@ -159,7 +159,7 @@ class DeckFragment : Fragment(), MenuProvider {
         appContext?.let {
             MaterialAlertDialogBuilder(it)
                 .setTitle(getString(R.string.dialog_title_delete_deck))
-                .setMessage(getString(R.string.dialog_message_delete_deck))
+                .setMessage(getString(R.string.dialog_message_delete_deck, deck.cardSum.toString()))
                 .setNegativeButton(getString(R.string.bt_text_cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }

@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_xs"
                 android:fontFamily="@font/open_sans"
-                android:text="@string/on_no_card_text_hint"
+                android:text="@string/on_no_deck_text_hint"
                 android:textAlignment="center"
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_base" />
