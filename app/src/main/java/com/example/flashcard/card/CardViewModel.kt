@@ -52,14 +52,14 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     }
 
     fun insertCard(card: ImmutableCard, localDeck: ImmutableDeck) = viewModelScope.launch {
-        val externalDeck = localDeck.toLocal()
-        repository.insertCard(card, externalDeck)
+//        val externalDeck = localDeck.toLocal()
+        repository.insertCard(card, localDeck, true)
     }
 
     fun insertCards(cards: List<ImmutableCard>, externalDeck: ImmutableDeck) = viewModelScope.launch {
-        val externDeck = externalDeck.toLocal()
+//        val localDeck = externalDeck.toLocal()
         val cardsToAdd = cards.reversed()
-        repository.insertCards(cardsToAdd, externDeck)
+        repository.insertCards(cardsToAdd, externalDeck)
     }
 
     fun updateCard(card: ImmutableCard) = viewModelScope.launch {
@@ -72,7 +72,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     }
 
     suspend fun searchCard(searchQuery: String, deckId: String): LiveData<List<ImmutableCard?>> {
-        return repository.searchCardImmutable(searchQuery, deckId).asLiveData()
+        return repository.searchCard(searchQuery, deckId).asLiveData()
     }
 
 }

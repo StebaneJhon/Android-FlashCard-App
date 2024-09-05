@@ -28,7 +28,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -44,11 +43,8 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.backend.entities.CardDefinition
-import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentCardBinding
-import com.example.flashcard.deck.DeckFragment.Companion.REQUEST_CODE
 import com.example.flashcard.deck.NewDeckDialog
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
@@ -582,7 +578,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
 
     private fun onAddNewCard() {
 
-        val newCardDialog = NewCardDialog(null, deck!!)
+        val newCardDialog = NewCardDialog(null, deck!!, Constant.ADD)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
@@ -596,7 +592,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
     }
 
     private fun onEditCard(card: ImmutableCard) {
-        val newCardDialog = NewCardDialog(card, deck!!)
+        val newCardDialog = NewCardDialog(card, deck!!, Constant.UPDATE)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
@@ -663,7 +659,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 binding.cardsActivityProgressBar.visibility = View.VISIBLE
                 if (p0 != null) {
-                    searchDeck(p0)
+                    searchCard(p0)
                     binding.cardsActivityProgressBar.visibility = View.GONE
                 }
                 return true
@@ -671,7 +667,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
 
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 != null) {
-                    searchDeck(p0)
+                    searchCard(p0)
                     binding.cardsActivityProgressBar.visibility = View.GONE
                 }
                 return true
@@ -679,7 +675,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
         })
     }
 
-    private fun searchDeck(query: String) {
+    private fun searchCard(query: String) {
         val searchQuery = "%$query%"
         lifecycleScope.launch {
             deck?.let { cardDeck ->

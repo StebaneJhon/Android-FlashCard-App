@@ -158,12 +158,12 @@ class DeckFragment : Fragment(), MenuProvider {
     private fun onDeleteDeck(deck: ImmutableDeck) {
         appContext?.let {
             MaterialAlertDialogBuilder(it)
-                .setTitle("Delete Deck?")
-                .setMessage("The deck an all cards in it will be deleted")
-                .setNegativeButton("Cancel") { dialog, _ ->
+                .setTitle(getString(R.string.dialog_title_delete_deck))
+                .setMessage(getString(R.string.dialog_message_delete_deck))
+                .setNegativeButton(getString(R.string.bt_text_cancel)) { dialog, _ ->
                     dialog.dismiss()
                 }
-                .setPositiveButton("Delete") { dialog, _ ->
+                .setPositiveButton(getString(R.string.bt_text_delete)) { dialog, _ ->
                     deckViewModel.deleteDeck(deck)
                     dialog.dismiss()
                     Toast.makeText(it, "Delete ${deck.deckName}", Toast.LENGTH_LONG).show()
@@ -193,12 +193,6 @@ class DeckFragment : Fragment(), MenuProvider {
             }
         }
     }
-
-//    override fun getDeckAndAddCards(deck: Deck, opener: String) {
-//        deckViewModel.insertDeck(deck)
-//        val externalDeck = deckViewModel.getDeckByName(deck.deckName!!)
-//        navigateTo(externalDeck, opener)
-//    }
 
     private fun searchDeck(query: String) {
         val searchQuery = "%$query%"

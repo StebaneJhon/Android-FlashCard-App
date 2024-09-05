@@ -61,7 +61,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class NewCardDialog(private var card: ImmutableCard?, private val deck: ImmutableDeck) :
+class NewCardDialog(private var card: ImmutableCard?, private val deck: ImmutableDeck, private val action: String) :
     AppCompatDialogFragment() {
 
     private var cardContent: EditText? = null
@@ -221,7 +221,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             when (menuItem.itemId) {
                 R.id.save -> {
                     // Handle saving
-                    if (card != null && card?.cardId != null) {
+                    if (card != null && action == Constant.UPDATE) {
                         sendCardsOnEdit(REQUEST_CODE_CARD, EDIT_CARD_BUNDLE_KEY, newCardViewModel.addedCards.value)
                         dismiss()
                     } else {
@@ -383,9 +383,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             FLASHCARD -> {
                 onAddFlashCard(true)
                 cardContent?.setText(card.cardContent?.content)
-//                cardContentDefinition?.setText(card.contentDescription)
                 cardValue?.setText(card.cardDefinition?.first()?.definition)
-//                cardValueDefinition?.setText(card.valueDefinition)
                 cpAddMultiAnswerCard?.apply {
                     isCheckable = false
                     isChecked = false
@@ -516,7 +514,6 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     }
 
     private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null) {
-
         val newCard = if (action == Constant.ADD) {
             generateCardOnAdd() ?: return
         } else {
@@ -530,18 +527,10 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
         rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
         initCardAdditionPanel()
-        //listener?.getCard(newCard, action, deck)
-        //dismiss()
     }
 
     fun generateCardOnUpdate(): ImmutableCard? {
         val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
-        val updatedContent = CardContent(
-            card?.cardContent?.contentId!!,
-            card?.cardContent?.cardId!!,
-            card?.deckId,
-            content?.content
-        )
 
         val definitions = getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
         val updateCardDefinitions = mutableListOf<CardDefinition>()
@@ -562,7 +551,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             )
             updateCardDefinitions.add(updatedDefinition)
         }
-        if (definitions?.size!! > card!!.cardDefinition?.size ?: 0) {
+        if (definitions?.size!! > (card!!.cardDefinition?.size ?: 0)) {
             for (j in (card!!.cardDefinition?.size ?: 0)..definitions.size.minus(1)) {
                 updateCardDefinitions.add(definitions[j])
             }
@@ -570,7 +559,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
 
         return ImmutableCard(
             card!!.cardId,
-            updatedContent,
+            content,
             updateCardDefinitions,
             card!!.deckId,
             card!!.isFavorite,

@@ -91,18 +91,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
-        <ImageButton
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addNewDeckButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/space_sm"
-            android:background="@drawable/add_new_deck_button_background"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
             android:backgroundTint="?colorPrimary"
             android:contentDescription="@string/add_new_deck_button"
-            android:padding="@dimen/space_xxl"
-            android:src="@drawable/add_icon_button"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/add_icon_button" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
