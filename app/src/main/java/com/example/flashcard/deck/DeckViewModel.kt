@@ -57,8 +57,6 @@ class DeckViewModel(private val repository: FlashCardRepository) : ViewModel() {
     fun deleteDeck(deck: ImmutableDeck) {
         fetchDeckDeletionJob?.cancel()
         fetchDeckDeletionJob = viewModelScope.launch {
-//            repository.deleteCards(deck)
-//            repository.deleteDeck(deck)
             repository.deleteDeckWithCards(deck)
         }
     }

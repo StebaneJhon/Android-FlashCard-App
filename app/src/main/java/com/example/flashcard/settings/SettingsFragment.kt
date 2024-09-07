@@ -24,6 +24,8 @@ import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.databinding.FragmentSettingsBinding
+import com.example.flashcard.util.ContactActions.CONTACT
+import com.example.flashcard.util.ContactActions.HELP
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.example.flashcard.util.themeConst.BLUE_THEME
@@ -175,6 +177,27 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
                 }
         }
 
+        binding.btPrivacyOthersSection.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
+        }
+        binding.btAboutOthersSection.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
+        }
+        binding.btHelpOthersSection.setOnClickListener {
+            sendEmail(HELP)
+        }
+        binding.btContactOthersSection.setOnClickListener {
+            sendEmail(CONTACT)
+        }
+
+    }
+
+    private fun sendEmail(subject: String) {
+        val action = SettingsFragmentDirections.actionSettingsFragmentToEmailFragment(subject)
+        findNavController().navigate(
+            action,
+            NavOptions.Builder().setPopUpTo(R.id.emailFragment, true).build()
+        )
     }
 
     private fun bindSpaceRepetitionBox(boxLevels: List<ImmutableSpaceRepetitionBox>) {

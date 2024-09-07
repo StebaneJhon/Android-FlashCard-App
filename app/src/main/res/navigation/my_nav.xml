@@ -34,12 +34,6 @@
         <action
             android:id="@+id/navigateToCardFragment"
             app:destination="@id/cardFragment" />
-        <action
-            android:id="@+id/action_deckFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_deckFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -50,11 +44,14 @@
             android:id="@+id/action_settingsFragment_to_cardFragment"
             app:destination="@id/cardFragment" />
         <action
-            android:id="@+id/action_settingsFragment_to_deckFragment"
-            app:destination="@id/deckFragment" />
-        <action
             android:id="@+id/action_settingsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_privacyPolicyFragment"
+            app:destination="@id/privacyPolicyFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_emailFragment"
+            app:destination="@id/emailFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -64,9 +61,6 @@
         <action
             android:id="@+id/action_profileFragment_to_cardFragment"
             app:destination="@id/cardFragment" />
-        <action
-            android:id="@+id/action_profileFragment_to_deckFragment"
-            app:destination="@id/deckFragment" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"
@@ -96,5 +90,26 @@
             app:destination="@id/deckFragment"
             app:popUpTo="@id/hostFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/privacyPolicyFragment"
+        android:name="com.example.flashcard.settings.PrivacyPolicyFragment"
+        android:label="fragment_privacy_policy"
+        tools:layout="@layout/fragment_privacy_policy" >
+        <action
+            android:id="@+id/action_privacyPolicyFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/emailFragment"
+        android:name="com.example.flashcard.settings.EmailFragment"
+        android:label="fragment_email"
+        tools:layout="@layout/fragment_email" >
+        <argument
+            android:name="subject"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_emailFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 </navigation>

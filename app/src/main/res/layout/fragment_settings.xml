@@ -347,7 +347,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="?colorSurfaceContainer"
                 app:cornerRadius="@dimen/bt_radius"
-                android:text="@string/bt_about_the_quizeo_text"
+                android:text="@string/bt_about_the_recall_text"
                 android:textSize="@dimen/text_sm"
                 android:layout_marginBottom="@dimen/space_xs"
                 android:textColor="?colorOnSurface"/>

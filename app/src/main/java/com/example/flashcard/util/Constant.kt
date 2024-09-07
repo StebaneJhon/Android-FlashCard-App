@@ -105,3 +105,8 @@ object DeckAdditionAction {
     const val ADD = "add the deck"
     const val ADD_DECK_FORWARD_TO_CARD_ADDITION = "add deck and forward to card addition"
 }
+
+object ContactActions {
+    const val HELP = "Help"
+    const val CONTACT = "Contact"
+}

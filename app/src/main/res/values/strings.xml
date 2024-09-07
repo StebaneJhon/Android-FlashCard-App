@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">FlashCard</string>
-    <string name="app_name_2">Quizeo</string>
+    <string name="app_name_2">Recall</string>
     <string name="deck_name_hint">Deck Name</string>
     <string name="deck_description_hint">Deck Description</string>
     <string name="add_your_new_deck_text">Add Your New Deck</string>
@@ -90,8 +90,8 @@
     <string name="bt_privacy_text">Privacy policy</string>
     <string name="bt_contact_text">Contact the developer</string>
     <string name="bt_help_text">Help</string>
-    <string name="bt_rate_the_app_text">Rate the Quizeo</string>
-    <string name="bt_about_the_quizeo_text">About the Quizeo</string>
+    <string name="bt_rate_the_app_text">Rate Recall</string>
+    <string name="bt_about_the_recall_text">About Recall</string>
     <string name="tv_space_repetition_title">Space repetition box</string>
     <string name="ti_repeat_card_in_days_hint">Repeat card in ... days</string>
     <string name="bt_help_button_text">Help Button</string>
@@ -150,4 +150,15 @@
     <string name="dialog_title_delete_deck">Delete Deck?</string>
     <string name="dialog_message_delete_deck">The deck an all %1$s cards in it will be deleted</string>
     <string name="bt_text_delete">Delete</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_message">Message</string>
+    <string name="bt_text_send">Send</string>
+    <string name="error_message_missing_email">Enter your email here.</string>
+    <string name="error_message_missing_message">Enter your message here.</string>
+    <string name="error_message_missing_subject">Enter your a subject here.</string>
+    <string name="error_message_missing_mail_app">Missing mail app or internet access.</string>
+    <string name="error_message_email_not_sent">Email not sent</string>
+    <string name="success_message_email_sent">Thank you for your time, you will get an answer as soon as possible.</string>
+    <string name="bt_text_dismiss">Dismiss</string>
 </resources>
