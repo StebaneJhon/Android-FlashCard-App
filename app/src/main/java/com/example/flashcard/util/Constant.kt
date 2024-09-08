@@ -5,6 +5,8 @@ object Constant {
     val UPDATE = "update"
     const val SUCCEED = "SUCCEED"
     const val FAILED = "FAILED"
+    const val MIN_CARD_FOR_MULTI_CHOICE_QUIZ = 4
+    const val MIN_CARD_FOR_MATCHING_QUIZ = 10
 }
 
 object cardBackgroundConst {
@@ -73,6 +75,12 @@ object FlashCardTimedTimerStatus {
 }
 
 object FlashCardMiniGameRef {
+    const val FLASH_CARD_QUIZ = "Flash card quiz"
+    const val TIMED_FLASH_CARD_QUIZ = "Timed flash card quiz"
+    const val MULTIPLE_CHOICE_QUIZ = "Multiple choice quiz"
+    const val WRITING_QUIZ = "Writing quiz"
+    const val MATCHING_QUIZ = "Matching quiz"
+    const val QUIZ = "Quiz"
     const val FLASH_CARD_MINI_GAME_REF = "Flash Card MiniGame Ref"
     const val CHECKED_FILTER = "Checked Filter"
     const val CHECKED_CARD_ORIENTATION = "Checked Card Orientation"

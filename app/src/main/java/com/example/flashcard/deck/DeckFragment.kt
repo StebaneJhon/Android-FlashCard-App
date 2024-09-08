@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
+import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
@@ -46,7 +47,15 @@ import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.testQuizGame.TestQuizGameActivity
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
+import com.example.flashcard.util.Constant.MIN_CARD_FOR_MATCHING_QUIZ
+import com.example.flashcard.util.Constant.MIN_CARD_FOR_MULTI_CHOICE_QUIZ
 import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
+import com.example.flashcard.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
+import com.example.flashcard.util.FlashCardMiniGameRef.MATCHING_QUIZ
+import com.example.flashcard.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
+import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
+import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
+import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.cancel
@@ -139,9 +148,23 @@ class DeckFragment : Fragment(), MenuProvider {
             recyclerView.apply {
                 adapter = recyclerViewAdapter
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager( appContext)
+                layoutManager = LinearLayoutManager(appContext)
             }
         }
+    }
+
+    private fun onStartingQuizError(errorText: String, deck: ImmutableDeck) {
+        MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_App_MaterialAlertDialog)
+            .setTitle(getString(R.string.error_title_starting_quiz))
+            .setMessage(errorText)
+            .setNegativeButton(R.string.bt_cancel) {dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(getString(R.string.bt_add_card)) {dialog, _ ->
+                navigateTo(deck, NewDeckDialog.TAG)
+                dialog.dismiss()
+            }
+            .show()
     }
 
     private fun navigateTo(data: ImmutableDeck, opener: String) {
@@ -212,37 +235,12 @@ class DeckFragment : Fragment(), MenuProvider {
         }
 
         val multiChoiceQuizGameBT: Button = dialogBinding.findViewById(R.id.multiChoiceQuizButton)
-        multiChoiceQuizGameBT.setOnClickListener {
-            startMultiChoiceQuizGame(deckId, quizModeDialog)
-        }
-
         val btWritingQuizGame: Button = dialogBinding.findViewById(R.id.bt_writing_quiz_game)
-        btWritingQuizGame.setOnClickListener {
-            startWritingQuizGame(deckId, quizModeDialog)
-        }
-
         val btMatchingQuizGame: Button = dialogBinding.findViewById(R.id.bt_matching_quiz_game)
-        btMatchingQuizGame.setOnClickListener {
-            startMatchingQuizGame(deckId, quizModeDialog)
-        }
-
         val btFlashCard: Button = dialogBinding.findViewById(R.id.bt_flash_card_game)
-        btFlashCard.setOnClickListener {
-            startFlashCardGame(deckId, quizModeDialog)
-        }
-
         val btFlashCardTimed: Button = dialogBinding.findViewById(R.id.bt_flash_card_game_timed)
-        btFlashCardTimed.setOnClickListener {
-            startFlashCardGameTimed(deckId, quizModeDialog)
-        }
-
         val btTestQuizGame: Button = dialogBinding.findViewById(R.id.bt_test_quiz_game)
-        btTestQuizGame.setOnClickListener {
-            startTestQuizGame(deckId, quizModeDialog)
-        }
-    }
 
-    private fun startFlashCardGameTimed(deckId: String, quizModeDialog: Dialog?) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getDeckWithCards(deckId)
@@ -251,20 +249,35 @@ class DeckFragment : Fragment(), MenuProvider {
                         is UiState.Loading -> {
                             binding.mainActivityProgressBar.visibility = View.VISIBLE
                         }
-
                         is UiState.Error -> {
                             binding.mainActivityProgressBar.visibility = View.GONE
                         }
-
                         is UiState.Success -> {
                             binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                FlashCardGameTimedActivity::class.java
-                            )
-                            intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
+                            btFlashCard.setOnClickListener {
+                                lunchQuiz(state.data, FLASH_CARD_QUIZ)
+                                quizModeDialog?.dismiss()
+                            }
+                            btFlashCardTimed.setOnClickListener {
+                                lunchQuiz(state.data, TIMED_FLASH_CARD_QUIZ)
+                                quizModeDialog?.dismiss()
+                            }
+                            multiChoiceQuizGameBT.setOnClickListener {
+                                lunchQuiz(state.data, MULTIPLE_CHOICE_QUIZ)
+                                quizModeDialog?.dismiss()
+                            }
+                            btWritingQuizGame.setOnClickListener {
+                                lunchQuiz(state.data, WRITING_QUIZ)
+                                quizModeDialog?.dismiss()
+                            }
+                            btMatchingQuizGame.setOnClickListener {
+                                lunchQuiz(state.data, MATCHING_QUIZ)
+                                quizModeDialog?.dismiss()
+                            }
+                            btTestQuizGame.setOnClickListener {
+                                lunchQuiz(state.data, QUIZ)
+                                quizModeDialog?.dismiss()
+                            }
                             this@launch.cancel()
                             this.cancel()
                         }
@@ -272,169 +285,52 @@ class DeckFragment : Fragment(), MenuProvider {
                 }
             }
         }
+
     }
 
-    private fun startFlashCardGame(deckId: String, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
-
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                FlashCardGameActivity::class.java
-                            )
-                            intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
+    private fun lunchQuiz(deckWithCards: ImmutableDeckWithCards, quizMode: String) {
+        when (quizMode) {
+            FLASH_CARD_QUIZ -> {
+                val intent = Intent(appContext, FlashCardGameActivity::class.java)
+                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
+                startActivity(intent)
+            }
+            TIMED_FLASH_CARD_QUIZ -> {
+                val intent = Intent(appContext, FlashCardGameTimedActivity::class.java)
+                intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, deckWithCards)
+                startActivity(intent)
+            }
+            MULTIPLE_CHOICE_QUIZ -> {
+                if (deckWithCards.cards?.size!! > MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
+                    val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
+                    intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, deckWithCards)
+                    startActivity(intent)
+                } else {
+                    onStartingQuizError(getString(R.string.error_message_starting_quiz,"$MIN_CARD_FOR_MULTI_CHOICE_QUIZ"), deckWithCards.deck!!)
                 }
+            }
+            WRITING_QUIZ -> {
+                val intent = Intent(appContext, WritingQuizGameActivity::class.java)
+                intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, deckWithCards)
+                startActivity(intent)
+            }
+            MATCHING_QUIZ -> {
+                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MATCHING_QUIZ) {
+                    val intent = Intent(appContext, MatchQuizGameActivity::class.java)
+                    intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, deckWithCards)
+                    startActivity(intent)
+                } else {
+                    onStartingQuizError(getString(R.string.error_message_starting_quiz, "$MIN_CARD_FOR_MATCHING_QUIZ"), deckWithCards.deck!!)
+                }
+            }
+            QUIZ -> {
+                val intent = Intent(appContext, TestQuizGameActivity::class.java)
+                intent.putExtra(TestQuizGameActivity.DECK_ID_KEY, deckWithCards)
+                startActivity(intent)
             }
         }
     }
 
-
-
-    private fun startMultiChoiceQuizGame(deckId: String, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
-
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                MultiChoiceQuizGameActivity::class.java
-                            )
-                            intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun startWritingQuizGame(deckId: String, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
-
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                WritingQuizGameActivity::class.java
-                            )
-                            intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun startMatchingQuizGame(deckId: String, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
-
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                MatchQuizGameActivity::class.java
-                            )
-                            intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private fun startTestQuizGame(deckId: String, quizModeDialog: Dialog?) {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
-                deckViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.visibility = View.VISIBLE
-                        }
-
-                        is UiState.Error -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-
-                        is UiState.Success -> {
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                            val intent = Intent(
-                                activity?.applicationContext!!,
-                                TestQuizGameActivity::class.java
-                            )
-                            intent.putExtra(TestQuizGameActivity.DECK_ID_KEY, state.data)
-                            startActivity(intent)
-                            quizModeDialog?.dismiss()
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -447,13 +343,13 @@ class DeckFragment : Fragment(), MenuProvider {
         val search = menu.findItem(R.id.search_deck_menu)
         val searchView: SearchView = search.actionView as SearchView
 
-        val searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button) as ImageView
+        val searchIcon: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_button)
         searchIcon.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
 
-        val searchIconClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+        val searchIconClose: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_close_btn)
         searchIconClose.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
 
-        val searchIconMag = searchView.findViewById(androidx.appcompat.R.id.search_go_btn) as ImageView
+        val searchIconMag: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_go_btn)
         searchIconMag.setColorFilter( ThemeUtils.getThemeAttrColor(requireContext(), com.google.android.material.R.attr.colorOnSurface), PorterDuff.Mode.SRC_IN)
 
         val topAppBarEditText = searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)

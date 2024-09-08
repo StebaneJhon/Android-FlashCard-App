@@ -21,6 +21,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -59,6 +60,7 @@ class MainActivity :
     private val activityViewModel: MainActivityViewModel by viewModels {
         MainActivityViewModelFactory((application as FlashCardApplication).repository)
     }
+    lateinit var navController: NavController
 
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
@@ -86,28 +88,12 @@ class MainActivity :
             }
         }
 
-//        enableEdgeToEdge()
-
         setContentView(view)
-
-//        ViewCompat.setOnApplyWindowInsetsListener(binding.mainActivityRoot) { v, insets ->
-//            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//            v.setPadding(
-//                systemBars.left,
-//                systemBars.top,
-//                systemBars.right,
-//                0)
-//            WindowInsetsCompat.CONSUMED
-//        }
-
-
+        
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         val navController = navHostFragment.navController
         val appBarConfiguration = AppBarConfiguration(navController.graph, binding.mainActivityRoot)
         binding.nvvDrawer.setupWithNavController(navController)
-
-//        navController = findNavController(R.id.fragmentContainerView)
-//        binding.mainActivityBNV.setupWithNavController(navController)
 
     }
 

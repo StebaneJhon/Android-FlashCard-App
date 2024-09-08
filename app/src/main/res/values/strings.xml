@@ -161,4 +161,6 @@
     <string name="error_message_email_not_sent">Email not sent</string>
     <string name="success_message_email_sent">Thank you for your time, you will get an answer as soon as possible.</string>
     <string name="bt_text_dismiss">Dismiss</string>
+    <string name="error_message_starting_quiz">At least %1$s cards to play start this quiz mode</string>
+    <string name="error_title_starting_quiz">Unable to start</string>
 </resources>

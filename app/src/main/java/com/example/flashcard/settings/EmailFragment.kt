@@ -84,6 +84,7 @@ class EmailFragment : Fragment() {
             .setPositiveButton(getString(R.string.bt_text_dismiss)) { dialog, _ ->
                 dialog.dismiss()
             }
+            .show()
     }
 
     private fun isEmailSent(isSent: Boolean) {

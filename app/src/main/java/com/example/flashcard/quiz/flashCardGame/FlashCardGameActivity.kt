@@ -19,12 +19,17 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -100,7 +105,9 @@ class FlashCardGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setting
         }
 
         binding = ActivityFlashCardGameBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        val view = binding.root
+
+        setContentView(view)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
