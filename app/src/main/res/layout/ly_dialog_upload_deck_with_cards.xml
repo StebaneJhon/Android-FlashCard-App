@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="?colorSurfaceContainerLowest">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_back_to_quiz"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/exit_button_text_hint"
+            app:icon="@drawable/icon_exit"
+            app:iconSize="25sp"
+            app:iconTint="?colorOnSurface"
+            app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/title_dialog_upload_deck_with_cards"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bt_back_to_quiz"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_deck_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/deck_name_hint"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:textColorHint="?colorOnSurface"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_deck_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_category"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/category_field_hint"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:textColorHint="?colorOnSurface"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tf_deck_name">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:text="Any" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_difficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/difficulty_text_hint"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tf_category"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:textColorHint="?colorOnSurface"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_difficulty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/question_type_text_hint"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:textColorHint="?colorOnSurface"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tf_difficulty">
+
+            <AutoCompleteTextView
+                android:id="@+id/tv_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tf_question_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/question_number_text_hint"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:textColorHint="?colorOnSurface"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tf_type">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tv_question_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:text="10"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            style="@style/Widget.Material3.Button.TextButton"
+            android:id="@+id/bt_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_text_cancel"
+            android:textStyle="bold"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@color/transparent"
+            android:fontFamily="@font/open_sans_bold"
+            app:layout_constraintEnd_toStartOf="@+id/bt_upload"
+            app:layout_constraintTop_toBottomOf="@+id/tf_question_number" />
+
+        <Button
+            style="@style/Widget.Material3.Button.TextButton"
+            android:id="@+id/bt_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_text_upload"
+            android:textStyle="bold"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:background="@color/transparent"
+            android:fontFamily="@font/open_sans_bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tf_question_number" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

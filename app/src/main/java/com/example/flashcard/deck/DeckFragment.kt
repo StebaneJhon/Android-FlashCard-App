@@ -62,7 +62,10 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 
-class DeckFragment : Fragment(), MenuProvider {
+class DeckFragment :
+    Fragment(),
+    MenuProvider
+{
 
     private var _binding: FragmentDeckBinding? = null
     private val binding get() = _binding!!
@@ -70,7 +73,8 @@ class DeckFragment : Fragment(), MenuProvider {
 
     private val deckViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
-        ViewModelProvider(this, DeckViewModelFactory( repository ))[DeckViewModel::class.java]
+        val openTriviaRepository = (requireActivity().application as FlashCardApplication).openTriviaRepository
+        ViewModelProvider(this, DeckViewModelFactory( repository, openTriviaRepository ))[DeckViewModel::class.java]
     }
 
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
@@ -103,7 +107,7 @@ class DeckFragment : Fragment(), MenuProvider {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getAllDecks()
                 deckViewModel.allDecks
-                    .collect {
+                    .collect { it ->
                         when (it) {
                             is UiState.Loading -> {
                                 binding.mainActivityProgressBar.isVisible = true
@@ -120,9 +124,39 @@ class DeckFragment : Fragment(), MenuProvider {
             }
         }
 
-
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
+
+        binding.bottomAppBarDeck.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.bt_sort_deck -> {
+                    Toast.makeText(requireContext(), "Sort not implemented yet", Toast.LENGTH_LONG).show()
+                    true
+                }
+                R.id.bt_upload_deck_with_cards -> {
+                    showSettings()
+                    true
+                }
+                else -> false
+            }
+        }
+
     }
+
+    private fun showSettings() {
+        val newDeckDialog = UploadOpenTriviaQuizDialog()
+        newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requstQuery, bundle ->
+            val result = bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
+            deckViewModel.getOpenTriviaQuestions(
+                result?.deckName!!,
+                result.number,
+                result.category,
+                result.difficulty,
+                result.type
+            )
+        }
+    }
+
 
     private fun onNoDeckError() {
         binding.mainActivityProgressBar.visibility = View.GONE

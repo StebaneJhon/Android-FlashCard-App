@@ -5,47 +5,19 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.ViewGroup
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updateLayoutParams
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
-import com.example.flashcard.backend.Model.ImmutableCard
-import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.backend.entities.Card
 import com.example.flashcard.databinding.ActivityMainBinding
-import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
-import com.example.flashcard.card.CardViewModel
-import com.example.flashcard.card.CardViewModelFactory
-import com.example.flashcard.card.NewCardDialog
-import com.example.flashcard.deck.DeckViewModel
-import com.example.flashcard.deck.DeckViewModelFactory
-import com.example.flashcard.deck.NewDeckDialog
 import com.example.flashcard.settings.SettingsFragmentEditBoxLevelDialog
 import com.example.flashcard.settings.SettingsFragmentViewModel
 import com.example.flashcard.settings.SettingsFragmentViewModelFactory
-import com.example.flashcard.util.Constant
-import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.ThemePicker
-import com.example.flashcard.util.UiState
-import com.google.android.material.navigation.NavigationView
-import kotlinx.coroutines.launch
 
 class MainActivity :
     AppCompatActivity(),
@@ -91,8 +63,7 @@ class MainActivity :
         setContentView(view)
         
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(navController.graph, binding.mainActivityRoot)
+        navController = navHostFragment.navController
         binding.nvvDrawer.setupWithNavController(navController)
 
     }

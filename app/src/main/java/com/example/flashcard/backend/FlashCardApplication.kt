@@ -9,4 +9,7 @@ class FlashCardApplication: Application() {
     val repository by lazy {
         FlashCardRepository(database.flashCardDao())
     }
+    val openTriviaRepository by lazy {
+        OpenTriviaRepository(RetrofitClient)
+    }
 }

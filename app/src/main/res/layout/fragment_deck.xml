@@ -2,87 +2,87 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawerLayout"
+    android:id="@+id/mainActivityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorSurfaceContainerLowest"
     tools:context=".deck.DeckFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainActivityRoot"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?colorSurfaceContainerLowest">
+        android:layout_height="wrap_content"
+        android:background="?colorSurfaceContainerLow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/deckTopAppBar"
             android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/icon_menu"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/app_name_2">
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:id="@+id/onNoDeckTextError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?colorSurfaceContainerLow"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/title_on_no_deck_to_show"
+            android:textAlignment="center"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base" />
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/deckTopAppBar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:navigationIcon="@drawable/icon_menu"
-                app:navigationIconTint="?colorOnSurface"
-                app:title="@string/app_name_2">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xs"
+            android:fontFamily="@font/open_sans"
+            android:text="@string/on_no_deck_text_hint"
+            android:textAlignment="center"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base" />
+    </LinearLayout>
 
-            </com.google.android.material.appbar.MaterialToolbar>
-
-
-        </com.google.android.material.appbar.AppBarLayout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
         <ProgressBar
             android:id="@+id/mainActivityProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
-        <LinearLayout
-            android:id="@+id/onNoDeckTextError"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/addNewDeckButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="@string/title_on_no_deck_to_show"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_base" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_xs"
-                android:fontFamily="@font/open_sans"
-                android:text="@string/on_no_deck_text_hint"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_base" />
-        </LinearLayout>
+            android:layout_gravity="center" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/deckRecycleView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_margin="@dimen/space_xs"
             android:transitionGroup="true"
             android:visibility="gone"
@@ -91,22 +91,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar_deck"
+            style="@style/Widget.Material3.BottomAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:menu="@menu/menu_bottom_appbar_deck"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            app:hideOnScroll="true"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/addNewDeckButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
+            app:layout_anchor="@id/bottomAppBar_deck"
             android:backgroundTint="?colorPrimary"
             android:contentDescription="@string/add_new_deck_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/add_icon_button" />
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

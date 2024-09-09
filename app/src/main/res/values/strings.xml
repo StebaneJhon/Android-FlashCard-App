@@ -163,4 +163,14 @@
     <string name="bt_text_dismiss">Dismiss</string>
     <string name="error_message_starting_quiz">At least %1$s cards to play start this quiz mode</string>
     <string name="error_title_starting_quiz">Unable to start</string>
+    <string name="bt_text_sort_deck">Sort deck</string>
+    <string name="bt_text_upload_deck_with_cards">Upload deck with cards</string>
+    <string name="title_dialog_upload_deck_with_cards">Upload deck with cards from the Open Trivia database.</string>
+    <string name="settings_title_text">Settings</string>
+    <string name="category_field_hint">Category</string>
+    <string name="difficulty_text_hint">Difficulty</string>
+    <string name="question_type_text_hint">Question type</string>
+    <string name="question_number_text_hint">Question number</string>
+    <string name="bt_apply_text">Apply</string>
+    <string name="bt_text_upload">Upload</string>
 </resources>

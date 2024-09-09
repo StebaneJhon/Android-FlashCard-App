@@ -7,9 +7,11 @@ import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.backend.entities.User
 import com.example.flashcard.backend.entities.relations.DeckWithCards
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 // External to local
-fun ImmutableDeck.toLocal() = Deck (
+fun ImmutableDeck.toLocal() = Deck(
     deckId = deckId,
     deckName = deckName,
     deckDescription = deckDescription,
@@ -40,7 +42,7 @@ fun Deck.toExternal() = ImmutableDeck(
 fun List<Deck>.toExternal() = map(Deck::toExternal)
 
 // Cards Ex
-fun ImmutableCard.toLocal() = Card (
+fun ImmutableCard.toLocal() = Card(
     cardId = cardId,
     cardContent = null,
     cardDefinition = null,
@@ -60,26 +62,30 @@ fun ImmutableCard.toLocal() = Card (
 fun List<ImmutableCard>.toLocal() = map(ImmutableCard::toLocal)
 
 // Local to External
-fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = ImmutableCard (
-    cardId = cardId,
-    cardContent = cardContent,
-    cardDefinition = cardDefinitions,
-    deckId = deckId,
-    isFavorite = isCorrect(isFavorite),
-    revisionTime = revisionTime,
-    missedTime = missedTime,
-    creationDate = creationDate,
-    lastRevisionDate = lastRevisionDate,
-    cardStatus = cardStatus,
-    nextMissMemorisationDate = nextMissMemorisationDate,
-    nextRevisionDate = nextRevisionDate,
-    cardType = cardType,
-)
+fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) =
+    ImmutableCard(
+        cardId = cardId,
+        cardContent = cardContent,
+        cardDefinition = cardDefinitions,
+        deckId = deckId,
+        isFavorite = isCorrect(isFavorite),
+        revisionTime = revisionTime,
+        missedTime = missedTime,
+        creationDate = creationDate,
+        lastRevisionDate = lastRevisionDate,
+        cardStatus = cardStatus,
+        nextMissMemorisationDate = nextMissMemorisationDate,
+        nextRevisionDate = nextRevisionDate,
+        cardType = cardType,
+    )
+
 @JvmName("cardLocalToExternal")
-fun List<Card>.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) = map{card -> card.toExternal(cardContent, cardDefinitions)}
+fun List<Card>.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) =
+    map { card -> card.toExternal(cardContent, cardDefinitions) }
 
 @JvmName("userExternalToLocal")
 fun List<ImmutableUser>.toLocal() = map(ImmutableUser::toLocal)
+
 // User Ex
 fun ImmutableUser.toLocal() = User(
     userId = userId,
@@ -91,6 +97,7 @@ fun ImmutableUser.toLocal() = User(
 
 @JvmName("userLocalToExternal")
 fun List<User>.toExternal() = map(User::toExternal)
+
 // User Loc
 fun User.toExternal() = ImmutableUser(
     userId = userId,
@@ -102,6 +109,7 @@ fun User.toExternal() = ImmutableUser(
 
 @JvmName("spaceRepetitionBoxExternalToLocal")
 fun List<ImmutableSpaceRepetitionBox>.toLocal() = map(ImmutableSpaceRepetitionBox::toLocal)
+
 // SpaceRepetitionBox Ex
 fun ImmutableSpaceRepetitionBox.toLocal() = SpaceRepetitionBox(
     levelId = levelId,
@@ -113,6 +121,7 @@ fun ImmutableSpaceRepetitionBox.toLocal() = SpaceRepetitionBox(
 
 @JvmName("spaceRepetitionBoxLocalToExternal")
 fun List<SpaceRepetitionBox>.toExternal() = map(SpaceRepetitionBox::toExternal)
+
 // SpaceRepetitionBox Local
 fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
     levelId = levelId,
@@ -123,9 +132,17 @@ fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
 )
 
 @JvmName("deckWithCardsLocalToExternal")
-fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard?>) = ImmutableDeckWithCards(
-    deck = deck,
-    cards = cards
-)
+fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard?>) =
+    ImmutableDeckWithCards(
+        deck = deck,
+        cards = cards
+    )
+
 fun isCorrect(index: Int?) = index == 1
 fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
+
+private fun now(): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
+    return LocalDateTime.now().format(formatter)
+}
+
