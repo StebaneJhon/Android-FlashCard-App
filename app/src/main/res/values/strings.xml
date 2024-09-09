@@ -173,4 +173,13 @@
     <string name="question_number_text_hint">Question number</string>
     <string name="bt_apply_text">Apply</string>
     <string name="bt_text_upload">Upload</string>
+    <string name="error_message_open_trivia_1">No Results</string>
+    <string name="error_message_open_trivia_2">Invalid Parameter</string>
+    <string name="error_message_open_trivia_5">Rate Limit</string>
+    <string name="error_message_open_trivia_4">Unable to retrieve questions</string>
+    <string name="error_message_dialog_upload_deck_with_cards_on_missing_deck_name">Deck name required</string>
+    <string name="error_message_dialog_upload_deck_with_cards_on_to_few_questions">Need at least 1 question</string>
+    <string name="error_message_dialog_upload_deck_with_cards_on_missing_card_sum">Require card sum</string>
+    <string name="error_message_dialog_upload_deck_with_cards_on_to_many_questions">Need at most 50 question</string>
+
 </resources>

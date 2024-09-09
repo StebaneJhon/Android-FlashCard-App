@@ -9,5 +9,4 @@ class OpenTriviaRepository constructor(private val retrofitClient: RetrofitClien
         ) = retrofitClient
             .instance
             .getQuizQuestionMultiple(amount, category, difficulty, type)
-            .body()
 }

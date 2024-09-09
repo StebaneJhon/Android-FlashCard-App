@@ -11,6 +11,7 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.OpenTriviaQuestion
+import com.example.flashcard.backend.Model.QuizQuestions
 import com.example.flashcard.backend.Model.isCorrect
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.OpenTriviaRepository
@@ -19,6 +20,8 @@ import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.util.CardLevel.L1
+import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -100,33 +103,44 @@ class DeckViewModel(
         }
     }
 
+    private var _openTriviaResponse = MutableStateFlow<UiState<QuizQuestions>>(UiState.Loading)
+    val openTriviaResponse: StateFlow<UiState<QuizQuestions>> =
+        _openTriviaResponse.asStateFlow()
+
     fun getOpenTriviaQuestions(
-        deckName: String,
         amount: Int,
         category: Int,
         difficulty: String,
         type: String
     ) {
         fetchOpenTriviaJob?.cancel()
+        _openTriviaResponse.value = UiState.Loading
         fetchDeckDeletionJob = viewModelScope.launch {
-            try {
-                val response = openTriviaRepository.getOpenTriviaQuestion(
-                    "$amount",
-                    setCategory(category),
-                    difficulty,
-                    type
-                )
-                val newDeck = generateDeck(deckName)
-                delay(100)
-                repository.insertDeck(newDeck)
-                delay(100)
-                val newCards = resultsToImmutableCards(newDeck, response?.results)
-                delay(200)
-                repository.insertCards(newCards, newDeck.toExternal())
-                val a = 1
-            } catch (e: IOException) {
-                val b = 2
+            val response = openTriviaRepository.getOpenTriviaQuestion(
+                "$amount",
+                setCategory(category),
+                difficulty,
+                type
+            )
+            if (response.isSuccessful) {
+                _openTriviaResponse.value = UiState.Success(response.body()!!)
+            } else {
+                val message = response.code().toString()
+                _openTriviaResponse.value = UiState.Error(message)
             }
+        }
+    }
+
+    fun insertOpenTriviaQuestions(deckName: String, cards: List<OpenTriviaQuestion>) {
+        fetchOpenTriviaJob?.cancel()
+        fetchOpenTriviaJob = viewModelScope.launch {
+            val newDeck = generateDeck(deckName)
+            delay(100)
+            repository.insertDeck(newDeck)
+            delay(100)
+            val newCards = resultsToImmutableCards(newDeck, cards)
+            delay(200)
+            repository.insertCards(newCards, newDeck.toExternal())
         }
     }
 
@@ -161,7 +175,7 @@ class DeckViewModel(
                 L1,
                 null,
                 null,
-                result.type
+                toCardType(result.type)
             )
 
             newCards.add(newCard)
@@ -169,6 +183,8 @@ class DeckViewModel(
         }
         return newCards
     }
+
+    private fun toCardType(type: String) = if (type == "multiple") ONE_OR_MULTI_ANSWER_CARD else TRUE_OR_FALSE_CARD
 
     private fun generateCardDefinitions(
         correctAnswer: String,

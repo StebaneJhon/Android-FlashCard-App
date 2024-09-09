@@ -147,13 +147,35 @@ class DeckFragment :
         newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requstQuery, bundle ->
             val result = bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
-            deckViewModel.getOpenTriviaQuestions(
-                result?.deckName!!,
-                result.number,
-                result.category,
-                result.difficulty,
-                result.type
-            )
+            lifecycleScope.launch {
+                deckViewModel.getOpenTriviaQuestions(
+                    result?.number!!,
+                    result.category,
+                    result.difficulty,
+                    result.type
+                )
+                deckViewModel.openTriviaResponse.collect{ response ->
+                    when(response) {
+                        is UiState.Error -> {
+                            val message = when(response.errorMessage) {
+                                "1" -> {getString(R.string.error_message_open_trivia_1)}
+                                "2" -> {getString(R.string.error_message_open_trivia_2)}
+                                "5" -> {getString(R.string.error_message_open_trivia_5)}
+                                else -> {getString(R.string.error_message_open_trivia_4)}
+                            }
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                        }
+                        is UiState.Loading -> {
+                            binding.mainActivityProgressBar.isVisible = true
+                        }
+                        is UiState.Success -> {
+                            deckViewModel.insertOpenTriviaQuestions(result.deckName, response.data.results)
+                            binding.mainActivityProgressBar.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+
         }
     }
 

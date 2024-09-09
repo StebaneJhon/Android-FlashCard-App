@@ -54,16 +54,13 @@ class UploadOpenTriviaQuizDialog() : DialogFragment() {
 
         btDismiss?.setOnClickListener { dismiss() }
         btUpload?.setOnClickListener {
-            val questionSum = tvNumber?.text
-            if (questionSum.isNullOrEmpty() || questionSum.toString().toInt() < 5) {
-                tvNumber?.error = "Questions must be 5 or more for a better experience."
-            } else {
-                val settingsModel =
-                    OpenTriviaQuizCategoryHelper().selectCategory(tvCategory?.text.toString())
+            if (checkForError()) {
+                val settingsModel = OpenTriviaQuizCategoryHelper()
+                    .selectCategory(tvCategory?.text.toString())
                         ?.let { it1 ->
                             OpenTriviaQuizModel(
                                 deckName = deckName?.text.toString(),
-                                number = questionSum.toString().toInt(),
+                                number = tvNumber?.text.toString().toInt(),
                                 category = it1,
                                 difficulty = OpenTriviaQuizCategoryHelper().encodeDifficulty(
                                     tvDifficulty?.text.toString()
@@ -81,6 +78,26 @@ class UploadOpenTriviaQuizDialog() : DialogFragment() {
 
         builder.setView(view)
         return builder.create()
+    }
+
+    private fun checkForError(): Boolean {
+        if (deckName?.text.isNullOrBlank()) {
+            deckName?.error = getString(R.string.error_message_dialog_upload_deck_with_cards_on_missing_deck_name)
+            return false
+        }
+        if (tvNumber?.text.toString().isBlank()){
+            tvNumber?.error = getString(R.string.error_message_dialog_upload_deck_with_cards_on_missing_card_sum)
+            return false
+        }
+        if (tvNumber?.text.toString().toInt() <= 0) {
+            tvNumber?.error = getString(R.string.error_message_dialog_upload_deck_with_cards_on_to_few_questions)
+            return false
+        }
+        if (tvNumber?.text.toString().toInt() > 50) {
+            tvNumber?.error = getString(R.string.error_message_dialog_upload_deck_with_cards_on_to_many_questions)
+            return false
+        }
+        return true
     }
 
 
