@@ -6,16 +6,7 @@ object Constant {
     const val SUCCEED = "SUCCEED"
     const val FAILED = "FAILED"
     const val MIN_CARD_FOR_MULTI_CHOICE_QUIZ = 4
-    const val MIN_CARD_FOR_MATCHING_QUIZ = 10
-}
-
-object cardBackgroundConst {
-    val MAP_PATTERN = "map_pattern"
-    val CURVE_PATTERN = "curve_pattern"
-    val SQUARE_PATTERN = "square_pattern"
-    val FLORAL_PATTERN = "floral_pattern"
-    val DATES_PATTERN = "dates_pattern"
-    val PAINTED_PATTERN = "painted_pattern"
+    const val MIN_CARD_FOR_MATCHING_QUIZ = 5
 }
 
 object deckCategoryColorConst {

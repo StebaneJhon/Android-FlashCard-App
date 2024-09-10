@@ -148,6 +148,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -447,10 +450,8 @@
         <item name="android:statusBarColor">?colorSurfaceContainerLow</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
-        <!-- to cover the entire screen
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@android:color/white</item>
-        -->
     </style>
 
 

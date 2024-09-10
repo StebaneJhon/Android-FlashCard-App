@@ -1,17 +1,25 @@
 package com.example.flashcard.card
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.util.TypedValue
+import android.view.ActionMode
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
@@ -19,6 +27,7 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -55,13 +64,22 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
+import com.google.mlkit.vision.common.InputImage
+import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 
-class NewCardDialog(private var card: ImmutableCard?, private val deck: ImmutableDeck, private val action: String) :
+class NewCardDialog(
+    private var card: ImmutableCard?,
+    private val deck: ImmutableDeck,
+    private val action: String
+) :
     AppCompatDialogFragment() {
 
     private var cardContent: EditText? = null
@@ -107,26 +125,28 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     private var rvAddedCard: RecyclerView? = null
     private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
 
-    private var cardBackground: String? = null
     private var appContext: Context? = null
     private var cardType: String? = null
     private var definitionList = mutableSetOf<CardDefinition>()
 
+    private var selectedField: EditText? = null
+
     private val newCardViewModel: NewCardDialogViewModel by viewModels()
 
+    private var filePath: Uri? = null
+    private var actionMode: ActionMode? = null
+
     companion object {
-        private const val REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD = 12
-        private const val REQUEST_PERMISSION_CODE_CONTENT_MAC = 13
-        private const val REQUEST_PERMISSION_CODE_DEFINITION_1_MAC = 14
-        private const val REQUEST_PERMISSION_CODE_DEFINITION_2_MAC = 15
-        private const val REQUEST_PERMISSION_CODE_DEFINITION_3_MAC = 16
-        private const val REQUEST_PERMISSION_CODE_DEFINITION_4_MAC = 17
-        private const val REQUEST_PERMISSION_CODE_CONTENT_TFC = 18
         private const val RecordAudioRequestCode = 3455
         const val TAG = "NewCardDialog"
         const val SAVE_CARDS_BUNDLE_KEY = "1"
         const val EDIT_CARD_BUNDLE_KEY = "2"
         const val REQUEST_CODE_CARD = "0"
+
+        private const val REQUEST_CODE_PHOTO_GALLERY = 12345
+        private const val PERMITION_REQUEST_CODE_PHOTO_CAMERA = 123453244
+        private const val REQUEST_CODE_PHOTO_CAMERA = 453244
+        private const val REQUEST_CODE_PHOTO_MICRO = 453255
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,6 +172,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         val view = inflater.inflate(R.layout.add_card_layout_dialog, container, false)
 
         appContext = activity?.applicationContext
+
         cardContent = view?.findViewById(R.id.cardContentTV)
         cardValue = view?.findViewById(R.id.cardValueTV)
         tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
@@ -222,42 +243,31 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
                 R.id.save -> {
                     // Handle saving
                     if (card != null && action == Constant.UPDATE) {
-                        sendCardsOnEdit(REQUEST_CODE_CARD, EDIT_CARD_BUNDLE_KEY, newCardViewModel.addedCards.value)
+                        sendCardsOnEdit(
+                            REQUEST_CODE_CARD,
+                            EDIT_CARD_BUNDLE_KEY,
+                            newCardViewModel.addedCards.value
+                        )
                         dismiss()
                     } else {
-                        sendCardsOnSave(REQUEST_CODE_CARD, SAVE_CARDS_BUNDLE_KEY, newCardViewModel.addedCards.value)
+                        sendCardsOnSave(
+                            REQUEST_CODE_CARD,
+                            SAVE_CARDS_BUNDLE_KEY,
+                            newCardViewModel.addedCards.value
+                        )
                         dismiss()
                     }
                     true
                 }
+
+                R.id.bt_scan_image -> {
+                    true
+                }
+
                 else -> false
             }
         }
 
-        btCancel?.setOnClickListener { initCardAdditionPanel()  }
-
-        // Mics handling
-        cardContentLY?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD)
-        }
-        tilContentMultiAnswerCard?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_CONTENT_MAC)
-        }
-        tilDefinition1MultiAnswerCard?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_DEFINITION_1_MAC)
-        }
-        tilDefinition2MultiAnswerCard?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_DEFINITION_2_MAC)
-        }
-        tilDefinition3MultiAnswerCard?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_DEFINITION_3_MAC)
-        }
-        tilDefinition4MultiAnswerCard?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_DEFINITION_4_MAC)
-        }
-        tilContentTrueOrFalseCard?.setEndIconOnClickListener {
-            listen(REQUEST_PERMISSION_CODE_CONTENT_TFC)
-        }
         cardValueLY?.setEndIconOnClickListener {
             val contentText = cardContent?.text.toString()
             onTranslateText(contentText)
@@ -295,7 +305,239 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             }
         }
 
+
+        val callback = object : ActionMode.Callback {
+
+            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                mode?.menuInflater?.inflate(
+                    R.menu.menu_add_new_card_top_app_bar_contextual_action_bar,
+                    menu
+                )
+                return true
+            }
+
+            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+                return false
+            }
+
+            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+                return when (item?.itemId) {
+                    R.id.bt_scan_image -> {
+                        showImageSelectedDialog()
+
+                        true
+                    }
+
+                    R.id.bt_mic -> {
+                        listen(REQUEST_CODE_PHOTO_MICRO)
+                        true
+                    }
+
+                    R.id.save -> {
+                        if (card != null && action == Constant.UPDATE) {
+                            sendCardsOnEdit(
+                                REQUEST_CODE_CARD,
+                                EDIT_CARD_BUNDLE_KEY,
+                                newCardViewModel.addedCards.value
+                            )
+                            dismiss()
+                        } else {
+                            sendCardsOnSave(
+                                REQUEST_CODE_CARD,
+                                SAVE_CARDS_BUNDLE_KEY,
+                                newCardViewModel.addedCards.value
+                            )
+                            dismiss()
+                        }
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+
+            override fun onDestroyActionMode(mode: ActionMode?) {
+            }
+        }
+
+        btCancel?.setOnClickListener {
+            initCardAdditionPanel()
+        }
+
+        cardContent?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(v, hasFocus, callback, getString(R.string.til_card_content_hint))
+        }
+        cardValue?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(
+                v,
+                hasFocus,
+                callback,
+                getString(R.string.til_card_definition_hint)
+            )
+        }
+        tieContentTrueOrFalseCard?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(v, hasFocus, callback, getString(R.string.til_card_content_hint))
+        }
+        tieContentMultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(v, hasFocus, callback, getString(R.string.til_card_content_hint))
+        }
+        tieDefinition1MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(
+                v,
+                hasFocus,
+                callback,
+                getString(R.string.til_card_definition_hint)
+            )
+
+        }
+        tieDefinition2MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(
+                v,
+                hasFocus,
+                callback,
+                getString(R.string.til_card_definition_hint)
+            )
+        }
+        tieDefinition3MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(
+                v,
+                hasFocus,
+                callback,
+                getString(R.string.til_card_definition_hint)
+            )
+        }
+        tieDefinition4MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
+            onActiveTopAppBarMode(
+                v,
+                hasFocus,
+                callback,
+                getString(R.string.til_card_definition_hint)
+            )
+        }
+
         return view
+    }
+
+    private fun onActiveTopAppBarMode(
+        v: View?,
+        hasFocus: Boolean,
+        callback: ActionMode.Callback,
+        title: String
+    ) {
+        if (hasFocus) {
+            selectedField = v as EditText
+            actionMode = getView()?.startActionMode(callback)
+            actionMode?.title = title
+        }
+    }
+
+    private fun showImageSelectedDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.apply {
+            setTitle("Select Image")
+            setMessage("Please select an option")
+            setPositiveButton("Camera", object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    checkCameraPermission()
+                    dialog?.dismiss()
+                }
+            })
+
+            setNeutralButton("Cancel", object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    dialog?.dismiss()
+                }
+            })
+
+            setNegativeButton("Gallery", object : DialogInterface.OnClickListener {
+                override fun onClick(dialog: DialogInterface?, which: Int) {
+                    onSelectImageFromGallery()
+                    dialog?.dismiss()
+                }
+            })
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun checkCameraPermission() {
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.CAMERA
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    android.Manifest.permission.CAMERA
+                ),
+                PERMITION_REQUEST_CODE_PHOTO_CAMERA
+            )
+        } else {
+            openCamera()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == PERMITION_REQUEST_CODE_PHOTO_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            openCamera()
+        }
+    }
+
+    @SuppressLint("QueryPermissionsNeeded")
+    private fun openCamera() {
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        try {
+            startActivityForResult(intent, REQUEST_CODE_PHOTO_CAMERA)
+        } catch (e: IOException) {
+            Toast.makeText(requireContext(), "Something wrong", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun onSelectImageFromGallery() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Image"),
+            REQUEST_CODE_PHOTO_GALLERY
+        )
+    }
+
+    private fun getImageUri(context: Context, bitmap: Bitmap): Uri {
+        val baos = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos)
+        val path =
+            MediaStore.Images.Media.insertImage(appContext?.contentResolver, bitmap, "title", null)
+
+        return Uri.parse(path)
+    }
+
+    private fun detectTextWithMLKit(bitmap: Bitmap) {
+        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+        val image = InputImage.fromBitmap(bitmap, 0)
+
+        val result = recognizer.process(image)
+            .addOnSuccessListener { visionText ->
+                // Task completed successfully
+                if (visionText.text.isBlank()) {
+                    Toast.makeText(requireContext(), getString(R.string.error_message_no_text_detected), Toast.LENGTH_LONG).show()
+                } else {
+                    selectedField?.setText(visionText.text)
+                }
+                selectedField = null
+                actionMode = null
+            }
+            .addOnFailureListener { e ->
+                // Task failed with an exception
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+            }
     }
 
     private fun displayAddedCard(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
@@ -307,7 +549,7 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
                 { cardWithPosition ->
                     // TODO: ON CARD ROOT PRESSED
                     card = cardWithPosition.cardToEdit
-                    onUpdateCard(card!! , cardWithPosition.position)
+                    onUpdateCard(card!!, cardWithPosition.position)
                 },
                 { cardToRemove ->
                     newCardViewModel.removeCard(cardToRemove)
@@ -344,20 +586,34 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         if (newCardViewModel.addedCards.value.isEmpty()) {
             dismiss()
         } else {
-            MaterialAlertDialogBuilder(requireActivity(), R.style.ThemeOverlay_App_MaterialAlertDialog)
+            MaterialAlertDialogBuilder(
+                requireActivity(),
+                R.style.ThemeOverlay_App_MaterialAlertDialog
+            )
                 .setTitle(getString(R.string.title_unsaved_cards))
                 .setMessage(getString(R.string.message_unsaved_cards))
                 .setPositiveButton("Yes") { _, _ ->
-//                    listener?.getCard(newCardViewModel.addedCards.value, Constant.ADD, deck)
-                    sendCardsOnSave(REQUEST_CODE_CARD, SAVE_CARDS_BUNDLE_KEY, newCardViewModel.addedCards.value)
-                    Toast.makeText(appContext, getString(R.string.message_card_registered), Toast.LENGTH_LONG).show()
+                    sendCardsOnSave(
+                        REQUEST_CODE_CARD,
+                        SAVE_CARDS_BUNDLE_KEY,
+                        newCardViewModel.addedCards.value
+                    )
+                    Toast.makeText(
+                        appContext,
+                        getString(R.string.message_card_registered),
+                        Toast.LENGTH_LONG
+                    ).show()
                     dismiss()
                 }
-                .setNegativeButton("No") {_, _ ->
-                    Toast.makeText(appContext, getString(R.string.message_card_not_registered), Toast.LENGTH_LONG).show()
+                .setNegativeButton("No") { _, _ ->
+                    Toast.makeText(
+                        appContext,
+                        getString(R.string.message_card_not_registered),
+                        Toast.LENGTH_LONG
+                    ).show()
                     dismiss()
                 }
-                .setNeutralButton("Keep adding") {dialog, _ ->
+                .setNeutralButton("Keep adding") { dialog, _ ->
                     dialog.dismiss()
                 }
                 .show()
@@ -371,7 +627,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             setOnClickListener {
                 if (indexCard == null) {
                     onPositiveAction(Constant.UPDATE)
-                    sendCardsOnEdit(REQUEST_CODE_CARD, EDIT_CARD_BUNDLE_KEY, newCardViewModel.addedCards.value)
+                    sendCardsOnEdit(
+                        REQUEST_CODE_CARD,
+                        EDIT_CARD_BUNDLE_KEY,
+                        newCardViewModel.addedCards.value
+                    )
                     dismiss()
                 } else {
                     onPositiveAction(Constant.UPDATE, indexCard)
@@ -415,7 +675,8 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
                 when (card.cardDefinition?.size) {
                     1 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
-                        cpDefinition1IsTrue?.isChecked = isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
+                        cpDefinition1IsTrue?.isChecked =
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
                     }
 
                     2 -> {
@@ -507,9 +768,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
             cardType = FLASHCARD
         }
         cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
-        cardContentDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
+        cardContentDefinition?.hint =
+            getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
         cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
-        cardValueDefinition?.hint = getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
+        cardValueDefinition?.hint =
+            getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
 
     }
 
@@ -530,15 +793,24 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     }
 
     fun generateCardOnUpdate(): ImmutableCard? {
-        val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
+        val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+            ?: return null
 
-        val definitions = getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
+        val definitions =
+            getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+                ?: return null
         val updateCardDefinitions = mutableListOf<CardDefinition>()
         for (i in 0..card?.cardDefinition?.size?.minus(1)!!) {
             val definition = try {
                 definitions[i]
             } catch (e: java.lang.IndexOutOfBoundsException) {
-                createDefinition("", false, card!!.cardId, card!!.cardContent?.contentId!!, card?.deckId!!)
+                createDefinition(
+                    "",
+                    false,
+                    card!!.cardId,
+                    card!!.cardContent?.contentId!!,
+                    card?.deckId!!
+                )
             }
 
             val updatedDefinition = CardDefinition(
@@ -604,23 +876,24 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         )
     }
 
-    private fun getDefinitions(cardId: String, contentId: String, deckId: String) = when (cardType) {
-        FLASHCARD -> {
-            getDefinitionOnAddFC(cardId, contentId, deckId)
-        }
+    private fun getDefinitions(cardId: String, contentId: String, deckId: String) =
+        when (cardType) {
+            FLASHCARD -> {
+                getDefinitionOnAddFC(cardId, contentId, deckId)
+            }
 
-        ONE_OR_MULTI_ANSWER_CARD -> {
-            getDefinitionOnAddMAC(cardId, contentId, deckId)
-        }
+            ONE_OR_MULTI_ANSWER_CARD -> {
+                getDefinitionOnAddMAC(cardId, contentId, deckId)
+            }
 
-        TRUE_OR_FALSE_CARD -> {
-            getDefinitionOnAddTFC(cardId, contentId, deckId)
-        }
+            TRUE_OR_FALSE_CARD -> {
+                getDefinitionOnAddTFC(cardId, contentId, deckId)
+            }
 
-        else -> {
-            listOf<CardDefinition>()
+            else -> {
+                listOf<CardDefinition>()
+            }
         }
-    }
 
     private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
         return when (cardType) {
@@ -657,7 +930,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getContentOnAddMAC(cardId: String, contentId: String, deckId: String): CardContent? {
+    private fun getContentOnAddMAC(
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ): CardContent? {
         val cardContentText = tieContentMultiAnswerCard?.text.toString()
         return if (cardContentText.isNotEmpty()) {
             CardContent(
@@ -672,7 +949,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getContentOnAddTFC(cardId: String, contentId: String, deckId: String): CardContent? {
+    private fun getContentOnAddTFC(
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ): CardContent? {
         val cardContentText = tieContentTrueOrFalseCard?.text.toString()
         return if (cardContentText.isNotEmpty()) {
             CardContent(
@@ -687,7 +968,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
     }
 
-    private fun getDefinitionOnAddMAC(cardId: String, contentId: String, deckId: String): List<CardDefinition>? {
+    private fun getDefinitionOnAddMAC(
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ): List<CardDefinition>? {
         definitionList.clear()
         val definition1Text = tieDefinition1MultiAnswerCard?.text.toString()
         val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
@@ -715,21 +1000,57 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         }
 
         if (definition1Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition1Text, cpDefinition1IsTrue?.isChecked!!, cardId, contentId, deckId))
+            definitionList.add(
+                createDefinition(
+                    definition1Text,
+                    cpDefinition1IsTrue?.isChecked!!,
+                    cardId,
+                    contentId,
+                    deckId
+                )
+            )
         }
         if (definition2Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition2Text, cpDefinition2IsTrue?.isChecked!!, cardId, contentId, deckId))
+            definitionList.add(
+                createDefinition(
+                    definition2Text,
+                    cpDefinition2IsTrue?.isChecked!!,
+                    cardId,
+                    contentId,
+                    deckId
+                )
+            )
         }
         if (definition3Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition3Text, cpDefinition3IsTrue?.isChecked!!, cardId, contentId, deckId))
+            definitionList.add(
+                createDefinition(
+                    definition3Text,
+                    cpDefinition3IsTrue?.isChecked!!,
+                    cardId,
+                    contentId,
+                    deckId
+                )
+            )
         }
         if (definition4Text.isNotEmpty()) {
-            definitionList.add(createDefinition(definition4Text, cpDefinition4IsTrue?.isChecked!!, cardId, contentId, deckId))
+            definitionList.add(
+                createDefinition(
+                    definition4Text,
+                    cpDefinition4IsTrue?.isChecked!!,
+                    cardId,
+                    contentId,
+                    deckId
+                )
+            )
         }
         return definitionList.toList()
     }
 
-    private fun getDefinitionOnAddFC(cardId: String, contentId: String, deckId: String): List<CardDefinition>? {
+    private fun getDefinitionOnAddFC(
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ): List<CardDefinition>? {
         definitionList.clear()
         val definitionText = cardValue?.text.toString()
         if (definitionText.isNotEmpty()) {
@@ -741,7 +1062,11 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         return definitionList.toList()
     }
 
-    private fun getDefinitionOnAddTFC(cardId: String, contentId: String, deckId: String): List<CardDefinition> {
+    private fun getDefinitionOnAddTFC(
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ): List<CardDefinition> {
         definitionList.clear()
         val cpFalseState = cpFalse?.isChecked
         val cpTrueState = cpTrue?.isChecked
@@ -750,7 +1075,13 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
         return definitionList.toList()
     }
 
-    private fun createDefinition(text: String, isCorrect: Boolean, cardId: String, contentId: String, deckId: String) = CardDefinition(
+    private fun createDefinition(
+        text: String,
+        isCorrect: Boolean,
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ) = CardDefinition(
         null,
         cardId,
         deckId,
@@ -810,39 +1141,35 @@ class NewCardDialog(private var card: ImmutableCard?, private val deck: Immutabl
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_PERMISSION_CODE_CONTENT_FLASH_CARD -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                cardContent?.setText(result?.get(0))
+            REQUEST_CODE_PHOTO_GALLERY -> {
+                try {
+                    filePath = data?.data
+                    val bitmap = MediaStore.Images.Media.getBitmap(
+                        requireActivity().application.contentResolver,
+                        filePath
+                    )
+                    detectTextWithMLKit(bitmap)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
 
-            REQUEST_PERMISSION_CODE_CONTENT_MAC -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                tieContentMultiAnswerCard?.setText(result?.get(0))
+            REQUEST_CODE_PHOTO_CAMERA -> {
+                val extras = data?.extras
+                val bitmap = extras?.get("data") as Bitmap
+                detectTextWithMLKit(bitmap)
+                filePath = getImageUri(requireContext(), bitmap)
             }
 
-            REQUEST_PERMISSION_CODE_DEFINITION_1_MAC -> {
+            REQUEST_CODE_PHOTO_MICRO -> {
                 val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                tieDefinition1MultiAnswerCard?.setText(result?.get(0))
-            }
-
-            REQUEST_PERMISSION_CODE_DEFINITION_2_MAC -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                tieDefinition2MultiAnswerCard?.setText(result?.get(0))
-            }
-
-            REQUEST_PERMISSION_CODE_DEFINITION_3_MAC -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                tieDefinition3MultiAnswerCard?.setText(result?.get(0))
-            }
-
-            REQUEST_PERMISSION_CODE_DEFINITION_4_MAC -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                tieDefinition4MultiAnswerCard?.setText(result?.get(0))
-            }
-
-            REQUEST_PERMISSION_CODE_CONTENT_TFC -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                tieContentTrueOrFalseCard?.setText(result?.get(0))
+                if (result?.get(0).isNullOrBlank()) {
+                    Toast.makeText(requireContext(), getString(R.string.error_message_no_text_detected), Toast.LENGTH_LONG).show()
+                } else {
+                    selectedField?.setText(result?.get(0))
+                }
+                actionMode = null
+                selectedField = null
             }
 
         }

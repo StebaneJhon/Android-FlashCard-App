@@ -66,8 +66,6 @@ class MatchQuizGameActivity : AppCompatActivity() {
             if (!cardList.isNullOrEmpty() && deck != null) {
                 viewModel.initOriginalCardList(cardList)
                 startMatchQuizGame(cardList, deck)
-            } else {
-                // TODO: On Deck or CardList null
             }
         }
 
@@ -110,12 +108,12 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
     private fun onItemClicked(itemDetails: MatchingQuizGameSelectedItemInfo, items: List<MatchQuizGameItemModel>) {
         if (viewModel.isQuizComplete()) {
-            Snackbar.make(binding.lyMatchQuizGameRoot, "You already finished the quiz", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.lyMatchQuizGameRoot, getString(R.string.message_on_quiz_already_done), Snackbar.LENGTH_LONG).show()
             return
         }
 
         if (viewModel.isItemActive(itemDetails.item) && firstSelectedItemInfo != null) {
-            Snackbar.make(binding.lyMatchQuizGameRoot, "Select another item please", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(binding.lyMatchQuizGameRoot, getString(R.string.error_message_select_another_item), Snackbar.LENGTH_LONG).show()
             return
         }
 
@@ -127,10 +125,9 @@ class MatchQuizGameActivity : AppCompatActivity() {
             MatchQuizGameClickStatus.MATCHE -> {
                 disableItem(itemDetails)
                 disableItem(firstSelectedItemInfo!!)
-                Toast.makeText(this, "Match! Match! Match!", Toast.LENGTH_LONG).show()
                 binding.lpiMatchingQuizGameProgression.progress = viewModel.getProgression()
                 if (viewModel.isQuizComplete()) {
-                    Snackbar.make(binding.lyMatchQuizGameRoot, "Done Congratulations!", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.lyMatchQuizGameRoot, getString(R.string.message_on_quiz_done), Snackbar.LENGTH_LONG).show()
                     onQuizComplete(viewModel.cardLeft(), items)
                 }
                 firstSelectedItemInfo = null

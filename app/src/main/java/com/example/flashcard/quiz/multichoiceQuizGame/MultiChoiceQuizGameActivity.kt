@@ -284,7 +284,6 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
 
         var position = 0
         val textSum = text.size
-        //val textColor = view[0].textColors
         val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
 
         val params = Bundle()

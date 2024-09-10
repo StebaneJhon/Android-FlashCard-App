@@ -99,6 +99,7 @@
     <string name="cp_true_or_false_text">True or False</string>
     <string name="cp_multi_answer_card_text">Multi Answer Card</string>
     <string name="til_card_content_hint">Card content</string>
+    <string name="til_card_definition_hint">Card Definition</string>
     <string name="til_card_definition_1_hint">Card definition 1</string>
     <string name="til_card_definition_2_hint">Card definition 2</string>
     <string name="til_card_definition_3_hint">Card definition 3</string>
@@ -181,5 +182,10 @@
     <string name="error_message_dialog_upload_deck_with_cards_on_to_few_questions">Need at least 1 question</string>
     <string name="error_message_dialog_upload_deck_with_cards_on_missing_card_sum">Require card sum</string>
     <string name="error_message_dialog_upload_deck_with_cards_on_to_many_questions">Need at most 50 question</string>
+    <string name="bt_text_mic">Speech to text</string>
+    <string name="error_message_no_text_detected">No text detected</string>
+    <string name="message_on_quiz_already_done">You already finished the quiz</string>
+    <string name="message_on_quiz_done">Done Congratulations!</string>
+    <string name="error_message_select_another_item">Select another item please</string>
 
 </resources>
