@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/bt_filter_alphabetically"
+        android:title="@string/bt_text_filter_alphabetically" />
+    <item android:id="@+id/bt_filter_by_creation_date"
+        android:title="@string/bt_text_filter_by_creation_time" />
+    <item android:id="@+id/bt_filter_by_card_sum"
+        android:title="@string/bt_text_filter_by_card_sum" />
+</menu>

@@ -187,5 +187,8 @@
     <string name="message_on_quiz_already_done">You already finished the quiz</string>
     <string name="message_on_quiz_done">Done Congratulations!</string>
     <string name="error_message_select_another_item">Select another item please</string>
+    <string name="bt_text_filter_by_creation_time">By creation time</string>
+    <string name="bt_text_filter_alphabetically">Alphabetically</string>
+    <string name="bt_text_filter_by_card_sum">By card sum</string>
 
 </resources>

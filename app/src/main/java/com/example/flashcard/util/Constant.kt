@@ -84,6 +84,12 @@ object FlashCardMiniGameRef {
     const val CARD_ORIENTATION_FRONT_AND_BACK = "Orientation Front and Back"
 }
 
+object DeckRef {
+    const val DECK_SORT_ALPHABETICALLY = "Deck sort alphabetically"
+    const val DECK_SORT_BY_CARD_SUM = "Deck sort by card sum"
+    const val DECK_SORT_BY_CREATION_DATE = "Deck sort by creation date"
+}
+
 object CardLevel {
     const val L1 = "L1"
     const val L2 = "L2"

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
@@ -20,9 +21,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
+import androidx.core.graphics.component1
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -50,6 +54,9 @@ import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MATCHING_QUIZ
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MULTI_CHOICE_QUIZ
 import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
+import com.example.flashcard.util.DeckRef.DECK_SORT_ALPHABETICALLY
+import com.example.flashcard.util.DeckRef.DECK_SORT_BY_CARD_SUM
+import com.example.flashcard.util.DeckRef.DECK_SORT_BY_CREATION_DATE
 import com.example.flashcard.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MATCHING_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
@@ -79,6 +86,9 @@ class DeckFragment :
 
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
 
+    var deckSharedPref: SharedPreferences? = null
+    var deckSharedPrefEditor: SharedPreferences.Editor? = null
+
     companion object {
         const val TAG = "DeckFragment"
         const val REQUEST_CODE = "0"
@@ -98,6 +108,9 @@ class DeckFragment :
         super.onViewCreated(view, savedInstanceState)
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.deckTopAppBar)
+
+        deckSharedPref = activity?.getSharedPreferences("deckSharedpref", Context.MODE_PRIVATE)
+        deckSharedPrefEditor = deckSharedPref?.edit()
 
         binding.deckTopAppBar.setNavigationOnClickListener {
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
@@ -129,7 +142,8 @@ class DeckFragment :
         binding.bottomAppBarDeck.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.bt_sort_deck -> {
-                    Toast.makeText(requireContext(), "Sort not implemented yet", Toast.LENGTH_LONG).show()
+                    val item: View = binding.bottomAppBarDeck.findViewById(R.id.bt_sort_deck)
+                    showMenu(item, R.menu.menu_filter_deck)
                     true
                 }
                 R.id.bt_upload_deck_with_cards -> {
@@ -140,6 +154,54 @@ class DeckFragment :
             }
         }
 
+    }
+
+    private fun showMenu(v: View, @MenuRes menuRes: Int) {
+        val popup = PopupMenu(requireContext(), v)
+        popup.menuInflater.inflate(menuRes, popup.menu)
+
+        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
+            when (menuItem.itemId) {
+                R.id.bt_filter_alphabetically -> {
+                    setDeckSort(DECK_SORT_ALPHABETICALLY)
+                    activity?.recreate()
+                    true
+                }
+                R.id.bt_filter_by_card_sum -> {
+                    setDeckSort(DECK_SORT_BY_CARD_SUM)
+                    activity?.recreate()
+                    true
+                }
+                R.id.bt_filter_by_creation_date -> {
+                    setDeckSort(DECK_SORT_BY_CREATION_DATE)
+                    activity?.recreate()
+                    true
+                }
+                else -> {
+                    false
+                }
+            }
+        }
+        popup.show()
+    }
+
+    private fun sortDeckBy(filter: String, decks: List<ImmutableDeck>): List<ImmutableDeck> {
+        return when (filter) {
+            DECK_SORT_ALPHABETICALLY -> {
+                decks.sortedBy { d -> d.deckName?.lowercase() }
+            }
+            DECK_SORT_BY_CARD_SUM -> {
+                decks.sortedBy { d -> d.cardSum }
+            }
+            else -> {decks}
+        }
+    }
+
+    private fun setDeckSort(filter: String) {
+        deckSharedPrefEditor?.apply {
+            putString("sort", filter)
+            apply()
+        }
     }
 
     private fun showSettings() {
@@ -190,8 +252,9 @@ class DeckFragment :
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
+        val sortedListOfDeck = sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
         if (appContext != null) {
-            recyclerViewAdapter = DecksRecyclerViewAdapter(listOfDecks, appContext!!, {
+            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, {
                 onEditDeck(it)
             }, {deck ->
                 onDeleteDeck(deck)

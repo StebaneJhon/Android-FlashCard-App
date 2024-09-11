@@ -22,6 +22,8 @@ import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
+import com.example.flashcard.util.DeckRef.DECK_SORT_ALPHABETICALLY
+import com.example.flashcard.util.DeckRef.DECK_SORT_BY_CARD_SUM
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
