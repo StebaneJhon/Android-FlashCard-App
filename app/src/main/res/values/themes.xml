@@ -358,12 +358,26 @@
     </style>
 
     <!-- PopUpMenu theme -->
+
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
         <item name="fontFamily">@font/open_sans</item>
         <item name="android:fontFamily">@font/open_sans</item>
         <item name="android:textColor">?colorOnSurface</item>
         <item name="android:textSize">@dimen/text_base</item>
-        <item name="android:radius">@dimen/card_radius</item>
+    </style>
+
+    <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorOnSurface</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+    </style>
+
+    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
+        <item name="cornerFamily">cut</item>
+        <item name="cornerSize">4dp</item>
+        <item name="backgroundTint">@color/blue500</item>
+        <item name="colorSurfaceContainer">@color/yellow500</item>
     </style>
 
     <!-- Toolbar theme -->

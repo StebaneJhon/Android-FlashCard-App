@@ -49,7 +49,7 @@ abstract class FlashCardDatabase : RoomDatabase() {
                     context.applicationContext,
                     FlashCardDatabase::class.java,
                     "flash_card_database"
-                ).fallbackToDestructiveMigration().addMigrations(MIGRATION_9_10).build().also {
+                ).fallbackToDestructiveMigration().addMigrations(migration3To4, MIGRATION_9_10).build().also {
                     INSTANCE = it
                 }
             }

@@ -18,17 +18,20 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
+import com.example.flashcard.util.themeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
 
 
 class CardsRecyclerViewAdapter(
     private val context: Context,
+    private val appTheme: String,
     private val cardList: List<ImmutableCard?>,
     private val deck: ImmutableDeck,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
@@ -49,6 +52,7 @@ class CardsRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return holder.bind(
             context,
+            appTheme,
             cardList[position],
             deck,
             boxLevels,
@@ -77,6 +81,7 @@ class CardsRecyclerViewAdapter(
 
         fun bind(
             context: Context,
+            appTheme: String,
             card: ImmutableCard?,
             deck: ImmutableDeck,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
@@ -85,20 +90,16 @@ class CardsRecyclerViewAdapter(
             onReadContent: (TextClickedModel) -> Unit,
             onReadDefinition: (TextClickedModel) -> Unit,
         ) {
-            val actualBoxLevel = SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
-            val statusColor = SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor = SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
-            val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
-            val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor!!)
-            cvContainerCard.backgroundTintList = cardBackgroundStateList
-            cardStatus.apply {
-                text = card.cardStatus
-                backgroundTintList = colorStateList
-            }
-            onCardText.text = card.cardContent?.content
 
-            val correctDefinition = getCorrectDefinition(card.cardDefinition)
+            if (appTheme == DARK_THEME) {
+                onBrightTheme(boxLevels, card, context)
+            } else {
+                onDarkTheme(boxLevels, card, context)
+            }
+
+            val correctDefinition = getCorrectDefinition(card?.cardDefinition)
             val definitionTexts = cardDefinitionsToStrings(correctDefinition)
+
 
             when (definitionTexts.size) {
                 0 -> {
@@ -172,6 +173,56 @@ class CardsRecyclerViewAdapter(
             }
 
 
+        }
+
+        private fun onDarkTheme(
+            boxLevels: List<ImmutableSpaceRepetitionBox>,
+            card: ImmutableCard?,
+            context: Context
+        ) {
+            val actualBoxLevel =
+                SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
+            val statusColor =
+                SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor =
+                SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
+
+            val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
+            val cardBackgroundStateList =
+                ContextCompat.getColorStateList(context, cardBackgroundStatusColor!!)
+            cvContainerCard.backgroundTintList = cardBackgroundStateList
+            cardStatus.apply {
+                text = card.cardStatus
+                backgroundTintList = colorStateList
+            }
+            onCardText.text = card.cardContent?.content
+        }
+
+        private fun onBrightTheme(
+            boxLevels: List<ImmutableSpaceRepetitionBox>,
+            card: ImmutableCard?,
+            context: Context
+        ) {
+            val actualBoxLevel =
+                SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
+            val statusColor =
+                SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor =
+                SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
+
+            val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
+            val cardBackgroundStateList =
+                ContextCompat.getColorStateList(context, cardBackgroundStatusColor!!)
+            cvContainerCard.backgroundTintList = colorStateList
+            cardStatus.apply {
+                text = card.cardStatus
+                backgroundTintList = cardBackgroundStateList
+            }
+            onCardText.apply {
+                text = card.cardContent?.content
+                setTextColor(context.getColor(R.color.white))
+            }
+            cardStatus.setTextColor(context.getColor(R.color.black))
         }
 
         private fun cardDefinitionsToStrings(cardDefinitions: List<CardDefinition>?): List<String> {

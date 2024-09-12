@@ -32,11 +32,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_md"
                 android:layout_marginBottom="@dimen/space_xs"
-                android:textColorHint="?colorOnSurface"
+                android:textColorHint="@color/neutral400"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius">
+                app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/deckNameET"
@@ -46,7 +48,8 @@
                     android:hint="@string/deck_name_hint"
                     android:inputType="text"
                     android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
+                    android:textColorHint="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -54,11 +57,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_xs"
-                android:textColorHint="?colorOnSurface"
+                android:textColorHint="@color/neutral400"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius">
+                app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/deckDescriptionET"
@@ -69,7 +74,8 @@
                     android:inputType="textMultiLine"
                     android:maxLines="3"
                     android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
+                    android:textColorHint="@color/neutral400"
+                    android:fontFamily="@font/open_sans"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -78,11 +84,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_xs"
-                android:textColorHint="?colorOnSurface"
+                android:textColorHint="@color/neutral400"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius">
+                app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                app:endIconTint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans">
 
                 <AutoCompleteTextView
                     android:id="@+id/deckFirstLanguageET"
@@ -92,7 +101,14 @@
                     android:hint="@string/deck_first_language_hint"
                     android:inputType="text"
                     android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
+                    android:textColorHint="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+                    android:background="@null"
+                    tools:ignore="LabelFor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -101,11 +117,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_xs"
-                android:textColorHint="?colorOnSurface"
+                android:textColorHint="@color/neutral400"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius">
+                app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                app:endIconTint="?colorOnSurface"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans">
 
                 <AutoCompleteTextView
                     android:id="@+id/deckSecondLanguageET"
@@ -116,7 +135,14 @@
                     android:hint="@string/deck_second_language_hint"
                     android:inputType="text"
                     android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
+                    android:textColorHint="?colorOnSurface"
+                    android:fontFamily="@font/open_sans"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+                    android:background="@null"
+                    tools:ignore="LabelFor"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

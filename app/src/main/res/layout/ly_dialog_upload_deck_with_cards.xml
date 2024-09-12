@@ -45,20 +45,24 @@
             android:hint="@string/deck_name_hint"
             android:layout_marginTop="@dimen/space_md"
             android:layout_marginBottom="@dimen/space_xs"
-            android:textColorHint="?colorOnSurface"
             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView">
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans"
+            android:textColorHint="@color/neutral400">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tv_deck_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -69,21 +73,32 @@
             android:layout_height="wrap_content"
             android:hint="@string/category_field_hint"
             android:layout_marginBottom="@dimen/space_xs"
-            android:textColorHint="?colorOnSurface"
+            android:textColorHint="@color/neutral400"
             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tf_deck_name">
+            app:layout_constraintTop_toBottomOf="@+id/tf_deck_name"
+            app:endIconTint="?colorOnSurface"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans">
 
             <AutoCompleteTextView
                 android:id="@+id/tv_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
-                android:text="Any" />
+                android:text="Any"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+                android:background="@null"
+                tools:ignore="LabelFor"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -97,17 +112,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tf_category"
             android:layout_marginBottom="@dimen/space_xs"
-            android:textColorHint="?colorOnSurface"
+            android:textColorHint="@color/neutral400"
             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-            app:boxCornerRadiusTopStart="@dimen/ed_radius">
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:endIconTint="?colorOnSurface"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans">
 
             <AutoCompleteTextView
                 android:id="@+id/tv_difficulty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none" />
+                android:inputType="none"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+                android:background="@null"
+                tools:ignore="LabelFor"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -118,20 +144,32 @@
             android:hint="@string/question_type_text_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_marginBottom="@dimen/space_xs"
-            android:textColorHint="?colorOnSurface"
+            android:textColorHint="@color/neutral400"
             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tf_difficulty">
+            app:layout_constraintTop_toBottomOf="@+id/tf_difficulty"
+            app:endIconTint="?colorOnSurface"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans">
+
 
             <AutoCompleteTextView
                 android:id="@+id/tv_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none" />
+                android:inputType="none"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+                android:background="@null"
+                tools:ignore="LabelFor"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -141,21 +179,25 @@
             android:layout_height="wrap_content"
             android:hint="@string/question_number_text_hint"
             android:layout_marginBottom="@dimen/space_xs"
-            android:textColorHint="?colorOnSurface"
+            android:textColorHint="@color/neutral400"
             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tf_type">
+            app:layout_constraintTop_toBottomOf="@+id/tf_type"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tv_question_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
-                android:text="10"/>
+                android:text="10"
+                android:textColor="?colorOnSurface"
+                android:fontFamily="@font/open_sans"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -1,5 +1,6 @@
 package com.example.flashcard.util
 
+import androidx.vectordrawable.graphics.drawable.ArgbEvaluator
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
@@ -63,23 +64,23 @@ class SpaceRepetitionAlgorithmHelper{
     }
 
     private val colors = mapOf(
-        RED to R.color.red700,
-        ORANGE to R.color.orange,
-        BROWNE to R.color.brown500,
-        YELLOW700 to R.color.yellow700,
-        YELLOW500 to R.color.yellow500,
-        GREEN500 to R.color.green500,
-        GREEN700 to R.color.green700
+        RED to R.color.red800,
+        ORANGE to R.color.orange800,
+        BROWNE to R.color.amber800,
+        YELLOW700 to R.color.yellow800,
+        YELLOW500 to R.color.lime800,
+        GREEN500 to R.color.green800,
+        GREEN700 to R.color.emerald800
     )
 
     private val carBackgroundColors = mapOf(
         RED to R.color.red50,
         ORANGE to R.color.orange50,
-        BROWNE to R.color.brown50,
+        BROWNE to R.color.amber50,
         YELLOW700 to R.color.yellow50,
-        YELLOW500 to R.color.yellow100,
+        YELLOW500 to R.color.lime50,
         GREEN500 to R.color.green50,
-        GREEN700 to R.color.green100
+        GREEN700 to R.color.emerald50
     )
 
 

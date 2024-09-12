@@ -9,12 +9,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
@@ -54,8 +56,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
     private var deckNameET: EditText? = null
     private var deckDescriptionET: EditText? = null
-    private var deckFirstLangET: MaterialAutoCompleteTextView? = null
-    private var deckSecondLangET: MaterialAutoCompleteTextView? = null
+    private var deckFirstLangET: AutoCompleteTextView? = null
+    private var deckSecondLangET: AutoCompleteTextView? = null
     private var deckNameLY: TextInputLayout? = null
     private var deckFirstLanguageLY: TextInputLayout? = null
     private var deckSecondLanguageLY: TextInputLayout? = null
@@ -102,8 +104,27 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
         tvTitle = view?.findViewById(R.id.tv_title)
 
-        deckFirstLangET?.setSimpleItems(supportedLanguages)
-        deckSecondLangET?.setSimpleItems(supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        deckFirstLangET?.apply {
+            setAdapter(arrayAdapterSupportedLanguages)
+            setDropDownBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.filter_spinner_dropdown_background,
+                    requireActivity().theme
+                )
+            )
+        }
+        deckSecondLangET?.apply {
+            setAdapter(arrayAdapterSupportedLanguages)
+            setDropDownBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.filter_spinner_dropdown_background,
+                    requireActivity().theme
+                )
+            )
+        }
 
         // Show Color Picker
         lifecycleScope.launch {

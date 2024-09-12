@@ -325,12 +325,17 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
     }
 
     private fun displayCards(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
+
+        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
+
         binding.cardsActivityProgressBar.isVisible = false
         binding.onNoDeckTextError.isVisible = false
         binding.cardRecyclerView.isVisible = true
         recyclerViewAdapter = appContext?.let { it ->
             CardsRecyclerViewAdapter(
                 it,
+                appTheme,
                 cardList,
                 deck,
                 cardViewModel.getBoxLevels()!!,

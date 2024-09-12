@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="?colorSurfaceContainerLowest"/>
+    <solid android:color="?colorSurfaceContainerLow"/>
     <corners
         android:radius="@dimen/popUpMenu_radius"/>
+    <padding
+        android:bottom="8dp"
+        android:top="8dp"/>
 </shape>
