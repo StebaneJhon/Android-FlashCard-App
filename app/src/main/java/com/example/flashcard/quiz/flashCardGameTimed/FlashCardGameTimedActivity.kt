@@ -84,7 +84,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         editor = sharedPref?.edit()
         miniGameSettingsRef = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         miniGamePrefEditor = miniGameSettingsRef?.edit()
-        val appTheme = sharedPref?.getString("themName", "DARK THEM")
+        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
             setTheme(themRef)

@@ -75,7 +75,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
-        val appTheme = sharedPref?.getString("themName", "DARK THEM")
+        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) { setTheme(themRef) }
         binding = ActivityWritingQuizGameBinding.inflate(layoutInflater)

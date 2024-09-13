@@ -433,29 +433,27 @@ class NewCardDialog(
     }
 
     private fun showImageSelectedDialog() {
-        val builder = AlertDialog.Builder(requireContext())
+        val builder = MaterialAlertDialogBuilder(
+                requireActivity(),
+                R.style.ThemeOverlay_App_MaterialAlertDialog
+        )
         builder.apply {
             setTitle("Select Image")
             setMessage("Please select an option")
-            setPositiveButton("Camera", object : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    checkCameraPermission()
-                    dialog?.dismiss()
-                }
-            })
+            setPositiveButton("Camera"
+            ) { dialog, _ ->
+                checkCameraPermission()
+                dialog?.dismiss()
+            }
 
-            setNeutralButton("Cancel", object : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    dialog?.dismiss()
-                }
-            })
+            setNeutralButton("Cancel"
+            ) { dialog, _ -> dialog?.dismiss() }
 
-            setNegativeButton("Gallery", object : DialogInterface.OnClickListener {
-                override fun onClick(dialog: DialogInterface?, which: Int) {
-                    onSelectImageFromGallery()
-                    dialog?.dismiss()
-                }
-            })
+            setNegativeButton("Gallery"
+            ) { dialog, _ ->
+                onSelectImageFromGallery()
+                dialog?.dismiss()
+            }
         }
 
         val dialog = builder.create()
@@ -548,7 +546,6 @@ class NewCardDialog(
                 cardList,
                 deck,
                 { cardWithPosition ->
-                    // TODO: ON CARD ROOT PRESSED
                     card = cardWithPosition.cardToEdit
                     onUpdateCard(card!!, cardWithPosition.position)
                 },
@@ -659,7 +656,7 @@ class NewCardDialog(
                 onAddTrueOrFalseCard(true)
                 tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
                 cpFalse?.isChecked = isCorrect(card.cardDefinition?.get(0)?.isCorrectDefinition!!)
-                cpTrue?.isChecked = isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
+                cpTrue?.isChecked = isCorrect(card.cardDefinition[1].isCorrectDefinition)
                 cpAddMultiAnswerCard?.apply {
                     isCheckable = false
                     isChecked = false
@@ -677,43 +674,43 @@ class NewCardDialog(
                     1 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
                     }
 
                     2 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
                         tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
                         cpDefinition2IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
                     }
 
                     3 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
                         tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
                         cpDefinition2IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
                         tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
                         cpDefinition3IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[2].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[2].isCorrectDefinition)
                     }
 
                     4 -> {
                         tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
                         cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
                         tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
                         cpDefinition2IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[1].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
                         tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
                         cpDefinition3IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[2].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[2].isCorrectDefinition)
                         tieDefinition4MultiAnswerCard?.setText(card.cardDefinition[3].definition)
                         cpDefinition4IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[3].isCorrectDefinition!!)
+                            isCorrect(card.cardDefinition[3].isCorrectDefinition)
                     }
                 }
                 cpAddFlashCard?.apply {
@@ -824,7 +821,7 @@ class NewCardDialog(
             )
             updateCardDefinitions.add(updatedDefinition)
         }
-        if (definitions?.size!! > (card!!.cardDefinition?.size ?: 0)) {
+        if (definitions.size > card!!.cardDefinition?.size!!) {
             for (j in (card!!.cardDefinition?.size ?: 0)..definitions.size.minus(1)) {
                 updateCardDefinitions.add(definitions[j])
             }

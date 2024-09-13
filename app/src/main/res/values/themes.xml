@@ -372,7 +372,7 @@
         <item name="buttonBarPositiveButtonStyle">@style/Widget.App.Button</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.App.Button</item>
         <item name="titleTextColor">?colorPrimary</item>
-        <item name="android:textColor">?colorOnSurface</item>
+        <item name="android:textColor">?colorPrimary</item>
         <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
         <item name="backgroundColor">?colorSurfaceContainerLow</item>
         <item name="android:background">?colorSurfaceContainerLow</item>

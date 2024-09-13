@@ -47,7 +47,7 @@ class MainActivity :
 
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
-        val appTheme = sharedPref?.getString("themName", "DARK THEM")
+        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) { setTheme(themRef) }
 

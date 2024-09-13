@@ -407,7 +407,8 @@
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
                             app:endIconDrawable="@drawable/icon_translate"
-                            app:endIconMode="custom">
+                            app:endIconMode="custom"
+                            app:endIconTint="?colorOnSurface">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/cardValueTV"
