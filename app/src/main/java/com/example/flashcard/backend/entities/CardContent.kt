@@ -12,5 +12,5 @@ data class CardContent(
     @PrimaryKey(autoGenerate = false) val contentId: String,
     @ColumnInfo(name = "cardId") var cardId: String,
     @ColumnInfo(name = "deckId") var deckId: String?,
-    @ColumnInfo(name = "content") val content: String?,
+    @ColumnInfo(name = "content") val content: String,
 ): Parcelable

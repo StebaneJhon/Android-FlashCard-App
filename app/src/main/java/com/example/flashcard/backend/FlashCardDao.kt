@@ -70,11 +70,11 @@ interface FlashCardDao {
     @Query("SELECT * FROM cardDefinition WHERE cardId = :cardId")
     suspend fun getCardWithDefinition(cardId: String): CardWithDefinitions
 
-    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR card_value LIKE :searchQuery)")
-    fun searchCard(searchQuery: String, deckId: String): Flow<List<Card>>
+//    @Query("SELECT * FROM card WHERE deckId = :deckId ")
+//    fun searchCard(searchQuery: String, deckId: String): Flow<List<Card>>
 
-    @Query("SELECT * FROM card WHERE deckId = :deckId AND (card_content LIKE :searchQuery OR card_value LIKE :searchQuery)")
-    fun searchCardNoFlow(searchQuery: String, deckId: String): List<Card>
+//    @Query("SELECT * FROM card WHERE deckId = :deckId")
+//    fun searchCardNoFlow(searchQuery: String, deckId: String): List<Card>
 
     @Query("SELECT * FROM card WHERE deckId = :deckId")
     fun getCard(deckId: Int): Card

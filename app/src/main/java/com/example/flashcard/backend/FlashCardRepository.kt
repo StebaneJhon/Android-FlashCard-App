@@ -29,9 +29,11 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         val cards = flashCardDao.getAllCards().map { cardList ->
             cardList.map { card ->
                 card.cardId?.let { cardId ->
-                    val cardContent = flashCardDao.getCardAndContent(cardId).cardContent
-                    val cardDefinitions = flashCardDao.getCardWithDefinition(cardId).definition
-                    card.toExternal(cardContent, cardDefinitions)
+                    cardId?.let { id ->
+                        val cardContent = flashCardDao.getCardAndContent(id).cardContent
+                        val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
+                        card.toExternal(cardContent, cardDefinitions)
+                    }
                 }
             }
         }
@@ -69,9 +71,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                 val deck = localDeckWithCards.deck.toExternal()
                 val cardList = localDeckWithCards.cards.map { card ->
                     card.cardId?.let { cardId ->
-                        val cardContent = flashCardDao.getCardAndContent(cardId).cardContent
-                        val cardDefinitions = flashCardDao.getCardWithDefinition(cardId).definition
-                        card.toExternal(cardContent, cardDefinitions)
+                        cardId?.let { id ->
+                            val cardContent = flashCardDao.getCardAndContent(id).cardContent
+                            val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
+                            card.toExternal(cardContent, cardDefinitions)
+                        }
+
                     }
                 }
                 localDeckWithCards.toExternal(deck, cardList)
@@ -129,24 +134,26 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         }
     }
 
-    @WorkerThread
-    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
-        return flashCardDao.searchCard(searchQuery, deckId).map { cardList ->
-            cardList.map { card ->
-                val cardContent = flashCardDao.getCardAndContent(card.cardId!!).cardContent
-                val cardDefinitions = flashCardDao.getCardWithDefinition(card.cardId).definition
-                card.toExternal(cardContent, cardDefinitions)
-            }
-        }
-    }
+//    @WorkerThread
+//    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
+//        return flashCardDao.searchCard(searchQuery, deckId).map { cardList ->
+//            cardList.map { card ->
+//                val cardContent = flashCardDao.getCardAndContent(card.cardId!!).cardContent
+//                val cardDefinitions = flashCardDao.getCardWithDefinition(card.cardId).definition
+//                card.toExternal(cardContent, cardDefinitions)
+//            }
+//        }
+//    }
 
     @WorkerThread
     suspend fun getCard(deckId: Int): ImmutableCard? {
         val card = flashCardDao.getCard(deckId)
         return card.cardId?.let { cardId ->
-            val cardContent = flashCardDao.getCardAndContent(cardId).cardContent
-            val cardDefinitions = flashCardDao.getCardWithDefinition(cardId).definition
-            card.toExternal(cardContent, cardDefinitions)
+            cardId?.let { id ->
+                val cardContent = flashCardDao.getCardAndContent(cardId).cardContent
+                val cardDefinitions = flashCardDao.getCardWithDefinition(cardId).definition
+                card.toExternal(cardContent, cardDefinitions)
+            }
         }
     }
 
@@ -155,9 +162,11 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         val cards = flashCardDao.getCards(deckId)
         return cards.map { card ->
             card.cardId?.let { cardId ->
-                val cardContent = flashCardDao.getCardAndContent(cardId).cardContent
-                val cardDefinitions = flashCardDao.getCardWithDefinition(cardId).definition
-                card.toExternal(cardContent, cardDefinitions)
+                cardId?.let { id ->
+                    val cardContent = flashCardDao.getCardAndContent(id).cardContent
+                    val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
+                    card.toExternal(cardContent, cardDefinitions)
+                }
             }
 
         }

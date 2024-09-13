@@ -44,8 +44,6 @@ fun List<Deck>.toExternal() = map(Deck::toExternal)
 // Cards Ex
 fun ImmutableCard.toLocal() = Card(
     cardId = cardId,
-    cardContent = null,
-    cardDefinition = null,
     deckId = deckId,
     isFavorite = isCorrectRevers(isFavorite),
     revisionTime = revisionTime,

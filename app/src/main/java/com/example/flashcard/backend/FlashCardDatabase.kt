@@ -24,7 +24,7 @@ import com.example.flashcard.backend.entities.WeeklyReview
         SpaceRepetitionBox::class,
         CardContent::class,
         CardDefinition::class,],
-    version = 10,
+    version = 11,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3),
@@ -49,7 +49,7 @@ abstract class FlashCardDatabase : RoomDatabase() {
                     context.applicationContext,
                     FlashCardDatabase::class.java,
                     "flash_card_database"
-                ).fallbackToDestructiveMigration().addMigrations(migration3To4, MIGRATION_9_10).build().also {
+                ).fallbackToDestructiveMigration().addMigrations(migration3To4, MIGRATION_9_10, MIGRATION_10_11).build().also {
                     INSTANCE = it
                 }
             }
@@ -148,6 +148,66 @@ abstract class FlashCardDatabase : RoomDatabase() {
                 database.execSQL("""
                 INSERT INTO new_cardDefinition (definitionId, definition, cardId, contentId, isCorrectDefinition)
                 SELECT definitionId, definition, definitionId, definitionId, isCorrectDefinition FROM cardDefinition
+                """.trimIndent())
+                database.execSQL("DROP TABLE cardDefinition")
+                database.execSQL("ALTER TABLE new_cardDefinition RENAME TO cardDefinition")
+
+            }
+
+        }
+
+        val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS new_Card (
+                    cardId TEXT PRIMARY KEY NOT NULL,
+                    deckId TEXT NOT NULL,
+                    is_favorite INTEGER,
+                    revision_time INTEGER,
+                    missed_time INTEGER,
+                    creation_date TEXT,
+                    last_revision_date TEXT,
+                    card_status TEXT,
+                    next_miss_memorisation_date TEXT,
+                    next_revision_date TEXT,
+                    card_type TEXT
+                )
+                """.trimIndent())
+                database.execSQL("""
+                INSERT INTO new_Card (cardId, deckId, is_favorite, revision_time, missed_time, creation_date, last_revision_date, card_status, next_miss_memorisation_date, next_revision_date, card_type)
+                SELECT cardId, deckId, is_favorite, revision_time, missed_time, creation_date, last_revision_date, card_status, next_miss_memorisation_date, next_revision_date, card_type FROM Card
+                """.trimIndent())
+                database.execSQL("DROP TABLE Card")
+                database.execSQL("ALTER TABLE new_Card RENAME TO Card")
+
+                database.execSQL("""
+                CREATE TABLE IF NOT EXISTS new_cardContent (
+                    contentId VARCHAR(255) PRIMARY KEY NOT NULL DEFAULT '0:0', 
+                    cardId VARCHAR(255) NOT NULL DEFAULT '0:0', 
+                    deckId VARCHAR(255), 
+                    content VARCHAR(1000) NOT NULL DEFAULT '0:0'
+                )
+                """.trimIndent())
+                database.execSQL("""
+                INSERT INTO new_cardContent (contentId, cardId, deckId, content)
+                SELECT contentId, cardId, deckId, content FROM cardContent
+                """.trimIndent())
+                database.execSQL("DROP TABLE cardContent")
+                database.execSQL("ALTER TABLE new_cardContent RENAME TO cardContent")
+
+                database.execSQL("""
+                CREATE TABLE IF NOT EXISTS new_cardDefinition (
+                    definitionId INTEGER PRIMARY KEY, 
+                    cardId TEXT NOT NULL, 
+                    deckId TEXT, 
+                    contentId TEXT NOT NULL, 
+                    definition TEXT NOT NULL, 
+                    isCorrectDefinition INTEGER NOT NULL
+                )
+                """.trimIndent())
+                database.execSQL("""
+                INSERT INTO new_cardDefinition (definitionId, cardId, deckId, contentId, definition, isCorrectDefinition)
+                SELECT definitionId, cardId, deckId, contentId, definition, isCorrectDefinition FROM cardDefinition
                 """.trimIndent())
                 database.execSQL("DROP TABLE cardDefinition")
                 database.execSQL("ALTER TABLE new_cardDefinition RENAME TO cardDefinition")

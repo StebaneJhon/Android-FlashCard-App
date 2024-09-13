@@ -13,6 +13,6 @@ data class CardDefinition(
     @ColumnInfo(name = "cardId") var cardId: String,
     @ColumnInfo(name = "deckId") var deckId: String?,
     @ColumnInfo(name = "contentId") val contentId: String,
-    @ColumnInfo(name = "definition") val definition: String?,
-    @ColumnInfo(name = "isCorrectDefinition") val isCorrectDefinition: Int?,
+    @ColumnInfo(name = "definition") val definition: String,
+    @ColumnInfo(name = "isCorrectDefinition") val isCorrectDefinition: Int,
 ): Parcelable

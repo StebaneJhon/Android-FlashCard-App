@@ -10,8 +10,6 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class Card (
     @PrimaryKey(autoGenerate = false) val cardId: String,
-    @ColumnInfo(name = "card_content") val cardContent: String?,
-    @ColumnInfo(name = "card_value") val cardDefinition: String?,
     @ColumnInfo(name = "deckId") val deckId: String,
     @ColumnInfo(name = "is_favorite") val isFavorite: Int?,
     @ColumnInfo(name = "revision_time") val revisionTime: Int?,
