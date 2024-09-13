@@ -36,6 +36,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
+import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
@@ -144,7 +145,7 @@ class NewCardDialog(
         const val REQUEST_CODE_CARD = "0"
 
         private const val REQUEST_CODE_PHOTO_GALLERY = 12345
-        private const val PERMITION_REQUEST_CODE_PHOTO_CAMERA = 123453244
+        private const val PERMISSION_REQUEST_CODE_PHOTO_CAMERA = 123453244
         private const val REQUEST_CODE_PHOTO_CAMERA = 453244
         private const val REQUEST_CODE_PHOTO_MICRO = 453255
     }
@@ -472,7 +473,7 @@ class NewCardDialog(
                 arrayOf(
                     android.Manifest.permission.CAMERA
                 ),
-                PERMITION_REQUEST_CODE_PHOTO_CAMERA
+                PERMISSION_REQUEST_CODE_PHOTO_CAMERA
             )
         } else {
             openCamera()
@@ -485,7 +486,7 @@ class NewCardDialog(
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMITION_REQUEST_CODE_PHOTO_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == PERMISSION_REQUEST_CODE_PHOTO_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             openCamera()
         }
     }

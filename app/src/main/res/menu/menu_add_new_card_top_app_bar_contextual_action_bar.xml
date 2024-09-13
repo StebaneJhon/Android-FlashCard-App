@@ -6,12 +6,14 @@
         android:id="@+id/bt_scan_image"
         android:title="Detect text with image"
         android:icon="@drawable/icon_document_scanner"
+        android:iconTint="?colorOnSurface"
         android:contentDescription="Detect text with image"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/bt_mic"
         android:icon="@drawable/icon_mic"
+        android:iconTint="?colorOnSurface"
         android:title="@string/bt_text_mic"
         android:contentDescription="@string/bt_text_mic"
         app:showAsAction="ifRoom" />
@@ -19,6 +21,7 @@
     <item
         android:id="@+id/save"
         android:title="@string/bt_save"
+        android:iconTint="?colorOnSurface"
         android:contentDescription="@string/content_description_save"
         app:showAsAction="ifRoom" />
 

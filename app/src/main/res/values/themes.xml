@@ -26,6 +26,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -57,6 +60,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
@@ -88,6 +94,10 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="actionModeStyle">@style/MyActionBarTheme</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -118,6 +128,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -181,6 +194,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -211,6 +227,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -240,6 +259,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -269,6 +291,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -298,6 +323,9 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -328,9 +356,16 @@
         <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="chipCornerRadius">@dimen/cp_radius</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
+    <!--Action Bar theme-->
+    <style name="MyActionBarTheme" parent="Widget.AppCompat.ActionMode">
+        <item name="titleTextColor">@color/blue500</item>
+    </style>
 
     <!--Dialog theme-->
     <style name="ThemeOverlay.App.MaterialAlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
@@ -358,7 +393,6 @@
     </style>
 
     <!-- PopUpMenu theme -->
-
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
         <item name="fontFamily">@font/open_sans</item>
         <item name="android:fontFamily">@font/open_sans</item>
@@ -371,13 +405,6 @@
         <item name="android:fontFamily">@font/open_sans</item>
         <item name="android:textColor">?colorOnSurface</item>
         <item name="android:textSize">@dimen/text_sm</item>
-    </style>
-
-    <style name="ShapeAppearance.App.SmallComponent" parent="ShapeAppearance.Material3.SmallComponent">
-        <item name="cornerFamily">cut</item>
-        <item name="cornerSize">4dp</item>
-        <item name="backgroundTint">@color/blue500</item>
-        <item name="colorSurfaceContainer">@color/yellow500</item>
     </style>
 
     <!-- Toolbar theme -->
