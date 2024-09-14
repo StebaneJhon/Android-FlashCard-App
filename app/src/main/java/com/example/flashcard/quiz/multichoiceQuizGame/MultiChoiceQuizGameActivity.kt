@@ -224,6 +224,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
                     delay(WAITING_TIME_ON_CORRECT_ANSWER_BEFORE_SWIPE)
                     if (viewModel.swipe()) {
                         binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
+                        restoreAnswerButtons()
                     } else {
                         onQuizComplete()
                     }
@@ -470,6 +471,53 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateCard(getCardOrientation())
+    }
+
+    private fun restoreAnswerButtons() {
+
+        val buttonsDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral300)
+        val buttonsOriginalColorStateList = MaterialColors.getColorStateList(this, com.google.android.material.R.attr.colorSurfaceContainerLowest, buttonsDefaultColorStateList!!)
+
+        val buttonsStrokeDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral500)
+        val buttonsStrokeOriginalColorStateList = MaterialColors.getColorStateList(this, com.google.android.material.R.attr.colorSurfaceContainerHigh, buttonsStrokeDefaultColorStateList!!)
+
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative2).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative3).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative4).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+
+        val onWrongButtonsOriginalColorStateList = ContextCompat.getColorStateList(this, R.color.red50)
+        val onWrongButtonsStrokeOriginalColorStateList = ContextCompat.getColorStateList(this, R.color.red500)
+
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1_on_wrong_answer).apply {
+            backgroundTintList = onWrongButtonsOriginalColorStateList
+            strokeColor = onWrongButtonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative2_on_wrong_answer).apply {
+            backgroundTintList = onWrongButtonsOriginalColorStateList
+            strokeColor = onWrongButtonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative3_on_wrong_answer).apply {
+            backgroundTintList = onWrongButtonsOriginalColorStateList
+            strokeColor = onWrongButtonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative4_on_wrong_answer).apply {
+            backgroundTintList = onWrongButtonsOriginalColorStateList
+            strokeColor = onWrongButtonsStrokeOriginalColorStateList
+        }
+
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {

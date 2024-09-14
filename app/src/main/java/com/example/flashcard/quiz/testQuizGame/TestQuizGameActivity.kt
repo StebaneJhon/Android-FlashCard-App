@@ -13,7 +13,6 @@ import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -116,7 +115,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
                             onNoCardToRevise()
                         }
                         is UiState.Success -> {
-                            launchMultiChoiceQuizGame(state.data)
+                            launchTestQuizGame(state.data)
                         }
                     }
                 }
@@ -187,7 +186,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
 
     }
 
-    private fun launchMultiChoiceQuizGame(
+    private fun launchTestQuizGame(
         data: List<ModelCard?>
     ) {
         testQuizGameAdapter = TestQuizGameAdapter(
@@ -257,6 +256,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
                 userResponseModel.view as MaterialButton,
                 true
             )
+
         } else {
             viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
             giveFeedback(
@@ -295,6 +295,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
                     )
                 }
             }
+            restoreAnswerButtons()
         }
         binding.btKnownNot.setOnClickListener {
             viewModel.upOrDowngradeCard(false, userResponseModel.modelCard.cardDetails)
@@ -320,6 +321,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
                     )
                 }
             }
+            restoreAnswerButtons()
         }
         if (userResponseModel.modelCardPosition > 0) {
             isRewindButtonActive(true)
@@ -578,6 +580,33 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
         })
 
         tts.setOnUtteranceProgressListener(speechListener)
+    }
+
+    private fun restoreAnswerButtons() {
+
+        val buttonsDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral300)
+        val buttonsOriginalColorStateList = MaterialColors.getColorStateList(this, com.google.android.material.R.attr.colorSurfaceContainerLowest, buttonsDefaultColorStateList!!)
+
+        val buttonsStrokeDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral500)
+        val buttonsStrokeOriginalColorStateList = MaterialColors.getColorStateList(this, com.google.android.material.R.attr.colorSurfaceContainerHigh, buttonsStrokeDefaultColorStateList!!)
+
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative2).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative3).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative4).apply {
+            backgroundTintList = buttonsOriginalColorStateList
+            strokeColor = buttonsStrokeOriginalColorStateList
+        }
+
     }
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {

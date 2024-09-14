@@ -116,8 +116,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom"
+                            app:endIconMode="clear_text"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
 
@@ -143,8 +142,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom"
+                            app:endIconMode="clear_text"
                             app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
@@ -185,8 +183,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom"
+                            app:endIconMode="clear_text"
                             app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card">
@@ -227,8 +224,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom"
+                            app:endIconMode="clear_text"
                             app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card">
@@ -269,8 +265,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom"
+                            app:endIconMode="clear_text"
                             app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card">
@@ -321,8 +316,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom">
+                            app:endIconMode="clear_text">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_content_true_or_false_card"
@@ -383,8 +377,7 @@
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconDrawable="@drawable/icon_mic"
-                            app:endIconMode="custom">
+                            app:endIconMode="clear_text">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/cardContentTV"
