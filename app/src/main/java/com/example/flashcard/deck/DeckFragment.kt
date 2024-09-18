@@ -26,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
-import androidx.core.graphics.component1
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -147,7 +146,7 @@ class DeckFragment :
                     true
                 }
                 R.id.bt_upload_deck_with_cards -> {
-                    showSettings()
+                    showTriviaQuestionUploader()
                     true
                 }
                 else -> false
@@ -204,7 +203,7 @@ class DeckFragment :
         }
     }
 
-    private fun showSettings() {
+    private fun showTriviaQuestionUploader() {
         val newDeckDialog = UploadOpenTriviaQuizDialog()
         newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requstQuery, bundle ->
@@ -231,7 +230,7 @@ class DeckFragment :
                             binding.mainActivityProgressBar.isVisible = true
                         }
                         is UiState.Success -> {
-                            deckViewModel.insertOpenTriviaQuestions(result.deckName, response.data.results)
+                            deckViewModel.insertOpenTriviaQuestions(result.deckName, result.difficulty, response.data.results)
                             binding.mainActivityProgressBar.visibility = View.GONE
                         }
                     }

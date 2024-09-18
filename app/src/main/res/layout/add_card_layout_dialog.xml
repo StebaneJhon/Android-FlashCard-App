@@ -110,9 +110,7 @@
                             android:id="@+id/til_content_multi_answer_card"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="@string/til_card_content_hint"
-                            android:textColorHint="?colorOnSurfaceVariant"
-                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                            android:textColorHint="@color/neutral400"                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
@@ -127,7 +125,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="10"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400"  />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -136,9 +135,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/space_sm"
                             android:layout_marginEnd="@dimen/space_xs"
-                            android:hint="@string/til_card_definition_1_hint"
-                            android:textColorHint="?colorOnSurfaceVariant"
-                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                            android:textColorHint="@color/neutral400"                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
@@ -154,7 +151,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="10"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.chip.Chip
@@ -177,9 +175,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/space_sm"
                             android:layout_marginEnd="@dimen/space_xs"
-                            android:hint="@string/til_card_definition_2_hint"
-                            android:textColorHint="?colorOnSurfaceVariant"
-                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                            android:textColorHint="@color/neutral400"                             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
@@ -195,7 +191,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="10"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.chip.Chip
@@ -218,9 +215,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/space_sm"
                             android:layout_marginEnd="@dimen/space_xs"
-                            android:hint="@string/til_card_definition_3_hint"
-                            android:textColorHint="?colorOnSurfaceVariant"
-                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                            android:textColorHint="@color/neutral400"                             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
@@ -236,7 +231,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="10"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.chip.Chip
@@ -259,9 +255,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/space_sm"
                             android:layout_marginEnd="@dimen/space_xs"
-                            android:hint="@string/til_card_definition_4_hint"
-                            android:textColorHint="?colorOnSurfaceVariant"
-                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                            android:textColorHint="@color/neutral400"                             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
@@ -277,7 +271,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="10"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.chip.Chip
@@ -311,8 +306,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/space_md"
-                            android:textColorHint="?colorOnSurface"
-                            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                            android:textColorHint="@color/neutral400"                             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
@@ -325,7 +319,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="20"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.chip.ChipGroup
@@ -372,12 +367,12 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/space_sm"
-                            android:textColorHint="?colorOnSurface"
                             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                            app:endIconMode="clear_text">
+                            app:endIconMode="clear_text"
+                            android:textColorHint="@color/neutral400">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/cardContentTV"
@@ -386,7 +381,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="20"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -394,14 +390,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/space_sm"
-                            android:textColorHint="?colorOnSurface"
                             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
                             app:boxCornerRadiusTopStart="@dimen/ed_radius"
                             app:endIconDrawable="@drawable/icon_translate"
                             app:endIconMode="custom"
-                            app:endIconTint="?colorOnSurface">
+                            app:endIconTint="?colorOnSurface"
+                            android:textColorHint="@color/neutral400">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/cardValueTV"
@@ -410,7 +406,8 @@
                                 android:inputType="textMultiLine"
                                 android:maxLines="20"
                                 android:textColor="?colorOnSurface"
-                                android:textColorHint="?colorOnSurface" />
+                                android:fontFamily="@font/open_sans"
+                                android:textColorHint="@color/neutral400"  />
                         </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>

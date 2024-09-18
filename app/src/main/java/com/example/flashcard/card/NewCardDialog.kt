@@ -226,7 +226,7 @@ class NewCardDialog(
                     onPositiveAction(Constant.ADD)
                 }
             }
-            onAddFlashCard(true)
+//            onAddFlashCard(true)
         }
 
         // Save or not (Card)
@@ -360,55 +360,93 @@ class NewCardDialog(
             initCardAdditionPanel()
         }
 
-        cardContent?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(v, hasFocus, callback, getString(R.string.til_card_content_hint))
+        cardContent?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_content_hint)
+                )
+            }
+            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
         }
-        cardValue?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(
-                v,
-                hasFocus,
-                callback,
-                getString(R.string.til_card_definition_hint)
-            )
+        cardValue?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_definition_hint)
+                )
+            }
+            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
         }
-        tieContentTrueOrFalseCard?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(v, hasFocus, callback, getString(R.string.til_card_content_hint))
+        tieContentTrueOrFalseCard?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_content_hint)
+                )
+            }
+            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
         }
-        tieContentMultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(v, hasFocus, callback, getString(R.string.til_card_content_hint))
+        tieContentMultiAnswerCard?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_content_hint)
+                )
+            }
+            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
         }
-        tieDefinition1MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(
-                v,
-                hasFocus,
-                callback,
-                getString(R.string.til_card_definition_hint)
-            )
-
+        tieDefinition1MultiAnswerCard?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_definition_hint)
+                )
+            }
+            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
         }
-        tieDefinition2MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(
-                v,
-                hasFocus,
-                callback,
-                getString(R.string.til_card_definition_hint)
-            )
+        tieDefinition2MultiAnswerCard?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_definition_hint)
+                )
+            }
+            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
         }
-        tieDefinition3MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(
-                v,
-                hasFocus,
-                callback,
-                getString(R.string.til_card_definition_hint)
-            )
+        tieDefinition3MultiAnswerCard?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_definition_hint)
+                )
+            }
+            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
         }
-        tieDefinition4MultiAnswerCard?.setOnFocusChangeListener { v, hasFocus ->
-            onActiveTopAppBarMode(
-                v,
-                hasFocus,
-                callback,
-                getString(R.string.til_card_definition_hint)
-            )
+        tieDefinition4MultiAnswerCard?.apply {
+            setOnFocusChangeListener { v, hasFocus ->
+                onActiveTopAppBarMode(
+                    v,
+                    hasFocus,
+                    callback,
+                    getString(R.string.til_card_definition_hint)
+                )
+            }
+            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
         }
 
         return view
@@ -429,22 +467,25 @@ class NewCardDialog(
 
     private fun showImageSelectedDialog() {
         val builder = MaterialAlertDialogBuilder(
-                requireActivity(),
-                R.style.ThemeOverlay_App_MaterialAlertDialog
+            requireActivity(),
+            R.style.ThemeOverlay_App_MaterialAlertDialog
         )
         builder.apply {
             setTitle("Select Image")
             setMessage("Please select an option")
-            setPositiveButton("Camera"
+            setPositiveButton(
+                "Camera"
             ) { dialog, _ ->
                 checkCameraPermission()
                 dialog?.dismiss()
             }
 
-            setNeutralButton("Cancel"
+            setNeutralButton(
+                "Cancel"
             ) { dialog, _ -> dialog?.dismiss() }
 
-            setNegativeButton("Gallery"
+            setNegativeButton(
+                "Gallery"
             ) { dialog, _ ->
                 onSelectImageFromGallery()
                 dialog?.dismiss()
@@ -521,7 +562,11 @@ class NewCardDialog(
             .addOnSuccessListener { visionText ->
                 // Task completed successfully
                 if (visionText.text.isBlank()) {
-                    Toast.makeText(requireContext(), getString(R.string.error_message_no_text_detected), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_message_no_text_detected),
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     selectedField?.setText(visionText.text)
                 }
@@ -760,12 +805,12 @@ class NewCardDialog(
             clAddMultiAnswerCardContainer?.isVisible = false
             cardType = FLASHCARD
         }
-        cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
-        cardContentDefinition?.hint =
-            getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
-        cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
-        cardValueDefinition?.hint =
-            getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
+//        cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
+//        cardContentDefinition?.hint =
+//            getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
+//        cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
+//        cardValueDefinition?.hint =
+//            getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
 
     }
 
@@ -1157,7 +1202,11 @@ class NewCardDialog(
             REQUEST_CODE_PHOTO_MICRO -> {
                 val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 if (result?.get(0).isNullOrBlank()) {
-                    Toast.makeText(requireContext(), getString(R.string.error_message_no_text_detected), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_message_no_text_detected),
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     selectedField?.setText(result?.get(0))
                 }

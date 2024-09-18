@@ -48,6 +48,8 @@ class DeckColorCategorySelector {
 
     fun getColors() = colors
 
+    fun getRandomColor() = colors.keys.random()
+
     fun selectColor(color: String): Int? {
         return if (color in colors.keys) {
             colors[color]

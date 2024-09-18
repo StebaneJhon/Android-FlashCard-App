@@ -22,6 +22,7 @@ import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
+import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.DeckRef.DECK_SORT_ALPHABETICALLY
 import com.example.flashcard.util.DeckRef.DECK_SORT_BY_CARD_SUM
 import com.example.flashcard.util.UiState
@@ -133,10 +134,10 @@ class DeckViewModel(
         }
     }
 
-    fun insertOpenTriviaQuestions(deckName: String, cards: List<OpenTriviaQuestion>) {
+    fun insertOpenTriviaQuestions(deckName: String, deckDescription: String, cards: List<OpenTriviaQuestion>) {
         fetchOpenTriviaJob?.cancel()
         fetchOpenTriviaJob = viewModelScope.launch {
-            val newDeck = generateDeck(deckName)
+            val newDeck = generateDeck(deckName, deckDescription)
             delay(100)
             repository.insertDeck(newDeck)
             delay(100)
@@ -244,14 +245,14 @@ class DeckViewModel(
         )
     }
 
-    fun generateDeck(deckName: String): Deck {
+    fun generateDeck(deckName: String, deckDescription: String): Deck {
         return Deck(
             now(),
             deckName,
-            "",
+            deckDescription,
             "English",
             "English",
-            "white",
+            DeckColorCategorySelector().getRandomColor(),
             0,
             null,
             0
