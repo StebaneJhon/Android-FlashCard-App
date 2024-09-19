@@ -7,10 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.example.flashcard.R
 import com.example.flashcard.databinding.LyFlashCardBottomSheetMenuBinding
-import com.example.flashcard.quiz.flashCardGame.FlashCardGameViewModel
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
 import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
 import com.example.flashcard.util.FlashCardMiniGameRef.CHECKED_FILTER
@@ -212,7 +210,7 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         if (isRevealed) {
             binding.btRevealFilterSettings.setImageResource(R.drawable.icon_expand_less)
         } else {
-            binding.btRevealFilterSettings.setImageResource(R.drawable.icone_expand_more)
+            binding.btRevealFilterSettings.setImageResource(R.drawable.icon_expand_more)
         }
         binding.rgRadioGroup.isVisible = isRevealed
         isFilterSectionRevealed = isRevealed
@@ -222,7 +220,7 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         if (isRevealed) {
             binding.btRevealSpaceRepetitionSettings.setImageResource(R.drawable.icon_expand_less)
         } else {
-            binding.btRevealSpaceRepetitionSettings.setImageResource(R.drawable.icone_expand_more)
+            binding.btRevealSpaceRepetitionSettings.setImageResource(R.drawable.icon_expand_more)
         }
         binding.cbUnknownCardOnly.isVisible = isRevealed
         binding.cbUnknownCardFirst.isVisible = isRevealed
@@ -233,7 +231,7 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         if (isRevealed) {
             binding.btRevealCardOrientationSettings.setImageResource(R.drawable.icon_expand_less)
         } else {
-            binding.btRevealCardOrientationSettings.setImageResource(R.drawable.icone_expand_more)
+            binding.btRevealCardOrientationSettings.setImageResource(R.drawable.icon_expand_more)
         }
         binding.rgCardOrientationSection.isVisible = isRevealed
         isCardOrientationSectionRevealed = isRevealed

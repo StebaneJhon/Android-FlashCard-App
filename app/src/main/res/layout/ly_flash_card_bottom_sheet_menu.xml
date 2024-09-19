@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@color/transparent"
-                    android:src="@drawable/icone_expand_more" />
+                    android:src="@drawable/icon_expand_more" />
             </RelativeLayout>
 
             <RadioGroup
@@ -132,7 +132,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@color/transparent"
-                    android:src="@drawable/icone_expand_more" />
+                    android:src="@drawable/icon_expand_more" />
             </RelativeLayout>
 
 
@@ -186,7 +186,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@color/transparent"
-                    android:src="@drawable/icone_expand_more" />
+                    android:src="@drawable/icon_expand_more" />
             </RelativeLayout>
 
             <RadioGroup
