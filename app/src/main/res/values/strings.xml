@@ -128,15 +128,15 @@
     <string name="tv_quiz_mode_title">How do you want to review your cards?</string>
     <string name="bt_save">SAVE</string>
     <string name="content_description_save">Save the all created cards</string>
-    <string name="title_welcome_to_quizeo">Welcome to Quizeo</string>
-    <string name="content_welcome_to_quizeo">A Quiz app that lets you create your own questions and revise them in multiple ways.</string>
+    <string name="title_welcome_to_recall">Welcome to Recall</string>
+    <string name="content_welcome_to_recall">A Quiz app that lets you create your own quizzes and review them in multiple ways.</string>
     <string name="title_cards">Cards</string>
-    <string name="content_cards">In Quizeo questions are represented as cards, and there are multiple type of them: Single answer cards, true or false cards multiple answered cards, …</string>
+    <string name="content_cards">In Recall questions are represented as cards, and there are multiple type of them: Single answer cards, true or false cards multiple answered cards, …</string>
     <string name="next">Next</string>
     <string name="title_quiz">Quiz</string>
-    <string name="content_quiz">There are multiple ways to revise your cards including: flash cards, timed flash cards, multi choice quiz, writing quiz, matching cards, test, …</string>
+    <string name="content_quiz">There are multiple ways to review your cards including: flash cards, timed flash cards, matching cards, multi choice quiz, writing quiz, test, …</string>
     <string name="title_space_repetition">Space repetition</string>
-    <string name="content_space_repetition">Quizeo is powered by a space repetition algorithm that sorts your cards by memorisation level and shows them or not during revision depending on the level. This algorithm is highly customisable.</string>
+    <string name="content_space_repetition">Recall is powered by a space repetition algorithm that sorts your cards by memorisation level and shows them or not during revision depending on the level. This algorithm is highly customisable.</string>
     <string name="error_message_on_no_description_found">No description found</string>
     <string name="title_unsaved_cards">Unsaved cards</string>
     <string name="message_unsaved_cards">You have some unsaved cards do you want to save them?</string>
@@ -190,5 +190,6 @@
     <string name="bt_text_filter_by_creation_time">By creation time</string>
     <string name="bt_text_filter_alphabetically">Alphabetically</string>
     <string name="bt_text_filter_by_card_sum">By card sum</string>
+    <string name="error_message_language_not_supported">Language not supported</string>
 
 </resources>

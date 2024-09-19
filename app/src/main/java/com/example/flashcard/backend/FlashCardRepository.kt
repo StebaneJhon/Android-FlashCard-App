@@ -250,7 +250,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         val localDeck = deck.toLocal()
         val cards = getCards(localDeck.deckId)
         cards.forEach { card ->
-            delay(200)
+            delay(300)
             deleteCard(card, localDeck)
         }
     }

@@ -22,12 +22,14 @@ class OnboardingFragment4 : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_onboarding4, container, false)
-
+        val viewPager = activity?.findViewById<ViewPager2>(R.id.vp_onBoarding)
         view.findViewById<Button>(R.id.bt_next_4).setOnClickListener {
             findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
             onBoardingFinished()
         }
-
+        view.findViewById<Button>(R.id.bt_previous_4).setOnClickListener {
+            viewPager?.currentItem = 2
+        }
         return view
     }
 

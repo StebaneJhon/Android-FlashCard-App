@@ -72,17 +72,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-        <ProgressBar
-            android:id="@+id/cardsActivityProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/cardRecyclerView"
             android:layout_width="match_parent"
@@ -91,6 +80,16 @@
             android:layout_margin="@dimen/space_xs"
             android:transitionGroup="true"
             android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/cardsActivityProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+            <include
+                android:id="@+id/ly_no_card_error"
+                layout="@layout/ly_loading_screen" />
+        </LinearLayout>
 
 
         <com.google.android.material.bottomappbar.BottomAppBar

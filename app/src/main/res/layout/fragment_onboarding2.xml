@@ -8,20 +8,13 @@
     android:padding="@dimen/space_xxl"
     tools:context=".onboarding.onBoardingFragments.OnboardingFragment2">
 
-    <TextView
-        android:id="@+id/tv_progress_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_light"
-        android:text="2/4"
-        android:textAlignment="center"
-        android:textColor="@color/blue50"
-        android:textSize="@dimen/text_lg"
-        android:textStyle="normal"
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/icon_cards"
         app:layout_constraintBottom_toTopOf="@+id/tv_title_2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/tv_title_2"
+        app:layout_constraintStart_toStartOf="@+id/tv_title_2" />
 
     <TextView
         android:id="@+id/tv_title_2"
@@ -52,17 +45,45 @@
         tools:layout_editor_absoluteX="24dp" />
 
     <Button
+        android:id="@+id/bt_previous_2"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue50"
+        android:contentDescription="@string/next"
+        android:padding="@dimen/space_lg"
+        app:icon="@drawable/icon_chevron_left"
+        app:iconTint="@color/royal_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_light"
+        android:text="2/4"
+        android:textAlignment="center"
+        android:textColor="@color/blue50"
+        android:textSize="@dimen/text_lg"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_previous_2"
+        app:layout_constraintEnd_toStartOf="@+id/bt_next_2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/bt_previous_2"
+        app:layout_constraintTop_toTopOf="@+id/bt_previous_2" />
+
+    <Button
         android:id="@+id/bt_next_2"
         style="?attr/materialIconButtonFilledStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/blue50"
         android:contentDescription="@string/next"
-        android:padding="@dimen/space_xxl"
+        android:padding="@dimen/space_lg"
         app:icon="@drawable/icon_chevron_right"
         app:iconTint="@color/royal_blue"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

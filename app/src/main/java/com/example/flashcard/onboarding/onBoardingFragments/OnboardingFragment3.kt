@@ -22,6 +22,9 @@ class OnboardingFragment3 : Fragment() {
         view.findViewById<Button>(R.id.bt_next_3).setOnClickListener {
             viewPager?.currentItem = 3
         }
+        view.findViewById<Button>(R.id.bt_previous_3).setOnClickListener {
+            viewPager?.currentItem = 1
+        }
         return view
     }
 

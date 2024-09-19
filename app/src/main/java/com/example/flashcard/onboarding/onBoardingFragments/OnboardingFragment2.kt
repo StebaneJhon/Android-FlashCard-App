@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.example.flashcard.R
@@ -22,6 +23,9 @@ class OnboardingFragment2 : Fragment() {
         val viewPager = activity?.findViewById<ViewPager2>(R.id.vp_onBoarding)
         view.findViewById<Button>(R.id.bt_next_2).setOnClickListener {
             viewPager?.currentItem = 2
+        }
+        view.findViewById<Button>(R.id.bt_previous_2).setOnClickListener {
+            viewPager?.currentItem = 0
         }
         return view
     }

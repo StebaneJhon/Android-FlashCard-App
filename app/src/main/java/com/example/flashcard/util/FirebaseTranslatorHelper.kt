@@ -89,4 +89,6 @@ class FirebaseTranslatorHelper {
         } else {
             null
         }
+
+    fun isLanguageSupported(language: String) = language in getSupportedLang()
 }
