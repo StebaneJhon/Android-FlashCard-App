@@ -71,9 +71,9 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.deleteCard(card, externalDeck)
     }
 
-//    suspend fun searchCard(searchQuery: String, deckId: String): LiveData<List<ImmutableCard?>> {
-//        return repository.searchCard(searchQuery, deckId).asLiveData()
-//    }
+    suspend fun searchCard(searchQuery: String, deckId: String): LiveData<List<ImmutableCard?>> {
+        return repository.searchCard(searchQuery, deckId).asLiveData()
+    }
 
 }
 

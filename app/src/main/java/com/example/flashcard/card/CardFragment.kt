@@ -566,10 +566,11 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
         val searchQuery = "%$query%"
         lifecycleScope.launch {
             deck?.let { cardDeck ->
-//                cardViewModel.searchCard(searchQuery, cardDeck.deckId)
-//                    .observe(this@CardFragment) { cardList ->
-//                        cardList?.let { displayCards(it, cardDeck) }
-//                    }
+                cardViewModel.searchCard(searchQuery, cardDeck.deckId)
+                    .observe(this@CardFragment) { cardList ->
+                        val a = cardList
+                        cardList?.let { displayCards(it, cardDeck) }
+                    }
             }
         }
     }

@@ -134,16 +134,16 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         }
     }
 
-//    @WorkerThread
-//    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
-//        return flashCardDao.searchCard(searchQuery, deckId).map { cardList ->
-//            cardList.map { card ->
-//                val cardContent = flashCardDao.getCardAndContent(card.cardId!!).cardContent
-//                val cardDefinitions = flashCardDao.getCardWithDefinition(card.cardId).definition
-//                card.toExternal(cardContent, cardDefinitions)
-//            }
-//        }
-//    }
+    @WorkerThread
+    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
+        return flashCardDao.searchCard(searchQuery).map { cardList ->
+            cardList.map { card ->
+                val cardContent = flashCardDao.getCardAndContent(card.cardId).cardContent
+                val cardDefinitions = flashCardDao.getCardWithDefinition(card.cardId).definition
+                card.toExternal(cardContent, cardDefinitions)
+            }
+        }
+    }
 
     @WorkerThread
     suspend fun getCard(deckId: Int): ImmutableCard? {
