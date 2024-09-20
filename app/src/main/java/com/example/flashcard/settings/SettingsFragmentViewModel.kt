@@ -7,6 +7,7 @@ import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
 import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
+import com.example.flashcard.deck.NewDeckDialog
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -73,6 +74,40 @@ class SettingsFragmentViewModel(private val repository: FlashCardRepository): Vi
     fun updateBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch { repository.updateBoxLevel(boxLevel) }
 
     fun insertBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch { repository.insertBoxLevel(boxLevel) }
+
+    private var _themSelectionList = MutableStateFlow<ArrayList<ThemeModel>>(arrayListOf())
+    val themSelectionList: StateFlow<ArrayList<ThemeModel>> = _themSelectionList.asStateFlow()
+
+    fun initThemeSelection(themes: Map<String, Int>, actualTheme: String) {
+        if (_themSelectionList.value.isNotEmpty()) {
+            return
+        }
+        themes.forEach { (themeId, theme) ->
+            if (themeId == actualTheme) {
+                _themSelectionList.value.add(
+                    ThemeModel(
+                        themeId,
+                        theme,
+                        true
+                    )
+                )
+            } else {
+                _themSelectionList.value.add(
+                    ThemeModel(
+                        themeId,
+                        theme,
+                        false
+                    )
+                )
+            }
+        }
+    }
+
+    fun selectTheme(themeId: String) {
+        _themSelectionList.value.forEachIndexed { index, themeModel ->
+            _themSelectionList.value[index].isSelected = themeModel.themeId == themeId
+        }
+    }
 
 }
 

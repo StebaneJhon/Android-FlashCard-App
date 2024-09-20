@@ -10,11 +10,18 @@ class NewDeckDialogViewModel: ViewModel() {
     private var _colorSelectionList = MutableStateFlow<ArrayList<ColorModel>>(arrayListOf())
     val colorSelectionList: StateFlow<ArrayList<ColorModel>> = _colorSelectionList.asStateFlow()
 
-    fun initColorSelection(colors: Map<String, Int>) {
+    fun initColorSelection(colors: Map<String, Int>, actualColorId: String?) {
         colors.forEach { (id, color) ->
-            _colorSelectionList.value.add(
-                ColorModel(color, id)
-            )
+            if (actualColorId == id) {
+                _colorSelectionList.value.add(
+                    ColorModel(color, id, true)
+                )
+            } else {
+                _colorSelectionList.value.add(
+                    ColorModel(color, id)
+                )
+            }
+
         }
     }
 

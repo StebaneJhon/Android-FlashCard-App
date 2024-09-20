@@ -126,16 +126,6 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             )
         }
 
-        // Show Color Picker
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors())
-                newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
-                    displayColorPicker(listOfColors)
-                }
-            }
-        }
-
         if (deck != null) {
             btAddCard?.isVisible =  false
             tvTitle?.text = getString(R.string.tv_update_deck)
@@ -144,6 +134,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             deckFirstLangET?.setText(deck.deckFirstLanguage)
             deckSecondLangET?.setText(deck.deckSecondLanguage)
             deck.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
+            deckCategoryColor = deck.deckColorCode
 
             builder.setView(view)
 
@@ -211,6 +202,16 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                     )
                     sendDeckOnSave(REQUEST_CODE, ADD_DECK_FORWARD_TO_CARD_ADDITION, newDeck)
                     dismiss()
+                }
+            }
+        }
+
+        // Show Color Picker
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors(), deckCategoryColor)
+                newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
+                    displayColorPicker(listOfColors)
                 }
             }
         }

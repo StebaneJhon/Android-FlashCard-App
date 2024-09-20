@@ -19,5 +19,5 @@ data class ImmutableCard(
     val cardStatus: String? = null,
     val nextMissMemorisationDate: String? = null,
     val nextRevisionDate: String? = null,
-    val cardType: String? = null,
+    val cardType: String? = null
 ): Parcelable

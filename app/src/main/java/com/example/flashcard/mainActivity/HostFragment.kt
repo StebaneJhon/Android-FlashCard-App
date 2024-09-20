@@ -16,7 +16,7 @@ class HostFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (!onBoardingFinished()) {
+        if (onBoardingFinished()) {
             findNavController().navigate(R.id.action_hostFragment_to_deckFragment2)
         } else {
             findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)

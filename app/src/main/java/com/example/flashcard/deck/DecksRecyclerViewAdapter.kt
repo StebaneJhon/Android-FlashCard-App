@@ -91,9 +91,23 @@ class DecksRecyclerViewAdapter(
                 )
             } ?: R.color.red700
 
-            deckRoot?.setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+            deckRoot?.apply {
+                setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+                setOnLongClickListener { v: View ->
+                    showMenu(
+                        context,
+                        v,
+                        R.menu.deck_popup_menu,
+                        editDeckClickListener,
+                        deleteDeckClickListener,
+                        startQuizListener,
+                        deck
+                    )
+                    true
+                }
+                setOnClickListener { deckClickListener(deck) }
+            }
 
-            deckRoot?.setOnClickListener { deckClickListener(deck) }
             popupMenuBT?.setOnClickListener { v: View ->
                 showMenu(
                     context,

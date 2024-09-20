@@ -78,9 +78,6 @@ interface FlashCardDao {
     )
     fun searchCard(searchQuery: String): Flow<List<Card>>
 
-//    @Query("SELECT * FROM card WHERE deckId = :deckId")
-//    fun searchCardNoFlow(searchQuery: String, deckId: String): List<Card>
-
     @Query("SELECT * FROM card WHERE deckId = :deckId")
     fun getCard(deckId: Int): Card
 

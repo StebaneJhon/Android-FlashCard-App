@@ -123,105 +123,11 @@
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold" />
 
-            <GridLayout
-                android:id="@+id/gl_theme_section_theme_buttons_root"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_settings_theme_picker"
                 android:layout_width="match_parent"
                 android:layout_height="170dp"
-                android:layout_margin="@dimen/space_xxs"
-                android:columnCount="5"
-                android:rowCount="2">
-
-                <LinearLayout
-                    android:id="@+id/whiteThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/white"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/redThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/red700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/pinkThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/pink700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/purpleThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/purple700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/blueThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/blue700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/tealThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/teal700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/greenThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/green700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/yellowThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/yellow700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/browneThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/brown700"
-                    android:orientation="horizontal" />
-
-                <LinearLayout
-                    android:id="@+id/blackThemeButton"
-                    android:layout_rowWeight="1"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="@dimen/space_xxs"
-                    android:background="@drawable/theme_button_background"
-                    android:backgroundTint="@color/black"
-                    android:orientation="horizontal" />
-
-            </GridLayout>
+                android:layout_marginTop="@dimen/space_xs"/>
 
         </LinearLayout>
 

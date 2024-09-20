@@ -17,6 +17,27 @@ class ThemePicker {
         themeConst.WHITE_THEME to R.style.StaleTheme_FlashCard,
     )
 
+    private val themeBaseColors = mapOf(
+        themeConst.DARK_THEME to R.color.black,
+        themeConst.PURPLE_THEME to R.color.purple700,
+        themeConst.BLUE_THEME to R.color.blue700,
+        themeConst.PINK_THEME to R.color.pink700,
+        themeConst.RED_THEME to R.color.red700,
+        themeConst.TEAL_THEME to R.color.teal700,
+        themeConst.GREEN_THEME to R.color.green700,
+        themeConst.YELLOW_THEME to R.color.yellow600,
+        themeConst.BROWN_THEME to R.color.brown700,
+        themeConst.WHITE_THEME to R.color.white,
+    )
+
+    fun getThemeBaseColor(themeName: String): Int? {
+        return if (themeName in themeBaseColors.keys) {
+            themeBaseColors[themeName]
+        } else {
+            null
+        }
+    }
+
     fun selectTheme(themeName: String): Int? {
         return if (themeName in themes.keys) {
             themes[themeName]
@@ -24,5 +45,7 @@ class ThemePicker {
             null
         }
     }
+
+    fun getThemes() = themes
 
 }

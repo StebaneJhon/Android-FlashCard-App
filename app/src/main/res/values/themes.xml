@@ -3,6 +3,7 @@
     <style name="Base.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/grey700</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondaryContainer">@color/grey25_transparent</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/grey500</item>
         <item name="colorOnPrimaryContainer">@color/white</item>
@@ -37,6 +38,7 @@
         <item name="colorPrimary">@color/stale600</item>
         <item name="colorOnPrimary">@color/stale50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
+        <item name="colorSecondaryContainer">@color/stale100_transparent</item>
         <item name="android:textColorPrimary">@color/stale50</item>
         <item name="colorPrimaryContainer">@color/stale700</item>
         <item name="colorOnPrimaryContainer">@color/stale50</item>
@@ -70,6 +72,7 @@
     <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/grey15</item>
         <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondaryContainer">@color/grey700_transparent</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="colorPrimaryContainer">@color/grey25</item>
@@ -107,6 +110,7 @@
         <item name="colorOnPrimary">@color/purple50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/purple600</item>
+        <item name="colorSecondaryContainer">@color/purple100_transparent</item>
         <item name="colorOnPrimaryContainer">@color/purple50</item>
         <item name="colorSurfaceContainerLowest">@color/purple50</item>
         <item name="colorSurfaceContainerLow">@color/purple100</item>
@@ -139,6 +143,7 @@
         <item name="colorPrimary">@color/blue700</item>
         <item name="colorOnPrimary">@color/blue50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
+        <item name="colorSecondaryContainer">@color/blue100_transparent</item>
         <item name="colorPrimaryContainer">@color/blue600</item>
         <item name="colorOnPrimaryContainer">@color/blue50</item>
         <item name="colorSurfaceContainerLowest">@color/blue50</item>
@@ -174,6 +179,7 @@
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/pink600</item>
         <item name="colorOnPrimaryContainer">@color/pink50</item>
+        <item name="colorSecondaryContainer">@color/pink100_transparent</item>
         <item name="colorSurfaceContainerLowest">@color/pink50</item>
         <item name="colorSurfaceContainerLow">@color/pink100</item>
         <item name="colorSurfaceContainer">@color/pink200</item>
@@ -205,6 +211,7 @@
         <item name="colorPrimary">@color/red700</item>
         <item name="colorOnPrimary">@color/red50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
+        <item name="colorSecondaryContainer">@color/red100_transparent</item>
         <item name="colorPrimaryContainer">@color/red600</item>
         <item name="colorOnPrimaryContainer">@color/red50</item>
         <item name="colorSurfaceContainerLowest">@color/red50</item>
@@ -237,6 +244,7 @@
         <item name="colorPrimary">@color/teal700</item>
         <item name="colorOnPrimary">@color/teal50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
+        <item name="colorSecondaryContainer">@color/teal100_transparent</item>
         <item name="colorPrimaryContainer">@color/teal600</item>
         <item name="colorOnPrimaryContainer">@color/teal50</item>
         <item name="colorSurfaceContainerLowest">@color/teal50</item>
@@ -269,7 +277,8 @@
         <item name="colorPrimary">@color/green700</item>
         <item name="colorOnPrimary">@color/green50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
-        <item name="colorPrimaryContainer">@color/teal600</item>
+        <item name="colorPrimaryContainer">@color/green600</item>
+        <item name="colorSecondaryContainer">@color/green100_transparent</item>
         <item name="colorOnPrimaryContainer">@color/green50</item>
         <item name="colorSurfaceContainerLowest">@color/green50</item>
         <item name="colorSurfaceContainerLow">@color/green100</item>
@@ -301,6 +310,7 @@
         <item name="colorPrimary">@color/yellow700</item>
         <item name="colorOnPrimary">@color/yellow50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
+        <item name="colorSecondaryContainer">@color/yellow100_transparent</item>
         <item name="colorPrimaryContainer">@color/yellow600</item>
         <item name="colorOnPrimaryContainer">@color/yellow50</item>
         <item name="colorSurfaceContainerLowest">@color/yellow50</item>
@@ -332,6 +342,7 @@
     <style name="Brown.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/stone700</item>
         <item name="colorOnPrimary">@color/stone50</item>
+        <item name="colorSecondaryContainer">@color/stone100_transparent</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
         <item name="colorPrimaryContainer">@color/stone600</item>
         <item name="colorOnPrimaryContainer">@color/stone50</item>

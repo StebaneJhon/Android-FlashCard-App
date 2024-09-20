@@ -226,7 +226,7 @@ class NewCardDialog(
                     onPositiveAction(Constant.ADD)
                 }
             }
-//            onAddFlashCard(true)
+            onAddFlashCard(true)
         }
 
         // Save or not (Card)

@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -50,6 +51,9 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         ViewModelProvider(this, SettingsFragmentViewModelFactory(repository))[SettingsFragmentViewModel::class.java]
     }
 
+    private var appTheme: String? = null
+    private lateinit var themePickerAdapter: ThemePickerAdapter
+
     var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
 
@@ -70,7 +74,7 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
 
         sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
-        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
+        appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
             activity?.setTheme(themRef)
@@ -78,56 +82,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
 
         binding.settingsTopAppBar.setNavigationOnClickListener {
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
-        }
-
-        binding.blackThemeButton.setOnClickListener {
-            setAppTheme(DARK_THEME)
-            updateAppTheme()
-        }
-
-        binding.whiteThemeButton.setOnClickListener {
-            setAppTheme(WHITE_THEME)
-            updateAppTheme()
-        }
-
-        binding.purpleThemeButton.setOnClickListener {
-            setAppTheme(PURPLE_THEME)
-            updateAppTheme()
-        }
-
-        binding.blueThemeButton.setOnClickListener {
-            setAppTheme(BLUE_THEME)
-            updateAppTheme()
-        }
-
-        binding.pinkThemeButton.setOnClickListener {
-            setAppTheme(PINK_THEME)
-            updateAppTheme()
-        }
-
-        binding.redThemeButton.setOnClickListener {
-            setAppTheme(RED_THEME)
-            updateAppTheme()
-        }
-
-        binding.tealThemeButton.setOnClickListener {
-            setAppTheme(TEAL_THEME)
-            updateAppTheme()
-        }
-
-        binding.greenThemeButton.setOnClickListener {
-            setAppTheme(GREEN_THEME)
-            updateAppTheme()
-        }
-
-        binding.yellowThemeButton.setOnClickListener {
-            setAppTheme(YELLOW_THEME)
-            updateAppTheme()
-        }
-
-        binding.browneThemeButton.setOnClickListener {
-            setAppTheme(BROWN_THEME)
-            updateAppTheme()
         }
 
         binding.clProfileSectionRoot.setOnClickListener {
@@ -177,6 +131,15 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
                 }
         }
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                settingsFragmentViewModel.initThemeSelection(ThemePicker().getThemes(), appTheme ?: WHITE_THEME)
+                settingsFragmentViewModel.themSelectionList.collect {listOfTheme ->
+                    displayThemes(listOfTheme)
+                }
+            }
+        }
+
         binding.btPrivacyOthersSection.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
         }
@@ -190,6 +153,23 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             sendEmail(CONTACT)
         }
 
+    }
+
+    private fun displayThemes(listOfTheme: ArrayList<ThemeModel>) {
+        themePickerAdapter = ThemePickerAdapter(
+            requireContext(),
+            listOfTheme
+        ) {selectedTheme ->
+            settingsFragmentViewModel.selectTheme(selectedTheme.themeId)
+            setAppTheme(selectedTheme.themeId)
+            updateAppTheme()
+            themePickerAdapter.notifyDataSetChanged()
+        }
+        binding.rvSettingsThemePicker.apply {
+            adapter = themePickerAdapter
+            setHasFixedSize(true)
+            layoutManager = GridLayoutManager(requireContext(), 5, GridLayoutManager.VERTICAL, false)
+        }
     }
 
     private fun sendEmail(subject: String) {

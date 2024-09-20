@@ -39,6 +39,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
@@ -91,7 +92,10 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
     companion object {
         const val TAG = "CardFragment"
         const val REQUEST_CODE_CARD = "0"
+        const val MIN_DEFINITION_LENGTH_FOR_SPAM_1 = 200
+        const val MIN_CONTENT_LENGTH_FOR_SPAM_1 = 100
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -130,25 +134,28 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
                         onChooseQuizMode(_deck.deckId)
                     }
                     setOnMenuItemClickListener { menuItem ->
-                        when(menuItem.itemId) {
+                        when (menuItem.itemId) {
                             R.id.bt_flash_card_game -> {
-                                onStartQuiz{ deckWithCards ->
+                                onStartQuiz { deckWithCards ->
                                     lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
                                 }
                                 true
                             }
+
                             R.id.bt_multiple_choice_quiz -> {
-                                onStartQuiz{ deckWithCards ->
+                                onStartQuiz { deckWithCards ->
                                     lunchQuiz(deckWithCards, MULTIPLE_CHOICE_QUIZ)
                                 }
                                 true
                             }
+
                             R.id.bt_test_quiz_game -> {
-                                onStartQuiz{ deckWithCards ->
+                                onStartQuiz { deckWithCards ->
                                     lunchQuiz(deckWithCards, QUIZ)
                                 }
                                 true
                             }
+
                             else -> false
                         }
                     }
@@ -264,10 +271,12 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
                         is UiState.Loading -> {
                             binding.cardsActivityProgressBar.isVisible = true
                         }
+
                         is UiState.Error -> {
                             binding.cardsActivityProgressBar.isVisible = false
                             onStartingQuizError(state.errorMessage)
                         }
+
                         is UiState.Success -> {
                             binding.cardsActivityProgressBar.isVisible = false
                             start(state.data)
@@ -285,37 +294,52 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
         when (quizMode) {
             FLASH_CARD_QUIZ -> {
                 val intent = Intent(appContext, FlashCardGameActivity::class.java)
-                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY,deckWithCards)
+                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
+
             TIMED_FLASH_CARD_QUIZ -> {
                 val intent = Intent(appContext, FlashCardGameTimedActivity::class.java)
                 intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
+
             MULTIPLE_CHOICE_QUIZ -> {
                 if (deckWithCards.cards?.size!! > MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
                     val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
                     intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, deckWithCards)
                     startActivity(intent)
                 } else {
-                    onStartingQuizError(getString(R.string.error_message_starting_quiz, "$MIN_CARD_FOR_MULTI_CHOICE_QUIZ"))
+                    onStartingQuizError(
+                        getString(
+                            R.string.error_message_starting_quiz,
+                            "$MIN_CARD_FOR_MULTI_CHOICE_QUIZ"
+                        )
+                    )
                 }
             }
+
             WRITING_QUIZ -> {
                 val intent = Intent(appContext, WritingQuizGameActivity::class.java)
                 intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
+
             MATCHING_QUIZ -> {
                 if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MATCHING_QUIZ) {
                     val intent = Intent(appContext, MatchQuizGameActivity::class.java)
                     intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, deckWithCards)
                     startActivity(intent)
                 } else {
-                    onStartingQuizError(getString(R.string.error_message_starting_quiz, "$MIN_CARD_FOR_MATCHING_QUIZ"))
+                    onStartingQuizError(
+                        getString(
+                            R.string.error_message_starting_quiz,
+                            "$MIN_CARD_FOR_MATCHING_QUIZ"
+                        )
+                    )
                 }
             }
+
             QUIZ -> {
                 val intent = Intent(appContext, TestQuizGameActivity::class.java)
                 intent.putExtra(TestQuizGameActivity.DECK_ID_KEY, deckWithCards)
@@ -325,10 +349,8 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
     }
 
     private fun displayCards(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
-
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
-
         binding.cardsActivityProgressBar.isVisible = false
         binding.onNoDeckTextError.isVisible = false
         binding.cardRecyclerView.isVisible = true
@@ -359,29 +381,31 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
                 }
             }
         }!!
-
         val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                return getSpanSize(cardList, position, 50, 200)
+                return getSpanSize(cardList, position)
             }
         }
+
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
-            layoutManager = gridLayoutManager
+            layoutManager = staggeredGridLayoutManager
         }
+
     }
 
     private fun onStartingQuizError(errorText: String) {
         MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_App_MaterialAlertDialog)
             .setTitle(getString(R.string.error_title_starting_quiz))
             .setMessage(errorText)
-            .setNegativeButton(R.string.bt_cancel) {dialog, _ ->
+            .setNegativeButton(R.string.bt_cancel) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(getString(R.string.bt_add_card)) {dialog, _ ->
+            .setPositiveButton(getString(R.string.bt_add_card)) { dialog, _ ->
                 onAddNewCard()
                 dialog.dismiss()
             }
@@ -438,22 +462,27 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
     private fun getSpanSize(
         cardList: List<ImmutableCard?>,
         cardPosition: Int,
-        minDefinitionLengthForSpam1: Int,
-        minContentLengthForSpam1: Int,
     ): Int {
         val contentSize = cardList[cardPosition]?.cardContent?.content?.length ?: 0
         val definitionSize = getMaxDefinitionLength(cardList[cardPosition]?.cardDefinition)
-        if (definitionSize > minDefinitionLengthForSpam1 || contentSize > minContentLengthForSpam1) {
+
+
+        if (
+            definitionSize > MIN_DEFINITION_LENGTH_FOR_SPAM_1 && cardPosition.minus(1) % 2 != 0 ||
+            contentSize > MIN_CONTENT_LENGTH_FOR_SPAM_1 && cardPosition.minus(1) % 2 != 0
+        ) {
             return 2
         }
+
         return 1
     }
+
 
     private fun getMaxDefinitionLength(definitions: List<CardDefinition>?): Int {
         definitions?.let {
             var maxLength = 0
             it.forEach { defin ->
-                val actualLength = defin.definition?.length ?: 0
+                val actualLength = defin.definition.length
                 if (actualLength > maxLength) {
                     maxLength = actualLength
                 }
@@ -568,7 +597,6 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
             deck?.let { cardDeck ->
                 cardViewModel.searchCard(searchQuery, cardDeck.deckId)
                     .observe(this@CardFragment) { cardList ->
-                        val a = cardList
                         cardList?.let { displayCards(it, cardDeck) }
                     }
             }
@@ -590,6 +618,7 @@ class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
             TextToSpeech.SUCCESS -> {
                 tts.setSpeechRate(1.0f)
             }
+
             else -> {
                 Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG)
                     .show()
