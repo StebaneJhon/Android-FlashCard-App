@@ -191,5 +191,5 @@
     <string name="bt_text_filter_alphabetically">Alphabetically</string>
     <string name="bt_text_filter_by_card_sum">By card sum</string>
     <string name="error_message_language_not_supported">Language not supported</string>
-
+    <string name="message_on_voice_to_text_recording">Say something to translate</string>
 </resources>

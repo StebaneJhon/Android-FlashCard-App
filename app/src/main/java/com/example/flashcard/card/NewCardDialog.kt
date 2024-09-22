@@ -1,18 +1,17 @@
 package com.example.flashcard.card
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Bitmap
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
 import android.speech.RecognizerIntent
 import android.util.TypedValue
 import android.view.ActionMode
@@ -26,11 +25,13 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
@@ -66,11 +67,13 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+
 
 class NewCardDialog(
     private var card: ImmutableCard?,
@@ -79,9 +82,7 @@ class NewCardDialog(
 ) : AppCompatDialogFragment() {
 
     private var cardContent: EditText? = null
-    private var cardContentDefinition: EditText? = null
     private var cardValue: EditText? = null
-    private var cardValueDefinition: EditText? = null
     private var tieContentMultiAnswerCard: TextInputEditText? = null
     private var tieDefinition1MultiAnswerCard: TextInputEditText? = null
     private var tieDefinition2MultiAnswerCard: TextInputEditText? = null
@@ -126,11 +127,61 @@ class NewCardDialog(
     private var definitionList = mutableSetOf<CardDefinition>()
 
     private var selectedField: EditText? = null
+    private var actualFieldLanguage: String? = null
 
     private val newCardViewModel: NewCardDialogViewModel by viewModels()
 
-    private var filePath: Uri? = null
     private var actionMode: ActionMode? = null
+
+    var file: File? = null
+    var uri: Uri? = null
+
+    var takePreview = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+        if (success) {
+            val image: InputImage
+            try {
+                image = InputImage.fromFilePath(requireContext(), uri!!)
+                detectTextWithMLKit(image)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    var takeFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()) { imageUri: Uri? ->
+        if (imageUri != null) {
+            val image: InputImage
+            try {
+                image = InputImage.fromFilePath(requireContext(), imageUri)
+                detectTextWithMLKit(image)
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+    var micListener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
+        if (resultData.resultCode == RESULT_OK) {
+            val result = resultData.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+            if (result?.get(0).isNullOrBlank()) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_message_no_text_detected),
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                selectedField?.setText(result?.get(0))
+            }
+            actionMode = null
+            selectedField = null
+            actualFieldLanguage = null
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.error_message_no_text_detected),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     companion object {
         private const val RecordAudioRequestCode = 3455
@@ -301,7 +352,6 @@ class NewCardDialog(
             }
         }
 
-
         val callback = object : ActionMode.Callback {
 
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -320,12 +370,11 @@ class NewCardDialog(
                 return when (item?.itemId) {
                     R.id.bt_scan_image -> {
                         showImageSelectedDialog()
-
                         true
                     }
 
                     R.id.bt_mic -> {
-                        listen(REQUEST_CODE_PHOTO_MICRO)
+                        listen(REQUEST_CODE_PHOTO_MICRO, actualFieldLanguage)
                         true
                     }
 
@@ -347,12 +396,13 @@ class NewCardDialog(
                         }
                         true
                     }
-
                     else -> false
                 }
             }
 
             override fun onDestroyActionMode(mode: ActionMode?) {
+                selectedField = null
+                actualFieldLanguage = null
             }
         }
 
@@ -364,6 +414,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
@@ -375,6 +426,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
@@ -386,6 +438,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
@@ -397,6 +450,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
@@ -408,6 +462,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
@@ -419,6 +474,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
@@ -430,6 +486,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
@@ -441,6 +498,7 @@ class NewCardDialog(
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
+                    deck.deckSecondLanguage!!,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
@@ -454,6 +512,7 @@ class NewCardDialog(
 
     private fun onActiveTopAppBarMode(
         v: View?,
+        language: String?,
         hasFocus: Boolean,
         callback: ActionMode.Callback,
         title: String
@@ -462,6 +521,7 @@ class NewCardDialog(
             selectedField = v as EditText
             actionMode = getView()?.startActionMode(callback)
             actionMode?.title = title
+            actualFieldLanguage = language
         }
     }
 
@@ -510,7 +570,7 @@ class NewCardDialog(
                 PERMISSION_REQUEST_CODE_PHOTO_CAMERA
             )
         } else {
-            openCamera()
+            openCamera2()
         }
     }
 
@@ -521,46 +581,28 @@ class NewCardDialog(
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE_PHOTO_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            openCamera()
+            openCamera2()
         }
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
-    private fun openCamera() {
-        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        try {
-            startActivityForResult(intent, REQUEST_CODE_PHOTO_CAMERA)
-        } catch (e: IOException) {
-            Toast.makeText(requireContext(), "Something wrong", Toast.LENGTH_LONG).show()
-        }
+    private fun openCamera2() {
+        uri = createImageUri()
+        takePreview.launch(uri)
+    }
+
+    private fun createImageUri(): Uri {
+        val image = File(appContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
+        return FileProvider.getUriForFile(requireContext(), "package com.example.flashcard.card.FileProvider", image)
     }
 
     private fun onSelectImageFromGallery() {
-        val intent = Intent()
-        intent.type = "image/*"
-        intent.action = Intent.ACTION_GET_CONTENT
-        startActivityForResult(
-            Intent.createChooser(intent, "Select Image"),
-            REQUEST_CODE_PHOTO_GALLERY
-        )
+        takeFromGallery.launch("image/*")
     }
 
-    private fun getImageUri(context: Context, bitmap: Bitmap): Uri {
-        val baos = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos)
-        val path =
-            MediaStore.Images.Media.insertImage(appContext?.contentResolver, bitmap, "title", null)
-
-        return Uri.parse(path)
-    }
-
-    private fun detectTextWithMLKit(bitmap: Bitmap) {
+    private fun detectTextWithMLKit(image: InputImage) {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-        val image = InputImage.fromBitmap(bitmap, 0)
-
         val result = recognizer.process(image)
             .addOnSuccessListener { visionText ->
-                // Task completed successfully
                 if (visionText.text.isBlank()) {
                     Toast.makeText(
                         requireContext(),
@@ -574,7 +616,6 @@ class NewCardDialog(
                 actionMode = null
             }
             .addOnFailureListener { e ->
-                // Task failed with an exception
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
             }
     }
@@ -805,13 +846,6 @@ class NewCardDialog(
             clAddMultiAnswerCardContainer?.isVisible = false
             cardType = FLASHCARD
         }
-//        cardContent?.hint = getString(R.string.card_content_hint, deck.deckFirstLanguage)
-//        cardContentDefinition?.hint =
-//            getString(R.string.card_value_definition_hint, deck.deckFirstLanguage)
-//        cardValue?.hint = getString(R.string.card_definition, deck.deckSecondLanguage)
-//        cardValueDefinition?.hint =
-//            getString(R.string.card_value_definition_hint, deck.deckSecondLanguage)
-
     }
 
     private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null) {
@@ -1138,7 +1172,7 @@ class NewCardDialog(
         return LocalDateTime.now().format(formatter)
     }
 
-    private fun NewCardDialog.listen(requestCode: Int) {
+    private fun NewCardDialog.listen(requestCode: Int, language: String?) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.RECORD_AUDIO
@@ -1146,20 +1180,21 @@ class NewCardDialog(
         ) {
             checkPermission()
         } else {
+            val languageExtra = if (language != null) FirebaseTranslatorHelper().getLanguageCodeForSpeechAndText(language) else Locale.getDefault()
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE,
-                FirebaseTranslatorHelper().getLanguageCodeForSpeechAndText(deck.deckFirstLanguage!!)
+                languageExtra
             )
             intent.putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Say something to translate")
+            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.message_on_voice_to_text_recording))
 
             try {
-                startActivityForResult(intent, requestCode)
+                micListener.launch(intent)
             } catch (e: Exception) {
                 e.printStackTrace()
                 Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
@@ -1173,47 +1208,6 @@ class NewCardDialog(
                 requireActivity(), arrayOf<String>(Manifest.permission.RECORD_AUDIO),
                 RecordAudioRequestCode
             )
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_CODE_PHOTO_GALLERY -> {
-                try {
-                    filePath = data?.data
-                    val bitmap = MediaStore.Images.Media.getBitmap(
-                        requireActivity().application.contentResolver,
-                        filePath
-                    )
-                    detectTextWithMLKit(bitmap)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-            }
-
-            REQUEST_CODE_PHOTO_CAMERA -> {
-                val extras = data?.extras
-                val bitmap = extras?.get("data") as Bitmap
-                detectTextWithMLKit(bitmap)
-                filePath = getImageUri(requireContext(), bitmap)
-            }
-
-            REQUEST_CODE_PHOTO_MICRO -> {
-                val result = data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-                if (result?.get(0).isNullOrBlank()) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_message_no_text_detected),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    selectedField?.setText(result?.get(0))
-                }
-                actionMode = null
-                selectedField = null
-            }
-
         }
     }
 
