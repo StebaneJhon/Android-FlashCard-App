@@ -128,7 +128,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Flash Card" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_speak"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="@dimen/icon_card_top_width"

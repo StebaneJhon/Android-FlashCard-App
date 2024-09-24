@@ -17,6 +17,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -82,9 +83,10 @@ class TestQuizGameActivity :
         if (themRef != null) {
             setTheme(themRef)
         }
-        tts = TextToSpeech(this, this)
         binding = ActivityTestQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        tts = TextToSpeech(this, this)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
@@ -93,7 +95,6 @@ class TestQuizGameActivity :
             if (!cardList.isNullOrEmpty() && deck != null) {
                 viewModel.initOriginalCardList(cardList)
                 startTest(cardList, deck)
-            } else {
             }
         }
 
@@ -214,30 +215,18 @@ class TestQuizGameActivity :
             },
             {dataToRead ->
                 if (tts.isSpeaking) {
-                    stopReading(dataToRead.views, dataToRead.speakButton)
+                    stopReading(dataToRead.views)
                 } else {
                     readText(
                         dataToRead.text,
                         dataToRead.views,
                         dataToRead.language,
-                        viewModel.deck?.deckSecondLanguage!!,
-                        dataToRead.speakButton,
+                        viewModel.deck?.deckSecondLanguage!!
                     )
                 }
 
             })
         binding.vpCardHolder.adapter = testQuizGameAdapter
-    }
-
-    private fun stopReading (
-        views: List<View>,
-        speakButton: Button
-    ) {
-        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
-        tts.stop()
-        views.forEach { v ->
-            (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
-        }
     }
 
     private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
@@ -510,7 +499,6 @@ class TestQuizGameActivity :
         view: List<View>,
         firstLanguage: String,
         secondLanguage: String,
-        speakButton: Button,
     ) {
 
         var position = 0
@@ -521,11 +509,11 @@ class TestQuizGameActivity :
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor, speakButton)
+                onReading(position, view, onReadColor)
             }
 
             override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, onStopColor, speakButton)
+                onReadingStop(position, view, onStopColor)
                 position += 1
                 if (position < textSum) {
                     speak(secondLanguage, params, text, position, this)
@@ -544,13 +532,20 @@ class TestQuizGameActivity :
 
     }
 
+    private fun stopReading (
+        views: List<View>
+    ) {
+        tts.stop()
+        views.forEach { v ->
+            (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+        }
+    }
+
     private fun onReading(
         position: Int,
         view: List<View>,
-        onReadColor: Int,
-        speakButton: Button,
+        onReadColor: Int
     ) {
-        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -561,10 +556,8 @@ class TestQuizGameActivity :
     private fun onReadingStop(
         position: Int,
         view: List<View>,
-        onReadColor: Int,
-        speakButton: Button
+        onReadColor: Int
     ) {
-        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {

@@ -68,7 +68,7 @@ class TestQuizGameAdapter(
         private val tvBackProgression: TextView = view.findViewById(R.id.tv_back_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val tvCardTypeBack: TextView = view.findViewById(R.id.tv_card_type_back)
-        private val btSpeak: Button = view.findViewById(R.id.bt_speak)
+        private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
         private val btSpeakBack: Button = view.findViewById(R.id.bt_speak_back)
         private val tvContent: TextView = view.findViewById(R.id.tv_content)
         private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
@@ -165,27 +165,25 @@ class TestQuizGameAdapter(
                 flipCard(modelCard.isFlipped)
             }
 
-            btSpeak.setOnClickListener { v ->
+            btSpeak.setOnClickListener {
                 val views = listOf(tvContent)
                 val texts = listOf(card?.cardContent?.content!!)
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        deck.deckFirstLanguage!!,
-                        v as Button
+                        deck.deckFirstLanguage!!
                     )
                 )
             }
-            btSpeakBack.setOnClickListener { v ->
+            btSpeakBack.setOnClickListener {
                 val views = listOf(tvDefinition)
                 val texts = listOf(card?.cardDefinition?.get(0)?.definition!!)
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        deck.deckSecondLanguage!!,
-                        v as Button
+                        deck.deckSecondLanguage!!
                     )
                 )
             }
@@ -214,15 +212,14 @@ class TestQuizGameAdapter(
             btAlternative3.isVisible = false
             btAlternative4.isVisible = false
 
-            btSpeak.setOnClickListener { v ->
+            btSpeak.setOnClickListener {
                 val views = listOf(tvContent)
                 val texts = listOf(card?.cardContent?.content!!)
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        deck.deckFirstLanguage!!,
-                        v as Button
+                        deck.deckFirstLanguage!!
                     )
                 )
             }
@@ -386,13 +383,12 @@ class TestQuizGameAdapter(
             texts: List<String>,
             language: String,
         ) {
-            btSpeak.setOnClickListener { v ->
+            btSpeak.setOnClickListener {
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        language,
-                        v as Button
+                        language
                     )
                 )
             }
