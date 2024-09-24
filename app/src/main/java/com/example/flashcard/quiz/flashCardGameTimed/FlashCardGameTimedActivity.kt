@@ -19,6 +19,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -50,7 +51,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
+class FlashCardGameTimedActivity :
+    AppCompatActivity(),
+    MiniGameSettingsSheet.SettingsApplication,
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityFlashCardGameTimedBinding
     private val viewModel: FlashCardGameTimedViewModel by viewModels {
@@ -89,6 +94,8 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         if (themRef != null) {
             setTheme(themRef)
         }
+
+        tts = TextToSpeech(this, this)
 
         binding = ActivityFlashCardGameTimedBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -708,7 +715,6 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
             }
         }
 
-        //binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
         binding.tvFlashCardFrontProgression.text = getString(
             R.string.tx_flash_card_game_progression,
             "$currentCardNumber",
@@ -720,24 +726,50 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
             "$sumCardsInDeck"
         )
 
-        binding.btCardFrontSpeak.setOnClickListener {
-            readText(listOf(onScreenCards.top.cardContent?.content!!), listOf(binding.tvQuizFront), viewModel.deck?.deckFirstLanguage!!)
+        binding.btCardFrontSpeak.setOnClickListener { v ->
+            if (tts.isSpeaking) {
+                stopReading(listOf(binding.tvQuizFront), v as Button)
+            } else {
+                readText(
+                    listOf(onScreenCards.top.cardContent?.content!!),
+                    listOf(binding.tvQuizFront),
+                    viewModel.deck?.deckFirstLanguage!!,
+                    v as Button
+                    )
+            }
         }
-        binding.btCardBackSpeak.setOnClickListener {
+        binding.btCardBackSpeak.setOnClickListener { v ->
             val views = listOf(
                 binding.tvTimedQuizBack1,
                 binding.tvTimedQuizBack2,
                 binding.tvTimedQuizBack3,
             )
-            val definitions = cardDefinitionsToStrings(correctDefinitions)
-            readText(definitions, views, viewModel.deck?.deckSecondLanguage!!)
+            if (tts.isSpeaking) {
+                stopReading(views, v as Button)
+            } else {
+                val definitions = cardDefinitionsToStrings(correctDefinitions)
+                readText(
+                    definitions,
+                    views,
+                    viewModel.deck?.deckSecondLanguage!!,
+                    v as Button
+                )
+            }
+        }
+    }
+
+    private fun stopReading(views: List<TextView>, button: Button) {
+        tts.stop()
+        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
+        views.forEach { v ->
+            v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
         }
     }
 
     private fun cardDefinitionsToStrings(definitions: List<CardDefinition>?): List<String> {
         val correctAlternative = mutableListOf<String>()
         definitions?.forEach {
-            correctAlternative.add(it.definition!!)
+            correctAlternative.add(it.definition)
         }
         return  correctAlternative
     }
@@ -745,22 +777,25 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     private fun readText(
         text: List<String>,
         view: List<TextView>,
-        language: String
+        language: String,
+        v: Button
     ) {
 
         var position = 0
         val textSum = text.size
-        val textColor = view[0].textColors
+        val textColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
         val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
 
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
+                v.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
                 view[position].setTextColor(onReadColor)
             }
 
             override fun onDone(utteranceId: String?) {
+                v.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
                 view[position].setTextColor(textColor)
                 position += 1
                 if (position < textSum) {
@@ -772,7 +807,7 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
             }
 
             override fun onError(utteranceId: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@FlashCardGameTimedActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -787,28 +822,11 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
-            when (it) {
-                TextToSpeech.SUCCESS -> {
-                    if (tts.isSpeaking) {
-                        tts.stop()
-                        tts.shutdown()
-                    } else {
-                        tts.language = Locale.forLanguageTag(
-                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
-                        )
-                        tts.setSpeechRate(1.0f)
-                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-                        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-                    }
-                }
-
-                else -> {
-                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
+        tts.language = Locale.forLanguageTag(
+            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+        )
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts.setOnUtteranceProgressListener(speechListener)
     }
 
@@ -896,6 +914,17 @@ class FlashCardGameTimedActivity : AppCompatActivity(), MiniGameSettingsSheet.Se
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+    }
+
+    override fun onInit(status: Int) {
+        when(status) {
+            TextToSpeech.SUCCESS -> {
+                tts.setSpeechRate(1.0f)
+            }
+            else -> {
+                Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 }

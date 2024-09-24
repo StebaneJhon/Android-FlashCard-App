@@ -15,6 +15,7 @@ import android.speech.tts.UtteranceProgressListener
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -43,7 +44,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
+class WritingQuizGameActivity :
+    AppCompatActivity(),
+    MiniGameSettingsSheet.SettingsApplication ,
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityWritingQuizGameBinding
 
@@ -78,6 +83,7 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) { setTheme(themRef) }
+        tts = TextToSpeech(this, this)
         binding = ActivityWritingQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -231,37 +237,50 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
                 }
             },
             {dataToRead ->
-                readText(
-                    dataToRead.text,
-                    dataToRead.views,
-                    dataToRead.originalTextColor,
-                    viewModel.deck.deckFirstLanguage!!
-                )
+                if (tts.isSpeaking) {
+                    stopReading(dataToRead.views, dataToRead.speakButton)
+                } else {
+                    readText(
+                        dataToRead.text,
+                        dataToRead.views,
+                        viewModel.deck.deckFirstLanguage!!,
+                        dataToRead.speakButton
+                    )
+                }
             })
         binding.vpCardHolder.adapter = writingQuizGameAdapter
+    }
+
+    private fun stopReading (
+        v: View,
+        speakButton: Button
+    ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
+        tts.stop()
+        (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
     }
 
     private fun readText(
         text: String,
         view: View,
-        viewColor: ColorStateList,
         language: String,
+        speakButton: Button,
     ) {
         val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
-
+        val onStopColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(view, onReadColor)
+                onReading(view, onReadColor, speakButton)
             }
 
             override fun onDone(utteranceId: String?) {
-                onReadingStop(view, viewColor)
+                onReadingStop(view, onStopColor, speakButton)
             }
 
             override fun onError(utteranceId: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@WritingQuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -272,14 +291,18 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     private fun onReading(
         view: View,
         onReadColor: Int,
+        speakButton: Button,
     ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
         (view as TextView).setTextColor(onReadColor)
     }
 
     private fun onReadingStop(
         view: View,
-        onReadColor: ColorStateList
+        onReadColor: Int,
+        speakButton: Button,
     ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         (view as TextView).setTextColor(onReadColor)
     }
 
@@ -289,28 +312,11 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
         text: String,
         speechListener: UtteranceProgressListener
     ) {
-        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
-            when (it) {
-                TextToSpeech.SUCCESS -> {
-                    if (tts.isSpeaking) {
-                        tts.stop()
-                        tts.shutdown()
-                    } else {
-                        tts.language = Locale.forLanguageTag(
-                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
-                        )
-                        tts.setSpeechRate(1.0f)
-                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-                        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
-                    }
-                }
-
-                else -> {
-                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
+        tts.language = Locale.forLanguageTag(
+            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+        )
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts.setOnUtteranceProgressListener(speechListener)
     }
 
@@ -417,6 +423,17 @@ class WritingQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Setti
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+    }
+
+    override fun onInit(status: Int) {
+        when(status) {
+            TextToSpeech.SUCCESS -> {
+                tts.setSpeechRate(1.0f)
+            }
+            else -> {
+                Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 }

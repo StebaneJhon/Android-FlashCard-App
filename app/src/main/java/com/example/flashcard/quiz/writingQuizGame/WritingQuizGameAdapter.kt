@@ -102,12 +102,12 @@ class WritingQuizGameAdapter(
                 }
             }
 
-            btSpeak.setOnClickListener {
+            btSpeak.setOnClickListener { v ->
                 onSpeak(
                     WritingQuizSpeakModel(
                         text = card.onCardWord,
                         views = tvOnCardWord,
-                        tvOnCardWord.textColors,
+                        v as Button
                     )
                 )
             }

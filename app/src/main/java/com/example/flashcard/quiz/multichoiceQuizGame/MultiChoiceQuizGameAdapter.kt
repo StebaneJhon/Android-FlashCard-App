@@ -149,7 +149,7 @@ class MultiChoiceQuizGameAdapter(
             btAlternative3OnWrongCard.text = card.alternative3
             btAlternative4OnWrongCard.text = card.alternative4
 
-            btSpeakFront.setOnClickListener {
+            btSpeakFront.setOnClickListener { v ->
                 val views = listOf(
                     tvOnCardWord,
                     btAlternative1,
@@ -168,7 +168,7 @@ class MultiChoiceQuizGameAdapter(
                     SpeakModel(
                         text = texts,
                         views = views,
-                        tvOnCardWord.textColors
+                        v as Button,
                     ))
             }
 

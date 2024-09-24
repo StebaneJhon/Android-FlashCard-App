@@ -72,13 +72,17 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 
 
-class CardFragment : Fragment(), MenuProvider, TextToSpeech.OnInitListener {
+class CardFragment :
+    Fragment(),
+    MenuProvider,
+    TextToSpeech.OnInitListener
+{
 
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
     private var appContext: Context? = null
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
-    lateinit var tts: TextToSpeech
+    private lateinit var tts: TextToSpeech
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository

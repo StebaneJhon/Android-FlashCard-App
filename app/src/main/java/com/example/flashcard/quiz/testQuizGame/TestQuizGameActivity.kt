@@ -13,6 +13,7 @@ import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -41,7 +42,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
+class TestQuizGameActivity :
+    AppCompatActivity(),
+    MiniGameSettingsSheet.SettingsApplication,
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityTestQuizGameBinding
     private val viewModel: TestQuizGameViewModel by viewModels {
@@ -53,10 +58,6 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
-
-    private lateinit var oneOrMultipleAnswerCardModel: OneOrMultipleAnswerCardModel
-    private lateinit var trueOrFalseCardModel: TrueOrFalseCardModel
-    private lateinit var flashCardModel: TrueOrFalseCardModel
 
     private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var testQuizGameAdapter: TestQuizGameAdapter
@@ -81,6 +82,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
         if (themRef != null) {
             setTheme(themRef)
         }
+        tts = TextToSpeech(this, this)
         binding = ActivityTestQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -211,14 +213,31 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
                 }
             },
             {dataToRead ->
-                readText(
-                    dataToRead.text,
-                    dataToRead.views,
-                    dataToRead.originalTextColor,
-                    dataToRead.language,
-                    viewModel.deck?.deckSecondLanguage!!,)
+                if (tts.isSpeaking) {
+                    stopReading(dataToRead.views, dataToRead.speakButton)
+                } else {
+                    readText(
+                        dataToRead.text,
+                        dataToRead.views,
+                        dataToRead.language,
+                        viewModel.deck?.deckSecondLanguage!!,
+                        dataToRead.speakButton,
+                    )
+                }
+
             })
         binding.vpCardHolder.adapter = testQuizGameAdapter
+    }
+
+    private fun stopReading (
+        views: List<View>,
+        speakButton: Button
+    ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
+        tts.stop()
+        views.forEach { v ->
+            (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+        }
     }
 
     private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
@@ -489,25 +508,24 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
     private fun readText(
         text: List<String>,
         view: List<View>,
-        viewColor: ColorStateList,
         firstLanguage: String,
-        secondLanguage: String
+        secondLanguage: String,
+        speakButton: Button,
     ) {
 
         var position = 0
         val textSum = text.size
-        //val textColor = view[0].textColors
+        val onStopColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
         val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
-
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor)
+                onReading(position, view, onReadColor, speakButton)
             }
 
             override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, viewColor)
+                onReadingStop(position, view, onStopColor, speakButton)
                 position += 1
                 if (position < textSum) {
                     speak(secondLanguage, params, text, position, this)
@@ -518,7 +536,7 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
             }
 
             override fun onError(utteranceId: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@TestQuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
         }
 
@@ -530,7 +548,9 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
         position: Int,
         view: List<View>,
         onReadColor: Int,
+        speakButton: Button,
     ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -541,8 +561,10 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
     private fun onReadingStop(
         position: Int,
         view: List<View>,
-        onReadColor: ColorStateList
+        onReadColor: Int,
+        speakButton: Button
     ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -557,28 +579,11 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
-            when (it) {
-                TextToSpeech.SUCCESS -> {
-                    if (tts.isSpeaking) {
-                        tts.stop()
-                        tts.shutdown()
-                    } else {
-                        tts.language = Locale.forLanguageTag(
-                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
-                        )
-                        tts.setSpeechRate(1.0f)
-                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-                        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-                    }
-                }
-
-                else -> {
-                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
+        tts.language = Locale.forLanguageTag(
+            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+        )
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts.setOnUtteranceProgressListener(speechListener)
     }
 
@@ -612,6 +617,17 @@ class TestQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.Settings
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+    }
+
+    override fun onInit(status: Int) {
+        when(status) {
+            TextToSpeech.SUCCESS -> {
+                tts.setSpeechRate(1.0f)
+            }
+            else -> {
+                Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
 }

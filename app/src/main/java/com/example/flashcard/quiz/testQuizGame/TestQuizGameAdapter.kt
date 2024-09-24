@@ -103,7 +103,7 @@ class TestQuizGameAdapter(
                 cvCardContainerBack.alpha = 1f
             }
 
-            val card = modelCard?.cardDetails
+            val card = modelCard.cardDetails
             tvFrontProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvContent.text = card?.cardContent?.content
             tvCardType.text = card?.cardType
@@ -123,7 +123,7 @@ class TestQuizGameAdapter(
                     onOneOrMultiAnswer(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
                 else -> {
-                    onFlashCard(modelCard!!, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
             }
 
@@ -165,27 +165,27 @@ class TestQuizGameAdapter(
                 flipCard(modelCard.isFlipped)
             }
 
-            btSpeak.setOnClickListener {
+            btSpeak.setOnClickListener { v ->
                 val views = listOf(tvContent)
                 val texts = listOf(card?.cardContent?.content!!)
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        tvContent.textColors,
-                        deck.deckFirstLanguage!!
+                        deck.deckFirstLanguage!!,
+                        v as Button
                     )
                 )
             }
-            btSpeakBack.setOnClickListener {
+            btSpeakBack.setOnClickListener { v ->
                 val views = listOf(tvDefinition)
                 val texts = listOf(card?.cardDefinition?.get(0)?.definition!!)
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        tvDefinition.textColors,
-                        deck.deckSecondLanguage!!
+                        deck.deckSecondLanguage!!,
+                        v as Button
                     )
                 )
             }
@@ -214,15 +214,15 @@ class TestQuizGameAdapter(
             btAlternative3.isVisible = false
             btAlternative4.isVisible = false
 
-            btSpeak.setOnClickListener {
+            btSpeak.setOnClickListener { v ->
                 val views = listOf(tvContent)
                 val texts = listOf(card?.cardContent?.content!!)
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        tvContent.textColors,
-                        deck.deckFirstLanguage!!
+                        deck.deckFirstLanguage!!,
+                        v as Button
                     )
                 )
             }
@@ -278,8 +278,8 @@ class TestQuizGameAdapter(
 
                     val texts = listOf(
                         card?.cardContent?.content!!,
-                        answers[0].definition!!,
-                        answers[1].definition!!
+                        answers[0].definition,
+                        answers[1].definition
                     )
                     val views = listOf(
                         tvContent,
@@ -290,7 +290,6 @@ class TestQuizGameAdapter(
                     frontSpeak(
                         views,
                         texts,
-                        tvContent.textColors,
                         deck.deckFirstLanguage!!
                     )
 
@@ -314,9 +313,9 @@ class TestQuizGameAdapter(
                     btAlternative4.isVisible = false
                     val texts = listOf(
                         card?.cardContent?.content!!,
-                        answers[0].definition!!,
-                        answers[1].definition!!,
-                        answers[2].definition!!,
+                        answers[0].definition,
+                        answers[1].definition,
+                        answers[2].definition,
                     )
                     val views = listOf(
                         tvContent,
@@ -328,7 +327,6 @@ class TestQuizGameAdapter(
                     frontSpeak(
                         views,
                         texts,
-                        tvContent.textColors,
                         deck.deckFirstLanguage!!
                     )
                 }
@@ -355,10 +353,10 @@ class TestQuizGameAdapter(
                     }
                     val texts = listOf(
                         card?.cardContent?.content!!,
-                        answers[0].definition!!,
-                        answers[1].definition!!,
-                        answers[2].definition!!,
-                        answers[3].definition!!,
+                        answers[0].definition,
+                        answers[1].definition,
+                        answers[2].definition,
+                        answers[3].definition,
                     )
                     val views = listOf(
                         tvContent,
@@ -371,7 +369,6 @@ class TestQuizGameAdapter(
                     frontSpeak(
                         views,
                         texts,
-                        tvContent.textColors,
                         deck.deckFirstLanguage!!
                     )
 
@@ -387,16 +384,15 @@ class TestQuizGameAdapter(
         private fun frontSpeak(
             views: List<View>,
             texts: List<String>,
-            textColor: ColorStateList,
             language: String,
         ) {
-            btSpeak.setOnClickListener {
+            btSpeak.setOnClickListener { v ->
                 onSpeak(
                     TestQuizSpeakModel(
                         text = texts,
                         views = views,
-                        textColor,
-                        language
+                        language,
+                        v as Button
                     )
                 )
             }

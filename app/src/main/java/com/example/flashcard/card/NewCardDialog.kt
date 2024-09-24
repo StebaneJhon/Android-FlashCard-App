@@ -133,10 +133,9 @@ class NewCardDialog(
 
     private var actionMode: ActionMode? = null
 
-    var file: File? = null
-    var uri: Uri? = null
+    private var uri: Uri? = null
 
-    var takePreview = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+    private var takePreview = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
         if (success) {
             val image: InputImage
             try {
@@ -148,7 +147,7 @@ class NewCardDialog(
         }
     }
 
-    var takeFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()) { imageUri: Uri? ->
+    private var takeFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()) { imageUri: Uri? ->
         if (imageUri != null) {
             val image: InputImage
             try {
@@ -159,7 +158,7 @@ class NewCardDialog(
             }
         }
     }
-    var micListener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
+    private var micListener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
         if (resultData.resultCode == RESULT_OK) {
             val result = resultData.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
             if (result?.get(0).isNullOrBlank()) {
@@ -189,11 +188,7 @@ class NewCardDialog(
         const val SAVE_CARDS_BUNDLE_KEY = "1"
         const val EDIT_CARD_BUNDLE_KEY = "2"
         const val REQUEST_CODE_CARD = "0"
-
-        private const val REQUEST_CODE_PHOTO_GALLERY = 12345
         private const val PERMISSION_REQUEST_CODE_PHOTO_CAMERA = 123453244
-        private const val REQUEST_CODE_PHOTO_CAMERA = 453244
-        private const val REQUEST_CODE_PHOTO_MICRO = 453255
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -374,7 +369,7 @@ class NewCardDialog(
                     }
 
                     R.id.bt_mic -> {
-                        listen(REQUEST_CODE_PHOTO_MICRO, actualFieldLanguage)
+                        listen(actualFieldLanguage)
                         true
                     }
 
@@ -401,8 +396,6 @@ class NewCardDialog(
             }
 
             override fun onDestroyActionMode(mode: ActionMode?) {
-                selectedField = null
-                actualFieldLanguage = null
             }
         }
 
@@ -519,7 +512,7 @@ class NewCardDialog(
     ) {
         if (hasFocus) {
             selectedField = v as EditText
-            actionMode = getView()?.startActionMode(callback)
+            actionMode = view?.startActionMode(callback)
             actionMode?.title = title
             actualFieldLanguage = language
         }
@@ -645,13 +638,21 @@ class NewCardDialog(
 
     private fun initCardAdditionPanel() {
         tieContentMultiAnswerCard?.text?.clear()
+        tilContentMultiAnswerCard?.error = null
         tieContentTrueOrFalseCard?.text?.clear()
+        tilContentTrueOrFalseCard?.error = null
         cardContent?.text?.clear()
+        cardContentLY?.error = null
         cardValue?.text?.clear()
+        cardValueLY?.error = null
         tieDefinition1MultiAnswerCard?.text?.clear()
+        tilDefinition1MultiAnswerCard?.error = null
         tieDefinition2MultiAnswerCard?.text?.clear()
+        tilDefinition2MultiAnswerCard?.error = null
         tieDefinition3MultiAnswerCard?.text?.clear()
+        tilDefinition3MultiAnswerCard?.error = null
         tieDefinition4MultiAnswerCard?.text?.clear()
+        tilDefinition4MultiAnswerCard?.error = null
         cpTrue?.isChecked = true
         cpFalse?.isChecked = false
         cpDefinition1IsTrue?.isChecked = false
@@ -989,7 +990,7 @@ class NewCardDialog(
 
     private fun getContentOnAddFC(cardId: String, contentId: String, deckId: String): CardContent? {
         val cardContentText = cardContent?.text.toString()
-        return if (cardContentText.isNotEmpty()) {
+        return if (cardContentText.isNotBlank() && cardContentText.isNotEmpty()) {
             CardContent(
                 contentId,
                 cardId,
@@ -1008,7 +1009,7 @@ class NewCardDialog(
         deckId: String
     ): CardContent? {
         val cardContentText = tieContentMultiAnswerCard?.text.toString()
-        return if (cardContentText.isNotEmpty()) {
+        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
             CardContent(
                 contentId,
                 cardId,
@@ -1027,7 +1028,7 @@ class NewCardDialog(
         deckId: String
     ): CardContent? {
         val cardContentText = tieContentTrueOrFalseCard?.text.toString()
-        return if (cardContentText.isNotEmpty()) {
+        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
             CardContent(
                 contentId,
                 cardId,
@@ -1055,7 +1056,11 @@ class NewCardDialog(
             definition1Text.isEmpty() &&
             definition2Text.isEmpty() &&
             definition3Text.isEmpty() &&
-            definition4Text.isEmpty()
+            definition4Text.isEmpty() ||
+            definition1Text.isBlank() &&
+            definition2Text.isBlank() &&
+            definition3Text.isBlank() &&
+            definition4Text.isBlank()
         ) {
             tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
             return null
@@ -1071,7 +1076,7 @@ class NewCardDialog(
             return null
         }
 
-        if (definition1Text.isNotEmpty()) {
+        if (definition1Text.isNotEmpty() && definition1Text.isNotBlank()) {
             definitionList.add(
                 createDefinition(
                     definition1Text,
@@ -1082,7 +1087,7 @@ class NewCardDialog(
                 )
             )
         }
-        if (definition2Text.isNotEmpty()) {
+        if (definition2Text.isNotEmpty() && definition2Text.isNotBlank()) {
             definitionList.add(
                 createDefinition(
                     definition2Text,
@@ -1093,7 +1098,7 @@ class NewCardDialog(
                 )
             )
         }
-        if (definition3Text.isNotEmpty()) {
+        if (definition3Text.isNotEmpty() && definition3Text.isNotBlank()) {
             definitionList.add(
                 createDefinition(
                     definition3Text,
@@ -1104,7 +1109,7 @@ class NewCardDialog(
                 )
             )
         }
-        if (definition4Text.isNotEmpty()) {
+        if (definition4Text.isNotEmpty() && definition4Text.isNotBlank()) {
             definitionList.add(
                 createDefinition(
                     definition4Text,
@@ -1125,7 +1130,7 @@ class NewCardDialog(
     ): List<CardDefinition>? {
         definitionList.clear()
         val definitionText = cardValue?.text.toString()
-        if (definitionText.isNotEmpty()) {
+        if (definitionText.isNotEmpty() && definitionText.isNotBlank()) {
             definitionList.add(createDefinition(definitionText, true, cardId, contentId, deckId))
         } else {
             cardValueLY?.error = getString(R.string.til_error_card_definition)
@@ -1172,7 +1177,7 @@ class NewCardDialog(
         return LocalDateTime.now().format(formatter)
     }
 
-    private fun NewCardDialog.listen(requestCode: Int, language: String?) {
+    private fun NewCardDialog.listen(language: String?) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.RECORD_AUDIO

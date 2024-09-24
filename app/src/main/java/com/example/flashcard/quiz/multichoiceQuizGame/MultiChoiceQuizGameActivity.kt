@@ -15,6 +15,7 @@ import android.speech.tts.UtteranceProgressListener
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -26,8 +27,6 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
-import com.example.flashcard.backend.Model.toExternal
-import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityMultichoiceQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
@@ -44,7 +43,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.SettingsApplication {
+class MultiChoiceQuizGameActivity :
+    AppCompatActivity(),
+    MiniGameSettingsSheet.SettingsApplication,
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityMultichoiceQuizGameBinding
     private val viewModel: MultiChoiceQuizGameViewModel by viewModels {
@@ -82,6 +85,7 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         if (themRef != null) {
             setTheme(themRef)
         }
+        tts = TextToSpeech(this, this)
         binding = ActivityMultichoiceQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -188,7 +192,6 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         if (unKnownCardFirst == true) {
             viewModel.sortCardsByLevel()
         }
-
         restartMultiChoiceQuiz()
     }
 
@@ -205,7 +208,6 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
                 applySettings()
             }
         }
-        //isFlashCardGameScreenHidden(true)
     }
 
     private fun unableShowUnKnownCardOnly() {
@@ -239,27 +241,42 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
                 }
             }
         }) {
-            val cardOrientation = getCardOrientation()
-            if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                readText(
-                    it.text,
-                    it.views,
-                    it.originalTextColor,
-                    viewModel.deck.deckFirstLanguage!!,
-                    viewModel.deck.deckSecondLanguage!!
-                )
+            if (tts.isSpeaking) {
+                stopReading(it.views, it.speakButton)
             } else {
-                readText(
-                    it.text,
-                    it.views,
-                    it.originalTextColor,
-                    viewModel.deck.deckSecondLanguage!!,
-                    viewModel.deck.deckFirstLanguage!!
-                )
+                val cardOrientation = getCardOrientation()
+                if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+                    readText(
+                        it.text,
+                        it.views,
+                        viewModel.deck.deckFirstLanguage!!,
+                        viewModel.deck.deckSecondLanguage!!,
+                        it.speakButton,
+                    )
+                } else {
+                    readText(
+                        it.text,
+                        it.views,
+                        viewModel.deck.deckSecondLanguage!!,
+                        viewModel.deck.deckFirstLanguage!!,
+                        it.speakButton
+                    )
+                }
             }
 
         }
         binding.vpCardHolder.adapter = multiChoiceGameAdapter
+    }
+
+    private fun stopReading (
+        views: List<View>,
+        speakButton: Button
+        ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
+        tts.stop()
+        views.forEach { v ->
+            (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+        }
     }
 
     private fun giveFeedback(
@@ -278,24 +295,21 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     private fun readText(
         text: List<String>,
         view: List<View>,
-        viewColor: ColorStateList,
         firstLanguage: String,
-        secondLanguage: String
+        secondLanguage: String,
+        speakButton: Button
     ) {
-
         var position = 0
         val textSum = text.size
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
-
+        val onReadColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerHighest, Color.GRAY)
+        val onStopColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
         val params = Bundle()
-
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor)
+                onReading(position, view, onReadColor, speakButton)
             }
-
             override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, viewColor)
+                onReadingStop(position, view, onStopColor, speakButton)
                 position += 1
                 if (position < textSum) {
                     speak(secondLanguage, params, text, position, this)
@@ -304,21 +318,20 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
                     return
                 }
             }
-
             override fun onError(utteranceId: String?) {
-                TODO("Not yet implemented")
+                Toast.makeText(this@MultiChoiceQuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
         }
-
         speak(firstLanguage, params, text, position, speechListener)
-
     }
 
     private fun onReading(
         position: Int,
         view: List<View>,
-        onReadColor: Int
+        onReadColor: Int,
+        speakButton: Button
     ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -329,8 +342,10 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     private fun onReadingStop(
         position: Int,
         view: List<View>,
-        onReadColor: ColorStateList
+        onReadColor: Int,
+        speakButton: Button
     ) {
+        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -345,28 +360,11 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts = TextToSpeech(this, TextToSpeech.OnInitListener {
-            when (it) {
-                TextToSpeech.SUCCESS -> {
-                    if (tts.isSpeaking) {
-                        tts.stop()
-                        tts.shutdown()
-                    } else {
-                        tts.language = Locale.forLanguageTag(
-                            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
-                        )
-                        tts.setSpeechRate(1.0f)
-                        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-                        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-                    }
-                }
-
-                else -> {
-                    Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-
+        tts.language = Locale.forLanguageTag(
+            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+        )
+        params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
+        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts.setOnUtteranceProgressListener(speechListener)
     }
 
@@ -393,7 +391,6 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
-//            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Multi Choice Quiz")
             tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
@@ -523,6 +520,18 @@ class MultiChoiceQuizGameActivity : AppCompatActivity(), MiniGameSettingsSheet.S
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
         else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
+    }
+
+    override fun onInit(status: Int) {
+        when(status) {
+            TextToSpeech.SUCCESS -> {
+                tts.setSpeechRate(1.0f)
+            }
+            else -> {
+                Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG)
+                    .show()
+            }
+        }
     }
 
 }
