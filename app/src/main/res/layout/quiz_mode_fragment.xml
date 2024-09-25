@@ -41,8 +41,7 @@
             android:text="@string/bt_flash_card_game_start"
             android:textColor="?colorOnSurface"
             android:textAlignment="center"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_flip"
             app:iconTint="?colorOnSurface"/>
@@ -54,8 +53,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:text="@string/bt_text_flash_card_timed"
             android:textColor="?colorOnSurface"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_timer"
             app:iconTint="?colorOnSurface"/>
@@ -67,8 +65,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:text="@string/multiple_choice_quiz_button_text"
             android:textColor="?colorOnSurface"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_quiz"
             app:iconTint="?colorOnSurface"/>
@@ -80,8 +77,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:text="@string/bt_start_writing_quiz_game_text"
             android:textColor="?colorOnSurface"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_writing"
             app:iconTint="?colorOnSurface"/>
@@ -93,8 +89,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:text="@string/bt_match_quiz_mode_text"
             android:textColor="?colorOnSurface"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_dashboard"
             app:iconTint="?colorOnSurface"/>
@@ -106,8 +101,7 @@
             android:backgroundTint="?colorSurfaceContainer"
             android:text="@string/bt_test_quiz_game_text"
             android:textColor="?colorOnSurface"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_neurology"
             app:iconTint="?colorOnSurface"/>
