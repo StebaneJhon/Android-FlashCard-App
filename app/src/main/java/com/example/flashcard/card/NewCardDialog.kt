@@ -66,6 +66,11 @@ import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
+import com.google.mlkit.vision.text.TextRecognizer
+import com.google.mlkit.vision.text.chinese.ChineseTextRecognizerOptions
+import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
+import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
+import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.launch
 import java.io.File
@@ -115,11 +120,8 @@ class NewCardDialog(
 
     private var btAdd: MaterialButton? = null
     private var btCancel: MaterialButton? = null
-
     private var tvTitleAddedCards: TextView? = null
-
     private var tabAddAndUpdateNewCard: MaterialToolbar? = null
-
     private var rvAddedCard: RecyclerView? = null
     private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
 
@@ -131,9 +133,7 @@ class NewCardDialog(
     private var actualFieldLanguage: String? = null
 
     private val newCardViewModel: NewCardDialogViewModel by viewModels()
-
     private var actionMode: ActionMode? = null
-
     private var uri: Uri? = null
 
     private var takePreview =
@@ -603,8 +603,37 @@ class NewCardDialog(
         takeFromGallery.launch("image/*")
     }
 
-    private fun detectTextWithMLKit(image: InputImage) {
-        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+    private fun getRecognizer(language: String?): TextRecognizer {
+        return when (language) {
+            "Chinese" -> {
+                TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
+            }
+            "Vietnamese" -> {
+                TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
+            }
+            "Japanese" -> {
+                TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
+            }
+            "Korean" -> {
+                TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+            }
+            "Indonesian" -> {
+                TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
+            }
+            "Hindi" -> {
+                TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
+            }
+            "Marathi" -> {
+                TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
+            }
+            else -> {
+                TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            }
+        }
+    }
+
+    private fun detectTextWithMLKit(image: InputImage, language: String? = actualFieldLanguage) {
+        val recognizer = getRecognizer(language)
         val result = recognizer.process(image)
             .addOnSuccessListener { visionText ->
                 if (visionText.text.isBlank()) {
@@ -618,6 +647,7 @@ class NewCardDialog(
                 }
                 selectedField = null
                 actionMode = null
+                actualFieldLanguage = null
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
@@ -871,7 +901,7 @@ class NewCardDialog(
         }
     }
 
-    fun generateCardOnUpdate(): ImmutableCard? {
+    private fun generateCardOnUpdate(): ImmutableCard? {
         val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
             ?: return null
 
