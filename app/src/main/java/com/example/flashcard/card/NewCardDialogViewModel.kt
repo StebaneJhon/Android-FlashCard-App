@@ -2,12 +2,10 @@ package com.example.flashcard.card
 
 import androidx.lifecycle.ViewModel
 import com.example.flashcard.backend.Model.ImmutableCard
-import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class NewCardDialogViewModel() : ViewModel() {
 
@@ -16,22 +14,22 @@ class NewCardDialogViewModel() : ViewModel() {
     val addedCards: StateFlow<ArrayList<ImmutableCard>> = _addedCards.asStateFlow()
     private var fetchJob: Job? = null
 
+    fun areThereUnSavedAddedCards() = _addedCards.value.size != 0
+
     fun addCard(card: ImmutableCard) {
         _addedCards.value.add(0, card)
     }
 
     fun removeCard(cardToBeRemoved: ImmutableCard?) {
-        _addedCards.value.forEach { card ->
-            if (card.cardDefinition == cardToBeRemoved?.cardDefinition &&
-                card.cardContent == cardToBeRemoved?.cardContent
-            ) {
-                _addedCards.value.remove(card)
-            }
-        }
+        _addedCards.value.remove(cardToBeRemoved)
     }
 
     fun updateCard(updatedCard: ImmutableCard, indexCardToUpdate: Int) {
         _addedCards.value[indexCardToUpdate] = updatedCard
+    }
+
+    fun removeAllCards() {
+        _addedCards.value.clear()
     }
 
 }

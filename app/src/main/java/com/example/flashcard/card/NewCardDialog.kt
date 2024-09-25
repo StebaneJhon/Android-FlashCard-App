@@ -3,6 +3,7 @@ package com.example.flashcard.card
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -135,52 +136,56 @@ class NewCardDialog(
 
     private var uri: Uri? = null
 
-    private var takePreview = registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
-        if (success) {
-            val image: InputImage
-            try {
-                image = InputImage.fromFilePath(requireContext(), uri!!)
-                detectTextWithMLKit(image)
-            } catch (e: IOException) {
-                e.printStackTrace()
+    private var takePreview =
+        registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
+            if (success) {
+                val image: InputImage
+                try {
+                    image = InputImage.fromFilePath(requireContext(), uri!!)
+                    detectTextWithMLKit(image)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
         }
-    }
 
-    private var takeFromGallery = registerForActivityResult(ActivityResultContracts.GetContent()) { imageUri: Uri? ->
-        if (imageUri != null) {
-            val image: InputImage
-            try {
-                image = InputImage.fromFilePath(requireContext(), imageUri)
-                detectTextWithMLKit(image)
-            } catch (e: IOException) {
-                e.printStackTrace()
+    private var takeFromGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { imageUri: Uri? ->
+            if (imageUri != null) {
+                val image: InputImage
+                try {
+                    image = InputImage.fromFilePath(requireContext(), imageUri)
+                    detectTextWithMLKit(image)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
         }
-    }
-    private var micListener = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
-        if (resultData.resultCode == RESULT_OK) {
-            val result = resultData.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
-            if (result?.get(0).isNullOrBlank()) {
+    private var micListener =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
+            if (resultData.resultCode == RESULT_OK) {
+                val result =
+                    resultData.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
+                if (result?.get(0).isNullOrBlank()) {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_message_no_text_detected),
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    selectedField?.setText(result?.get(0))
+                }
+                actionMode = null
+                selectedField = null
+                actualFieldLanguage = null
+            } else {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.error_message_no_text_detected),
                     Toast.LENGTH_LONG
                 ).show()
-            } else {
-                selectedField?.setText(result?.get(0))
             }
-            actionMode = null
-            selectedField = null
-            actualFieldLanguage = null
-        } else {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.error_message_no_text_detected),
-                Toast.LENGTH_LONG
-            ).show()
         }
-    }
 
     companion object {
         private const val RecordAudioRequestCode = 3455
@@ -391,6 +396,7 @@ class NewCardDialog(
                         }
                         true
                     }
+
                     else -> false
                 }
             }
@@ -584,8 +590,13 @@ class NewCardDialog(
     }
 
     private fun createImageUri(): Uri {
-        val image = File(appContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
-        return FileProvider.getUriForFile(requireContext(), "package com.example.flashcard.card.FileProvider", image)
+        val image =
+            File(appContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
+        return FileProvider.getUriForFile(
+            requireContext(),
+            "package com.example.flashcard.card.FileProvider",
+            image
+        )
     }
 
     private fun onSelectImageFromGallery() {
@@ -624,6 +635,8 @@ class NewCardDialog(
                     onUpdateCard(card!!, cardWithPosition.position)
                 },
                 { cardToRemove ->
+                    initCardAdditionPanel()
+                    areCardTypesEnabled(true)
                     newCardViewModel.removeCard(cardToRemove)
                     rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
                 },
@@ -724,14 +737,6 @@ class NewCardDialog(
                 onAddFlashCard(true)
                 cardContent?.setText(card.cardContent?.content)
                 cardValue?.setText(card.cardDefinition?.first()?.definition)
-                cpAddMultiAnswerCard?.apply {
-                    isCheckable = false
-                    isChecked = false
-                }
-                cpAddTrueOrFalseCard?.apply {
-                    isCheckable = false
-                    isChecked = false
-                }
             }
 
             TRUE_OR_FALSE_CARD -> {
@@ -739,14 +744,6 @@ class NewCardDialog(
                 tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
                 cpFalse?.isChecked = isCorrect(card.cardDefinition?.get(0)?.isCorrectDefinition!!)
                 cpTrue?.isChecked = isCorrect(card.cardDefinition[1].isCorrectDefinition)
-                cpAddMultiAnswerCard?.apply {
-                    isCheckable = false
-                    isChecked = false
-                }
-                cpAddFlashCard?.apply {
-                    isCheckable = false
-                    isChecked = false
-                }
             }
 
             ONE_OR_MULTI_ANSWER_CARD -> {
@@ -795,16 +792,9 @@ class NewCardDialog(
                             isCorrect(card.cardDefinition[3].isCorrectDefinition)
                     }
                 }
-                cpAddFlashCard?.apply {
-                    isCheckable = false
-                    isChecked = false
-                }
-                cpAddTrueOrFalseCard?.apply {
-                    isCheckable = false
-                    isChecked = false
-                }
             }
         }
+        areCardTypesEnabled(false)
 
     }
 
@@ -858,11 +848,27 @@ class NewCardDialog(
 
         if (action == Constant.UPDATE && indexCardOnUpdate != null) {
             newCardViewModel.updateCard(newCard, indexCardOnUpdate)
+            areCardTypesEnabled(true)
         } else {
             newCardViewModel.addCard(newCard)
         }
         rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
         initCardAdditionPanel()
+    }
+
+    private fun areCardTypesEnabled(enabled: Boolean) {
+        cpAddFlashCard?.apply {
+            isCheckable = enabled
+            isEnabled = enabled
+        }
+        cpAddMultiAnswerCard?.apply {
+            isCheckable = enabled
+            isEnabled = enabled
+        }
+        cpAddTrueOrFalseCard?.apply {
+            isCheckable = enabled
+            isEnabled = enabled
+        }
     }
 
     fun generateCardOnUpdate(): ImmutableCard? {
@@ -1185,7 +1191,10 @@ class NewCardDialog(
         ) {
             checkPermission()
         } else {
-            val languageExtra = if (language != null) FirebaseTranslatorHelper().getLanguageCodeForSpeechAndText(language) else Locale.getDefault()
+            val languageExtra =
+                if (language != null) FirebaseTranslatorHelper().getLanguageCodeForSpeechAndText(
+                    language
+                ) else Locale.getDefault()
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
             intent.putExtra(
                 RecognizerIntent.EXTRA_LANGUAGE,
@@ -1196,7 +1205,10 @@ class NewCardDialog(
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
             )
             intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
-            intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.message_on_voice_to_text_recording))
+            intent.putExtra(
+                RecognizerIntent.EXTRA_PROMPT,
+                getString(R.string.message_on_voice_to_text_recording)
+            )
 
             try {
                 micListener.launch(intent)
@@ -1295,6 +1307,7 @@ class NewCardDialog(
         cards: List<ImmutableCard>
     ) {
         parentFragmentManager.setFragmentResult(requestCode, bundleOf(bundleCode to cards))
+        newCardViewModel.removeAllCards()
     }
 
     private fun sendCardsOnEdit(
@@ -1303,6 +1316,20 @@ class NewCardDialog(
         cards: List<ImmutableCard>
     ) {
         parentFragmentManager.setFragmentResult(requestCode, bundleOf(bundleCode to cards))
+        newCardViewModel.removeAllCards()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (newCardViewModel.areThereUnSavedAddedCards()) {
+            if (newCardViewModel.areThereUnSavedAddedCards()) {
+                sendCardsOnSave(
+                    REQUEST_CODE_CARD,
+                    SAVE_CARDS_BUNDLE_KEY,
+                    newCardViewModel.addedCards.value
+                )
+            }
+        }
     }
 
 }
