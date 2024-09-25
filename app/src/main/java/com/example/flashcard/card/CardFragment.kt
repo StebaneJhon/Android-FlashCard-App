@@ -63,6 +63,7 @@ import com.example.flashcard.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
+import com.example.flashcard.util.QuizModeBottomSheet
 import com.example.flashcard.util.UiState
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
@@ -96,6 +97,7 @@ class CardFragment :
     companion object {
         const val TAG = "CardFragment"
         const val REQUEST_CODE_CARD = "0"
+        const val REQUEST_CODE_QUIZ_MODE = "300"
         const val MIN_DEFINITION_LENGTH_FOR_SPAM_1 = 200
         const val MIN_CONTENT_LENGTH_FOR_SPAM_1 = 100
     }
@@ -218,54 +220,21 @@ class CardFragment :
     }
 
     private fun onChooseQuizMode(deckId: String) {
-        val viewGroup = binding.cardsActivityRoot
-        val dialogBinding = layoutInflater.inflate(R.layout.quiz_mode_fragment, viewGroup, false)
-        val quizModeDialog = appContext?.let { Dialog(it) }
-
-        quizModeDialog?.apply {
-            setContentView(dialogBinding)
-            setCancelable(true)
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            show()
-        }
-
-        val btFlashCard: Button = dialogBinding.findViewById(R.id.bt_flash_card_game)
-        val btFlashCardTimed: Button = dialogBinding.findViewById(R.id.bt_flash_card_game_timed)
-        val multiChoiceQuizButton: Button = dialogBinding.findViewById(R.id.multiChoiceQuizButton)
-        val writingQuizGameButton: Button = dialogBinding.findViewById(R.id.bt_writing_quiz_game)
-        val matchingQuizGameButton: Button = dialogBinding.findViewById(R.id.bt_matching_quiz_game)
-        val btTestQuizGame: Button = dialogBinding.findViewById(R.id.bt_test_quiz_game)
-
-        onStartQuiz { deckWithCards ->
-            btFlashCard.setOnClickListener {
-                lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
-                quizModeDialog?.dismiss()
-            }
-            btFlashCardTimed.setOnClickListener {
-                lunchQuiz(deckWithCards, TIMED_FLASH_CARD_QUIZ)
-                quizModeDialog?.dismiss()
-            }
-            multiChoiceQuizButton.setOnClickListener {
-                lunchQuiz(deckWithCards, MULTIPLE_CHOICE_QUIZ)
-                quizModeDialog?.dismiss()
-            }
-            writingQuizGameButton.setOnClickListener {
-                lunchQuiz(deckWithCards, WRITING_QUIZ)
-                quizModeDialog?.dismiss()
-            }
-            matchingQuizGameButton.setOnClickListener {
-                lunchQuiz(deckWithCards, MATCHING_QUIZ)
-                quizModeDialog?.dismiss()
-            }
-            btTestQuizGame.setOnClickListener {
-                lunchQuiz(deckWithCards, QUIZ)
-                quizModeDialog?.dismiss()
+        val quizMode = QuizModeBottomSheet()
+        quizMode.show(childFragmentManager, "Quiz Mode")
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_CODE_QUIZ_MODE,
+            this
+        ) { _, bundle ->
+            val result = bundle.getString(QuizModeBottomSheet.START_QUIZ_BUNDLE_KEY)
+            result?.let {
+                onStartQuiz { deckWithCards ->
+                    lunchQuiz(deckWithCards, it)
+                }
             }
         }
-
     }
 
-    @SuppressLint("MissingInflatedId")
     private fun onStartQuiz(start: (ImmutableDeckWithCards) -> Unit) {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -622,7 +591,6 @@ class CardFragment :
             TextToSpeech.SUCCESS -> {
                 tts.setSpeechRate(1.0f)
             }
-
             else -> {
                 Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG)
                     .show()

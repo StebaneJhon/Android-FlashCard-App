@@ -634,7 +634,7 @@ class NewCardDialog(
 
     private fun detectTextWithMLKit(image: InputImage, language: String? = actualFieldLanguage) {
         val recognizer = getRecognizer(language)
-        val result = recognizer.process(image)
+        recognizer.process(image)
             .addOnSuccessListener { visionText ->
                 if (visionText.text.isBlank()) {
                     Toast.makeText(
