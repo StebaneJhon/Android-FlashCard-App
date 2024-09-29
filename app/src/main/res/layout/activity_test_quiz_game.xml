@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    tools:context=".quiz.testQuizGame.TestQuizGameActivity">
+    tools:context=".quiz.quizGame.QuizGameActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topToolBar"
@@ -73,6 +73,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@color/transparent"
+        android:backgroundTint="@color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

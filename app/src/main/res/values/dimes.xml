@@ -30,4 +30,7 @@
 
     <dimen name="stroke_card">2dp</dimen>
 
+    <dimen name="icon_padding_submit_button">10dp</dimen>
+    <dimen name="icon_padding_next_question_button">0dp</dimen>
+
 </resources>

@@ -1,4 +1,4 @@
-package com.example.flashcard.quiz.testQuizGame
+package com.example.flashcard.quiz.quizGame
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

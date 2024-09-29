@@ -30,6 +30,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -65,6 +66,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
@@ -101,6 +103,7 @@
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="actionModeStyle">@style/MyActionBarTheme</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -135,6 +138,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
@@ -169,6 +173,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
@@ -203,6 +208,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
@@ -237,6 +243,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -270,6 +277,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -303,6 +311,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -336,6 +345,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -370,6 +380,7 @@
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -506,6 +517,18 @@
         <item name="android:windowBackground">@android:color/white</item>
     </style>
 
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
+    </style>
 
+    <style name="ModalBottomSheetDialog" parent="Widget.Material3.BottomSheet.Modal">
+        <item name="backgroundTint">?colorSurfaceContainerLow</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
 
 </resources>

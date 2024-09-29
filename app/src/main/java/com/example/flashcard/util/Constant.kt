@@ -72,6 +72,7 @@ object FlashCardMiniGameRef {
     const val WRITING_QUIZ = "Writing quiz"
     const val MATCHING_QUIZ = "Matching quiz"
     const val QUIZ = "Quiz"
+    const val TEST = "Test"
     const val FLASH_CARD_MINI_GAME_REF = "Flash Card MiniGame Ref"
     const val CHECKED_FILTER = "Checked Filter"
     const val CHECKED_CARD_ORIENTATION = "Checked Card Orientation"
@@ -114,4 +115,9 @@ object DeckAdditionAction {
 object ContactActions {
     const val HELP = "Help"
     const val CONTACT = "Contact"
+}
+
+object TestResultAction {
+    const val BACK_TO_DECK = "Back to deck"
+    const val RETAKE_TEST = "Retake test"
 }

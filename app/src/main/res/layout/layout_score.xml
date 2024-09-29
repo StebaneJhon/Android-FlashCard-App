@@ -247,7 +247,7 @@
         android:textColor="?colorSurfaceContainerLowest"
         android:textStyle="bold"
         app:cornerRadius="@dimen/bt_radius"
-        android:layout_marginBottom="@dimen/space_xxl"
+        android:layout_marginBottom="@dimen/space_xs"
         android:layout_marginStart="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
         app:layout_constraintBottom_toBottomOf="parent" />

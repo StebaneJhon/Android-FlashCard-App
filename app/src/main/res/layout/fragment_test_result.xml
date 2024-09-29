@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".quiz.test.TestResultFragment"
+    android:background="?colorSurfaceContainerLowest">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_score_title_test_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/flashcard_score_title_text"
+            android:textAlignment="center"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/text_result"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_score_title_test_result" />
+
+        <GridLayout
+            android:id="@+id/gridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginStart="@dimen/space_xs"
+            android:layout_marginEnd="@dimen/space_xs"
+            android:columnCount="2"
+            android:orientation="horizontal"
+            android:rowCount="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_result">
+
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_container_known_cards"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/space_xs"
+                app:cardCornerRadius="@dimen/card_radius"
+                app:strokeColor="@color/green400"
+                app:strokeWidth="@dimen/stroke_card">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_known_cards_sum_test_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_base"
+                        app:autoSizeMaxTextSize="90dp"
+                        app:autoSizeMinTextSize="@dimen/text_base"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_known_cards_test_result"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="5" />
+
+                    <TextView
+                        android:id="@+id/tv_known_cards_test_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_sm"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/known_cards_text"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/text_sm"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_container_total_missed_cards"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/space_xs"
+                android:backgroundTint="@color/red100"                android:padding="@dimen/space_md"
+                app:cardCornerRadius="@dimen/card_radius"
+                app:strokeColor="@color/red400"
+                app:strokeWidth="@dimen/stroke_card">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_total_missed_cards_sum_test_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:gravity="center"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_base"
+                        app:autoSizeMaxTextSize="90dp"
+                        app:autoSizeMinTextSize="@dimen/text_base"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_total_missed_cards_test_result"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="5" />
+
+                    <TextView
+                        android:id="@+id/tv_total_missed_cards_test_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_sm"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/missed_cards_text"
+                        android:textAlignment="center"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_sm"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_container_time_test_result"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnSpan="2"
+                android:layout_columnWeight="1"
+                android:layout_marginStart="@dimen/space_xs"
+                android:layout_marginTop="@dimen/space_xs"
+                android:layout_marginEnd="@dimen/space_xs"
+                android:backgroundTint="?colorSurfaceContainerLow"
+                android:padding="@dimen/space_md"
+                app:cardCornerRadius="@dimen/card_radius"
+                app:strokeColor="?colorSurfaceContainer"
+                app:strokeWidth="@dimen/stroke_card">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/tv_total_cards_sum_test_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_alignParentEnd="true"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:gravity="center"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_base"
+                        app:autoSizeMaxTextSize="90dp"
+                        app:autoSizeMinTextSize="@dimen/text_base"
+                        app:autoSizeStepGranularity="2sp"
+                        app:autoSizeTextType="uniform"
+                        app:layout_constraintBottom_toTopOf="@+id/tv_total_cards_test_result"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="5" />
+
+                    <TextView
+                        android:id="@+id/tv_total_cards_test_result"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/space_sm"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/total_cards_text"
+                        android:textAlignment="center"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_sm"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+
+        <TextView
+            android:id="@+id/tv_cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/tv_cards_text"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gridLayout" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_test_result"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/space_xs"
+            android:layout_marginEnd="@dimen/space_xs"
+            android:nestedScrollingEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cards" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_back_to_deck_test_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:backgroundTint="?colorPrimary"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/bt_text_back_to_deck"
+            android:textColor="?colorSurfaceContainerLowest"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/bt_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_test_result" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_retake_test_test_result"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_xs"
+            android:backgroundTint="?colorPrimary"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/bt_text_retake_test"
+            android:textColor="?colorSurfaceContainerLowest"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/bt_radius"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bt_back_to_deck_test_result" />
+
+        <LinearLayout
+            android:id="@+id/test_result_progressBar"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5">
+
+            <include
+                android:id="@+id/ly_no_card_error"
+                layout="@layout/ly_loading_screen" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

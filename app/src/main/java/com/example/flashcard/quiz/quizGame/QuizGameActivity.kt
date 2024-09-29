@@ -1,10 +1,9 @@
-package com.example.flashcard.quiz.testQuizGame
+package com.example.flashcard.quiz.quizGame
 
 import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -13,11 +12,9 @@ import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +40,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
-class TestQuizGameActivity :
+class QuizGameActivity :
     AppCompatActivity(),
     MiniGameSettingsSheet.SettingsApplication,
     TextToSpeech.OnInitListener
@@ -61,12 +58,12 @@ class TestQuizGameActivity :
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     private var deckWithCards: ImmutableDeckWithCards? = null
-    private lateinit var testQuizGameAdapter: TestQuizGameAdapter
+    private lateinit var quizGameAdapter: QuizGameAdapter
 
     private lateinit var tts: TextToSpeech
 
     companion object {
-        private const val TAG = "TestQuizGameActivity"
+        private const val TAG = "QuizGameActivity"
         const val DECK_ID_KEY = "Deck_id_key"
         const val TIME_BEFORE_HIDING_ACTIONS = 200L
         const val TIME_BEFORE_SHOWING_ACTIONS = 700L
@@ -192,7 +189,7 @@ class TestQuizGameActivity :
     private fun launchTestQuizGame(
         data: List<ModelCard?>
     ) {
-        testQuizGameAdapter = TestQuizGameAdapter(
+        quizGameAdapter = QuizGameAdapter(
             this,
             data,
             viewModel.getDeckColorCode(),
@@ -226,7 +223,7 @@ class TestQuizGameActivity :
                 }
 
             })
-        binding.vpCardHolder.adapter = testQuizGameAdapter
+        binding.vpCardHolder.adapter = quizGameAdapter
     }
 
     private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
@@ -375,32 +372,32 @@ class TestQuizGameActivity :
         binding.lyContainerOptions.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
-            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Test")
+            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "TestActivity")
             tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
             tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
             tvKnownCardsSumScoreLayout.text = knownCardsSum.toString()
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
                 knownCardsSum.toFloat() / totalCardsSum,
-                ContextCompat.getColor(this@TestQuizGameActivity, R.color.green50),
-                ContextCompat.getColor(this@TestQuizGameActivity, R.color.green400),
+                ContextCompat.getColor(this@QuizGameActivity, R.color.green50),
+                ContextCompat.getColor(this@QuizGameActivity, R.color.green400),
             ) as Int
 
-            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
+            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
                 missedCardsSum.toFloat() / totalCardsSum,
-                ContextCompat.getColor(this@TestQuizGameActivity, R.color.red50),
-                ContextCompat.getColor(this@TestQuizGameActivity, R.color.red400),
+                ContextCompat.getColor(this@QuizGameActivity, R.color.red50),
+                ContextCompat.getColor(this@QuizGameActivity, R.color.red400),
             ) as Int
 
             val textColorKnownCards =
                 if (totalCardsSum / 2 < viewModel.getKnownCardSum())
-                    ContextCompat.getColor(this@TestQuizGameActivity, R.color.green50)
-                else ContextCompat.getColor(this@TestQuizGameActivity, R.color.green400)
+                    ContextCompat.getColor(this@QuizGameActivity, R.color.green50)
+                else ContextCompat.getColor(this@QuizGameActivity, R.color.green400)
 
             val textColorMissedCards =
                 if (totalCardsSum / 2 < viewModel.getMissedCardSum())
-                    ContextCompat.getColor(this@TestQuizGameActivity, R.color.red50)
-                else ContextCompat.getColor(this@TestQuizGameActivity, R.color.red400)
+                    ContextCompat.getColor(this@QuizGameActivity, R.color.red50)
+                else ContextCompat.getColor(this@QuizGameActivity, R.color.red400)
 
             tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
             tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
@@ -408,10 +405,10 @@ class TestQuizGameActivity :
             tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
+            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
-                startActivity(Intent(this@TestQuizGameActivity, MainActivity::class.java))
+                startActivity(Intent(this@QuizGameActivity, MainActivity::class.java))
                 finish()
             }
 
@@ -524,7 +521,7 @@ class TestQuizGameActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(this@TestQuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@QuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
         }
 

@@ -238,6 +238,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
+        android:layout_marginBottom="@dimen/space_xs"
         android:backgroundTint="?colorSurfaceContainerHighest"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/bt_back_to_deck_match_quiz_score"

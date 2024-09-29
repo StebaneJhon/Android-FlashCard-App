@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/quizModeDialogRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="?colorSurfaceContainerLowest"
-    app:cardCornerRadius="@dimen/card_radius"
-    app:layout_behavior="@string/bottom_sheet_behavior">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/space_sm"
-        android:paddingEnd="@dimen/space_sm"
-        android:paddingBottom="@dimen/space_xs">
+    android:backgroundTint="?colorSurfaceContainerLow"
+    style="@style/Widget.Material3.BottomSheet"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/space_sm"
+    android:paddingEnd="@dimen/space_sm"
+    android:paddingBottom="@dimen/space_xs">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/drag_handle"
@@ -106,6 +102,16 @@
             app:icon="@drawable/icon_neurology"
             app:iconTint="?colorOnSurface"/>
 
-    </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_test"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:text="@string/bt_text_test"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans"
+            app:cornerRadius="@dimen/bt_radius"
+            app:icon="@drawable/icon_fire"
+            app:iconTint="?colorOnSurface"/>
 
-</com.google.android.material.card.MaterialCardView>
+</LinearLayout>

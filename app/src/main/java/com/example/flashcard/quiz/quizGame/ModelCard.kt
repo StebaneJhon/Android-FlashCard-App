@@ -1,4 +1,4 @@
-package com.example.flashcard.quiz.testQuizGame
+package com.example.flashcard.quiz.quizGame
 
 import com.example.flashcard.backend.Model.ImmutableCard
 

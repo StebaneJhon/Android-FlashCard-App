@@ -1,15 +1,13 @@
-package com.example.flashcard.quiz.testQuizGame
+package com.example.flashcard.quiz.quizGame
 
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
-import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -24,14 +22,14 @@ import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
-class TestQuizGameAdapter(
+class QuizGameAdapter(
     val context: Context,
     val cardList: List<ModelCard?>,
     val deckColor: String,
     val deck: ImmutableDeck,
     private val cardOnClick: (UserResponseModel) -> Unit,
-    private val onSpeak: (TestQuizSpeakModel) -> Unit,
-): RecyclerView.Adapter<TestQuizGameAdapter.TestQuizGameAdapterViewHolder>() {
+    private val onSpeak: (QuizSpeakModel) -> Unit,
+): RecyclerView.Adapter<QuizGameAdapter.TestQuizGameAdapterViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -90,7 +88,7 @@ class TestQuizGameAdapter(
             deckColorCode: String,
             deck: ImmutableDeck,
             cardOnClick: (UserResponseModel) -> Unit,
-            onSpeak: (TestQuizSpeakModel) -> Unit,
+            onSpeak: (QuizSpeakModel) -> Unit,
         ) {
 
             if (modelCard!!.isFlipped) {
@@ -129,7 +127,7 @@ class TestQuizGameAdapter(
 
         }
 
-        fun onFlashCard(
+        private fun onFlashCard(
             modelCard: ModelCard,
             deckColorCode: String,
             cardNumber: Int,
@@ -169,7 +167,7 @@ class TestQuizGameAdapter(
                 val views = listOf(tvContent)
                 val texts = listOf(card?.cardContent?.content!!)
                 onSpeak(
-                    TestQuizSpeakModel(
+                    QuizSpeakModel(
                         text = texts,
                         views = views,
                         deck.deckFirstLanguage!!
@@ -180,7 +178,7 @@ class TestQuizGameAdapter(
                 val views = listOf(tvDefinition)
                 val texts = listOf(card?.cardDefinition?.get(0)?.definition!!)
                 onSpeak(
-                    TestQuizSpeakModel(
+                    QuizSpeakModel(
                         text = texts,
                         views = views,
                         deck.deckSecondLanguage!!
@@ -190,7 +188,7 @@ class TestQuizGameAdapter(
 
         }
 
-        fun onTrueOrFalseCard(
+        private fun onTrueOrFalseCard(
             modelCard: ModelCard,
             cardPosition: Int,
             cardOnClick: (UserResponseModel) -> Unit
@@ -216,7 +214,7 @@ class TestQuizGameAdapter(
                 val views = listOf(tvContent)
                 val texts = listOf(card?.cardContent?.content!!)
                 onSpeak(
-                    TestQuizSpeakModel(
+                    QuizSpeakModel(
                         text = texts,
                         views = views,
                         deck.deckFirstLanguage!!
@@ -385,7 +383,7 @@ class TestQuizGameAdapter(
         ) {
             btSpeak.setOnClickListener {
                 onSpeak(
-                    TestQuizSpeakModel(
+                    QuizSpeakModel(
                         text = texts,
                         views = views,
                         language

@@ -1,7 +1,6 @@
-package com.example.flashcard.quiz.testQuizGame
+package com.example.flashcard.quiz.quizGame
 
 import android.view.View
-import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.entities.CardDefinition
 import com.google.android.material.card.MaterialCardView
 

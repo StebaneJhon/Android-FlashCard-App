@@ -44,7 +44,7 @@ import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
 import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
-import com.example.flashcard.quiz.testQuizGame.TestQuizGameActivity
+import com.example.flashcard.quiz.quizGame.QuizGameActivity
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MATCHING_QUIZ
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MULTI_CHOICE_QUIZ
@@ -467,8 +467,8 @@ class DeckFragment :
             }
 
             QUIZ -> {
-                val intent = Intent(appContext, TestQuizGameActivity::class.java)
-                intent.putExtra(TestQuizGameActivity.DECK_ID_KEY, deckWithCards)
+                val intent = Intent(appContext, QuizGameActivity::class.java)
+                intent.putExtra(QuizGameActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
         }

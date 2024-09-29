@@ -112,4 +112,9 @@
             android:id="@+id/action_emailFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/testResultFragment"
+        android:name="com.example.flashcard.quiz.test.TestResultFragment"
+        android:label="fragment_test_result"
+        tools:layout="@layout/fragment_test_result" />
 </navigation>

@@ -36,8 +36,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
-            android:textAlignment="textStart"
             android:textColor="?colorOnSurfaceVariant"
+            android:gravity="center"
+            android:textAlignment="textStart"
             android:textSize="@dimen/text_xs"
             android:layout_marginTop="@dimen/space_xs"
             android:background="@drawable/tv_background_on_added_cards"
@@ -46,7 +47,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_added_card_content"
-            tools:text="Test deck description" />
+            tools:text="Test deck description"
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:visibility="gone"
@@ -54,6 +56,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
+            android:gravity="center"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurfaceVariant"
             android:textSize="@dimen/text_xs"
@@ -64,7 +67,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description1"
-            tools:text="Test deck description" />
+            tools:text="Test deck description"
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:visibility="gone"
@@ -72,6 +76,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
+            android:gravity="center"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurfaceVariant"
             android:textSize="@dimen/text_xs"
@@ -82,7 +87,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description2"
-            tools:text="Test deck description" />
+            tools:text="Test deck description"
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:visibility="gone"
@@ -90,6 +96,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans"
+            android:gravity="center"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurfaceVariant"
             android:textSize="@dimen/text_xs"
@@ -100,7 +107,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_added_card_description3"
-            tools:text="Test deck description" />
+            tools:text="Test deck description"
+            tools:ignore="RtlCompat" />
 
         <TextView
             android:visibility="gone"

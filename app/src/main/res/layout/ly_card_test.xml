@@ -97,7 +97,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainer"
+            android:backgroundTint="?colorSurfaceContainerLow"
             android:layout_marginTop="@dimen/space_xl"
             android:paddingTop="@dimen/space_sm"
             android:paddingStart="@dimen/space_sm"

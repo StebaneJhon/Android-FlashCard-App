@@ -1,6 +1,5 @@
-package com.example.flashcard.quiz.testQuizGame
+package com.example.flashcard.quiz.quizGame
 
-import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.entities.CardDefinition
 
 class FlashCardModel(val modelCard: ModelCard, val cardList: List<ModelCard?>) {

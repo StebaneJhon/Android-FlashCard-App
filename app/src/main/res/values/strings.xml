@@ -93,7 +93,7 @@
     <string name="bt_rate_the_app_text">Rate Recall</string>
     <string name="bt_about_the_recall_text">About Recall</string>
     <string name="tv_space_repetition_title">Space repetition box</string>
-    <string name="ti_repeat_card_in_days_hint">Repeat card in ... days</string>
+    <string name="ti_repeat_card_in_days_hint">Repeat card in … days</string>
     <string name="bt_help_button_text">Help Button</string>
     <string name="ch_flash_card_text">Flash Card</string>
     <string name="cp_true_or_false_text">True or False</string>
@@ -192,4 +192,12 @@
     <string name="bt_text_filter_by_card_sum">By card sum</string>
     <string name="error_message_language_not_supported">Language not supported</string>
     <string name="message_on_voice_to_text_recording">Say something to translate</string>
+    <string name="bt_text_next_question">Next question</string>
+    <string name="bt_text_previous_question">Previous question</string>
+    <string name="bt_text_test">Test</string>
+    <string name="bt_text_submit">Submit</string>
+    <string name="text_time">Time: %1$s</string>
+    <string name="text_result">Result</string>
+    <string name="bt_text_retake_test">Retake test</string>
+    <string name="bt_text_back_to_deck">Back to cards</string>
 </resources>
