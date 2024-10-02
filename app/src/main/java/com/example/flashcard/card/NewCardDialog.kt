@@ -333,7 +333,7 @@ class NewCardDialog(
                     onPositiveAction(Constant.ADD)
                 }
             }
-            onAddFlashCard(true)
+//            onAddFlashCard(true)
         }
 
         // Save or not (Card)
@@ -1067,9 +1067,9 @@ class NewCardDialog(
 
     private fun getCardType(definitions: List<CardDefinition>): String {
         return if (definitions.size > 1) {
-            SINGLE_ANSWER_CARD
-        } else {
             MULTIPLE_ANSWER_CARD
+        } else {
+            SINGLE_ANSWER_CARD
         }
     }
 
@@ -1132,8 +1132,8 @@ class NewCardDialog(
             tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
             return null
         } else {
+            definitionList.clear()
             definitionFields.forEach {
-                definitionList.clear()
                 if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank()) {
                     definitionList.add(
                         createDefinition(

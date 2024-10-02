@@ -71,11 +71,23 @@ class CardsRecyclerViewAdapter(
         private val cardDescription1: TextView = view.findViewById(R.id.tv_card_description1)
         private val cardDescription2: TextView = view.findViewById(R.id.tv_card_description2)
         private val cardDescription3: TextView = view.findViewById(R.id.tv_card_description3)
+        private val cardDescription4: TextView = view.findViewById(R.id.tv_card_description4)
+        private val cardDescription5: TextView = view.findViewById(R.id.tv_card_description5)
+        private val cardDescription6: TextView = view.findViewById(R.id.tv_card_description6)
+        private val cardDescription7: TextView = view.findViewById(R.id.tv_card_description7)
+        private val cardDescription8: TextView = view.findViewById(R.id.tv_card_description8)
+        private val cardDescription9: TextView = view.findViewById(R.id.tv_card_description9)
+        private val cardDescription10: TextView = view.findViewById(R.id.tv_card_description10)
         private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
         private val popUpBT: Button = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
         private val cvContainerCard: ConstraintLayout = view.findViewById(R.id.cl_container_card)
         private val cardDescriptionError: TextView = view.findViewById(R.id.tv_card_description_error)
+
+        private val tvDescriptions = listOf(
+            cardDescription1, cardDescription2, cardDescription3, cardDescription4, cardDescription5,
+            cardDescription6, cardDescription7, cardDescription8, cardDescription9, cardDescription10,
+        )
 
         private val ICON_MARGIN = 5
 
@@ -112,48 +124,58 @@ class CardsRecyclerViewAdapter(
                 true
             }
 
-            when (definitionTexts.size) {
-                0 -> {
-                    cardDescription1.visibility = View.GONE
-                    cardDescriptionError.text = context.getString(R.string.error_no_card_definition)
-                    cardDescriptionError.visibility = View.VISIBLE
-                    cardDescription2.visibility = View.GONE
-                    cardDescription3.visibility = View.GONE
-                }
-                1 -> {
+            tvDescriptions.forEachIndexed {index, tv ->
+                if (index < definitionTexts.size) {
+                    tv.visibility = View.VISIBLE
                     cardDescriptionError.visibility = View.GONE
-                    cardDescription1.visibility = View.VISIBLE
-                    cardDescription1.text = definitionTexts[0]
-                    cardDescription2.visibility = View.GONE
-                    cardDescription3.visibility = View.GONE
+                    tv.text = definitionTexts[index]
+                } else {
+                    tv.visibility = View.GONE
                 }
-                2 -> {
-                    cardDescriptionError.visibility = View.GONE
-                    cardDescription1.visibility = View.VISIBLE
-                    cardDescription1.text = definitionTexts[0]
-                    cardDescription2.visibility = View.VISIBLE
-                    cardDescription2.text = definitionTexts[1]
-                    cardDescription3.visibility = View.GONE
-                }
-                3 -> {
-                    cardDescriptionError.visibility = View.GONE
-                    cardDescription1.visibility = View.VISIBLE
-                    cardDescription1.text = definitionTexts[0]
-                    cardDescription2.visibility = View.VISIBLE
-                    cardDescription2.text = definitionTexts[1]
-                    cardDescription3.visibility = View.VISIBLE
-                    cardDescription3.text = definitionTexts[2]
-                }
-                else -> {
-                     cardDescriptionError.visibility = View.GONE
-                     cardDescription1.visibility = View.VISIBLE
-                     cardDescription1.text = definitionTexts[0]
-                     cardDescription2.visibility = View.VISIBLE
-                     cardDescription2.text = definitionTexts[1]
-                     cardDescription3.visibility = View.VISIBLE
-                     cardDescription3.text = definitionTexts[2]
-                 }
             }
+
+//            when (definitionTexts.size) {
+//                0 -> {
+//                    cardDescription1.visibility = View.GONE
+//                    cardDescriptionError.text = context.getString(R.string.error_no_card_definition)
+//                    cardDescriptionError.visibility = View.VISIBLE
+//                    cardDescription2.visibility = View.GONE
+//                    cardDescription3.visibility = View.GONE
+//                }
+//                1 -> {
+//                    cardDescriptionError.visibility = View.GONE
+//                    cardDescription1.visibility = View.VISIBLE
+//                    cardDescription1.text = definitionTexts[0]
+//                    cardDescription2.visibility = View.GONE
+//                    cardDescription3.visibility = View.GONE
+//                }
+//                2 -> {
+//                    cardDescriptionError.visibility = View.GONE
+//                    cardDescription1.visibility = View.VISIBLE
+//                    cardDescription1.text = definitionTexts[0]
+//                    cardDescription2.visibility = View.VISIBLE
+//                    cardDescription2.text = definitionTexts[1]
+//                    cardDescription3.visibility = View.GONE
+//                }
+//                3 -> {
+//                    cardDescriptionError.visibility = View.GONE
+//                    cardDescription1.visibility = View.VISIBLE
+//                    cardDescription1.text = definitionTexts[0]
+//                    cardDescription2.visibility = View.VISIBLE
+//                    cardDescription2.text = definitionTexts[1]
+//                    cardDescription3.visibility = View.VISIBLE
+//                    cardDescription3.text = definitionTexts[2]
+//                }
+//                else -> {
+//                     cardDescriptionError.visibility = View.GONE
+//                     cardDescription1.visibility = View.VISIBLE
+//                     cardDescription1.text = definitionTexts[0]
+//                     cardDescription2.visibility = View.VISIBLE
+//                     cardDescription2.text = definitionTexts[1]
+//                     cardDescription3.visibility = View.VISIBLE
+//                     cardDescription3.text = definitionTexts[2]
+//                 }
+//            }
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(

@@ -479,6 +479,7 @@ class CardFragment :
         ) { requestQuey, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
             result?.let { it ->
+                val a = it
                 cardViewModel.insertCards(it, deck!!)
             }
         }

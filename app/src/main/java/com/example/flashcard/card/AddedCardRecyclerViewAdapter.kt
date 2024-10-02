@@ -2,8 +2,6 @@ package com.example.flashcard.card
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,14 +11,12 @@ import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.getColorOrThrow
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardDefinition
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.color.MaterialColors
 
 class AddedCardRecyclerViewAdapter(
     private val context: Context,
@@ -43,6 +39,7 @@ class AddedCardRecyclerViewAdapter(
             context,
             cardList[position],
             position,
+            cardList.size,
             deck,
             editCardClickListener,
             deleteCardClickListener,
@@ -58,12 +55,26 @@ class AddedCardRecyclerViewAdapter(
         private val tvAddedCardDescription2: TextView = view.findViewById(R.id.tv_added_card_description2)
         private val tvAddedCardDescription3: TextView = view.findViewById(R.id.tv_added_card_description3)
         private val tvAddedCardDescription4: TextView = view.findViewById(R.id.tv_added_card_description4)
+        private val tvAddedCardDescription5: TextView = view.findViewById(R.id.tv_added_card_description5)
+        private val tvAddedCardDescription6: TextView = view.findViewById(R.id.tv_added_card_description6)
+        private val tvAddedCardDescription7: TextView = view.findViewById(R.id.tv_added_card_description7)
+        private val tvAddedCardDescription8: TextView = view.findViewById(R.id.tv_added_card_description8)
+        private val tvAddedCardDescription9: TextView = view.findViewById(R.id.tv_added_card_description9)
+        private val tvAddedCardDescription10: TextView = view.findViewById(R.id.tv_added_card_description10)
         private val tvAddedCardDescriptionError: TextView = view.findViewById(R.id.tv_added_card_description_error)
+
+        private val tvDefinitions = listOf(
+            tvAddedCardDescription1, tvAddedCardDescription2, tvAddedCardDescription3,
+            tvAddedCardDescription4, tvAddedCardDescription5, tvAddedCardDescription6,
+            tvAddedCardDescription7, tvAddedCardDescription8, tvAddedCardDescription9,
+            tvAddedCardDescription10,
+        )
 
         fun bind(
             context: Context,
             card: ImmutableCard?,
             cardPosition: Int,
+            cardSum: Int,
             deck: ImmutableDeck,
             editCardClickListener: (ModelCardWithPositionOnLocalEdit) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
@@ -71,43 +82,53 @@ class AddedCardRecyclerViewAdapter(
 
             tvAddedCardContent.text = card?.cardContent?.content
 
-            when (card?.cardDefinition?.size) {
-                1 -> {
+            tvDefinitions.forEachIndexed { index, tv ->
+                if (index < card!!.cardDefinition!!.size) {
                     tvAddedCardDescriptionError.visibility = View.GONE
-                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-                    tvAddedCardDescription2.visibility = View.GONE
-                    tvAddedCardDescription3.visibility = View.GONE
-                    tvAddedCardDescription4.visibility = View.GONE
-                }
-                2 -> {
-                    tvAddedCardDescriptionError.visibility = View.GONE
-                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
-                    tvAddedCardDescription3.visibility = View.GONE
-                    tvAddedCardDescription4.visibility = View.GONE
-                }
-                3 -> {
-                    tvAddedCardDescriptionError.visibility = View.GONE
-                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
-                    displayCardDefinition(context, tvAddedCardDescription3, card?.cardDefinition?.get(2))
-                    tvAddedCardDescription4.visibility = View.GONE
-                }
-                4 -> {
-                    tvAddedCardDescriptionError.visibility = View.GONE
-                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
-                    displayCardDefinition(context, tvAddedCardDescription3, card?.cardDefinition?.get(2))
-                    displayCardDefinition(context, tvAddedCardDescription4, card?.cardDefinition?.get(3))
-                }
-                else -> {
-                    tvAddedCardDescriptionError.visibility = View.VISIBLE
-                    tvAddedCardDescription1.visibility = View.GONE
-                    tvAddedCardDescription2.visibility = View.GONE
-                    tvAddedCardDescription3.visibility = View.GONE
-                    tvAddedCardDescription4.visibility = View.GONE
+                    tv.visibility = View.VISIBLE
+                    displayCardDefinition(context, tv, card.cardDefinition?.get(index))
+                } else {
+                    tv.visibility = View.GONE
                 }
             }
+
+//            when (card?.cardDefinition?.size) {
+//                1 -> {
+//                    tvAddedCardDescriptionError.visibility = View.GONE
+//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
+//                    tvAddedCardDescription2.visibility = View.GONE
+//                    tvAddedCardDescription3.visibility = View.GONE
+//                    tvAddedCardDescription4.visibility = View.GONE
+//                }
+//                2 -> {
+//                    tvAddedCardDescriptionError.visibility = View.GONE
+//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
+//                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
+//                    tvAddedCardDescription3.visibility = View.GONE
+//                    tvAddedCardDescription4.visibility = View.GONE
+//                }
+//                3 -> {
+//                    tvAddedCardDescriptionError.visibility = View.GONE
+//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
+//                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
+//                    displayCardDefinition(context, tvAddedCardDescription3, card?.cardDefinition?.get(2))
+//                    tvAddedCardDescription4.visibility = View.GONE
+//                }
+//                4 -> {
+//                    tvAddedCardDescriptionError.visibility = View.GONE
+//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
+//                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
+//                    displayCardDefinition(context, tvAddedCardDescription3, card?.cardDefinition?.get(2))
+//                    displayCardDefinition(context, tvAddedCardDescription4, card?.cardDefinition?.get(3))
+//                }
+//                else -> {
+//                    tvAddedCardDescriptionError.visibility = View.VISIBLE
+//                    tvAddedCardDescription1.visibility = View.GONE
+//                    tvAddedCardDescription2.visibility = View.GONE
+//                    tvAddedCardDescription3.visibility = View.GONE
+//                    tvAddedCardDescription4.visibility = View.GONE
+//                }
+//            }
 
             cardRoot.setOnClickListener {
                 editCardClickListener(
