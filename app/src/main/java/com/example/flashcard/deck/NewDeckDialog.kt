@@ -24,6 +24,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -66,12 +67,16 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
     private var btAddCard: MaterialButton? = null
     private var tvTitle: TextView? = null
     private var rvDeckColorPicker: RecyclerView? = null
+    private var btAddTop: MaterialButton? = null
 
     private var deckCategoryColor: String? = null
     private val supportedLanguages = FirebaseTranslatorHelper().getSupportedLang()
     private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
     private val newDeckDialogViewModel: NewDeckDialogViewModel by viewModels()
+
+    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     companion object {
         const val TAG = "NewDeckDialog"
@@ -97,10 +102,14 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         deckNameLY = view?.findViewById(R.id.deckNameLY)
         deckFirstLanguageLY = view?.findViewById(R.id.deckFirstLanguageLY)
         deckSecondLanguageLY = view?.findViewById(R.id.deckSecondLanguageLY)
-        buttonDialogueN = view?.findViewById(R.id.dialogueNegativeBT)
+        buttonDialogueN = view?.findViewById(R.id.bt_exit)
         buttonDialogueP = view?.findViewById(R.id.dialogPositiveBT)
         btAddCard = view?.findViewById(R.id.bt_add_card)
         rvDeckColorPicker = view?.findViewById(R.id.rv_deck_color_picker)
+        btAddTop = view?.findViewById(R.id.bt_add_top)
+
+        gridLayoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         tvTitle = view?.findViewById(R.id.tv_title)
 
@@ -143,22 +152,10 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             buttonDialogueP?.apply {
                 text = "Update"
                 setOnClickListener {
-                    if (!checkError()) {
-                        val newDeck = Deck(
-                            deck.deckId,
-                            deckNameET?.text.toString(),
-                            deckDescriptionET?.text.toString(),
-                            deckFirstLangET?.text.toString(),
-                            deckSecondLangET?.text.toString(),
-                            deckCategoryColor,
-                            deck.cardSum,
-                            deck.deckCategory,
-                            isCorrectRevers(deck.isFavorite)
-                        )
-
-                        sendDeckOnEdit(REQUEST_CODE, newDeck)
-                        dismiss()
-                    }
+                    onUpdate(deck)
+                }
+                btAddTop?.setOnClickListener {
+                    onUpdate(deck)
                 }
             }
         } else {
@@ -169,23 +166,11 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             buttonDialogueP?.apply {
                 text = "Add"
                 setOnClickListener {
-                    if (!checkError()) {
-                        val newDeck = Deck(
-                            now(),
-                            deckNameET?.text.toString(),
-                            deckDescriptionET?.text.toString(),
-                            deckFirstLangET?.text.toString(),
-                            deckSecondLangET?.text.toString(),
-                            deckCategoryColor,
-                            0,
-                            null,
-                            0
-                        )
-
-                        sendDeckOnSave(REQUEST_CODE, ADD, newDeck)
-                        dismiss()
-                    }
+                    onAdd()
                 }
+            }
+            btAddTop?.setOnClickListener {
+                onAdd()
             }
             btAddCard?.setOnClickListener {
                 if (!checkError()) {
@@ -206,6 +191,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             }
         }
 
+
+
         // Show Color Picker
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -216,9 +203,67 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             }
         }
 
+        view?.findViewById<TextView>(R.id.colorPickerTitle)?.setOnClickListener { v ->
+            if (rvDeckColorPicker?.layoutManager == gridLayoutManager) {
+                rvDeckColorPicker?.layoutManager = linearLayoutManager
+                (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.icon_expand_more,
+                    0
+                )
+            } else {
+                rvDeckColorPicker?.layoutManager = gridLayoutManager
+                (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.icon_expand_less,
+                    0
+                )
+            }
+        }
+
         builder.setView(view)
 
         return builder.create()
+    }
+
+    private fun onAdd() {
+        if (!checkError()) {
+            val newDeck = Deck(
+                now(),
+                deckNameET?.text.toString(),
+                deckDescriptionET?.text.toString(),
+                deckFirstLangET?.text.toString(),
+                deckSecondLangET?.text.toString(),
+                deckCategoryColor,
+                0,
+                null,
+                0
+            )
+
+            sendDeckOnSave(REQUEST_CODE, ADD, newDeck)
+            dismiss()
+        }
+    }
+
+    private fun onUpdate(deck: ImmutableDeck) {
+        if (!checkError()) {
+            val newDeck = Deck(
+                deck.deckId,
+                deckNameET?.text.toString(),
+                deckDescriptionET?.text.toString(),
+                deckFirstLangET?.text.toString(),
+                deckSecondLangET?.text.toString(),
+                deckCategoryColor,
+                deck.cardSum,
+                deck.deckCategory,
+                isCorrectRevers(deck.isFavorite)
+            )
+
+            sendDeckOnEdit(REQUEST_CODE, newDeck)
+            dismiss()
+        }
     }
 
     fun isCorrect(index: Int?) = index == 1
@@ -238,7 +283,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         rvDeckColorPicker?.apply {
             adapter = deckColorPickerAdapter
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
         }
     }
 

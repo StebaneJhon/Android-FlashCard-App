@@ -15,16 +15,43 @@
             android:layout_margin="@dimen/space_sm"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_title"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xl"
-                android:textStyle="bold"
-                tools:text="New deck" />
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_exit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    app:icon="@drawable/icon_exit"
+                    app:iconTint="?colorOnSurface"/>
+
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@+id/bt_exit"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_xl"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    tools:text="New deck" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_add_top"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="0dp"
+                    app:icon="@drawable/icon_check"
+                    app:iconTint="?colorOnSurface"
+                    tools:ignore="RelativeOverlap" />
+
+            </RelativeLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/deckNameLY"
@@ -46,10 +73,11 @@
                     android:layout_height="match_parent"
                     android:autofillHints="@string/deck_name_hint"
                     android:hint="@string/deck_name_hint"
-                    android:inputType="text"
+                    android:inputType="textMultiLine"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface"
-                    android:fontFamily="@font/open_sans"/>
+                    android:fontFamily="@font/open_sans"
+                    android:maxLines="5" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -72,10 +100,10 @@
                     android:autofillHints="@string/deck_description_hint"
                     android:hint="@string/deck_description_hint"
                     android:inputType="textMultiLine"
-                    android:maxLines="3"
+                    android:maxLines="10"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="@color/neutral400"
-                    android:fontFamily="@font/open_sans"/>
+                    android:fontFamily="@font/open_sans" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -154,7 +182,8 @@
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_sm"
                 android:layout_marginTop="@dimen/text_lg"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/icon_expand_more" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_deck_color_picker"
@@ -168,20 +197,6 @@
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/dialogueNegativeBT"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/transparent"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/bt_cancel"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/dialogPositiveBT"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -192,7 +207,7 @@
                     android:textSize="@dimen/text_sm"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/bt_add_card"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.google.android.material.button.MaterialButton
@@ -209,7 +224,8 @@
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:drawableEnd="@drawable/icon_arrow_right"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

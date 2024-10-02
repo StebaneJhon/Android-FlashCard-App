@@ -43,6 +43,7 @@
             app:iconTint="?colorOnSurface"/>
 
         <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
             android:id="@+id/bt_flash_card_game_timed"
             android:layout_width="match_parent"
             android:layout_height="60dp"

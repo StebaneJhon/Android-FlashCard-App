@@ -147,7 +147,7 @@
     <string name="title_added_cards">Added cards</string>
     <string name="bt_cancel">Cancel</string>
     <string name="bt_add_deck">Add deck</string>
-    <string name="bt_add_card">Add card</string>
+    <string name="bt_add_card">Start adding card</string>
     <string name="dialog_title_delete_deck">Delete Deck?</string>
     <string name="dialog_message_delete_deck">The deck an all %1$s cards in it will be deleted</string>
     <string name="bt_text_delete">Delete</string>

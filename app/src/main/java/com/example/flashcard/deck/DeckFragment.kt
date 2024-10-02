@@ -45,6 +45,7 @@ import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.quizGame.QuizGameActivity
+import com.example.flashcard.quiz.test.TestActivity
 import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MATCHING_QUIZ
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MULTI_CHOICE_QUIZ
@@ -56,6 +57,7 @@ import com.example.flashcard.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MATCHING_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
+import com.example.flashcard.util.FlashCardMiniGameRef.TEST
 import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
 import com.example.flashcard.util.QuizModeBottomSheet
@@ -163,7 +165,6 @@ class DeckFragment :
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
         val popup = PopupMenu(requireContext(), v)
         popup.menuInflater.inflate(menuRes, popup.menu)
-
         popup.setOnMenuItemClickListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
                 R.id.bt_filter_alphabetically -> {
@@ -471,6 +472,13 @@ class DeckFragment :
                 intent.putExtra(QuizGameActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
+
+            TEST -> {
+                val intent = Intent(appContext, TestActivity::class.java)
+                intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
+                startActivity(intent)
+            }
+
         }
     }
 
