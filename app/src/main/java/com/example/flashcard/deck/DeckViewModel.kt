@@ -18,20 +18,16 @@ import com.example.flashcard.backend.OpenTriviaRepository
 import com.example.flashcard.backend.entities.CardContent
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.backend.entities.Deck
-import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.util.CardLevel.L1
-import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.DeckColorCategorySelector
-import com.example.flashcard.util.DeckRef.DECK_SORT_ALPHABETICALLY
-import com.example.flashcard.util.DeckRef.DECK_SORT_BY_CARD_SUM
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.time.LocalDate
@@ -187,7 +183,7 @@ class DeckViewModel(
         return newCards
     }
 
-    private fun toCardType(type: String) = if (type == "multiple") ONE_OR_MULTI_ANSWER_CARD else TRUE_OR_FALSE_CARD
+    private fun toCardType(type: String) = if (type == "multiple") MULTIPLE_ANSWER_CARD else TRUE_OR_FALSE_CARD
 
     private fun generateCardDefinitions(
         correctAnswer: String,

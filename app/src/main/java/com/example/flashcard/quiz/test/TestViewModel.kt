@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.entities.CardDefinition
-import com.example.flashcard.util.CardType.FLASHCARD
-import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -56,7 +56,7 @@ class TestViewModel(
 
     fun initLocalCards(cards: List<ImmutableCard?>) {
         localCards = cards.map { card ->
-            val cardDefinitions = if (card?.cardType == FLASHCARD) {
+            val cardDefinitions = if (card?.cardType == SINGLE_ANSWER_CARD) {
                 getCardDefinitions(card.cardType, card.cardDefinition!!, 4, card.cardId)
             } else {
                 getCardDefinitions(card?.cardType!!, card.cardDefinition!!, card.cardDefinition.size, card.cardId)
@@ -83,7 +83,7 @@ class TestViewModel(
     }
 
     fun noteSingleUserAnswer(answer: TestCardDefinitionModel) {
-        if (answer.cardType == ONE_OR_MULTI_ANSWER_CARD) {
+        if (answer.cardType == MULTIPLE_ANSWER_CARD) {
             moteUserAnswerOnMultipleAnswerCard(answer)
         } else {
             noteUserAnswerOnSingleAnswerCard(answer)

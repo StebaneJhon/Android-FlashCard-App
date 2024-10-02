@@ -3,7 +3,6 @@ package com.example.flashcard.card
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -50,8 +49,8 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardContent
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardLevel.L1
-import com.example.flashcard.util.CardType.FLASHCARD
-import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
@@ -94,6 +93,12 @@ class NewCardDialog(
     private var tieDefinition2MultiAnswerCard: TextInputEditText? = null
     private var tieDefinition3MultiAnswerCard: TextInputEditText? = null
     private var tieDefinition4MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition5MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition6MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition7MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition8MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition9MultiAnswerCard: TextInputEditText? = null
+    private var tieDefinition10MultiAnswerCard: TextInputEditText? = null
     private var tieContentTrueOrFalseCard: TextInputEditText? = null
 
     private var cardContentLY: TextInputLayout? = null
@@ -103,6 +108,12 @@ class NewCardDialog(
     private var tilDefinition2MultiAnswerCard: TextInputLayout? = null
     private var tilDefinition3MultiAnswerCard: TextInputLayout? = null
     private var tilDefinition4MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition5MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition6MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition7MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition8MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition9MultiAnswerCard: TextInputLayout? = null
+    private var tilDefinition10MultiAnswerCard: TextInputLayout? = null
     private var tilContentTrueOrFalseCard: TextInputLayout? = null
     private var cpTrue: Chip? = null
     private var cpFalse: Chip? = null
@@ -117,16 +128,24 @@ class NewCardDialog(
     private var cpDefinition2IsTrue: Chip? = null
     private var cpDefinition3IsTrue: Chip? = null
     private var cpDefinition4IsTrue: Chip? = null
+    private var cpDefinition5IsTrue: Chip? = null
+    private var cpDefinition6IsTrue: Chip? = null
+    private var cpDefinition7IsTrue: Chip? = null
+    private var cpDefinition8IsTrue: Chip? = null
+    private var cpDefinition9IsTrue: Chip? = null
+    private var cpDefinition10IsTrue: Chip? = null
 
     private var btAdd: MaterialButton? = null
     private var btCancel: MaterialButton? = null
     private var tvTitleAddedCards: TextView? = null
     private var tabAddAndUpdateNewCard: MaterialToolbar? = null
     private var rvAddedCard: RecyclerView? = null
+    private var btAddMoreDefinition: MaterialButton? = null
+
     private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
 
     private var appContext: Context? = null
-    private var cardType: String? = null
+    private var cardType = SINGLE_ANSWER_CARD
     private var definitionList = mutableSetOf<CardDefinition>()
 
     private var selectedField: EditText? = null
@@ -135,6 +154,10 @@ class NewCardDialog(
     private val newCardViewModel: NewCardDialogViewModel by viewModels()
     private var actionMode: ActionMode? = null
     private var uri: Uri? = null
+
+    private var revealedDefinitionFields: Int = 1
+
+    private lateinit var definitionFields: List<DefinitionFieldModel>
 
     private var takePreview =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
@@ -227,6 +250,12 @@ class NewCardDialog(
         tieDefinition2MultiAnswerCard = view?.findViewById(R.id.tie_definition_2_multi_answer_card)
         tieDefinition3MultiAnswerCard = view?.findViewById(R.id.tie_definition_3_multi_answer_card)
         tieDefinition4MultiAnswerCard = view?.findViewById(R.id.tie_definition_4_multi_answer_card)
+        tieDefinition5MultiAnswerCard = view?.findViewById(R.id.tie_definition_5_multi_answer_card)
+        tieDefinition6MultiAnswerCard = view?.findViewById(R.id.tie_definition_6_multi_answer_card)
+        tieDefinition7MultiAnswerCard = view?.findViewById(R.id.tie_definition_7_multi_answer_card)
+        tieDefinition8MultiAnswerCard = view?.findViewById(R.id.tie_definition_8_multi_answer_card)
+        tieDefinition9MultiAnswerCard = view?.findViewById(R.id.tie_definition_9_multi_answer_card)
+        tieDefinition10MultiAnswerCard = view?.findViewById(R.id.tie_definition_10_multi_answer_card)
         tieContentTrueOrFalseCard = view?.findViewById(R.id.tie_content_true_or_false_card)
 
         cardContentLY = view?.findViewById(R.id.cardContentLY)
@@ -236,6 +265,12 @@ class NewCardDialog(
         tilDefinition2MultiAnswerCard = view?.findViewById(R.id.til_definition_2_multi_answer_card)
         tilDefinition3MultiAnswerCard = view?.findViewById(R.id.til_definition_3_multi_answer_card)
         tilDefinition4MultiAnswerCard = view?.findViewById(R.id.til_definition_4_multi_answer_card)
+        tilDefinition5MultiAnswerCard = view?.findViewById(R.id.til_definition_5_multi_answer_card)
+        tilDefinition6MultiAnswerCard = view?.findViewById(R.id.til_definition_6_multi_answer_card)
+        tilDefinition7MultiAnswerCard = view?.findViewById(R.id.til_definition_7_multi_answer_card)
+        tilDefinition8MultiAnswerCard = view?.findViewById(R.id.til_definition_8_multi_answer_card)
+        tilDefinition9MultiAnswerCard = view?.findViewById(R.id.til_definition_9_multi_answer_card)
+        tilDefinition10MultiAnswerCard = view?.findViewById(R.id.til_definition_10_multi_answer_card)
         tilContentTrueOrFalseCard = view?.findViewById(R.id.til_content_true_or_false_card)
 
         cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
@@ -248,6 +283,12 @@ class NewCardDialog(
         cpDefinition2IsTrue = view?.findViewById(R.id.cp_definition_2_is_true)
         cpDefinition3IsTrue = view?.findViewById(R.id.cp_definition_3_is_true)
         cpDefinition4IsTrue = view?.findViewById(R.id.cp_definition_4_is_true)
+        cpDefinition5IsTrue = view?.findViewById(R.id.cp_definition_5_is_true)
+        cpDefinition6IsTrue = view?.findViewById(R.id.cp_definition_6_is_true)
+        cpDefinition7IsTrue = view?.findViewById(R.id.cp_definition_7_is_true)
+        cpDefinition8IsTrue = view?.findViewById(R.id.cp_definition_8_is_true)
+        cpDefinition9IsTrue = view?.findViewById(R.id.cp_definition_9_is_true)
+        cpDefinition10IsTrue = view?.findViewById(R.id.cp_definition_10_is_true)
         cpFalse = view?.findViewById(R.id.cp_false)
         cpTrue = view?.findViewById(R.id.cp_true)
 
@@ -259,6 +300,21 @@ class NewCardDialog(
         rvAddedCard = view?.findViewById(R.id.rv_added_card)
 
         tvTitleAddedCards = view?.findViewById(R.id.tv_title_added_cards)
+
+        btAddMoreDefinition = view?.findViewById(R.id.bt_more_definition)
+
+        definitionFields = listOf(
+            DefinitionFieldModel(tilDefinition1MultiAnswerCard!!, tieDefinition1MultiAnswerCard!!, cpDefinition1IsTrue!!),
+            DefinitionFieldModel(tilDefinition2MultiAnswerCard!!, tieDefinition2MultiAnswerCard!!, cpDefinition2IsTrue!!),
+            DefinitionFieldModel(tilDefinition3MultiAnswerCard!!, tieDefinition3MultiAnswerCard!!, cpDefinition3IsTrue!!),
+            DefinitionFieldModel(tilDefinition4MultiAnswerCard!!, tieDefinition4MultiAnswerCard!!, cpDefinition4IsTrue!!),
+            DefinitionFieldModel(tilDefinition5MultiAnswerCard!!, tieDefinition5MultiAnswerCard!!, cpDefinition5IsTrue!!),
+            DefinitionFieldModel(tilDefinition6MultiAnswerCard!!, tieDefinition6MultiAnswerCard!!, cpDefinition6IsTrue!!),
+            DefinitionFieldModel(tilDefinition7MultiAnswerCard!!, tieDefinition7MultiAnswerCard!!, cpDefinition7IsTrue!!),
+            DefinitionFieldModel(tilDefinition8MultiAnswerCard!!, tieDefinition8MultiAnswerCard!!, cpDefinition8IsTrue!!),
+            DefinitionFieldModel(tilDefinition9MultiAnswerCard!!, tieDefinition9MultiAnswerCard!!, cpDefinition9IsTrue!!),
+            DefinitionFieldModel(tilDefinition10MultiAnswerCard!!, tieDefinition10MultiAnswerCard!!, cpDefinition10IsTrue!!),
+        )
 
         // Add or update card
         if (card != null) {
@@ -504,6 +560,10 @@ class NewCardDialog(
                 )
             }
             setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+        }
+
+        btAddMoreDefinition?.setOnClickListener {
+            onAddMoreDefinition()
         }
 
         return view
@@ -762,68 +822,80 @@ class NewCardDialog(
             }
         }
 
-        when (card.cardType) {
-            FLASHCARD -> {
-                onAddFlashCard(true)
-                cardContent?.setText(card.cardContent?.content)
-                cardValue?.setText(card.cardDefinition?.first()?.definition)
-            }
-
-            TRUE_OR_FALSE_CARD -> {
-                onAddTrueOrFalseCard(true)
-                tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
-                cpFalse?.isChecked = isCorrect(card.cardDefinition?.get(0)?.isCorrectDefinition!!)
-                cpTrue?.isChecked = isCorrect(card.cardDefinition[1].isCorrectDefinition)
-            }
-
-            ONE_OR_MULTI_ANSWER_CARD -> {
-                onAddMultiAnswerCard(true)
-                tieContentMultiAnswerCard?.setText(card.cardContent?.content)
-                when (card.cardDefinition?.size) {
-                    1 -> {
-                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
-                        cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
-                    }
-
-                    2 -> {
-                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
-                        cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
-                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
-                        cpDefinition2IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
-                    }
-
-                    3 -> {
-                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
-                        cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
-                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
-                        cpDefinition2IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
-                        tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
-                        cpDefinition3IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[2].isCorrectDefinition)
-                    }
-
-                    4 -> {
-                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
-                        cpDefinition1IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
-                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
-                        cpDefinition2IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
-                        tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
-                        cpDefinition3IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[2].isCorrectDefinition)
-                        tieDefinition4MultiAnswerCard?.setText(card.cardDefinition[3].definition)
-                        cpDefinition4IsTrue?.isChecked =
-                            isCorrect(card.cardDefinition[3].isCorrectDefinition)
-                    }
-                }
+        definitionFields.forEachIndexed { index, fl ->
+            if (index < card.cardDefinition?.size!!) {
+                fl.fieldLy.visibility = View.VISIBLE
+                fl.chip.visibility = View.VISIBLE
+                fl.fieldEd.setText(card.cardDefinition[index].definition)
+                fl.chip.isChecked = isCorrect(card.cardDefinition[index].isCorrectDefinition)
+            } else {
+                fl.fieldLy.visibility = View.GONE
+                fl.chip.visibility = View.GONE
             }
         }
+
+//        when (card.cardType) {
+//            SINGLE_ANSWER_CARD -> {
+//                onAddFlashCard(true)
+//                cardContent?.setText(card.cardContent?.content)
+//                cardValue?.setText(card.cardDefinition?.first()?.definition)
+//            }
+//
+//            TRUE_OR_FALSE_CARD -> {
+//                onAddTrueOrFalseCard(true)
+//                tieContentTrueOrFalseCard?.setText(card.cardContent?.content)
+//                cpFalse?.isChecked = isCorrect(card.cardDefinition?.get(0)?.isCorrectDefinition!!)
+//                cpTrue?.isChecked = isCorrect(card.cardDefinition[1].isCorrectDefinition)
+//            }
+//
+//            MULTIPLE_ANSWER_CARD -> {
+//                onAddMultiAnswerCard(true)
+//                tieContentMultiAnswerCard?.setText(card.cardContent?.content)
+//                when (card.cardDefinition?.size) {
+//                    1 -> {
+//                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+//                        cpDefinition1IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
+//                    }
+//
+//                    2 -> {
+//                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+//                        cpDefinition1IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
+//                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
+//                        cpDefinition2IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
+//                    }
+//
+//                    3 -> {
+//                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+//                        cpDefinition1IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
+//                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
+//                        cpDefinition2IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
+//                        tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
+//                        cpDefinition3IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[2].isCorrectDefinition)
+//                    }
+//
+//                    4 -> {
+//                        tieDefinition1MultiAnswerCard?.setText(card.cardDefinition[0].definition)
+//                        cpDefinition1IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[0].isCorrectDefinition)
+//                        tieDefinition2MultiAnswerCard?.setText(card.cardDefinition[1].definition)
+//                        cpDefinition2IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[1].isCorrectDefinition)
+//                        tieDefinition3MultiAnswerCard?.setText(card.cardDefinition[2].definition)
+//                        cpDefinition3IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[2].isCorrectDefinition)
+//                        tieDefinition4MultiAnswerCard?.setText(card.cardDefinition[3].definition)
+//                        cpDefinition4IsTrue?.isChecked =
+//                            isCorrect(card.cardDefinition[3].isCorrectDefinition)
+//                    }
+//                }
+//            }
+//        }
         areCardTypesEnabled(false)
 
     }
@@ -855,7 +927,7 @@ class NewCardDialog(
             clAddMultiAnswerCardContainer?.isVisible = true
             llAddTrueOrFalseCardContainer?.isVisible = false
             llAddFlashCardContainer?.isVisible = false
-            cardType = ONE_OR_MULTI_ANSWER_CARD
+            cardType = MULTIPLE_ANSWER_CARD
         }
     }
 
@@ -865,7 +937,7 @@ class NewCardDialog(
             llAddFlashCardContainer?.isVisible = true
             llAddTrueOrFalseCardContainer?.isVisible = false
             clAddMultiAnswerCardContainer?.isVisible = false
-            cardType = FLASHCARD
+            cardType = SINGLE_ANSWER_CARD
         }
     }
 
@@ -902,11 +974,17 @@ class NewCardDialog(
     }
 
     private fun generateCardOnUpdate(): ImmutableCard? {
-        val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+//        val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+//            ?: return null
+//
+//        val definitions =
+//            getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+//                ?: return null
+        val content = getContent2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
             ?: return null
 
         val definitions =
-            getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+            getDefinition2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
                 ?: return null
         val updateCardDefinitions = mutableListOf<CardDefinition>()
         for (i in 0..card?.cardDefinition?.size?.minus(1)!!) {
@@ -951,15 +1029,17 @@ class NewCardDialog(
             card!!.cardStatus,
             card!!.nextMissMemorisationDate,
             card!!.nextRevisionDate,
-            card!!.cardType,
+            getCardType(definitions),
         )
     }
 
     fun generateCardOnAdd(): ImmutableCard? {
         val cardId = now()
         val contentId = now()
-        val newCardContent = getContent(cardId, contentId, deck.deckId)
-        val newCardDefinition = getDefinitions(cardId, contentId, deck.deckId)
+//        val newCardContent = getContent(cardId, contentId, deck.deckId)
+//        val newCardDefinition = getDefinitions(cardId, contentId, deck.deckId)
+        val newCardContent = getContent2(cardId, contentId, deck.deckId)
+        val newCardDefinition = getDefinition2(cardId, contentId, deck.deckId)
 
         if (newCardContent == null) {
             return null
@@ -981,17 +1061,25 @@ class NewCardDialog(
             L1,
             null,
             null,
-            cardType,
+            getCardType(newCardDefinition),
         )
+    }
+
+    private fun getCardType(definitions: List<CardDefinition>): String {
+        return if (definitions.size > 1) {
+            SINGLE_ANSWER_CARD
+        } else {
+            MULTIPLE_ANSWER_CARD
+        }
     }
 
     private fun getDefinitions(cardId: String, contentId: String, deckId: String) =
         when (cardType) {
-            FLASHCARD -> {
+            SINGLE_ANSWER_CARD -> {
                 getDefinitionOnAddFC(cardId, contentId, deckId)
             }
 
-            ONE_OR_MULTI_ANSWER_CARD -> {
+            MULTIPLE_ANSWER_CARD -> {
                 getDefinitionOnAddMAC(cardId, contentId, deckId)
             }
 
@@ -1004,13 +1092,71 @@ class NewCardDialog(
             }
         }
 
+    private fun getContent2(cardId: String, contentId: String, deckId: String): CardContent? {
+        val cardContentText = tieContentMultiAnswerCard?.text.toString()
+        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
+            CardContent(
+                contentId,
+                cardId,
+                deckId,
+                cardContentText
+            )
+        } else {
+            tilContentMultiAnswerCard?.error = getString(R.string.til_error_card_content)
+            null
+        }
+    }
+
+    private fun isDefinitionError(): Boolean {
+        var isText = false
+        var isTrueAnswer = false
+        definitionFields.forEach {
+            if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank())  {
+                isText = true
+            }
+            if (it.chip.isChecked && it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank()) {
+                if (isText) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun getDefinition2(
+        cardId: String,
+        contentId: String,
+        deckId: String
+    ): List<CardDefinition>? {
+        if (isDefinitionError()) {
+            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
+            return null
+        } else {
+            definitionFields.forEach {
+                definitionList.clear()
+                if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank()) {
+                    definitionList.add(
+                        createDefinition(
+                            it.fieldEd.text.toString(),
+                            it.chip.isChecked,
+                            cardId,
+                            contentId,
+                            deckId
+                        )
+                    )
+                }
+            }
+        }
+        return definitionList.toList()
+    }
+
     private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
         return when (cardType) {
-            FLASHCARD -> {
+            SINGLE_ANSWER_CARD -> {
                 getContentOnAddFC(cardId, contentId, deckId)
             }
 
-            ONE_OR_MULTI_ANSWER_CARD -> {
+            MULTIPLE_ANSWER_CARD -> {
                 getContentOnAddMAC(cardId, contentId, deckId)
             }
 
@@ -1359,6 +1505,19 @@ class NewCardDialog(
                     newCardViewModel.addedCards.value
                 )
             }
+        }
+    }
+
+    private fun onAddMoreDefinition() {
+        if (revealedDefinitionFields < definitionFields.size) {
+            definitionFields[revealedDefinitionFields].apply {
+                fieldLy.isVisible = true
+                chip.isVisible = true
+            }
+            revealedDefinitionFields++
+        }
+        if (revealedDefinitionFields >= definitionFields.size) {
+            btAddMoreDefinition?.isClickable = false
         }
     }
 

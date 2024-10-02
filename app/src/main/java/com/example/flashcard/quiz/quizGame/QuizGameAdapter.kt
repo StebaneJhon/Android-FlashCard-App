@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardDefinition
-import com.example.flashcard.util.CardType.FLASHCARD
-import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
@@ -111,13 +111,13 @@ class QuizGameAdapter(
 
 
             when(card?.cardType) {
-                FLASHCARD -> {
+                SINGLE_ANSWER_CARD -> {
                     onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
                 TRUE_OR_FALSE_CARD -> {
                     onTrueOrFalseCard(modelCard,cardPosition , cardOnClick)
                 }
-                ONE_OR_MULTI_ANSWER_CARD -> {
+                MULTIPLE_ANSWER_CARD -> {
                     onOneOrMultiAnswer(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
                 }
                 else -> {

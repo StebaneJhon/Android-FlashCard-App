@@ -27,8 +27,8 @@ import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityTestQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
-import com.example.flashcard.util.CardType.FLASHCARD
-import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.ThemePicker
@@ -196,13 +196,13 @@ class QuizGameActivity :
             viewModel.deck!!,
             {userResponseModel ->
                 when (userResponseModel.modelCard.cardDetails?.cardType) {
-                    FLASHCARD -> {
+                    SINGLE_ANSWER_CARD -> {
                         onOneAndOneCardClicked(userResponseModel)
                     }
                     TRUE_OR_FALSE_CARD -> {
                         onTrueOrFalseCardAnswered(userResponseModel)
                     }
-                    ONE_OR_MULTI_ANSWER_CARD -> {
+                    MULTIPLE_ANSWER_CARD -> {
                         onOneOrMultiAnswerCardAnswered(userResponseModel)
                     }
                     else -> {

@@ -1,7 +1,6 @@
 package com.example.flashcard.quiz.test
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
-import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.quiz.quizGame.QuizSpeakModel
-import com.example.flashcard.util.CardType.FLASHCARD
-import com.example.flashcard.util.CardType.ONE_OR_MULTI_ANSWER_CARD
+import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
@@ -120,7 +118,7 @@ class TestAdapter(
             }
 
             when (card?.cardType) {
-                FLASHCARD -> {
+                SINGLE_ANSWER_CARD -> {
                     onOneAnsweredCard(context, card, onUserAnswered, onSpeak)
                 }
 
@@ -128,7 +126,7 @@ class TestAdapter(
                     onTrueOrFalseCard(context, card, onUserAnswered, onSpeak)
                 }
 
-                ONE_OR_MULTI_ANSWER_CARD -> {
+                MULTIPLE_ANSWER_CARD -> {
                     onMultipleAnsweredCard(context, card, onUserAnswered, onSpeak)
                 }
 
@@ -426,7 +424,7 @@ class TestAdapter(
         }
 
         private fun onButtonClicked(button: MaterialButton, cardType: String, context: Context) {
-            if (cardType == ONE_OR_MULTI_ANSWER_CARD) {
+            if (cardType == MULTIPLE_ANSWER_CARD) {
                 button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
             } else {
                 button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
@@ -444,7 +442,7 @@ class TestAdapter(
         }
 
         private fun onButtonUnClicked(button: MaterialButton, cardType: String, context: Context) {
-            if (cardType == ONE_OR_MULTI_ANSWER_CARD) {
+            if (cardType == MULTIPLE_ANSWER_CARD) {
                 button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
             } else {
                 button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
