@@ -58,10 +58,21 @@ class TestAdapter(
         private val btAlternative2: MaterialButton = view.findViewById(R.id.bt_alternative2)
         private val btAlternative3: MaterialButton = view.findViewById(R.id.bt_alternative3)
         private val btAlternative4: MaterialButton = view.findViewById(R.id.bt_alternative4)
+        private val btAlternative5: MaterialButton = view.findViewById(R.id.bt_alternative5)
+        private val btAlternative6: MaterialButton = view.findViewById(R.id.bt_alternative6)
+        private val btAlternative7: MaterialButton = view.findViewById(R.id.bt_alternative7)
+        private val btAlternative8: MaterialButton = view.findViewById(R.id.bt_alternative8)
+        private val btAlternative9: MaterialButton = view.findViewById(R.id.bt_alternative9)
+        private val btAlternative10: MaterialButton = view.findViewById(R.id.bt_alternative10)
         private val tvFrontProgression: TextView = view.findViewById(R.id.tv_front_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
         private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
+
+        private val btAlternatives = listOf(
+            btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
+            btAlternative6, btAlternative7, btAlternative8, btAlternative9, btAlternative10,
+        )
 
 
         fun bind(
@@ -84,6 +95,20 @@ class TestAdapter(
                 DeckColorCategorySelector().selectColor(deck.deckColorCode!!) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
+            btAlternatives.forEachIndexed { index, materialButton ->
+                if (index < card?.cardDefinition?.size!!) {
+                    materialButton.visibility = View.VISIBLE
+                    if (card.cardDefinition[index].isSelected) {
+                        onButtonClicked(materialButton, card.cardType, context)
+                    } else {
+                        onButtonUnClicked(materialButton, card.cardType, context)
+                    }
+                } else {
+                    materialButton.visibility = View.GONE
+                }
+            }
+
+            /*
             card?.cardDefinition?.forEachIndexed {index, definition ->
                 when (index) {
                     0 -> {
@@ -117,6 +142,8 @@ class TestAdapter(
                 }
             }
 
+             */
+
             when (card?.cardType) {
                 SINGLE_ANSWER_CARD -> {
                     onOneAnsweredCard(context, card, onUserAnswered, onSpeak)
@@ -144,6 +171,18 @@ class TestAdapter(
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
 
+            btAlternatives.forEachIndexed { index, materialButton ->
+                if (index < card.cardDefinition.size) {
+                    materialButton.apply {
+                        visibility = View.VISIBLE
+                        text = card.cardDefinition[index].definition
+                        setOnClickListener { v ->
+                            selectAnswer(card.cardDefinition[index], onUserAnswered)
+                        }
+                    }
+                }
+            }
+            /*
             btAlternative1.apply {
                 isVisible = true
                 text = card.cardDefinition[0].definition
@@ -176,6 +215,7 @@ class TestAdapter(
                     selectAnswer(card.cardDefinition[3], onUserAnswered)
                 }
             }
+             */
 
             btSpeak.setOnClickListener {
                 val texts = listOf(
@@ -209,7 +249,32 @@ class TestAdapter(
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
+            val texts = arrayListOf(card.cardContent.content,)
+            val views = arrayListOf(tvContent)
+            btAlternatives.forEachIndexed { index, materialButton ->
+                if (index < card.cardDefinition.size) {
+                    materialButton.apply {
+                        visibility = View.VISIBLE
+                        text = card.cardDefinition[index].definition
+                        setOnClickListener { v ->
+                            selectAnswer(card.cardDefinition[index], onUserAnswered)
+                        }
+                    }
+                    texts.add(card.cardDefinition[index].toString())
+                    views.add(materialButton)
+                } else {
+                    materialButton.visibility = View.GONE
+                }
+            }
 
+            onSpeak(
+                QuizSpeakModel(
+                    text = texts,
+                    views = views,
+                    ""
+                )
+            )
+            /*
             when (card.cardDefinition.size) {
                 2 -> {
                     btAlternative1.apply {
@@ -366,6 +431,7 @@ class TestAdapter(
 
                 }
             }
+            */
         }
 
         private fun selectAnswer(

@@ -47,7 +47,19 @@ class TestResultRecyclerViewAdapter(
         private val tvAddedCardDescription2: TextView = view.findViewById(R.id.tv_added_card_description2)
         private val tvAddedCardDescription3: TextView = view.findViewById(R.id.tv_added_card_description3)
         private val tvAddedCardDescription4: TextView = view.findViewById(R.id.tv_added_card_description4)
+        private val tvAddedCardDescription5: TextView = view.findViewById(R.id.tv_added_card_description5)
+        private val tvAddedCardDescription6: TextView = view.findViewById(R.id.tv_added_card_description6)
+        private val tvAddedCardDescription7: TextView = view.findViewById(R.id.tv_added_card_description7)
+        private val tvAddedCardDescription8: TextView = view.findViewById(R.id.tv_added_card_description8)
+        private val tvAddedCardDescription9: TextView = view.findViewById(R.id.tv_added_card_description9)
+        private val tvAddedCardDescription10: TextView = view.findViewById(R.id.tv_added_card_description10)
         private val tvAddedCardDescriptionError: TextView = view.findViewById(R.id.tv_added_card_description_error)
+        private val tvCardDescriptions = listOf(
+            tvAddedCardDescription1, tvAddedCardDescription2, tvAddedCardDescription3,
+            tvAddedCardDescription4, tvAddedCardDescription5, tvAddedCardDescription6,
+            tvAddedCardDescription7, tvAddedCardDescription8, tvAddedCardDescription9,
+            tvAddedCardDescription10,
+        )
 
 
         fun bind(
@@ -57,6 +69,17 @@ class TestResultRecyclerViewAdapter(
 
             tvAddedCardContent.text = card.cardContent.content
             btDelete.visibility = View.GONE
+
+            tvCardDescriptions.forEachIndexed { index, textView ->
+                if (index < card.cardDefinition.size) {
+                    textView.visibility = View.VISIBLE
+                    displayCardDefinition(context, card.cardDefinition[index], textView)
+                } else {
+                    textView.visibility = View.GONE
+                }
+            }
+
+            /*
             when(card.cardDefinition.size) {
                 2 -> {
                     displayCardDefinition(context, card.cardDefinition[0], tvAddedCardDescription1)
@@ -84,6 +107,8 @@ class TestResultRecyclerViewAdapter(
                     tvAddedCardDescriptionError.visibility = View.VISIBLE
                 }
             }
+
+             */
         }
 
         private fun displayCardDefinition(
