@@ -864,13 +864,15 @@ class NewCardDialog(
             text = getString(R.string.bt_text_update)
             setOnClickListener {
                 if (indexCard == null) {
-                    onPositiveAction(Constant.UPDATE)
-                    sendCardsOnEdit(
-                        REQUEST_CODE_CARD,
-                        EDIT_CARD_BUNDLE_KEY,
-                        newCardViewModel.addedCards.value
-                    )
-                    dismiss()
+
+                    if (onPositiveAction(Constant.UPDATE)) {
+                        sendCardsOnEdit(
+                            REQUEST_CODE_CARD,
+                            EDIT_CARD_BUNDLE_KEY,
+                            newCardViewModel.addedCards.value
+                        )
+                        dismiss()
+                    }
                 } else {
                     onPositiveAction(Constant.UPDATE, indexCard)
                 }
@@ -997,11 +999,11 @@ class NewCardDialog(
         }
     }
 
-    private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null) {
+    private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null): Boolean {
         val newCard = if (action == Constant.ADD) {
-            generateCardOnAdd() ?: return
+            generateCardOnAdd() ?: return false
         } else {
-            generateCardOnUpdate() ?: return
+            generateCardOnUpdate() ?: return false
         }
 
         if (action == Constant.UPDATE && indexCardOnUpdate != null) {
@@ -1012,6 +1014,7 @@ class NewCardDialog(
         }
         rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
         initCardAdditionPanel()
+        return true
     }
 
     private fun areCardTypesEnabled(enabled: Boolean) {
@@ -1037,11 +1040,17 @@ class NewCardDialog(
 //            getDefinitions(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
 //                ?: return null
         val content = getContent2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
-            ?: return null
 
-        val definitions =
-            getDefinition2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
-                ?: return null
+        val definitions = getDefinition2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+
+        if (content == null) {
+            return null
+        }
+
+        if (definitions == null) {
+            return null
+        }
+
         val updateCardDefinitions = mutableListOf<CardDefinition>()
         for (i in 0..card?.cardDefinition?.size?.minus(1)!!) {
             val definition = try {
@@ -1175,6 +1184,15 @@ class NewCardDialog(
                     return false
                 }
             }
+            if (it.chip.isChecked) {
+                isTrueAnswer = true
+            }
+        }
+        if (!isTrueAnswer) {
+            tilDefinition1MultiAnswerCard?.error = getString(R.string.cp_error_correct_definition)
+        }
+        if (!isText) {
+            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
         }
         return true
     }
@@ -1185,7 +1203,7 @@ class NewCardDialog(
         deckId: String
     ): List<CardDefinition>? {
         if (isDefinitionError()) {
-            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
+//            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
             return null
         } else {
             definitionList.clear()
