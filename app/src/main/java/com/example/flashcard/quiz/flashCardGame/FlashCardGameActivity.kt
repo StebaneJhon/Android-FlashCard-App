@@ -86,6 +86,8 @@ class FlashCardGameActivity :
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private lateinit var tts: TextToSpeech
 
+    private lateinit var tvDefinitions: List<TextView>
+
     companion object {
         private val MIN_SWIPE_DISTANCE = -275
         private const val TAG = "FlashCardGameActivity"
@@ -128,6 +130,11 @@ class FlashCardGameActivity :
         }
 
         applySettings()
+
+        tvDefinitions = listOf(
+            binding.tvQuizBack1, binding.tvQuizBack2, binding.tvQuizBack3, binding.tvQuizBack4, binding.tvQuizBack5,
+            binding.tvQuizBack6, binding.tvQuizBack7, binding.tvQuizBack8, binding.tvQuizBack9, binding.tvQuizBack10,
+        )
 
         lifecycleScope.launch {
             viewModel
@@ -699,45 +706,56 @@ class FlashCardGameActivity :
         binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
 
         val correctDefinitions = getCorrectDefinition(onScreenCards.top.cardDefinition)
-        when (correctDefinitions?.size) {
-            1 -> {
-                binding.tvQuizBack1.visibility = View.VISIBLE
-                binding.tvQuizBack1.text = correctDefinitions[0].definition
-                binding.tvQuizBack2.visibility = View.GONE
-                binding.tvQuizBack3.visibility = View.GONE
-                binding.tvQuizBack4.visibility = View.GONE
-            }
-
-            2 -> {
-                binding.tvQuizBack1.visibility = View.VISIBLE
-                binding.tvQuizBack1.text = correctDefinitions[0].definition
-                binding.tvQuizBack2.visibility = View.VISIBLE
-                binding.tvQuizBack2.text = correctDefinitions[1].definition
-                binding.tvQuizBack3.visibility = View.GONE
-                binding.tvQuizBack4.visibility = View.GONE
-            }
-
-            3 -> {
-                binding.tvQuizBack1.visibility = View.VISIBLE
-                binding.tvQuizBack1.text = correctDefinitions[0].definition
-                binding.tvQuizBack2.visibility = View.VISIBLE
-                binding.tvQuizBack2.text = correctDefinitions[1].definition
-                binding.tvQuizBack3.visibility = View.VISIBLE
-                binding.tvQuizBack3.text = correctDefinitions[2].definition
-                binding.tvQuizBack4.visibility = View.GONE
-            }
-
-            4 -> {
-                binding.tvQuizBack1.visibility = View.VISIBLE
-                binding.tvQuizBack1.text = correctDefinitions[0].definition
-                binding.tvQuizBack2.visibility = View.VISIBLE
-                binding.tvQuizBack2.text = correctDefinitions[1].definition
-                binding.tvQuizBack3.visibility = View.VISIBLE
-                binding.tvQuizBack3.text = correctDefinitions[2].definition
-                binding.tvQuizBack4.visibility = View.VISIBLE
-                binding.tvQuizBack4.text = correctDefinitions[3].definition
+        val views = arrayListOf<TextView>()
+        tvDefinitions.forEachIndexed { index, tv ->
+            if (index < correctDefinitions?.size!!) {
+                tv.visibility = View.VISIBLE
+                tv.text = correctDefinitions[index].definition
+                views.add(tv)
+            } else {
+                tv.visibility = View.GONE
             }
         }
+
+//        when (correctDefinitions?.size) {
+//            1 -> {
+//                binding.tvQuizBack1.visibility = View.VISIBLE
+//                binding.tvQuizBack1.text = correctDefinitions[0].definition
+//                binding.tvQuizBack2.visibility = View.GONE
+//                binding.tvQuizBack3.visibility = View.GONE
+//                binding.tvQuizBack4.visibility = View.GONE
+//            }
+//
+//            2 -> {
+//                binding.tvQuizBack1.visibility = View.VISIBLE
+//                binding.tvQuizBack1.text = correctDefinitions[0].definition
+//                binding.tvQuizBack2.visibility = View.VISIBLE
+//                binding.tvQuizBack2.text = correctDefinitions[1].definition
+//                binding.tvQuizBack3.visibility = View.GONE
+//                binding.tvQuizBack4.visibility = View.GONE
+//            }
+//
+//            3 -> {
+//                binding.tvQuizBack1.visibility = View.VISIBLE
+//                binding.tvQuizBack1.text = correctDefinitions[0].definition
+//                binding.tvQuizBack2.visibility = View.VISIBLE
+//                binding.tvQuizBack2.text = correctDefinitions[1].definition
+//                binding.tvQuizBack3.visibility = View.VISIBLE
+//                binding.tvQuizBack3.text = correctDefinitions[2].definition
+//                binding.tvQuizBack4.visibility = View.GONE
+//            }
+//
+//            4 -> {
+//                binding.tvQuizBack1.visibility = View.VISIBLE
+//                binding.tvQuizBack1.text = correctDefinitions[0].definition
+//                binding.tvQuizBack2.visibility = View.VISIBLE
+//                binding.tvQuizBack2.text = correctDefinitions[1].definition
+//                binding.tvQuizBack3.visibility = View.VISIBLE
+//                binding.tvQuizBack3.text = correctDefinitions[2].definition
+//                binding.tvQuizBack4.visibility = View.VISIBLE
+//                binding.tvQuizBack4.text = correctDefinitions[3].definition
+//            }
+//        }
         //binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
 
         binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
@@ -765,11 +783,11 @@ class FlashCardGameActivity :
             }
         }
         binding.btCardBackSpeak.setOnClickListener { v ->
-            val views = listOf(
-                binding.tvQuizBack1,
-                binding.tvQuizBack2,
-                binding.tvQuizBack3,
-            )
+//            val views = listOf(
+//                binding.tvQuizBack1,
+//                binding.tvQuizBack2,
+//                binding.tvQuizBack3,
+//            )
             if (tts.isSpeaking) {
                 stopReading(views, v as Button)
             } else {

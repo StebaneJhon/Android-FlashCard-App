@@ -219,7 +219,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_2"
-                    tools:text="2. What is the capital of Madagascar?" />
+                    tools:text="3. What is the capital of Madagascar?" />
 
                 <TextView
                     android:id="@+id/tv_quiz_back_4"
@@ -233,11 +233,119 @@
                     app:autoSizeMinTextSize="@dimen/text_base"
                     app:autoSizeStepGranularity="2sp"
                     app:autoSizeTextType="uniform"
-                    app:layout_constraintBottom_toTopOf="@+id/tv_flip_hint"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_5"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_3"
-                    tools:text="2. What is the capital of Madagascar?" />
+                    tools:text="4. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_quiz_back_5"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_base"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_6"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_4"
+                    tools:text="5. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_quiz_back_6"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_base"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_7"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_5"
+                    tools:text="6. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_quiz_back_7"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_base"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_8"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_6"
+                    tools:text="7. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_quiz_back_8"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_base"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_9"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_7"
+                    tools:text="8. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_quiz_back_9"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_base"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_10"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_8"
+                    tools:text="9. What is the capital of Madagascar?" />
+
+                <TextView
+                    android:id="@+id/tv_quiz_back_10"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:gravity="center"
+                    android:textAlignment="center"
+                    android:textColor="?colorOnSurface"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_base"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_flip_hint"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_quiz_back_9"
+                    tools:text="10. What is the capital of Madagascar?" />
 
                 <TextView
                     android:id="@+id/tv_flip_hint"

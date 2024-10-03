@@ -74,9 +74,20 @@ class QuizGameAdapter(
         private val btAlternative2: MaterialButton = view.findViewById(R.id.bt_alternative2)
         private val btAlternative3: MaterialButton = view.findViewById(R.id.bt_alternative3)
         private val btAlternative4: MaterialButton = view.findViewById(R.id.bt_alternative4)
+        private val btAlternative5: MaterialButton = view.findViewById(R.id.bt_alternative5)
+        private val btAlternative6: MaterialButton = view.findViewById(R.id.bt_alternative6)
+        private val btAlternative7: MaterialButton = view.findViewById(R.id.bt_alternative7)
+        private val btAlternative8: MaterialButton = view.findViewById(R.id.bt_alternative8)
+        private val btAlternative9: MaterialButton = view.findViewById(R.id.bt_alternative9)
+        private val btAlternative10: MaterialButton = view.findViewById(R.id.bt_alternative10)
         private lateinit var frontAnim: AnimatorSet
         private lateinit var backAnim: AnimatorSet
         var hasFlipped = false
+
+        private val btAlternatives = listOf(
+            btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
+            btAlternative6, btAlternative7, btAlternative8, btAlternative9, btAlternative10,
+        )
 
 
         fun bind(
@@ -137,10 +148,13 @@ class QuizGameAdapter(
         ) {
             val card = modelCard.cardDetails
             val cardModel = FlashCardModel(modelCard, cardList)
-            btAlternative1.isVisible = false
-            btAlternative2.isVisible = false
-            btAlternative3.isVisible = false
-            btAlternative4.isVisible = false
+            btAlternatives.forEach {
+                it.visibility = View.GONE
+            }
+//            btAlternative1.isVisible = false
+//            btAlternative2.isVisible = false
+//            btAlternative3.isVisible = false
+//            btAlternative4.isVisible = false
             flCardRoot.isClickable = cardModel.isFlippable()
 
             val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
@@ -256,122 +270,139 @@ class QuizGameAdapter(
             val cardModel = OneOrMultipleAnswerCardModel(modelCard, cardList)
             val answers = cardModel.getCardAnswers()
             flCardRoot.isClickable = cardModel.isFlippable()
-            when (answers.size ) {
-                2 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = answers[0].definition
-                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = answers[1].definition
-                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative3.isVisible = false
-                    btAlternative4.isVisible = false
 
-                    val texts = listOf(
-                        card?.cardContent?.content!!,
-                        answers[0].definition,
-                        answers[1].definition
-                    )
-                    val views = listOf(
-                        tvContent,
-                        btAlternative1,
-                        btAlternative2
-                    )
-
-                    frontSpeak(
-                        views,
-                        texts,
-                        deck.deckFirstLanguage!!
-                    )
-
-                }
-                3 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = answers[0].definition
-                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+            val texts = arrayListOf(card?.cardContent?.content!!)
+            val views = arrayListOf(tvContent)
+            btAlternatives.forEachIndexed { index, materialButton ->
+                if (index < answers.size) {
+                    materialButton.apply {
+                        visibility = View.VISIBLE
+                        text = answers[index].definition
+                        onAlternativeClicked(answers[index], cardOnClick, modelCard, cardPosition)
                     }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = answers[1].definition
-                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative3.apply {
-                        isVisible = true
-                        text = answers[2].definition
-                        onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative4.isVisible = false
-                    val texts = listOf(
-                        card?.cardContent?.content!!,
-                        answers[0].definition,
-                        answers[1].definition,
-                        answers[2].definition,
-                    )
-                    val views = listOf(
-                        tvContent,
-                        btAlternative1,
-                        btAlternative2,
-                        btAlternative3,
-                    )
-
-                    frontSpeak(
-                        views,
-                        texts,
-                        deck.deckFirstLanguage!!
-                    )
-                }
-                4 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = answers[0].definition
-                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = answers[1].definition
-                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative3.apply {
-                        isVisible = true
-                        text = answers[2].definition
-                        onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
-                    }
-                    btAlternative4.apply {
-                        isVisible = true
-                        text = answers[3].definition
-                        onAlternativeClicked(answers[3], cardOnClick, modelCard, cardPosition)
-                    }
-                    val texts = listOf(
-                        card?.cardContent?.content!!,
-                        answers[0].definition,
-                        answers[1].definition,
-                        answers[2].definition,
-                        answers[3].definition,
-                    )
-                    val views = listOf(
-                        tvContent,
-                        btAlternative1,
-                        btAlternative2,
-                        btAlternative3,
-                        btAlternative4,
-                    )
-
-                    frontSpeak(
-                        views,
-                        texts,
-                        deck.deckFirstLanguage!!
-                    )
-
-                }
-                else -> {
-                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+                    texts.add(answers[index].definition)
+                    views.add(materialButton)
+                } else {
+                    materialButton.visibility = View.GONE
                 }
             }
+            frontSpeak(views, texts, deck.deckFirstLanguage!!)
+//            when (answers.size ) {
+//                2 -> {
+//                    btAlternative1.apply {
+//                        isVisible = true
+//                        text = answers[0].definition
+//                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative2.apply {
+//                        isVisible = true
+//                        text = answers[1].definition
+//                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative3.isVisible = false
+//                    btAlternative4.isVisible = false
+//
+//                    val texts = listOf(
+//                        card?.cardContent?.content!!,
+//                        answers[0].definition,
+//                        answers[1].definition
+//                    )
+//                    val views = listOf(
+//                        tvContent,
+//                        btAlternative1,
+//                        btAlternative2
+//                    )
+//
+//                    frontSpeak(
+//                        views,
+//                        texts,
+//                        deck.deckFirstLanguage!!
+//                    )
+//
+//                }
+//                3 -> {
+//                    btAlternative1.apply {
+//                        isVisible = true
+//                        text = answers[0].definition
+//                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative2.apply {
+//                        isVisible = true
+//                        text = answers[1].definition
+//                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative3.apply {
+//                        isVisible = true
+//                        text = answers[2].definition
+//                        onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative4.isVisible = false
+//                    val texts = listOf(
+//                        card?.cardContent?.content!!,
+//                        answers[0].definition,
+//                        answers[1].definition,
+//                        answers[2].definition,
+//                    )
+//                    val views = listOf(
+//                        tvContent,
+//                        btAlternative1,
+//                        btAlternative2,
+//                        btAlternative3,
+//                    )
+//
+//                    frontSpeak(
+//                        views,
+//                        texts,
+//                        deck.deckFirstLanguage!!
+//                    )
+//                }
+//                4 -> {
+//                    btAlternative1.apply {
+//                        isVisible = true
+//                        text = answers[0].definition
+//                        onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative2.apply {
+//                        isVisible = true
+//                        text = answers[1].definition
+//                        onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative3.apply {
+//                        isVisible = true
+//                        text = answers[2].definition
+//                        onAlternativeClicked(answers[2], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    btAlternative4.apply {
+//                        isVisible = true
+//                        text = answers[3].definition
+//                        onAlternativeClicked(answers[3], cardOnClick, modelCard, cardPosition)
+//                    }
+//                    val texts = listOf(
+//                        card?.cardContent?.content!!,
+//                        answers[0].definition,
+//                        answers[1].definition,
+//                        answers[2].definition,
+//                        answers[3].definition,
+//                    )
+//                    val views = listOf(
+//                        tvContent,
+//                        btAlternative1,
+//                        btAlternative2,
+//                        btAlternative3,
+//                        btAlternative4,
+//                    )
+//
+//                    frontSpeak(
+//                        views,
+//                        texts,
+//                        deck.deckFirstLanguage!!
+//                    )
+//
+//                }
+//                else -> {
+//                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+//                }
+//            }
 
 
         }
