@@ -56,6 +56,7 @@ import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.chip.Chip
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -124,16 +125,27 @@ class NewCardDialog(
     private var clAddMultiAnswerCardContainer: ConstraintLayout? = null
     private var llAddTrueOrFalseCardContainer: LinearLayout? = null
     private var llAddFlashCardContainer: LinearLayout? = null
-    private var cpDefinition1IsTrue: Chip? = null
-    private var cpDefinition2IsTrue: Chip? = null
-    private var cpDefinition3IsTrue: Chip? = null
-    private var cpDefinition4IsTrue: Chip? = null
-    private var cpDefinition5IsTrue: Chip? = null
-    private var cpDefinition6IsTrue: Chip? = null
-    private var cpDefinition7IsTrue: Chip? = null
-    private var cpDefinition8IsTrue: Chip? = null
-    private var cpDefinition9IsTrue: Chip? = null
-    private var cpDefinition10IsTrue: Chip? = null
+    private var cpDefinition1IsTrue: MaterialCheckBox? = null
+    private var cpDefinition2IsTrue: MaterialCheckBox? = null
+    private var cpDefinition3IsTrue: MaterialCheckBox? = null
+    private var cpDefinition4IsTrue: MaterialCheckBox? = null
+    private var cpDefinition5IsTrue: MaterialCheckBox? = null
+    private var cpDefinition6IsTrue: MaterialCheckBox? = null
+    private var cpDefinition7IsTrue: MaterialCheckBox? = null
+    private var cpDefinition8IsTrue: MaterialCheckBox? = null
+    private var cpDefinition9IsTrue: MaterialCheckBox? = null
+    private var cpDefinition10IsTrue: MaterialCheckBox? = null
+
+    private var btDeleteField1: MaterialButton? = null
+    private var btDeleteField2: MaterialButton? = null
+    private var btDeleteField3: MaterialButton? = null
+    private var btDeleteField4: MaterialButton? = null
+    private var btDeleteField5: MaterialButton? = null
+    private var btDeleteField6: MaterialButton? = null
+    private var btDeleteField7: MaterialButton? = null
+    private var btDeleteField8: MaterialButton? = null
+    private var btDeleteField9: MaterialButton? = null
+    private var btDeleteField10: MaterialButton? = null
 
     private var btAdd: MaterialButton? = null
     private var btCancel: MaterialButton? = null
@@ -243,8 +255,8 @@ class NewCardDialog(
 
         appContext = activity?.applicationContext
 
-        cardContent = view?.findViewById(R.id.cardContentTV)
-        cardValue = view?.findViewById(R.id.cardValueTV)
+//        cardContent = view?.findViewById(R.id.cardContentTV)
+//        cardValue = view?.findViewById(R.id.cardValueTV)
         tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
         tieDefinition1MultiAnswerCard = view?.findViewById(R.id.tie_definition_1_multi_answer_card)
         tieDefinition2MultiAnswerCard = view?.findViewById(R.id.tie_definition_2_multi_answer_card)
@@ -256,10 +268,10 @@ class NewCardDialog(
         tieDefinition8MultiAnswerCard = view?.findViewById(R.id.tie_definition_8_multi_answer_card)
         tieDefinition9MultiAnswerCard = view?.findViewById(R.id.tie_definition_9_multi_answer_card)
         tieDefinition10MultiAnswerCard = view?.findViewById(R.id.tie_definition_10_multi_answer_card)
-        tieContentTrueOrFalseCard = view?.findViewById(R.id.tie_content_true_or_false_card)
-
-        cardContentLY = view?.findViewById(R.id.cardContentLY)
-        cardValueLY = view?.findViewById(R.id.cardValueLY)
+//        tieContentTrueOrFalseCard = view?.findViewById(R.id.tie_content_true_or_false_card)
+//
+//        cardContentLY = view?.findViewById(R.id.cardContentLY)
+//        cardValueLY = view?.findViewById(R.id.cardValueLY)
         tilContentMultiAnswerCard = view?.findViewById(R.id.til_content_multi_answer_card)
         tilDefinition1MultiAnswerCard = view?.findViewById(R.id.til_definition_1_multi_answer_card)
         tilDefinition2MultiAnswerCard = view?.findViewById(R.id.til_definition_2_multi_answer_card)
@@ -271,13 +283,13 @@ class NewCardDialog(
         tilDefinition8MultiAnswerCard = view?.findViewById(R.id.til_definition_8_multi_answer_card)
         tilDefinition9MultiAnswerCard = view?.findViewById(R.id.til_definition_9_multi_answer_card)
         tilDefinition10MultiAnswerCard = view?.findViewById(R.id.til_definition_10_multi_answer_card)
-        tilContentTrueOrFalseCard = view?.findViewById(R.id.til_content_true_or_false_card)
-
-        cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
-        cpAddTrueOrFalseCard = view?.findViewById(R.id.cp_add_true_or_false_card)
-        cpAddMultiAnswerCard = view?.findViewById(R.id.cp_add_multi_answer)
-        llAddFlashCardContainer = view?.findViewById(R.id.ll_add_flash_card_container)
-        llAddTrueOrFalseCardContainer = view?.findViewById(R.id.ll_add_true_or_false_card_container)
+//        tilContentTrueOrFalseCard = view?.findViewById(R.id.til_content_true_or_false_card)
+//
+//        cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
+//        cpAddTrueOrFalseCard = view?.findViewById(R.id.cp_add_true_or_false_card)
+//        cpAddMultiAnswerCard = view?.findViewById(R.id.cp_add_multi_answer)
+//        llAddFlashCardContainer = view?.findViewById(R.id.ll_add_flash_card_container)
+//        llAddTrueOrFalseCardContainer = view?.findViewById(R.id.ll_add_true_or_false_card_container)
         clAddMultiAnswerCardContainer = view?.findViewById(R.id.cl_add_multi_answer_card_container)
         cpDefinition1IsTrue = view?.findViewById(R.id.cp_definition_1_is_true)
         cpDefinition2IsTrue = view?.findViewById(R.id.cp_definition_2_is_true)
@@ -289,8 +301,19 @@ class NewCardDialog(
         cpDefinition8IsTrue = view?.findViewById(R.id.cp_definition_8_is_true)
         cpDefinition9IsTrue = view?.findViewById(R.id.cp_definition_9_is_true)
         cpDefinition10IsTrue = view?.findViewById(R.id.cp_definition_10_is_true)
-        cpFalse = view?.findViewById(R.id.cp_false)
-        cpTrue = view?.findViewById(R.id.cp_true)
+
+        btDeleteField1 = view?.findViewById(R.id.bt_delete_field_1)
+        btDeleteField2 = view?.findViewById(R.id.bt_delete_field_2)
+        btDeleteField3 = view?.findViewById(R.id.bt_delete_field_3)
+        btDeleteField4 = view?.findViewById(R.id.bt_delete_field_4)
+        btDeleteField5 = view?.findViewById(R.id.bt_delete_field_5)
+        btDeleteField6 = view?.findViewById(R.id.bt_delete_field_6)
+        btDeleteField7 = view?.findViewById(R.id.bt_delete_field_7)
+        btDeleteField8 = view?.findViewById(R.id.bt_delete_field_8)
+        btDeleteField9 = view?.findViewById(R.id.bt_delete_field_9)
+        btDeleteField10 = view?.findViewById(R.id.bt_delete_field_10)
+//        cpFalse = view?.findViewById(R.id.cp_false)
+//        cpTrue = view?.findViewById(R.id.cp_true)
 
         btAdd = view?.findViewById(R.id.bt_add)
         btCancel = view?.findViewById(R.id.bt_cancel)
@@ -304,16 +327,16 @@ class NewCardDialog(
         btAddMoreDefinition = view?.findViewById(R.id.bt_more_definition)
 
         definitionFields = listOf(
-            DefinitionFieldModel(tilDefinition1MultiAnswerCard!!, tieDefinition1MultiAnswerCard!!, cpDefinition1IsTrue!!),
-            DefinitionFieldModel(tilDefinition2MultiAnswerCard!!, tieDefinition2MultiAnswerCard!!, cpDefinition2IsTrue!!),
-            DefinitionFieldModel(tilDefinition3MultiAnswerCard!!, tieDefinition3MultiAnswerCard!!, cpDefinition3IsTrue!!),
-            DefinitionFieldModel(tilDefinition4MultiAnswerCard!!, tieDefinition4MultiAnswerCard!!, cpDefinition4IsTrue!!),
-            DefinitionFieldModel(tilDefinition5MultiAnswerCard!!, tieDefinition5MultiAnswerCard!!, cpDefinition5IsTrue!!),
-            DefinitionFieldModel(tilDefinition6MultiAnswerCard!!, tieDefinition6MultiAnswerCard!!, cpDefinition6IsTrue!!),
-            DefinitionFieldModel(tilDefinition7MultiAnswerCard!!, tieDefinition7MultiAnswerCard!!, cpDefinition7IsTrue!!),
-            DefinitionFieldModel(tilDefinition8MultiAnswerCard!!, tieDefinition8MultiAnswerCard!!, cpDefinition8IsTrue!!),
-            DefinitionFieldModel(tilDefinition9MultiAnswerCard!!, tieDefinition9MultiAnswerCard!!, cpDefinition9IsTrue!!),
-            DefinitionFieldModel(tilDefinition10MultiAnswerCard!!, tieDefinition10MultiAnswerCard!!, cpDefinition10IsTrue!!),
+            DefinitionFieldModel(tilDefinition1MultiAnswerCard!!, tieDefinition1MultiAnswerCard!!, cpDefinition1IsTrue!!, btDeleteField1!!),
+            DefinitionFieldModel(tilDefinition2MultiAnswerCard!!, tieDefinition2MultiAnswerCard!!, cpDefinition2IsTrue!!, btDeleteField2!!),
+            DefinitionFieldModel(tilDefinition3MultiAnswerCard!!, tieDefinition3MultiAnswerCard!!, cpDefinition3IsTrue!!, btDeleteField3!!),
+            DefinitionFieldModel(tilDefinition4MultiAnswerCard!!, tieDefinition4MultiAnswerCard!!, cpDefinition4IsTrue!!, btDeleteField4!!),
+            DefinitionFieldModel(tilDefinition5MultiAnswerCard!!, tieDefinition5MultiAnswerCard!!, cpDefinition5IsTrue!!, btDeleteField5!!),
+            DefinitionFieldModel(tilDefinition6MultiAnswerCard!!, tieDefinition6MultiAnswerCard!!, cpDefinition6IsTrue!!, btDeleteField6!!),
+            DefinitionFieldModel(tilDefinition7MultiAnswerCard!!, tieDefinition7MultiAnswerCard!!, cpDefinition7IsTrue!!, btDeleteField7!!),
+            DefinitionFieldModel(tilDefinition8MultiAnswerCard!!, tieDefinition8MultiAnswerCard!!, cpDefinition8IsTrue!!, btDeleteField8!!),
+            DefinitionFieldModel(tilDefinition9MultiAnswerCard!!, tieDefinition9MultiAnswerCard!!, cpDefinition9IsTrue!!, btDeleteField9!!),
+            DefinitionFieldModel(tilDefinition10MultiAnswerCard!!, tieDefinition10MultiAnswerCard!!, cpDefinition10IsTrue!!, btDeleteField10!!),
         )
 
         // Add or update card
@@ -377,27 +400,27 @@ class NewCardDialog(
         }
 
         // Chips handling
-        cpAddFlashCard?.setOnCheckedChangeListener { _, isChecked ->
-            onAddFlashCard(isChecked)
-        }
-        cpAddMultiAnswerCard?.setOnCheckedChangeListener { _, isChecked ->
-            onAddMultiAnswerCard(isChecked)
-        }
-        cpAddTrueOrFalseCard?.setOnCheckedChangeListener { _, isChecked ->
-            onAddTrueOrFalseCard(isChecked)
-        }
-        cpDefinition1IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
-            onIsDefinitionIsTrueClicked(isChecked, buttonView)
-        }
-        cpDefinition2IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
-            onIsDefinitionIsTrueClicked(isChecked, buttonView)
-        }
-        cpDefinition3IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
-            onIsDefinitionIsTrueClicked(isChecked, buttonView)
-        }
-        cpDefinition4IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
-            onIsDefinitionIsTrueClicked(isChecked, buttonView)
-        }
+//        cpAddFlashCard?.setOnCheckedChangeListener { _, isChecked ->
+//            onAddFlashCard(isChecked)
+//        }
+//        cpAddMultiAnswerCard?.setOnCheckedChangeListener { _, isChecked ->
+//            onAddMultiAnswerCard(isChecked)
+//        }
+//        cpAddTrueOrFalseCard?.setOnCheckedChangeListener { _, isChecked ->
+//            onAddTrueOrFalseCard(isChecked)
+//        }
+//        cpDefinition1IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//        cpDefinition2IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//        cpDefinition3IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
+//        cpDefinition4IsTrue?.setOnCheckedChangeListener { buttonView, isChecked ->
+//            onIsDefinitionIsTrueClicked(isChecked, buttonView)
+//        }
 
         // Show added cards
         lifecycleScope.launch {
@@ -477,30 +500,30 @@ class NewCardDialog(
             }
             setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
         }
-        cardValue?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    v,
-                    deck.deckSecondLanguage,
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_definition_hint)
-                )
-            }
-            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
-        }
-        tieContentTrueOrFalseCard?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    v,
-                    deck.deckSecondLanguage,
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_content_hint)
-                )
-            }
-            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
-        }
+//        cardValue?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_definition_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+//        }
+//        tieContentTrueOrFalseCard?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_content_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
+//        }
         tieContentMultiAnswerCard?.apply {
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
@@ -513,8 +536,9 @@ class NewCardDialog(
             }
             setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
         }
-        tieDefinition1MultiAnswerCard?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
+
+        definitionFields.forEach { definitionField ->
+            definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
                     deck.deckSecondLanguage,
@@ -523,44 +547,67 @@ class NewCardDialog(
                     getString(R.string.til_card_definition_hint)
                 )
             }
-            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
-        }
-        tieDefinition2MultiAnswerCard?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    v,
-                    deck.deckSecondLanguage,
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_definition_hint)
-                )
+            definitionField.fieldEd.setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+            definitionField.chip.setOnCheckedChangeListener { buttonView, isChecked ->
+                onIsDefinitionIsTrueClicked(isChecked, buttonView)
             }
-            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
-        }
-        tieDefinition3MultiAnswerCard?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    v,
-                    deck.deckSecondLanguage,
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_definition_hint)
-                )
+            definitionField.btDeleteField.setOnClickListener {
+//                definitionField.fieldLy.isVisible = false
+//                definitionField.chip.isVisible = false
+//                definitionField.btDeleteField.isVisible = false
+//                revealedDefinitionFields--
+                deleteDefinitionField(definitionField.fieldEd)
             }
-            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
         }
-        tieDefinition4MultiAnswerCard?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    v,
-                    deck.deckSecondLanguage!!,
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_definition_hint)
-                )
-            }
-            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
-        }
+
+//        tieDefinition1MultiAnswerCard?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_definition_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+//        }
+//        tieDefinition2MultiAnswerCard?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_definition_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+//        }
+//        tieDefinition3MultiAnswerCard?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_definition_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+//        }
+//        tieDefinition4MultiAnswerCard?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage!!,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_definition_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+//        }
 
         btAddMoreDefinition?.setOnClickListener {
             onAddMoreDefinition()
@@ -742,26 +789,33 @@ class NewCardDialog(
     private fun initCardAdditionPanel() {
         tieContentMultiAnswerCard?.text?.clear()
         tilContentMultiAnswerCard?.error = null
-        tieContentTrueOrFalseCard?.text?.clear()
-        tilContentTrueOrFalseCard?.error = null
-        cardContent?.text?.clear()
-        cardContentLY?.error = null
-        cardValue?.text?.clear()
-        cardValueLY?.error = null
-        tieDefinition1MultiAnswerCard?.text?.clear()
-        tilDefinition1MultiAnswerCard?.error = null
-        tieDefinition2MultiAnswerCard?.text?.clear()
-        tilDefinition2MultiAnswerCard?.error = null
-        tieDefinition3MultiAnswerCard?.text?.clear()
-        tilDefinition3MultiAnswerCard?.error = null
-        tieDefinition4MultiAnswerCard?.text?.clear()
-        tilDefinition4MultiAnswerCard?.error = null
-        cpTrue?.isChecked = true
-        cpFalse?.isChecked = false
-        cpDefinition1IsTrue?.isChecked = false
-        cpDefinition2IsTrue?.isChecked = false
-        cpDefinition3IsTrue?.isChecked = false
-        cpDefinition4IsTrue?.isChecked = false
+//        tieContentTrueOrFalseCard?.text?.clear()
+//        tilContentTrueOrFalseCard?.error = null
+//        cardContent?.text?.clear()
+//        cardContentLY?.error = null
+//        cardValue?.text?.clear()
+//        cardValueLY?.error = null
+
+        definitionFields.forEach {
+            it.fieldEd.text?.clear()
+            it.fieldLy.error = null
+            it.chip.isChecked = false
+        }
+
+//        tieDefinition1MultiAnswerCard?.text?.clear()
+//        tilDefinition1MultiAnswerCard?.error = null
+//        tieDefinition2MultiAnswerCard?.text?.clear()
+//        tilDefinition2MultiAnswerCard?.error = null
+//        tieDefinition3MultiAnswerCard?.text?.clear()
+//        tilDefinition3MultiAnswerCard?.error = null
+//        tieDefinition4MultiAnswerCard?.text?.clear()
+//        tilDefinition4MultiAnswerCard?.error = null
+//        cpTrue?.isChecked = true
+//        cpFalse?.isChecked = false
+//        cpDefinition1IsTrue?.isChecked = false
+//        cpDefinition2IsTrue?.isChecked = false
+//        cpDefinition3IsTrue?.isChecked = false
+//        cpDefinition4IsTrue?.isChecked = false
         btAdd?.text = getString(R.string.bt_text_add)
     }
 
@@ -805,6 +859,7 @@ class NewCardDialog(
     }
 
     private fun onUpdateCard(card: ImmutableCard, indexCard: Int? = null) {
+        tieContentMultiAnswerCard?.setText(card.cardContent?.content)
         btAdd?.apply {
             text = getString(R.string.bt_text_update)
             setOnClickListener {
@@ -826,6 +881,7 @@ class NewCardDialog(
             if (index < card.cardDefinition?.size!!) {
                 fl.fieldLy.visibility = View.VISIBLE
                 fl.chip.visibility = View.VISIBLE
+                fl.btDeleteField.visibility = View.VISIBLE
                 fl.fieldEd.setText(card.cardDefinition[index].definition)
                 fl.chip.isChecked = isCorrect(card.cardDefinition[index].isCorrectDefinition)
             } else {
@@ -1509,16 +1565,71 @@ class NewCardDialog(
     }
 
     private fun onAddMoreDefinition() {
+
         if (revealedDefinitionFields < definitionFields.size) {
             definitionFields[revealedDefinitionFields].apply {
                 fieldLy.isVisible = true
+                fieldEd.isVisible = true
                 chip.isVisible = true
+                btDeleteField.isVisible = true
             }
             revealedDefinitionFields++
+
         }
-        if (revealedDefinitionFields >= definitionFields.size) {
-            btAddMoreDefinition?.isClickable = false
+    }
+
+    private fun deleteDefinitionField(field: TextInputEditText) {
+
+        if (field == tieDefinition10MultiAnswerCard) {
+            clearField(definitionFields.last())
+            return
         }
+
+        var index = 0
+        while (true) {
+            val actualField = definitionFields[index]
+            if (actualField.fieldEd == field) {
+                break
+            }
+            index++
+        }
+        while (true) {
+            val actualField = definitionFields[index]
+            val nextField = definitionFields[index.plus(1)]
+            if (!nextField.fieldLy.isVisible) {
+                clearField(actualField)
+                break
+            }
+            if (
+                nextField.fieldEd.text?.isNotBlank() == true &&
+                nextField.fieldEd.text?.isNotEmpty() == true
+            ) {
+                actualField.fieldEd.text = nextField.fieldEd.text
+                nextField.fieldEd.text?.clear()
+            } else {
+                actualField.fieldEd.text?.clear()
+                clearField(definitionFields.filter { it.fieldLy.isVisible }.last())
+                break
+            }
+            index++
+        }
+
+    }
+
+    private fun clearField(field: DefinitionFieldModel) {
+        field.apply {
+            btDeleteField.visibility = View.GONE
+            fieldLy.visibility = View.GONE
+            fieldEd.apply {
+                visibility = View.GONE
+                text?.clear()
+            }
+            chip.apply {
+                visibility = View.GONE
+                isChecked = false
+            }
+        }
+        revealedDefinitionFields--
     }
 
 }
