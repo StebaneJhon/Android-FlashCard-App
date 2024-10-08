@@ -249,7 +249,7 @@ class TestAdapter(
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
-            val texts = arrayListOf(card.cardContent.content,)
+            val texts = arrayListOf(card.cardContent.content)
             val views = arrayListOf(tvContent)
             btAlternatives.forEachIndexed { index, materialButton ->
                 if (index < card.cardDefinition.size) {
@@ -267,13 +267,16 @@ class TestAdapter(
                 }
             }
 
-            onSpeak(
-                QuizSpeakModel(
-                    text = texts,
-                    views = views,
-                    ""
+            btSpeak.setOnClickListener {
+                onSpeak(
+                    QuizSpeakModel(
+                        text = texts,
+                        views = views,
+                        ""
+                    )
                 )
-            )
+            }
+
             /*
             when (card.cardDefinition.size) {
                 2 -> {
