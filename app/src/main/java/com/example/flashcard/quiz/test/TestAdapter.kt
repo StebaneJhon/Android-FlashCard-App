@@ -8,14 +8,11 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.quiz.quizGame.QuizSpeakModel
-import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
-import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
@@ -23,7 +20,7 @@ import com.google.android.material.color.MaterialColors
 
 class TestAdapter(
     val context: Context,
-    val cardList: List<TestCardModel?>,
+    val cardList: List<TestCardModel>,
     val deck: ImmutableDeck,
     private val onUserAnswered: (TestCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit
@@ -67,7 +64,6 @@ class TestAdapter(
         private val tvFrontProgression: TextView = view.findViewById(R.id.tv_front_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
-        private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
 
         private val btAlternatives = listOf(
             btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
@@ -77,7 +73,7 @@ class TestAdapter(
 
         fun bind(
             context: Context,
-            card: TestCardModel?,
+            card: TestCardModel,
             deck: ImmutableDeck,
             cardPosition: Int,
             cardSum: Int,
@@ -89,14 +85,14 @@ class TestAdapter(
                 "${cardPosition.plus(1)}",
                 "$cardSum"
             )
-            tvContent.text = card?.cardContent?.content
-            tvCardType.text = card?.cardType
+            tvContent.text = card.cardContent.content
+            tvCardType.text = card.cardType
             val deckColor =
                 DeckColorCategorySelector().selectColor(deck.deckColorCode!!) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
             btAlternatives.forEachIndexed { index, materialButton ->
-                if (index < card?.cardDefinition?.size!!) {
+                if (index < card.cardDefinition.size) {
                     materialButton.visibility = View.VISIBLE
                     if (card.cardDefinition[index].isSelected) {
                         onButtonClicked(materialButton, card.cardType, context)
@@ -108,143 +104,11 @@ class TestAdapter(
                 }
             }
 
-            /*
-            card?.cardDefinition?.forEachIndexed {index, definition ->
-                when (index) {
-                    0 -> {
-                        if (definition.isSelected) {
-                            onButtonClicked(btAlternative1, card.cardType, context)
-                        } else {
-                            onButtonUnClicked(btAlternative1, card.cardType, context)
-                        }
-                    }
-                    1 -> {
-                        if (definition.isSelected) {
-                            onButtonClicked(btAlternative2, card.cardType, context)
-                        } else {
-                            onButtonUnClicked(btAlternative2, card.cardType, context)
-                        }
-                    }
-                    2 -> {
-                        if (definition.isSelected) {
-                            onButtonClicked(btAlternative3, card.cardType, context)
-                        } else {
-                            onButtonUnClicked(btAlternative3, card.cardType, context)
-                        }
-                    }
-                    3 -> {
-                        if (definition.isSelected) {
-                            onButtonClicked(btAlternative4, card.cardType, context)
-                        } else {
-                            onButtonUnClicked(btAlternative4, card.cardType, context)
-                        }
-                    }
-                }
-            }
-
-             */
-
-            when (card?.cardType) {
-                SINGLE_ANSWER_CARD -> {
-                    onOneAnsweredCard(context, card, onUserAnswered, onSpeak)
-                }
-
-                TRUE_OR_FALSE_CARD -> {
-                    onTrueOrFalseCard(context, card, onUserAnswered, onSpeak)
-                }
-
-                MULTIPLE_ANSWER_CARD -> {
-                    onMultipleAnsweredCard(context, card, onUserAnswered, onSpeak)
-                }
-
-                else -> {
-                    tvDefinition.text = card?.cardDefinition?.first()?.definition
-                }
-            }
+            bindAnswerAlternatives(card, onUserAnswered, onSpeak)
 
         }
 
-        fun onOneAnsweredCard(
-            context: Context,
-            card: TestCardModel,
-            onUserAnswered: (TestCardDefinitionModel) -> Unit,
-            onSpeak: (QuizSpeakModel) -> Unit
-        ) {
-
-            btAlternatives.forEachIndexed { index, materialButton ->
-                if (index < card.cardDefinition.size) {
-                    materialButton.apply {
-                        visibility = View.VISIBLE
-                        text = card.cardDefinition[index].definition
-                        setOnClickListener { v ->
-                            selectAnswer(card.cardDefinition[index], onUserAnswered)
-                        }
-                    }
-                }
-            }
-            /*
-            btAlternative1.apply {
-                isVisible = true
-                text = card.cardDefinition[0].definition
-                setOnClickListener { v ->
-//                    onButtonClicked(v as MaterialButton, context)
-                    selectAnswer(card.cardDefinition[0], onUserAnswered)
-                }
-            }
-            btAlternative2.apply {
-                isVisible = true
-                text = card.cardDefinition[1].definition
-                setOnClickListener { v ->
-//                    onButtonClicked(v as MaterialButton, context)
-                    selectAnswer(card.cardDefinition[1], onUserAnswered)
-                }
-            }
-            btAlternative3.apply {
-                isVisible = true
-                text = card.cardDefinition[2].definition
-                setOnClickListener { v ->
-//                    onButtonClicked(v as MaterialButton, context)
-                    selectAnswer(card.cardDefinition[2], onUserAnswered)
-                }
-            }
-            btAlternative4.apply {
-                isVisible = true
-                text = card.cardDefinition[3].definition
-                setOnClickListener { v ->
-//                    onButtonClicked(v as MaterialButton, context)
-                    selectAnswer(card.cardDefinition[3], onUserAnswered)
-                }
-            }
-             */
-
-            btSpeak.setOnClickListener {
-                val texts = listOf(
-                    card.cardContent.content,
-                    card.cardDefinition[0].definition,
-                    card.cardDefinition[1].definition,
-                    card.cardDefinition[2].definition,
-                    card.cardDefinition[3].definition,
-                )
-                val views = listOf(
-                    tvContent,
-                    btAlternative1,
-                    btAlternative2,
-                    btAlternative3,
-                    btAlternative4,
-                )
-
-                onSpeak(
-                    QuizSpeakModel(
-                        text = texts,
-                        views = views,
-                        ""
-                    )
-                )
-            }
-        }
-
-        fun onMultipleAnsweredCard(
-            context: Context,
+        private fun bindAnswerAlternatives(
             card: TestCardModel,
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
@@ -256,11 +120,11 @@ class TestAdapter(
                     materialButton.apply {
                         visibility = View.VISIBLE
                         text = card.cardDefinition[index].definition
-                        setOnClickListener { v ->
+                        setOnClickListener {
                             selectAnswer(card.cardDefinition[index], onUserAnswered)
                         }
                     }
-                    texts.add(card.cardDefinition[index].toString())
+                    texts.add(card.cardDefinition[index].definition)
                     views.add(materialButton)
                 } else {
                     materialButton.visibility = View.GONE
@@ -276,165 +140,6 @@ class TestAdapter(
                     )
                 )
             }
-
-            /*
-            when (card.cardDefinition.size) {
-                2 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = card.cardDefinition[0].definition
-                        setOnClickListener { v ->
-                            selectAnswer(card.cardDefinition[0], onUserAnswered)
-                        }
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = card.cardDefinition[1].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[1], onUserAnswered)
-                        }
-                    }
-                    btAlternative3.isVisible = false
-                    btAlternative4.isVisible = false
-
-                    btSpeak.setOnClickListener {
-                        val texts = listOf(
-                            card.cardContent.content,
-                            card.cardDefinition[0].definition,
-                            card.cardDefinition[1].definition,
-                        )
-                        val views = listOf(
-                            tvContent,
-                            btAlternative1,
-                            btAlternative2,
-                        )
-
-                        onSpeak(
-                            QuizSpeakModel(
-                                text = texts,
-                                views = views,
-                                ""
-                            )
-                        )
-                    }
-
-                }
-
-                3 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = card.cardDefinition[0].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[0], onUserAnswered)
-                        }
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = card.cardDefinition[1].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[1], onUserAnswered)
-                        }
-                    }
-                    btAlternative3.apply {
-                        isVisible = true
-                        text = card.cardDefinition[2].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[2], onUserAnswered)
-                        }
-                    }
-                    btAlternative4.isVisible = false
-
-                    btSpeak.setOnClickListener {
-                        val texts = listOf(
-                            card.cardContent.content,
-                            card.cardDefinition[0].definition,
-                            card.cardDefinition[1].definition,
-                            card.cardDefinition[2].definition,
-                        )
-                        val views = listOf(
-                            tvContent,
-                            btAlternative1,
-                            btAlternative2,
-                            btAlternative3,
-                        )
-
-                        onSpeak(
-                            QuizSpeakModel(
-                                text = texts,
-                                views = views,
-                                ""
-                            )
-                        )
-                    }
-
-                }
-
-                4 -> {
-                    btAlternative1.apply {
-                        isVisible = true
-                        text = card.cardDefinition[0].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[0], onUserAnswered)
-                        }
-                    }
-                    btAlternative2.apply {
-                        isVisible = true
-                        text = card.cardDefinition[1].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[1], onUserAnswered)
-                        }
-                    }
-                    btAlternative3.apply {
-                        isVisible = true
-                        text = card.cardDefinition[2].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[2], onUserAnswered)
-                        }
-                    }
-                    btAlternative4.apply {
-                        isVisible = true
-                        text = card.cardDefinition[3].definition
-                        setOnClickListener { v ->
-//                            onButtonClicked(v as MaterialButton, context)
-                            selectAnswer(card.cardDefinition[3], onUserAnswered)
-                        }
-                    }
-
-                    btSpeak.setOnClickListener {
-                        val texts = listOf(
-                            card.cardContent.content,
-                            card.cardDefinition[0].definition,
-                            card.cardDefinition[1].definition,
-                            card.cardDefinition[2].definition,
-                            card.cardDefinition[3].definition,
-                        )
-                        val views = listOf(
-                            tvContent,
-                            btAlternative1,
-                            btAlternative2,
-                            btAlternative3,
-                            btAlternative4,
-                        )
-
-                        onSpeak(
-                            QuizSpeakModel(
-                                text = texts,
-                                views = views,
-                                ""
-                            )
-                        )
-                    }
-
-                }
-            }
-            */
         }
 
         private fun selectAnswer(
@@ -443,53 +148,6 @@ class TestAdapter(
         ) {
             selectedAnswer.isSelected = !selectedAnswer.isSelected
             onUserAnswered(selectedAnswer)
-        }
-
-        fun onTrueOrFalseCard(
-            context: Context,
-            card: TestCardModel,
-            onUserAnswered: (TestCardDefinitionModel) -> Unit,
-            onSpeak: (QuizSpeakModel) -> Unit
-        ) {
-            btAlternative1.apply {
-                isVisible = true
-                text = card.cardDefinition[0].definition
-                setOnClickListener { v ->
-//                    onButtonClicked(v as MaterialButton, context)
-                    selectAnswer(card.cardDefinition[0], onUserAnswered)
-                }
-            }
-            btAlternative2.apply {
-                isVisible = true
-                text = card.cardDefinition[1].definition
-                setOnClickListener { v ->
-//                    onButtonClicked(v as MaterialButton, context)
-                    selectAnswer(card.cardDefinition[1], onUserAnswered)
-                }
-            }
-            btAlternative3.isVisible = false
-            btAlternative4.isVisible = false
-
-            btSpeak.setOnClickListener {
-                val texts = listOf(
-                    card.cardContent.content,
-                    card.cardDefinition[0].definition,
-                    card.cardDefinition[1].definition,
-                )
-                val views = listOf(
-                    tvContent,
-                    btAlternative1,
-                    btAlternative2,
-                )
-
-                onSpeak(
-                    QuizSpeakModel(
-                        text = texts,
-                        views = views,
-                        ""
-                    )
-                )
-            }
         }
 
         private fun onButtonClicked(button: MaterialButton, cardType: String, context: Context) {

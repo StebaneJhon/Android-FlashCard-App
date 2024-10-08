@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.add
 import androidx.fragment.app.commit
@@ -41,8 +40,7 @@ import java.util.Locale
 
 class TestActivity :
     AppCompatActivity(),
-    TextToSpeech.OnInitListener
-{
+    TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityTestBinding
     private var sharedPref: SharedPreferences? = null
@@ -102,10 +100,12 @@ class TestActivity :
                             is UiState.Error -> {
                                 onNoCardToRevise()
                             }
+
                             is UiState.Loading -> {
                                 binding.testActivityProgressBar.visibility = View.VISIBLE
                                 binding.fragmentContainerView.visibility = View.GONE
                             }
+
                             is UiState.Success -> {
                                 binding.testActivityProgressBar.visibility = View.GONE
                                 binding.fragmentContainerView.visibility = View.GONE
@@ -125,8 +125,8 @@ class TestActivity :
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 testViewModel.startTimer()
-                 testViewModel.timer.collect { t ->
-                     binding.topAppBar.subtitle = getString(R.string.text_time, t.formatTime())
+                testViewModel.timer.collect { t ->
+                    binding.topAppBar.subtitle = getString(R.string.text_time, t.formatTime())
                 }
             }
         }
@@ -140,9 +140,10 @@ class TestActivity :
             this,
             cards,
             deck,
-            {userAnswer ->
+            { userAnswer ->
                 testViewModel.noteSingleUserAnswer(userAnswer)
-                testAdapter.notifyDataSetChanged()}
+                testAdapter.notifyDataSetChanged()
+            }
         ) { dataToRead ->
             if (tts.isSpeaking) {
                 stopReading(dataToRead.views)
@@ -184,7 +185,8 @@ class TestActivity :
 //            setPageTransformer(pageTransformer)
         }
 
-        binding.vpCardHolder.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+        binding.vpCardHolder.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
@@ -197,11 +199,14 @@ class TestActivity :
                             binding.vpCardHolder.currentItem += 1
                         }
                         text = null
-                        iconPadding = resources.getDimension(R.dimen.icon_padding_next_question_button).toInt()
+                        iconPadding =
+                            resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                .toInt()
                     } else {
                         text = getString(R.string.bt_text_submit)
                         iconGravity = MaterialButton.ICON_GRAVITY_END
-                        iconPadding = resources.getDimension(R.dimen.icon_padding_submit_button).toInt()
+                        iconPadding =
+                            resources.getDimension(R.dimen.icon_padding_submit_button).toInt()
                         setOnClickListener {
                             onShowTestResult()
                         }
@@ -215,7 +220,8 @@ class TestActivity :
                             .getColorStateList(
                                 this@TestActivity,
                                 com.google.android.material.R.attr.colorSurfaceContainerLow,
-                                ContextCompat.getColorStateList(this@TestActivity, R.color.neutral300
+                                ContextCompat.getColorStateList(
+                                    this@TestActivity, R.color.neutral300
                                 )!!
                             )
                         setOnClickListener {
@@ -228,7 +234,8 @@ class TestActivity :
                             .getColorStateList(
                                 this@TestActivity,
                                 com.google.android.material.R.attr.colorSurfaceContainerLowest,
-                                ContextCompat.getColorStateList(this@TestActivity, R.color.neutral50
+                                ContextCompat.getColorStateList(
+                                    this@TestActivity, R.color.neutral50
                                 )!!
                             )
                     }
@@ -248,43 +255,28 @@ class TestActivity :
 
     private fun onShowTestResult() {
         testViewModel.pauseTimer()
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                testViewModel.getTestCards()
-                testViewModel.testCards.collect { state ->
-                    when (state) {
-                        is UiState.Error -> {
-                            onNoCardToRevise()
-                        }
-                        is UiState.Loading -> {
-                            binding.testActivityProgressBar.visibility = View.VISIBLE
-                            binding.fragmentContainerView.visibility = View.GONE
-                        }
-                        is UiState.Success -> {
-                            binding.testActivityProgressBar.visibility = View.GONE
-                            binding.fragmentContainerView.visibility = View.VISIBLE
-                            val bundle = bundleOf("500" to state.data)
-                            supportFragmentManager.apply {
-                                commit {
-                                    setReorderingAllowed(true)
-                                    add<TestResultFragment>(R.id.fragment_container_view, args = bundle)
-                                }
-                                setFragmentResultListener(TestResultFragment.TEST_RESULT_REQUEST_KEY, this@TestActivity) { _, bundle ->
-                                    val result = bundle.getString(TestResultFragment.TEST_RESULT_BUNDLE_KEY)
-                                    if (result == BACK_TO_DECK) {
-                                        finish()
-                                    }
-                                    if (result == RETAKE_TEST) {
-                                        restartTest()
-                                    }
-                                }
-                            }
-                        }
-                    }
+        binding.testActivityProgressBar.visibility = View.GONE
+        binding.fragmentContainerView.visibility = View.VISIBLE
+        supportFragmentManager.apply {
+            commit {
+                setReorderingAllowed(true)
+                add<TestResultFragment>(R.id.fragment_container_view)
+            }
+            setFragmentResultListener(
+                TestResultFragment.TEST_RESULT_REQUEST_KEY,
+                this@TestActivity
+            ) { _, bundle ->
+                val result = bundle.getString(TestResultFragment.TEST_RESULT_BUNDLE_KEY)
+                if (result == BACK_TO_DECK) {
+                    finish()
+                }
+                if (result == RETAKE_TEST) {
+                    restartTest()
                 }
             }
         }
     }
+
 
     private fun restartTest() {
         binding.testActivityProgressBar.visibility = View.VISIBLE
@@ -319,8 +311,13 @@ class TestActivity :
 
         var position = 0
         val textSum = text.size
-        val onStopColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onStopColor = MaterialColors.getColor(
+            this,
+            com.google.android.material.R.attr.colorOnSurface,
+            Color.BLACK
+        )
+        val onReadColor =
+            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
@@ -340,7 +337,8 @@ class TestActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(this@TestActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@TestActivity, getString(R.string.error_read), Toast.LENGTH_LONG)
+                    .show()
             }
         }
 
@@ -348,12 +346,18 @@ class TestActivity :
 
     }
 
-    private fun stopReading (
+    private fun stopReading(
         views: List<View>
     ) {
         tts.stop()
         views.forEach { v ->
-            (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+            (v as TextView).setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
         }
     }
 
@@ -407,10 +411,11 @@ class TestActivity :
     }
 
     override fun onInit(status: Int) {
-        when(status) {
+        when (status) {
             TextToSpeech.SUCCESS -> {
                 tts.setSpeechRate(1.0f)
             }
+
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }

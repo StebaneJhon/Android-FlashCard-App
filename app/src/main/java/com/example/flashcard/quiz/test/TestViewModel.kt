@@ -145,7 +145,6 @@ class TestViewModel(
         requiredAlternativeSum: Int,
     ): List<CardDefinition> {
         val temporaryList: MutableList<CardDefinition> = cardAlternative.toMutableList()
-//        temporaryList.add(cardAlternative)
         while (temporaryList.size < requiredAlternativeSum) {
             val randomDefinition = cards.random()?.cardDefinition?.random()
 

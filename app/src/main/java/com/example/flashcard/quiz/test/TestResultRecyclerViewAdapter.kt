@@ -78,37 +78,6 @@ class TestResultRecyclerViewAdapter(
                     textView.visibility = View.GONE
                 }
             }
-
-            /*
-            when(card.cardDefinition.size) {
-                2 -> {
-                    displayCardDefinition(context, card.cardDefinition[0], tvAddedCardDescription1)
-                    displayCardDefinition(context, card.cardDefinition[1], tvAddedCardDescription2)
-                    tvAddedCardDescription3.visibility = View.GONE
-                    tvAddedCardDescription4.visibility = View.GONE
-                    tvAddedCardDescriptionError.visibility = View.GONE
-
-                }
-                3 -> {
-                    displayCardDefinition(context, card.cardDefinition[0], tvAddedCardDescription1)
-                    displayCardDefinition(context, card.cardDefinition[1], tvAddedCardDescription2)
-                    displayCardDefinition(context, card.cardDefinition[2], tvAddedCardDescription3)
-                    tvAddedCardDescription4.visibility = View.GONE
-                    tvAddedCardDescriptionError.visibility = View.GONE
-                }
-                4 -> {
-                    displayCardDefinition(context, card.cardDefinition[0], tvAddedCardDescription1)
-                    displayCardDefinition(context, card.cardDefinition[1], tvAddedCardDescription2)
-                    displayCardDefinition(context, card.cardDefinition[2], tvAddedCardDescription3)
-                    displayCardDefinition(context, card.cardDefinition[3], tvAddedCardDescription4)
-                    tvAddedCardDescriptionError.visibility = View.GONE
-                }
-                else -> {
-                    tvAddedCardDescriptionError.visibility = View.VISIBLE
-                }
-            }
-
-             */
         }
 
         private fun displayCardDefinition(
