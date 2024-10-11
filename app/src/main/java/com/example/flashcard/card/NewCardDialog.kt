@@ -48,10 +48,12 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardContent
 import com.example.flashcard.backend.entities.CardDefinition
+import com.example.flashcard.databinding.AddCardLayoutDialogBinding
+import com.example.flashcard.databinding.LyItemCardOnAddNewCardBinding
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
-import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_CHOICE_CARD
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.FirebaseTranslatorHelper
 import com.google.android.material.appbar.MaterialToolbar
@@ -87,72 +89,8 @@ class NewCardDialog(
     private val action: String
 ) : AppCompatDialogFragment() {
 
-    private var cardContent: EditText? = null
-    private var cardValue: EditText? = null
-    private var tieContentMultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition1MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition2MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition3MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition4MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition5MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition6MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition7MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition8MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition9MultiAnswerCard: TextInputEditText? = null
-    private var tieDefinition10MultiAnswerCard: TextInputEditText? = null
-    private var tieContentTrueOrFalseCard: TextInputEditText? = null
-
-    private var cardContentLY: TextInputLayout? = null
-    private var cardValueLY: TextInputLayout? = null
-    private var tilContentMultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition1MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition2MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition3MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition4MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition5MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition6MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition7MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition8MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition9MultiAnswerCard: TextInputLayout? = null
-    private var tilDefinition10MultiAnswerCard: TextInputLayout? = null
-    private var tilContentTrueOrFalseCard: TextInputLayout? = null
-    private var cpTrue: Chip? = null
-    private var cpFalse: Chip? = null
-
-    private var cpAddFlashCard: Chip? = null
-    private var cpAddTrueOrFalseCard: Chip? = null
-    private var cpAddMultiAnswerCard: Chip? = null
-    private var clAddMultiAnswerCardContainer: ConstraintLayout? = null
-    private var llAddTrueOrFalseCardContainer: LinearLayout? = null
-    private var llAddFlashCardContainer: LinearLayout? = null
-    private var cpDefinition1IsTrue: MaterialCheckBox? = null
-    private var cpDefinition2IsTrue: MaterialCheckBox? = null
-    private var cpDefinition3IsTrue: MaterialCheckBox? = null
-    private var cpDefinition4IsTrue: MaterialCheckBox? = null
-    private var cpDefinition5IsTrue: MaterialCheckBox? = null
-    private var cpDefinition6IsTrue: MaterialCheckBox? = null
-    private var cpDefinition7IsTrue: MaterialCheckBox? = null
-    private var cpDefinition8IsTrue: MaterialCheckBox? = null
-    private var cpDefinition9IsTrue: MaterialCheckBox? = null
-    private var cpDefinition10IsTrue: MaterialCheckBox? = null
-
-    private var btDeleteField1: MaterialButton? = null
-    private var btDeleteField2: MaterialButton? = null
-    private var btDeleteField3: MaterialButton? = null
-    private var btDeleteField4: MaterialButton? = null
-    private var btDeleteField5: MaterialButton? = null
-    private var btDeleteField6: MaterialButton? = null
-    private var btDeleteField7: MaterialButton? = null
-    private var btDeleteField8: MaterialButton? = null
-    private var btDeleteField9: MaterialButton? = null
-    private var btDeleteField10: MaterialButton? = null
-
-    private var btAdd: MaterialButton? = null
-    private var btCancel: MaterialButton? = null
-    private var tvTitleAddedCards: TextView? = null
-    private var tabAddAndUpdateNewCard: MaterialToolbar? = null
-    private var rvAddedCard: RecyclerView? = null
-    private var btAddMoreDefinition: MaterialButton? = null
+    private var _binding: AddCardLayoutDialogBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
 
@@ -250,107 +188,40 @@ class NewCardDialog(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.add_card_layout_dialog, container, false)
-
+    ): View {
+        _binding = AddCardLayoutDialogBinding.inflate(inflater, container, false)
         appContext = activity?.applicationContext
+        return binding.root
+    }
 
-//        cardContent = view?.findViewById(R.id.cardContentTV)
-//        cardValue = view?.findViewById(R.id.cardValueTV)
-        tieContentMultiAnswerCard = view?.findViewById(R.id.tie_content_multi_answer_card)
-        tieDefinition1MultiAnswerCard = view?.findViewById(R.id.tie_definition_1_multi_answer_card)
-        tieDefinition2MultiAnswerCard = view?.findViewById(R.id.tie_definition_2_multi_answer_card)
-        tieDefinition3MultiAnswerCard = view?.findViewById(R.id.tie_definition_3_multi_answer_card)
-        tieDefinition4MultiAnswerCard = view?.findViewById(R.id.tie_definition_4_multi_answer_card)
-        tieDefinition5MultiAnswerCard = view?.findViewById(R.id.tie_definition_5_multi_answer_card)
-        tieDefinition6MultiAnswerCard = view?.findViewById(R.id.tie_definition_6_multi_answer_card)
-        tieDefinition7MultiAnswerCard = view?.findViewById(R.id.tie_definition_7_multi_answer_card)
-        tieDefinition8MultiAnswerCard = view?.findViewById(R.id.tie_definition_8_multi_answer_card)
-        tieDefinition9MultiAnswerCard = view?.findViewById(R.id.tie_definition_9_multi_answer_card)
-        tieDefinition10MultiAnswerCard = view?.findViewById(R.id.tie_definition_10_multi_answer_card)
-//        tieContentTrueOrFalseCard = view?.findViewById(R.id.tie_content_true_or_false_card)
-//
-//        cardContentLY = view?.findViewById(R.id.cardContentLY)
-//        cardValueLY = view?.findViewById(R.id.cardValueLY)
-        tilContentMultiAnswerCard = view?.findViewById(R.id.til_content_multi_answer_card)
-        tilDefinition1MultiAnswerCard = view?.findViewById(R.id.til_definition_1_multi_answer_card)
-        tilDefinition2MultiAnswerCard = view?.findViewById(R.id.til_definition_2_multi_answer_card)
-        tilDefinition3MultiAnswerCard = view?.findViewById(R.id.til_definition_3_multi_answer_card)
-        tilDefinition4MultiAnswerCard = view?.findViewById(R.id.til_definition_4_multi_answer_card)
-        tilDefinition5MultiAnswerCard = view?.findViewById(R.id.til_definition_5_multi_answer_card)
-        tilDefinition6MultiAnswerCard = view?.findViewById(R.id.til_definition_6_multi_answer_card)
-        tilDefinition7MultiAnswerCard = view?.findViewById(R.id.til_definition_7_multi_answer_card)
-        tilDefinition8MultiAnswerCard = view?.findViewById(R.id.til_definition_8_multi_answer_card)
-        tilDefinition9MultiAnswerCard = view?.findViewById(R.id.til_definition_9_multi_answer_card)
-        tilDefinition10MultiAnswerCard = view?.findViewById(R.id.til_definition_10_multi_answer_card)
-//        tilContentTrueOrFalseCard = view?.findViewById(R.id.til_content_true_or_false_card)
-//
-//        cpAddFlashCard = view?.findViewById(R.id.cp_add_flash_card)
-//        cpAddTrueOrFalseCard = view?.findViewById(R.id.cp_add_true_or_false_card)
-//        cpAddMultiAnswerCard = view?.findViewById(R.id.cp_add_multi_answer)
-//        llAddFlashCardContainer = view?.findViewById(R.id.ll_add_flash_card_container)
-//        llAddTrueOrFalseCardContainer = view?.findViewById(R.id.ll_add_true_or_false_card_container)
-        clAddMultiAnswerCardContainer = view?.findViewById(R.id.cl_add_multi_answer_card_container)
-        cpDefinition1IsTrue = view?.findViewById(R.id.cp_definition_1_is_true)
-        cpDefinition2IsTrue = view?.findViewById(R.id.cp_definition_2_is_true)
-        cpDefinition3IsTrue = view?.findViewById(R.id.cp_definition_3_is_true)
-        cpDefinition4IsTrue = view?.findViewById(R.id.cp_definition_4_is_true)
-        cpDefinition5IsTrue = view?.findViewById(R.id.cp_definition_5_is_true)
-        cpDefinition6IsTrue = view?.findViewById(R.id.cp_definition_6_is_true)
-        cpDefinition7IsTrue = view?.findViewById(R.id.cp_definition_7_is_true)
-        cpDefinition8IsTrue = view?.findViewById(R.id.cp_definition_8_is_true)
-        cpDefinition9IsTrue = view?.findViewById(R.id.cp_definition_9_is_true)
-        cpDefinition10IsTrue = view?.findViewById(R.id.cp_definition_10_is_true)
-
-        btDeleteField1 = view?.findViewById(R.id.bt_delete_field_1)
-        btDeleteField2 = view?.findViewById(R.id.bt_delete_field_2)
-        btDeleteField3 = view?.findViewById(R.id.bt_delete_field_3)
-        btDeleteField4 = view?.findViewById(R.id.bt_delete_field_4)
-        btDeleteField5 = view?.findViewById(R.id.bt_delete_field_5)
-        btDeleteField6 = view?.findViewById(R.id.bt_delete_field_6)
-        btDeleteField7 = view?.findViewById(R.id.bt_delete_field_7)
-        btDeleteField8 = view?.findViewById(R.id.bt_delete_field_8)
-        btDeleteField9 = view?.findViewById(R.id.bt_delete_field_9)
-        btDeleteField10 = view?.findViewById(R.id.bt_delete_field_10)
-//        cpFalse = view?.findViewById(R.id.cp_false)
-//        cpTrue = view?.findViewById(R.id.cp_true)
-
-        btAdd = view?.findViewById(R.id.bt_add)
-        btCancel = view?.findViewById(R.id.bt_cancel)
-
-        tabAddAndUpdateNewCard = view?.findViewById(R.id.tab_add_new_update_card)
-
-        rvAddedCard = view?.findViewById(R.id.rv_added_card)
-
-        tvTitleAddedCards = view?.findViewById(R.id.tv_title_added_cards)
-
-        btAddMoreDefinition = view?.findViewById(R.id.bt_more_definition)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         definitionFields = listOf(
-            DefinitionFieldModel(tilDefinition1MultiAnswerCard!!, tieDefinition1MultiAnswerCard!!, cpDefinition1IsTrue!!, btDeleteField1!!),
-            DefinitionFieldModel(tilDefinition2MultiAnswerCard!!, tieDefinition2MultiAnswerCard!!, cpDefinition2IsTrue!!, btDeleteField2!!),
-            DefinitionFieldModel(tilDefinition3MultiAnswerCard!!, tieDefinition3MultiAnswerCard!!, cpDefinition3IsTrue!!, btDeleteField3!!),
-            DefinitionFieldModel(tilDefinition4MultiAnswerCard!!, tieDefinition4MultiAnswerCard!!, cpDefinition4IsTrue!!, btDeleteField4!!),
-            DefinitionFieldModel(tilDefinition5MultiAnswerCard!!, tieDefinition5MultiAnswerCard!!, cpDefinition5IsTrue!!, btDeleteField5!!),
-            DefinitionFieldModel(tilDefinition6MultiAnswerCard!!, tieDefinition6MultiAnswerCard!!, cpDefinition6IsTrue!!, btDeleteField6!!),
-            DefinitionFieldModel(tilDefinition7MultiAnswerCard!!, tieDefinition7MultiAnswerCard!!, cpDefinition7IsTrue!!, btDeleteField7!!),
-            DefinitionFieldModel(tilDefinition8MultiAnswerCard!!, tieDefinition8MultiAnswerCard!!, cpDefinition8IsTrue!!, btDeleteField8!!),
-            DefinitionFieldModel(tilDefinition9MultiAnswerCard!!, tieDefinition9MultiAnswerCard!!, cpDefinition9IsTrue!!, btDeleteField9!!),
-            DefinitionFieldModel(tilDefinition10MultiAnswerCard!!, tieDefinition10MultiAnswerCard!!, cpDefinition10IsTrue!!, btDeleteField10!!),
+            DefinitionFieldModel(binding.tilDefinition1MultiAnswerCard, binding.tieDefinition1MultiAnswerCard, binding.cpDefinition1IsTrue, binding.btDeleteField1),
+            DefinitionFieldModel(binding.tilDefinition2MultiAnswerCard, binding.tieDefinition2MultiAnswerCard, binding.cpDefinition2IsTrue, binding.btDeleteField2),
+            DefinitionFieldModel(binding.tilDefinition3MultiAnswerCard, binding.tieDefinition3MultiAnswerCard, binding.cpDefinition3IsTrue, binding.btDeleteField3),
+            DefinitionFieldModel(binding.tilDefinition4MultiAnswerCard, binding.tieDefinition4MultiAnswerCard, binding.cpDefinition4IsTrue, binding.btDeleteField4),
+            DefinitionFieldModel(binding.tilDefinition5MultiAnswerCard, binding.tieDefinition5MultiAnswerCard, binding.cpDefinition5IsTrue, binding.btDeleteField5),
+            DefinitionFieldModel(binding.tilDefinition6MultiAnswerCard, binding.tieDefinition6MultiAnswerCard, binding.cpDefinition6IsTrue, binding.btDeleteField6),
+            DefinitionFieldModel(binding.tilDefinition7MultiAnswerCard, binding.tieDefinition7MultiAnswerCard, binding.cpDefinition7IsTrue, binding.btDeleteField7),
+            DefinitionFieldModel(binding.tilDefinition8MultiAnswerCard, binding.tieDefinition8MultiAnswerCard, binding.cpDefinition8IsTrue, binding.btDeleteField8),
+            DefinitionFieldModel(binding.tilDefinition9MultiAnswerCard, binding.tieDefinition9MultiAnswerCard, binding.cpDefinition9IsTrue, binding.btDeleteField9),
+            DefinitionFieldModel(binding.tilDefinition10MultiAnswerCard, binding.tieDefinition10MultiAnswerCard, binding.cpDefinition10IsTrue, binding.btDeleteField10),
         )
 
         // Add or update card
         if (card != null) {
-            tvTitleAddedCards?.isVisible = false
-            rvAddedCard?.isVisible = false
-            tabAddAndUpdateNewCard?.title = getString(R.string.tv_update_card)
+            binding.tvTitleAddedCards.isVisible = false
+            binding.rvAddedCard.isVisible = false
+            binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
             onUpdateCard(card!!)
         } else {
-            tvTitleAddedCards?.isVisible = true
-            rvAddedCard?.isVisible = true
-            tabAddAndUpdateNewCard?.title = getString(R.string.tv_add_new_card)
+            binding.tvTitleAddedCards.isVisible = true
+            binding.rvAddedCard.isVisible = true
+            binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
 
-            btAdd?.apply {
+            binding.btAdd.apply {
                 text = getString(R.string.bt_text_add)
                 setOnClickListener {
                     onPositiveAction(Constant.ADD)
@@ -360,11 +231,11 @@ class NewCardDialog(
         }
 
         // Save or not (Card)
-        tabAddAndUpdateNewCard?.setNavigationOnClickListener {
+        binding.tabAddNewUpdateCard.setNavigationOnClickListener {
             onCloseDialog()
         }
 
-        tabAddAndUpdateNewCard?.setOnMenuItemClickListener { menuItem ->
+        binding.tabAddNewUpdateCard.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.save -> {
                     // Handle saving
@@ -394,10 +265,10 @@ class NewCardDialog(
             }
         }
 
-        cardValueLY?.setEndIconOnClickListener {
-            val contentText = cardContent?.text.toString()
-            onTranslateText(contentText)
-        }
+//        binding.cardValueLY?.setEndIconOnClickListener {
+//            val contentText = cardContent?.text.toString()
+//            onTranslateText(contentText)
+//        }
 
         // Chips handling
 //        cpAddFlashCard?.setOnCheckedChangeListener { _, isChecked ->
@@ -484,22 +355,22 @@ class NewCardDialog(
             }
         }
 
-        btCancel?.setOnClickListener {
+        binding.btCancel.setOnClickListener {
             initCardAdditionPanel()
         }
 
-        cardContent?.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    v,
-                    deck.deckSecondLanguage,
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_content_hint)
-                )
-            }
-            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
-        }
+//        binding.cardContent?.apply {
+//            setOnFocusChangeListener { v, hasFocus ->
+//                onActiveTopAppBarMode(
+//                    v,
+//                    deck.deckSecondLanguage,
+//                    hasFocus,
+//                    callback,
+//                    getString(R.string.til_card_content_hint)
+//                )
+//            }
+//            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
+//        }
 //        cardValue?.apply {
 //            setOnFocusChangeListener { v, hasFocus ->
 //                onActiveTopAppBarMode(
@@ -524,7 +395,7 @@ class NewCardDialog(
 //            }
 //            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
 //        }
-        tieContentMultiAnswerCard?.apply {
+        binding.tieContentMultiAnswerCard.apply {
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     v,
@@ -609,11 +480,10 @@ class NewCardDialog(
 //            setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
 //        }
 
-        btAddMoreDefinition?.setOnClickListener {
+        binding.btMoreDefinition.setOnClickListener {
             onAddMoreDefinition()
         }
 
-        return view
     }
 
     private fun onActiveTopAppBarMode(
@@ -779,7 +649,7 @@ class NewCardDialog(
                 },
             )
         }!!
-        rvAddedCard?.apply {
+        binding.rvAddedCard.apply {
             adapter = rvAddedCardRecyclerViewAdapter
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(appContext)
@@ -787,8 +657,8 @@ class NewCardDialog(
     }
 
     private fun initCardAdditionPanel() {
-        tieContentMultiAnswerCard?.text?.clear()
-        tilContentMultiAnswerCard?.error = null
+        binding.tieContentMultiAnswerCard.text?.clear()
+        binding.tilContentMultiAnswerCard.error = null
 //        tieContentTrueOrFalseCard?.text?.clear()
 //        tilContentTrueOrFalseCard?.error = null
 //        cardContent?.text?.clear()
@@ -816,7 +686,7 @@ class NewCardDialog(
 //        cpDefinition2IsTrue?.isChecked = false
 //        cpDefinition3IsTrue?.isChecked = false
 //        cpDefinition4IsTrue?.isChecked = false
-        btAdd?.text = getString(R.string.bt_text_add)
+        binding.btAdd.text = getString(R.string.bt_text_add)
     }
 
     private fun onCloseDialog() {
@@ -859,8 +729,8 @@ class NewCardDialog(
     }
 
     private fun onUpdateCard(card: ImmutableCard, indexCard: Int? = null) {
-        tieContentMultiAnswerCard?.setText(card.cardContent?.content)
-        btAdd?.apply {
+        binding.tieContentMultiAnswerCard.setText(card.cardContent?.content)
+        binding.btAdd.apply {
             text = getString(R.string.bt_text_update)
             setOnClickListener {
                 if (indexCard == null) {
@@ -971,30 +841,30 @@ class NewCardDialog(
 
     private fun onAddTrueOrFalseCard(isChecked: Boolean) {
         if (isChecked) {
-            cpAddTrueOrFalseCard?.isChecked = true
-            llAddTrueOrFalseCardContainer?.isVisible = true
-            llAddFlashCardContainer?.isVisible = false
-            clAddMultiAnswerCardContainer?.isVisible = false
-            cardType = TRUE_OR_FALSE_CARD
+//            binding.cpAddTrueOrFalseCard?.isChecked = true
+//            binding.llAddTrueOrFalseCardContainer?.isVisible = true
+//            binding.llAddFlashCardContainer?.isVisible = false
+            binding.clAddMultiAnswerCardContainer.isVisible = false
+//            cardType = TRUE_OR_FALSE_CARD
         }
     }
 
     private fun onAddMultiAnswerCard(isChecked: Boolean) {
         if (isChecked) {
-            cpAddMultiAnswerCard?.isChecked = true
-            clAddMultiAnswerCardContainer?.isVisible = true
-            llAddTrueOrFalseCardContainer?.isVisible = false
-            llAddFlashCardContainer?.isVisible = false
+//            binding.cpAddMultiAnswerCard?.isChecked = true
+//            binding.clAddMultiAnswerCardContainer?.isVisible = true
+//            binding.llAddTrueOrFalseCardContainer?.isVisible = false
+//            binding.llAddFlashCardContainer?.isVisible = false
             cardType = MULTIPLE_ANSWER_CARD
         }
     }
 
     private fun onAddFlashCard(isChecked: Boolean) {
         if (isChecked) {
-            cpAddFlashCard?.isChecked = true
-            llAddFlashCardContainer?.isVisible = true
-            llAddTrueOrFalseCardContainer?.isVisible = false
-            clAddMultiAnswerCardContainer?.isVisible = false
+//            binding.cpAddFlashCard?.isChecked = true
+//            binding.llAddFlashCardContainer?.isVisible = true
+//            binding.llAddTrueOrFalseCardContainer?.isVisible = false
+            binding.clAddMultiAnswerCardContainer?.isVisible = false
             cardType = SINGLE_ANSWER_CARD
         }
     }
@@ -1018,18 +888,18 @@ class NewCardDialog(
     }
 
     private fun areCardTypesEnabled(enabled: Boolean) {
-        cpAddFlashCard?.apply {
-            isCheckable = enabled
-            isEnabled = enabled
-        }
-        cpAddMultiAnswerCard?.apply {
-            isCheckable = enabled
-            isEnabled = enabled
-        }
-        cpAddTrueOrFalseCard?.apply {
-            isCheckable = enabled
-            isEnabled = enabled
-        }
+//        binding.cpAddFlashCard?.apply {
+//            isCheckable = enabled
+//            isEnabled = enabled
+//        }
+//        binding.cpAddMultiAnswerCard?.apply {
+//            isCheckable = enabled
+//            isEnabled = enabled
+//        }
+//        binding.cpAddTrueOrFalseCard?.apply {
+//            isCheckable = enabled
+//            isEnabled = enabled
+//        }
     }
 
     private fun generateCardOnUpdate(): ImmutableCard? {
@@ -1131,34 +1001,42 @@ class NewCardDialog(
     }
 
     private fun getCardType(definitions: List<CardDefinition>): String {
-        return if (definitions.size > 1) {
-            MULTIPLE_ANSWER_CARD
-        } else {
-            SINGLE_ANSWER_CARD
+        val definitionSum = definitions.size
+        val correctDefinitions = (definitions.filter { isCorrect(it.isCorrectDefinition) }).size
+        return when {
+            correctDefinitions == 1 && definitionSum == 1 -> {
+                SINGLE_ANSWER_CARD
+            }
+            correctDefinitions == 1 && definitionSum > 1 -> {
+                MULTIPLE_CHOICE_CARD
+            }
+            else -> {
+                MULTIPLE_ANSWER_CARD
+            }
         }
     }
 
-    private fun getDefinitions(cardId: String, contentId: String, deckId: String) =
-        when (cardType) {
-            SINGLE_ANSWER_CARD -> {
-                getDefinitionOnAddFC(cardId, contentId, deckId)
-            }
-
-            MULTIPLE_ANSWER_CARD -> {
-                getDefinitionOnAddMAC(cardId, contentId, deckId)
-            }
-
-            TRUE_OR_FALSE_CARD -> {
-                getDefinitionOnAddTFC(cardId, contentId, deckId)
-            }
-
-            else -> {
-                listOf<CardDefinition>()
-            }
-        }
+//    private fun getDefinitions(cardId: String, contentId: String, deckId: String) =
+//        when (cardType) {
+//            SINGLE_ANSWER_CARD -> {
+//                getDefinitionOnAddFC(cardId, contentId, deckId)
+//            }
+//
+//            MULTIPLE_ANSWER_CARD -> {
+//                getDefinitionOnAddMAC(cardId, contentId, deckId)
+//            }
+//
+//            TRUE_OR_FALSE_CARD -> {
+//                getDefinitionOnAddTFC(cardId, contentId, deckId)
+//            }
+//
+//            else -> {
+//                listOf<CardDefinition>()
+//            }
+//        }
 
     private fun getContent2(cardId: String, contentId: String, deckId: String): CardContent? {
-        val cardContentText = tieContentMultiAnswerCard?.text.toString()
+        val cardContentText = binding.tieContentMultiAnswerCard.text.toString()
         return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
             CardContent(
                 contentId,
@@ -1167,7 +1045,7 @@ class NewCardDialog(
                 cardContentText
             )
         } else {
-            tilContentMultiAnswerCard?.error = getString(R.string.til_error_card_content)
+            binding.tilContentMultiAnswerCard.error = getString(R.string.til_error_card_content)
             null
         }
     }
@@ -1189,10 +1067,10 @@ class NewCardDialog(
             }
         }
         if (!isTrueAnswer) {
-            tilDefinition1MultiAnswerCard?.error = getString(R.string.cp_error_correct_definition)
+            binding.tilDefinition1MultiAnswerCard.error = getString(R.string.cp_error_correct_definition)
         }
         if (!isText) {
-            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
+            binding.tilDefinition1MultiAnswerCard.error = getString(R.string.til_error_card_definition)
         }
         return true
     }
@@ -1224,47 +1102,47 @@ class NewCardDialog(
         return definitionList.toList()
     }
 
-    private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
-        return when (cardType) {
-            SINGLE_ANSWER_CARD -> {
-                getContentOnAddFC(cardId, contentId, deckId)
-            }
+//    private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
+//        return when (cardType) {
+//            SINGLE_ANSWER_CARD -> {
+//                getContentOnAddFC(cardId, contentId, deckId)
+//            }
+//
+//            MULTIPLE_ANSWER_CARD -> {
+//                getContentOnAddMAC(cardId, contentId, deckId)
+//            }
+//
+//            TRUE_OR_FALSE_CARD -> {
+//                getContentOnAddTFC(cardId, contentId, deckId)
+//            }
+//
+//            else -> {
+//                null
+//            }
+//        }
+//    }
 
-            MULTIPLE_ANSWER_CARD -> {
-                getContentOnAddMAC(cardId, contentId, deckId)
-            }
-
-            TRUE_OR_FALSE_CARD -> {
-                getContentOnAddTFC(cardId, contentId, deckId)
-            }
-
-            else -> {
-                null
-            }
-        }
-    }
-
-    private fun getContentOnAddFC(cardId: String, contentId: String, deckId: String): CardContent? {
-        val cardContentText = cardContent?.text.toString()
-        return if (cardContentText.isNotBlank() && cardContentText.isNotEmpty()) {
-            CardContent(
-                contentId,
-                cardId,
-                deckId,
-                cardContentText
-            )
-        } else {
-            cardContentLY?.error = getString(R.string.til_error_card_definition)
-            null
-        }
-    }
+//    private fun getContentOnAddFC(cardId: String, contentId: String, deckId: String): CardContent? {
+//        val cardContentText = cardContent?.text.toString()
+//        return if (cardContentText.isNotBlank() && cardContentText.isNotEmpty()) {
+//            CardContent(
+//                contentId,
+//                cardId,
+//                deckId,
+//                cardContentText
+//            )
+//        } else {
+//            cardContentLY?.error = getString(R.string.til_error_card_definition)
+//            null
+//        }
+//    }
 
     private fun getContentOnAddMAC(
         cardId: String,
         contentId: String,
         deckId: String
     ): CardContent? {
-        val cardContentText = tieContentMultiAnswerCard?.text.toString()
+        val cardContentText = binding.tieContentMultiAnswerCard.text.toString()
         return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
             CardContent(
                 contentId,
@@ -1273,140 +1151,140 @@ class NewCardDialog(
                 cardContentText
             )
         } else {
-            tilContentMultiAnswerCard?.error = getString(R.string.til_error_card_content)
+            binding.tilContentMultiAnswerCard.error = getString(R.string.til_error_card_content)
             null
         }
     }
 
-    private fun getContentOnAddTFC(
-        cardId: String,
-        contentId: String,
-        deckId: String
-    ): CardContent? {
-        val cardContentText = tieContentTrueOrFalseCard?.text.toString()
-        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
-            CardContent(
-                contentId,
-                cardId,
-                deckId,
-                cardContentText
-            )
-        } else {
-            tilContentTrueOrFalseCard?.error = getString(R.string.til_error_card_content)
-            null
-        }
-    }
+//    private fun getContentOnAddTFC(
+//        cardId: String,
+//        contentId: String,
+//        deckId: String
+//    ): CardContent? {
+//        val cardContentText = tieContentTrueOrFalseCard?.text.toString()
+//        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
+//            CardContent(
+//                contentId,
+//                cardId,
+//                deckId,
+//                cardContentText
+//            )
+//        } else {
+//            tilContentTrueOrFalseCard?.error = getString(R.string.til_error_card_content)
+//            null
+//        }
+//    }
 
-    private fun getDefinitionOnAddMAC(
-        cardId: String,
-        contentId: String,
-        deckId: String
-    ): List<CardDefinition>? {
-        definitionList.clear()
-        val definition1Text = tieDefinition1MultiAnswerCard?.text.toString()
-        val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
-        val definition3Text = tieDefinition3MultiAnswerCard?.text.toString()
-        val definition4Text = tieDefinition4MultiAnswerCard?.text.toString()
+//    private fun getDefinitionOnAddMAC(
+//        cardId: String,
+//        contentId: String,
+//        deckId: String
+//    ): List<CardDefinition>? {
+//        definitionList.clear()
+//        val definition1Text = tieDefinition1MultiAnswerCard?.text.toString()
+//        val definition2Text = tieDefinition2MultiAnswerCard?.text.toString()
+//        val definition3Text = tieDefinition3MultiAnswerCard?.text.toString()
+//        val definition4Text = tieDefinition4MultiAnswerCard?.text.toString()
+//
+//        if (
+//            definition1Text.isEmpty() &&
+//            definition2Text.isEmpty() &&
+//            definition3Text.isEmpty() &&
+//            definition4Text.isEmpty() ||
+//            definition1Text.isBlank() &&
+//            definition2Text.isBlank() &&
+//            definition3Text.isBlank() &&
+//            definition4Text.isBlank()
+//        ) {
+//            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
+//            return null
+//        }
+//
+//        if (
+//            !cpDefinition1IsTrue?.isChecked!! &&
+//            !cpDefinition2IsTrue?.isChecked!! &&
+//            !cpDefinition3IsTrue?.isChecked!! &&
+//            !cpDefinition4IsTrue?.isChecked!!
+//        ) {
+//            tilDefinition1MultiAnswerCard?.error = getString(R.string.cp_error_correct_definition)
+//            return null
+//        }
+//
+//        if (definition1Text.isNotEmpty() && definition1Text.isNotBlank()) {
+//            definitionList.add(
+//                createDefinition(
+//                    definition1Text,
+//                    cpDefinition1IsTrue?.isChecked!!,
+//                    cardId,
+//                    contentId,
+//                    deckId
+//                )
+//            )
+//        }
+//        if (definition2Text.isNotEmpty() && definition2Text.isNotBlank()) {
+//            definitionList.add(
+//                createDefinition(
+//                    definition2Text,
+//                    cpDefinition2IsTrue?.isChecked!!,
+//                    cardId,
+//                    contentId,
+//                    deckId
+//                )
+//            )
+//        }
+//        if (definition3Text.isNotEmpty() && definition3Text.isNotBlank()) {
+//            definitionList.add(
+//                createDefinition(
+//                    definition3Text,
+//                    cpDefinition3IsTrue?.isChecked!!,
+//                    cardId,
+//                    contentId,
+//                    deckId
+//                )
+//            )
+//        }
+//        if (definition4Text.isNotEmpty() && definition4Text.isNotBlank()) {
+//            definitionList.add(
+//                createDefinition(
+//                    definition4Text,
+//                    cpDefinition4IsTrue?.isChecked!!,
+//                    cardId,
+//                    contentId,
+//                    deckId
+//                )
+//            )
+//        }
+//        return definitionList.toList()
+//    }
 
-        if (
-            definition1Text.isEmpty() &&
-            definition2Text.isEmpty() &&
-            definition3Text.isEmpty() &&
-            definition4Text.isEmpty() ||
-            definition1Text.isBlank() &&
-            definition2Text.isBlank() &&
-            definition3Text.isBlank() &&
-            definition4Text.isBlank()
-        ) {
-            tilDefinition1MultiAnswerCard?.error = getString(R.string.til_error_card_definition)
-            return null
-        }
+//    private fun getDefinitionOnAddFC(
+//        cardId: String,
+//        contentId: String,
+//        deckId: String
+//    ): List<CardDefinition>? {
+//        definitionList.clear()
+//        val definitionText = cardValue?.text.toString()
+//        if (definitionText.isNotEmpty() && definitionText.isNotBlank()) {
+//            definitionList.add(createDefinition(definitionText, true, cardId, contentId, deckId))
+//        } else {
+//            cardValueLY?.error = getString(R.string.til_error_card_definition)
+//            return null
+//        }
+//        return definitionList.toList()
+//    }
 
-        if (
-            !cpDefinition1IsTrue?.isChecked!! &&
-            !cpDefinition2IsTrue?.isChecked!! &&
-            !cpDefinition3IsTrue?.isChecked!! &&
-            !cpDefinition4IsTrue?.isChecked!!
-        ) {
-            tilDefinition1MultiAnswerCard?.error = getString(R.string.cp_error_correct_definition)
-            return null
-        }
-
-        if (definition1Text.isNotEmpty() && definition1Text.isNotBlank()) {
-            definitionList.add(
-                createDefinition(
-                    definition1Text,
-                    cpDefinition1IsTrue?.isChecked!!,
-                    cardId,
-                    contentId,
-                    deckId
-                )
-            )
-        }
-        if (definition2Text.isNotEmpty() && definition2Text.isNotBlank()) {
-            definitionList.add(
-                createDefinition(
-                    definition2Text,
-                    cpDefinition2IsTrue?.isChecked!!,
-                    cardId,
-                    contentId,
-                    deckId
-                )
-            )
-        }
-        if (definition3Text.isNotEmpty() && definition3Text.isNotBlank()) {
-            definitionList.add(
-                createDefinition(
-                    definition3Text,
-                    cpDefinition3IsTrue?.isChecked!!,
-                    cardId,
-                    contentId,
-                    deckId
-                )
-            )
-        }
-        if (definition4Text.isNotEmpty() && definition4Text.isNotBlank()) {
-            definitionList.add(
-                createDefinition(
-                    definition4Text,
-                    cpDefinition4IsTrue?.isChecked!!,
-                    cardId,
-                    contentId,
-                    deckId
-                )
-            )
-        }
-        return definitionList.toList()
-    }
-
-    private fun getDefinitionOnAddFC(
-        cardId: String,
-        contentId: String,
-        deckId: String
-    ): List<CardDefinition>? {
-        definitionList.clear()
-        val definitionText = cardValue?.text.toString()
-        if (definitionText.isNotEmpty() && definitionText.isNotBlank()) {
-            definitionList.add(createDefinition(definitionText, true, cardId, contentId, deckId))
-        } else {
-            cardValueLY?.error = getString(R.string.til_error_card_definition)
-            return null
-        }
-        return definitionList.toList()
-    }
-
-    private fun getDefinitionOnAddTFC(
-        cardId: String,
-        contentId: String,
-        deckId: String
-    ): List<CardDefinition> {
-        definitionList.clear()
-        val cpFalseState = cpFalse?.isChecked
-        val cpTrueState = cpTrue?.isChecked
-        definitionList.add(createDefinition("False", cpFalseState!!, cardId, contentId, deckId))
-        definitionList.add(createDefinition("True", cpTrueState!!, cardId, contentId, deckId))
-        return definitionList.toList()
-    }
+//    private fun getDefinitionOnAddTFC(
+//        cardId: String,
+//        contentId: String,
+//        deckId: String
+//    ): List<CardDefinition> {
+//        definitionList.clear()
+//        val cpFalseState = cpFalse?.isChecked
+//        val cpTrueState = cpTrue?.isChecked
+//        definitionList.add(createDefinition("False", cpFalseState!!, cardId, contentId, deckId))
+//        definitionList.add(createDefinition("True", cpTrueState!!, cardId, contentId, deckId))
+//        return definitionList.toList()
+//    }
 
     private fun createDefinition(
         text: String,
@@ -1495,28 +1373,28 @@ class NewCardDialog(
                 .build()
             appTranslator.downloadModelIfNeeded(conditions)
                 .addOnSuccessListener {
-                    cardValue?.setText("Translation in progress...")
+//                    cardValue?.setText("Translation in progress...")
                     appTranslator.translate(text)
                         .addOnSuccessListener {
-                            cardValue?.setText(it)
+//                            cardValue?.setText(it)
                             setEditTextEndIconOnClick()
                         }
                         .addOnFailureListener {
-                            cardValue?.setText(it.toString())
+//                            cardValue?.setText(it.toString())
                             setEditTextEndIconOnClick()
                         }
                 }
                 .addOnFailureListener { exception ->
                     setEditTextEndIconOnClick()
-                    cardValue?.setText(exception.toString())
+//                    cardValue?.setText(exception.toString())
                 }
         }
     }
 
     private fun animProgressBar() {
         val drawableChargeIcon = appContext?.getProgressBarDrawable()
-        cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
-        cardValueLY?.endIconDrawable = drawableChargeIcon
+//        cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
+//        cardValueLY?.endIconDrawable = drawableChargeIcon
         (drawableChargeIcon as? Animatable)?.start()
     }
 
@@ -1526,10 +1404,10 @@ class NewCardDialog(
                 appContext?.fetchPrimaryColor()?.let { intArrayOf(it) })
             val drawable =
                 AppCompatResources.getDrawable(requireContext(), R.drawable.icon_translate)
-            cardValueLY?.setEndIconTintList(states)
+//            cardValueLY?.setEndIconTintList(states)
             drawable?.setTintList(states)
-            cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
-            cardValueLY?.endIconDrawable = drawable
+//            cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
+//            cardValueLY?.endIconDrawable = drawable
         }
     }
 
@@ -1598,7 +1476,7 @@ class NewCardDialog(
 
     private fun deleteDefinitionField(field: TextInputEditText) {
 
-        if (field == tieDefinition10MultiAnswerCard) {
+        if (field == binding.tieDefinition10MultiAnswerCard) {
             clearField(definitionFields.last())
             return
         }

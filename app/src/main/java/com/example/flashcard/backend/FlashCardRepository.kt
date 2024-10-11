@@ -41,6 +41,15 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
+    suspend fun getDeckCount() = flashCardDao.getDeckCount()
+
+    @WorkerThread
+    suspend fun getCardCount() = flashCardDao.getCardCount()
+
+    @WorkerThread
+    suspend fun getKnownCardCount() = flashCardDao.getKnownCardCount()
+
+    @WorkerThread
     fun searchDeck(searchQuery: String): Flow<List<ImmutableDeck>> {
         return flashCardDao.searchDeck(searchQuery).map {
             it.toExternal()

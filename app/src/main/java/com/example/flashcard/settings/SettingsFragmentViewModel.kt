@@ -11,6 +11,7 @@ import com.example.flashcard.deck.NewDeckDialog
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -106,6 +107,30 @@ class SettingsFragmentViewModel(private val repository: FlashCardRepository): Vi
     fun selectTheme(themeId: String) {
         _themSelectionList.value.forEachIndexed { index, themeModel ->
             _themSelectionList.value[index].isSelected = themeModel.themeId == themeId
+        }
+    }
+
+    private var deckCountJob: Job? = null
+    suspend fun getDeckCount(action: (Int) -> Unit) {
+        deckCountJob?.cancel()
+        deckCountJob = viewModelScope.launch {
+            action(repository.getDeckCount())
+        }
+    }
+
+    private var cardCountJob: Job? = null
+    suspend fun getCardCount( action: (Int) -> Unit ) {
+        cardCountJob?.cancel()
+        cardCountJob = viewModelScope.launch {
+            action(repository.getCardCount())
+        }
+    }
+
+    private var knownCardCountJob: Job? = null
+    suspend fun getKnownCardCount( action: (Int) -> Unit ) {
+        knownCardCountJob?.cancel()
+        knownCardCountJob = viewModelScope.launch {
+            action(repository.getKnownCardCount())
         }
     }
 

@@ -3,12 +3,14 @@ package com.example.flashcard.quiz.quizGame
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -17,17 +19,17 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
-import com.example.flashcard.util.CardType.TRUE_OR_FALSE_CARD
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 
 class QuizGameAdapter(
     val context: Context,
-    val cardList: List<ModelCard?>,
+    val cardList: List<QuizGameCardModel>,
     val deckColor: String,
     val deck: ImmutableDeck,
-    private val cardOnClick: (UserResponseModel) -> Unit,
+    private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit,
 ): RecyclerView.Adapter<QuizGameAdapter.TestQuizGameAdapterViewHolder>() {
 
@@ -92,201 +94,323 @@ class QuizGameAdapter(
 
         fun bind(
             context: Context,
-            modelCard: ModelCard?,
+            card: QuizGameCardModel,
             cardNumber: Int,
             cardPosition: Int,
             cardSum: Int,
             deckColorCode: String,
             deck: ImmutableDeck,
-            cardOnClick: (UserResponseModel) -> Unit,
+            cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit,
         ) {
 
-            if (modelCard!!.isFlipped) {
-                cvCardContainerBack.alpha = 1f
-                cvCardContainerBack.rotationY = 0f
-                cvCardContainer.alpha = 0f
+//            if (modelCard!!.isFlipped) {
+//                cvCardContainerBack.alpha = 1f
+//                cvCardContainerBack.rotationY = 0f
+//                cvCardContainer.alpha = 0f
+//            } else {
+//                cvCardContainer.alpha = 1f
+//                cvCardContainer.rotationY = 0f
+//                cvCardContainerBack.alpha = 1f
+//            }
+
+//            val card = modelCard.cardDetails
+            tvFrontProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+            tvContent.text = card.cardContent?.content
+            tvCardType.text = card.cardType
+            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+            cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
+
+            if (card.cardType == SINGLE_ANSWER_CARD) {
+//                if (card.isFlipped) {
+//                    cvCardContainerBack.alpha = 1f
+//                    cvCardContainerBack.rotationY = 0f
+//                    cvCardContainer.alpha = 0f
+//                } else {
+//                    cvCardContainer.alpha = 1f
+//                    cvCardContainer.rotationY = 0f
+//                    cvCardContainerBack.alpha = 1f
+//                }
             } else {
                 cvCardContainer.alpha = 1f
                 cvCardContainer.rotationY = 0f
                 cvCardContainerBack.alpha = 1f
-            }
-
-            val card = modelCard.cardDetails
-            tvFrontProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            tvContent.text = card?.cardContent?.content
-            tvCardType.text = card?.cardType
-            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
-            cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
-
-
-
-            when(card?.cardType) {
-                SINGLE_ANSWER_CARD -> {
-                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
-                }
-                TRUE_OR_FALSE_CARD -> {
-                    onTrueOrFalseCard(modelCard,cardPosition , cardOnClick)
-                }
-                MULTIPLE_ANSWER_CARD -> {
-                    onOneOrMultiAnswer(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
-                }
-                else -> {
-                    onFlashCard(modelCard, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+                btAlternatives.forEachIndexed { index, materialButton ->
+                    if (index < card.cardDefinition.size) {
+                        materialButton.visibility = View.VISIBLE
+                        if (card.cardDefinition[index].isSelected) {
+                            val answerStatus = card.cardDefinition[index].isCorrect != 0
+                            onButtonClicked(materialButton, card.cardType!!, context, answerStatus)
+                        } else {
+                            onButtonUnClicked(materialButton, card.cardType!!, context)
+                        }
+                    } else {
+                        materialButton.visibility = View.GONE
+                    }
                 }
             }
+
+            bindAnswerAlternatives(card, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+
+//            when(card?.cardType) {
+//                SINGLE_ANSWER_CARD -> {
+//                    onFlashCard(card, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+//                }
+//                TRUE_OR_FALSE_CARD -> {
+//                    onTrueOrFalseCard(card,cardPosition , cardOnClick)
+//                }
+//                MULTIPLE_ANSWER_CARD -> {
+//                    bindAnswerAlternatives(card, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+//                }
+//                else -> {
+//                    onFlashCard(card, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+//                }
+//            }
 
         }
 
-        private fun onFlashCard(
-            modelCard: ModelCard,
-            deckColorCode: String,
-            cardNumber: Int,
-            cardPosition: Int,
-            cardSum: Int,
-            cardOnClick: (UserResponseModel) -> Unit
-        ) {
-            val card = modelCard.cardDetails
-            val cardModel = FlashCardModel(modelCard, cardList)
-            btAlternatives.forEach {
-                it.visibility = View.GONE
-            }
-//            btAlternative1.isVisible = false
-//            btAlternative2.isVisible = false
+//        private fun onFlashCard(
+//            modelCard: ModelCard,
+//            deckColorCode: String,
+//            cardNumber: Int,
+//            cardPosition: Int,
+//            cardSum: Int,
+//            cardOnClick: (UserResponseModel) -> Unit
+//        ) {
+//            val card = modelCard.cardDetails
+//            val cardModel = FlashCardModel(modelCard, cardList)
+//            btAlternatives.forEach {
+//                it.visibility = View.GONE
+//            }
+////            btAlternative1.isVisible = false
+////            btAlternative2.isVisible = false
+////            btAlternative3.isVisible = false
+////            btAlternative4.isVisible = false
+//            flCardRoot.isClickable = cardModel.isFlippable()
+//
+//            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+//            cvCardContainerBack.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
+//            tvBackProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+//            tvDefinition.text = card?.cardDefinition?.get(0)?.definition
+//            tvCardTypeBack.text = card?.cardType
+//
+//            flCardRoot.setOnClickListener {
+//                cardOnClick(
+//                    UserResponseModel(
+//                        null,
+//                        modelCard,
+//                        cardPosition,
+//                        it,
+//                        cvCardContainer,
+//                        cvCardContainerBack
+//                    )
+//                )
+//                flipCard(modelCard.isFlipped)
+//            }
+//
+//            btSpeak.setOnClickListener {
+//                val views = listOf(tvContent)
+//                val texts = listOf(card?.cardContent?.content!!)
+//                onSpeak(
+//                    QuizSpeakModel(
+//                        text = texts,
+//                        views = views,
+//                        deck.deckFirstLanguage!!
+//                    )
+//                )
+//            }
+//            btSpeakBack.setOnClickListener {
+//                val views = listOf(tvDefinition)
+//                val texts = listOf(card?.cardDefinition?.get(0)?.definition!!)
+//                onSpeak(
+//                    QuizSpeakModel(
+//                        text = texts,
+//                        views = views,
+//                        deck.deckSecondLanguage!!
+//                    )
+//                )
+//            }
+//
+//        }
+
+//        private fun onTrueOrFalseCard(
+//            modelCard: ModelCard,
+//            cardPosition: Int,
+//            cardOnClick: (UserResponseModel) -> Unit
+//        ) {
+//            val card = modelCard.cardDetails
+//            val cardModel = TrueOrFalseCardModel(modelCard, cardList)
+//            val answers = cardModel.getCardAnswers()
+//            flCardRoot.isClickable = cardModel.isFlippable()
+//            btAlternative1.apply {
+//                isVisible = true
+//                text = answers[0].definition
+//                onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
+//            }
+//            btAlternative2.apply {
+//                isVisible = true
+//                text = answers[1].definition
+//                onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
+//            }
 //            btAlternative3.isVisible = false
 //            btAlternative4.isVisible = false
-            flCardRoot.isClickable = cardModel.isFlippable()
-
-            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
-            cvCardContainerBack.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
-            tvBackProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            tvDefinition.text = card?.cardDefinition?.get(0)?.definition
-            tvCardTypeBack.text = card?.cardType
-
-            flCardRoot.setOnClickListener {
-                cardOnClick(
-                    UserResponseModel(
-                        null,
-                        modelCard,
-                        cardPosition,
-                        it,
-                        cvCardContainer,
-                        cvCardContainerBack
-                    )
-                )
-                flipCard(modelCard.isFlipped)
-            }
-
-            btSpeak.setOnClickListener {
-                val views = listOf(tvContent)
-                val texts = listOf(card?.cardContent?.content!!)
-                onSpeak(
-                    QuizSpeakModel(
-                        text = texts,
-                        views = views,
-                        deck.deckFirstLanguage!!
-                    )
-                )
-            }
-            btSpeakBack.setOnClickListener {
-                val views = listOf(tvDefinition)
-                val texts = listOf(card?.cardDefinition?.get(0)?.definition!!)
-                onSpeak(
-                    QuizSpeakModel(
-                        text = texts,
-                        views = views,
-                        deck.deckSecondLanguage!!
-                    )
-                )
-            }
-
-        }
-
-        private fun onTrueOrFalseCard(
-            modelCard: ModelCard,
-            cardPosition: Int,
-            cardOnClick: (UserResponseModel) -> Unit
-        ) {
-            val card = modelCard.cardDetails
-            val cardModel = TrueOrFalseCardModel(modelCard, cardList)
-            val answers = cardModel.getCardAnswers()
-            flCardRoot.isClickable = cardModel.isFlippable()
-            btAlternative1.apply {
-                isVisible = true
-                text = answers[0].definition
-                onAlternativeClicked(answers[0], cardOnClick, modelCard, cardPosition)
-            }
-            btAlternative2.apply {
-                isVisible = true
-                text = answers[1].definition
-                onAlternativeClicked(answers[1], cardOnClick, modelCard, cardPosition)
-            }
-            btAlternative3.isVisible = false
-            btAlternative4.isVisible = false
-
-            btSpeak.setOnClickListener {
-                val views = listOf(tvContent)
-                val texts = listOf(card?.cardContent?.content!!)
-                onSpeak(
-                    QuizSpeakModel(
-                        text = texts,
-                        views = views,
-                        deck.deckFirstLanguage!!
-                    )
-                )
-            }
-
-        }
+//
+//            btSpeak.setOnClickListener {
+//                val views = listOf(tvContent)
+//                val texts = listOf(card?.cardContent?.content!!)
+//                onSpeak(
+//                    QuizSpeakModel(
+//                        text = texts,
+//                        views = views,
+//                        deck.deckFirstLanguage!!
+//                    )
+//                )
+//            }
+//
+//        }
 
         private fun MaterialButton.onAlternativeClicked(
-            answer: CardDefinition,
-            cardOnClick: (UserResponseModel) -> Unit,
-            modelCard: ModelCard,
+            answer: QuizGameCardDefinitionModel,
+            cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
+//            modelCard: ModelCard,
             cardPosition: Int
         ) {
             setOnClickListener {
-                cardOnClick(
-                    UserResponseModel(
-                        answer,
-                        modelCard,
-                        cardPosition,
-                        this,
-                        cvCardContainer,
-                        cvCardContainerBack
-                    )
-                )
+//                cardOnClick(
+//                    UserResponseModel(
+//                        answer,
+//                        modelCard,
+//                        cardPosition,
+//                        this,
+//                        cvCardContainer,
+//                        cvCardContainerBack
+//                    )
+//                )
+                answer.isSelected = !answer.isSelected
+                cardOnClick(answer)
             }
         }
 
-        fun onOneOrMultiAnswer(
-            modelCard: ModelCard,
+        private fun onButtonClicked(
+            button: MaterialButton,
+            cardType: String,
+            context: Context,
+            isCorrectlyAnswered: Boolean
+        ) {
+            if (isCorrectlyAnswered) {
+                if (cardType == MULTIPLE_ANSWER_CARD) {
+                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                } else {
+                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+                }
+                button.background.setTint(ContextCompat.getColor(context, R.color.green50))
+                button.setStrokeColorResource(R.color.green500)
+                button.setIconTintResource(R.color.green500)
+            } else {
+                if (cardType == MULTIPLE_ANSWER_CARD) {
+                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                } else {
+                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                }
+                button.background.setTint(ContextCompat.getColor(context, R.color.red50))
+                button.setStrokeColorResource(R.color.red500)
+                button.setIconTintResource(R.color.red500)
+            }
+
+        }
+
+        private fun onButtonUnClicked(button: MaterialButton, cardType: String, context: Context) {
+            if (cardType == MULTIPLE_ANSWER_CARD) {
+                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
+            } else {
+                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
+            }
+            button.background.setTint(MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceContainerLowest, Color.GRAY))
+            button.iconTint = MaterialColors.getColorStateList(
+                context,
+                com.google.android.material.R.attr.colorOnSurface,
+                ContextCompat.getColorStateList(context, R.color.neutral950)!!
+            )
+            button.strokeColor = MaterialColors.getColorStateList(
+                context,
+                com.google.android.material.R.attr.colorSurfaceContainerHigh,
+                ContextCompat.getColorStateList(context, R.color.neutral500)!!
+            )
+        }
+
+        fun bindAnswerAlternatives(
+            card: QuizGameCardModel,
             deckColorCode: String,
             cardNumber: Int,
             cardPosition: Int,
             cardSum: Int,
-            cardOnClick: (UserResponseModel) -> Unit
+            cardOnClick: (QuizGameCardDefinitionModel) -> Unit
         ) {
-            val card = modelCard.cardDetails
-            val cardModel = OneOrMultipleAnswerCardModel(modelCard, cardList)
-            val answers = cardModel.getCardAnswers()
-            flCardRoot.isClickable = cardModel.isFlippable()
+//            val card = modelCard.cardDetails
+//            val cardModel = OneOrMultipleAnswerCardModel(modelCard, cardList)
+//            val answers = cardModel.getCardAnswers()
 
-            val texts = arrayListOf(card?.cardContent?.content!!)
-            val views = arrayListOf(tvContent)
-            btAlternatives.forEachIndexed { index, materialButton ->
-                if (index < answers.size) {
-                    materialButton.apply {
-                        visibility = View.VISIBLE
-                        text = answers[index].definition
-                        onAlternativeClicked(answers[index], cardOnClick, modelCard, cardPosition)
-                    }
-                    texts.add(answers[index].definition)
-                    views.add(materialButton)
-                } else {
+            if (card.cardType == SINGLE_ANSWER_CARD) {
+
+                flCardRoot.isClickable = true
+                btAlternatives.forEach { materialButton ->
                     materialButton.visibility = View.GONE
                 }
+                val deckColor =
+                    DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+                cvCardContainerBack.backgroundTintList =
+                    ContextCompat.getColorStateList(context, deckColor)
+                tvBackProgression.text = context.getString(
+                    R.string.tx_flash_card_game_progression,
+                    "$cardNumber",
+                    "$cardSum"
+                )
+                tvDefinition.text = card.cardDefinition.first().definition
+                tvCardTypeBack.text = card.cardType
+                flCardRoot.setOnClickListener {
+                    card.cardDefinition.first().isSelected = true
+                    cardOnClick(
+                        card.cardDefinition.first()
+                    )
+                    flipCard(card.isFlipped)
+                }
+                btSpeakBack.setOnClickListener {
+                    onSpeak(
+                        QuizSpeakModel(
+                            text = listOf(card.cardDefinition.first().definition),
+                            views = listOf(tvDefinition),
+                            deck.deckSecondLanguage!!
+                        )
+                    )
+                }
+                btSpeak.setOnClickListener {
+                    frontSpeak(
+                        listOf(tvContent),
+                        listOf(card.cardContent?.content!!),
+                        deck.deckFirstLanguage!!
+                    )
+                }
+            } else {
+                flCardRoot.isClickable = false
+                val texts = arrayListOf(card.cardContent?.content!!)
+                val views = arrayListOf(tvContent)
+                btAlternatives.forEachIndexed { index, materialButton ->
+                    if (index < card.cardDefinition.size) {
+                        materialButton.apply {
+                            visibility = View.VISIBLE
+                            text = card.cardDefinition[index].definition
+                            onAlternativeClicked(card.cardDefinition[index], cardOnClick, cardPosition)
+                        }
+                        texts.add(card.cardDefinition[index].definition)
+                        views.add(materialButton)
+                    } else {
+                        materialButton.visibility = View.GONE
+                    }
+                }
+                frontSpeak(views, texts, deck.deckFirstLanguage!!)
             }
-            frontSpeak(views, texts, deck.deckFirstLanguage!!)
+
+
 //            when (answers.size ) {
 //                2 -> {
 //                    btAlternative1.apply {

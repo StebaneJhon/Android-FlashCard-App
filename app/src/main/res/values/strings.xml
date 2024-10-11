@@ -200,4 +200,5 @@
     <string name="text_result">Result</string>
     <string name="bt_text_retake_test">Retake test</string>
     <string name="bt_text_back_to_deck">Back to cards</string>
+    <string name="text_action_question">Do you know this card?</string>
 </resources>

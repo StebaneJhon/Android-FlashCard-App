@@ -42,6 +42,9 @@ interface FlashCardDao {
     @Query("SELECT * FROM deck")
     fun getAllDecks(): Flow<List<Deck>>
 
+    @Query("SELECT COUNT(*) FROM deck")
+    suspend fun getDeckCount(): Int
+
     @Query("SELECT * FROM deck WHERE deck_name LIKE :searchQuery OR deck_description LIKE :searchQuery OR deck_first_language LIKE :searchQuery OR deck_second_language LIKE :searchQuery OR deck_color_code LIKE :searchQuery")
     fun searchDeck(searchQuery: String): Flow<List<Deck>>
 
@@ -89,6 +92,12 @@ interface FlashCardDao {
 
     @Query("SELECT * FROM card")
     fun getAllCards(): Flow<List<Card>>
+
+    @Query("SELECT COUNT(*) FROM card")
+    suspend fun getCardCount(): Int
+
+    @Query("SELECT COUNT(*) FROM card WHERE card_status <> 'L1' ")
+    suspend fun getKnownCardCount(): Int
 
     @Query("SELECT * FROM card")
     fun getAllCardsNoFlow(): List<Card>

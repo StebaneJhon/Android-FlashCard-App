@@ -104,7 +104,7 @@ object CardLevel {
 object CardType {
     const val SINGLE_ANSWER_CARD = "Single answer card"
     const val MULTIPLE_ANSWER_CARD = "Multiple answer card"
-    const val TRUE_OR_FALSE_CARD = "True or false card"
+    const val MULTIPLE_CHOICE_CARD = "Multiple choice card"
 }
 
 object DeckAdditionAction {

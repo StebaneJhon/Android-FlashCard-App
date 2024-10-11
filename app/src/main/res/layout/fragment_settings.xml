@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_sm"
             android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginTop="@dimen/space_sm">
+            android:layout_marginTop="@dimen/space_sm"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_profile_section_title"
@@ -103,6 +104,135 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_profile_section_user_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/tv_title_data_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:fontFamily="@font/open_sans_bold"
+            android:textStyle="bold"
+            android:text="@string/tv_title_data_review"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_user_status" />
+
+        <GridLayout
+            android:id="@+id/ll_general_data_info"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_xs"
+            android:layout_marginTop="@dimen/space_xs"
+            android:columnCount="7"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_data_review">
+
+            <LinearLayout
+                android:id="@+id/cv_deck_number_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/space_xxs"
+                android:background="@drawable/over_all_data_info_background"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_deck_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_xl"
+                    tools:text="100" />
+
+                <TextView
+                    android:id="@+id/tv_deck_number_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/tv_deck_text"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_base" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cv_card_number_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/space_xxs"
+                android:background="@drawable/over_all_data_info_background"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_card_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_xl"
+                    tools:text="100" />
+
+                <TextView
+                    android:id="@+id/tv_card_number_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/tv_cards_text"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_base" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cv_known_card_number_container"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_rowWeight="1"
+                android:layout_columnWeight="1"
+                android:layout_margin="@dimen/space_xxs"
+                android:background="@drawable/over_all_data_info_background"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_known_card_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_xl"
+                    tools:text="100" />
+
+                <TextView
+                    android:id="@+id/tv_known_card_number_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/open_sans_light"
+                    android:text="@string/tv_known_text"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_base" />
+
+            </LinearLayout>
+        </GridLayout>
 
         <LinearLayout
             android:id="@+id/ll_theme_section"

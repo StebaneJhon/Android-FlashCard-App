@@ -9,14 +9,10 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
-import com.example.flashcard.quiz.quizGame.QuizSpeakModel
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.textview.MaterialTextView
 
 class TestResultRecyclerViewAdapter(
     private val context: Context,

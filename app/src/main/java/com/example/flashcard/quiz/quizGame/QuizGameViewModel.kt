@@ -6,15 +6,19 @@ import androidx.lifecycle.viewModelScope
 import com.example.flashcard.backend.FlashCardRepository
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
-import com.example.flashcard.util.CardLevel
-import com.example.flashcard.util.Constant
+import com.example.flashcard.backend.entities.CardDefinition
+import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
 import com.example.flashcard.util.SpaceRepetitionAlgorithmHelper
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class TestQuizGameViewModel(
     private val repository: FlashCardRepository
@@ -22,18 +26,14 @@ class TestQuizGameViewModel(
 
     lateinit var cardList: MutableList<ImmutableCard?>
     private var originalCardList: List<ImmutableCard?>? = null
-    private lateinit var modelCardList: MutableList<ModelCard?>
+//    private lateinit var modelCardList: MutableList<ModelCard?>
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     var deck: ImmutableDeck? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
-
-    private var currentCardPosition: Int = 0
-    //var progress: Int = 0
-
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
-        originalCardList = gameCards
+//        originalCardList = gameCards
     }
 
     fun initDeck(gameDeck: ImmutableDeck) {
@@ -44,15 +44,13 @@ class TestQuizGameViewModel(
         originalCardList = gameCards
     }
 
-    fun initModelCardList(gameCards: MutableList<ImmutableCard?>) {
-        modelCardList = gameCards.map { ModelCard(it) }.toMutableList()
-    }
+//    fun initModelCardList(gameCards: MutableList<ImmutableCard?>) {
+//        modelCardList = gameCards.map { ModelCard(it) }.toMutableList()
+//    }
 
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
 
-    fun getModelCardsNonStream() = modelCardList
-
-    fun getModelCardsSum() = modelCardList.size
+//    fun getModelCardsNonStream() = modelCardList
 
     fun getMissedCard(): MutableList<ImmutableCard?> {
         val newCards = arrayListOf<ImmutableCard?>()
@@ -62,78 +60,194 @@ class TestQuizGameViewModel(
 
     fun getOriginalCardList() = originalCardList
 
-    fun getProgress() = getKnownCardSum() * 100 / getModelCardsSum()
+
+//    private val _modelCards = MutableStateFlow<UiState<List<ModelCard?>>>(UiState.Loading)
+//    val modelCards: StateFlow<UiState<List<ModelCard?>>> = _modelCards.asStateFlow()
+//    private var fetchJob: Job? = null
+//
+//    fun getCards() {
+//        if (cardList.size == 0) {
+//            _modelCards.value = UiState.Error("No Cards To Revise")
+//        } else {
+//            fetchJob?.cancel()
+//            fetchJob = viewModelScope.launch {
+//                _modelCards.value = UiState.Success(modelCardList)
+//            }
+//        }
+//    }
+
+
+
+    private lateinit var localQuizGameCards: MutableList<QuizGameCardModel>
+    private var flowOfLocalQuizGameCards: Flow<List<QuizGameCardModel>> = flow {
+        emit(localQuizGameCards)
+    }
+    private var _externalQuizGameCards = MutableStateFlow<UiState<List<QuizGameCardModel>>>(UiState.Loading)
+    val externalQuizGameCards: StateFlow<UiState<List<QuizGameCardModel>>> = _externalQuizGameCards.asStateFlow()
+    private var quizGameJob: Job? = null
+
+    fun getQuizGameCards() {
+        quizGameJob?.cancel()
+        quizGameJob = viewModelScope.launch {
+            try {
+                flowOfLocalQuizGameCards.collect {
+                    if (it.isEmpty()) {
+                        _externalQuizGameCards.value = UiState.Error("No Card")
+                    } else {
+                        _externalQuizGameCards.value = UiState.Success(it)
+                    }
+                }
+            } catch (e: IOException) {
+                _externalQuizGameCards.value = UiState.Error(e.toString())
+            }
+        }
+    }
+
+    fun initLocalQuizGameCards(cards: List<ImmutableCard?>) {
+        localQuizGameCards = cards.map { card ->
+            val externalDefinitions = toQuizGameCardDefinitionModel(card?.cardId!!, card.cardType!!, card.cardDefinition!!).shuffled()
+            QuizGameCardModel(
+                card.cardId,
+                card.cardContent,
+                externalDefinitions,
+                card.cardType,
+                card.cardStatus
+            )
+        }.toMutableList()
+    }
+
+    fun getQuizGameCardsSum() = localQuizGameCards.size
 
     fun getMissedCardSum() = missedCards.size
 
-    fun getKnownCardSum() = getModelCardsSum() - getMissedCardSum()
+    fun getKnownCardSum() = getQuizGameCardsSum() - getMissedCardSum()
 
+    fun submitUserAnswer(answer: QuizGameCardDefinitionModel) {
+        when (answer.cardType) {
+            MULTIPLE_ANSWER_CARD -> { onSubmitMultiAnswerCardAnswer(answer) }
+            SINGLE_ANSWER_CARD -> {onSubmitSingleAnswerCardAnswer(answer)}
+            else -> { onSubmitMultiChoiceCardAnswer(answer) }
+        }
+    }
 
-    private val _modelCards = MutableStateFlow<UiState<List<ModelCard?>>>(UiState.Loading)
-    val modelCards: StateFlow<UiState<List<ModelCard?>>> = _modelCards.asStateFlow()
-    private var fetchJob: Job? = null
-    fun getCards() {
-        if (cardList.size == 0) {
-            _modelCards.value = UiState.Error("No Cards To Revise")
-        } else {
-            fetchJob?.cancel()
-            fetchJob = viewModelScope.launch {
-                _modelCards.value = UiState.Success(modelCardList)
+    private fun onSubmitSingleAnswerCardAnswer(answer: QuizGameCardDefinitionModel) {
+        localQuizGameCards.forEach {
+            if (it.cardId == answer.cardId) {
+                it.cardDefinition.first().isSelected = answer.isSelected
+                it.isFlipped = !it.isFlipped
             }
+        }
+    }
+
+    private fun onSubmitMultiChoiceCardAnswer(answer: QuizGameCardDefinitionModel) {
+        localQuizGameCards.forEach {
+            if (it.cardId == answer.cardId) {
+                it.cardDefinition.forEach { d ->
+                    if (d.definitionId == answer.definitionId) {
+                        d.isSelected = answer.isSelected
+                    } else {
+                        d.isSelected = false
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onSubmitMultiAnswerCardAnswer(answer: QuizGameCardDefinitionModel) {
+        localQuizGameCards.forEach {
+            if (it.cardId == answer.cardId) {
+                it.cardDefinition.forEach { d ->
+                    if(d.definitionId == answer.definitionId) {
+                        d.isSelected = answer.isSelected
+                    }
+                }
+            }
+        }
+    }
+
+    fun isAllAnswerSelected(answer: QuizGameCardDefinitionModel): Boolean {
+        localQuizGameCards.forEach {
+            if (it.cardId == answer.cardId) {
+                it.cardDefinition.forEach { d ->
+                    if (d.isCorrect == 1 && !d.isSelected) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    fun toQuizGameCardDefinitionModel(
+        cardId: String,
+        cardType: String,
+        d: List<CardDefinition>
+    ): List<QuizGameCardDefinitionModel> {
+        return d.map {
+            QuizGameCardDefinitionModel(
+                it.definitionId,
+                cardId,
+                it.definition,
+                cardType,
+                it.isCorrectDefinition,
+                false
+            )
         }
     }
 
 
     fun sortCardsByLevel() {
-        modelCardList.sortBy { it?.cardDetails?.cardStatus }
+        localQuizGameCards.sortBy { it.cardStatus }
     }
 
     fun shuffleCards() {
-        modelCardList.shuffle()
+        localQuizGameCards.shuffle()
     }
 
     fun sortByCreationDate() {
-        modelCardList.sortBy { it?.cardDetails?.cardId }
+        localQuizGameCards.sortBy { it.cardId }
     }
 
-    fun unknownCardsOnly() {
-        modelCardList = modelCardList.filter { it?.cardDetails?.cardStatus == CardLevel.L1 } as MutableList<ModelCard?>
-    }
+//    fun unknownCardsOnly() {
+//        modelCardList = modelCardList.filter { it?.cardDetails?.cardStatus == CardLevel.L1 } as MutableList<ModelCard?>
+//    }
 
     fun cardToReviseOnly() {
-        modelCardList = modelCardList.filter { spaceRepetitionHelper.isToBeRevised(it?.cardDetails!!) } as MutableList<ModelCard?>
+        val carToRevise = originalCardList?.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
+        initLocalQuizGameCards(carToRevise.toList())
     }
 
-    fun onFlipCard(cardPosition: Int) {
-        val cardToFlip = modelCardList[cardPosition]
-        cardToFlip?.isFlipped = !cardToFlip?.isFlipped!!
-    }
+//    fun onFlipCard(cardPosition: Int) {
+//        val cardToFlip = modelCardList[cardPosition]
+//        cardToFlip?.isFlipped = !cardToFlip?.isFlipped!!
+//    }
+//
+//    fun onCorrectAnswer(cardPosition: Int) {
+//        val card = modelCardList[cardPosition]
+//        card?.correctAnswerSum = card?.correctAnswerSum?.plus(1)!!
+//    }
+//
+//    fun onNotCorrectAnswer(card: ImmutableCard?): String {
+//        if (card !in missedCards && card != null) {
+//            missedCards.add(card)
+//
+//        } else {
+//            return Constant.FAILED
+//        }
+//        return Constant.SUCCEED
+//    }
 
-    fun onCorrectAnswer(cardPosition: Int) {
-        val card = modelCardList[cardPosition]
-        card?.correctAnswerSum = card?.correctAnswerSum?.plus(1)!!
-    }
-
-    fun onNotCorrectAnswer(card: ImmutableCard?): String {
-        if (card !in missedCards && card != null) {
-            missedCards.add(card)
-
-        } else {
-            return Constant.FAILED
-        }
-        return Constant.SUCCEED
-    }
-
-    fun onDrag(cardPosition: Int) {
-        val answeredCard = modelCardList[cardPosition]
-        answeredCard?.isAnswered = true
-    }
+//    fun onDrag(cardPosition: Int) {
+//        val answeredCard = modelCardList[cardPosition]
+//        answeredCard?.isAnswered = true
+//    }
 
     fun isNextCardAnswered(actualCardPosition: Int): Boolean {
         val nextCardPosition = actualCardPosition.plus(1)
-        if (nextCardPosition < modelCardList.size) {
-            val nextCard = modelCardList[nextCardPosition]
-            return nextCard?.isAnswered ?: false
+        if (nextCardPosition < localQuizGameCards.size) {
+            val nextCard = localQuizGameCards[nextCardPosition]
+
+            return isAllAnswerSelected(nextCard.cardDefinition.first())
         }
         return false
     }
@@ -142,11 +256,31 @@ class TestQuizGameViewModel(
         cardList = originalCardList!!.toMutableList()
     }
 
-    fun initTest() {
+    fun initQuizGame() {
         missedCards.clear()
-        modelCardList.forEach { modelCard ->
-            modelCard?.isFlipped = false
-            modelCard?.isAnswered = false
+        localQuizGameCards.forEach {
+            it.isFlipped = false
+            it.cardDefinition.forEach { d ->
+                d.isSelected = false
+            }
+        }
+//        modelCardList.forEach { modelCard ->
+//            modelCard?.isFlipped = false
+//            modelCard?.isAnswered = false
+//        }
+    }
+
+    fun updateCardOnKnownOrKnownNot(
+        answer: QuizGameCardDefinitionModel,
+        knownOrNot: Boolean
+    ) {
+        originalCardList?.forEach {
+            if (it?.cardId == answer.cardId) {
+                upOrDowngradeCard(knownOrNot, it)
+                if (!knownOrNot) {
+                    missedCards.add(it)
+                }
+            }
         }
     }
 

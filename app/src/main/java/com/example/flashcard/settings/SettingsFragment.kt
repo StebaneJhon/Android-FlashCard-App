@@ -94,6 +94,17 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         }
 
         lifecycleScope.launch {
+
+            settingsFragmentViewModel.getCardCount { sum ->
+                binding.tvCardNumber.text = sum.toString()
+            }
+             settingsFragmentViewModel.getDeckCount { sum ->
+                 binding.tvDeckNumber.text = sum.toString()
+            }
+            settingsFragmentViewModel.getKnownCardCount { sum ->
+                binding.tvKnownCardNumber.text = sum.toString()
+            }
+
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 settingsFragmentViewModel.getUserDetails()
                 settingsFragmentViewModel.user
