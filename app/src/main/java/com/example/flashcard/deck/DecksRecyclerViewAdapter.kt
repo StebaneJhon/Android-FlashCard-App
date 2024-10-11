@@ -162,18 +162,23 @@ class DecksRecyclerViewAdapter(
             }
 
             popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-                if (menuItem.itemId == R.id.edit_deck_DM) {
-                    editDeckClickListener(deck)
-                    true
-                } else if (menuItem.itemId == R.id.delete_deck_DM) {
-                    deleteDeckClickListener(deck)
-                    true
-                } else if (menuItem.itemId == R.id.start_quiz_DM) {
-                    startQuizListener(deck)
-                    true
-                } else {
-                    false
+
+                when (menuItem.itemId) {
+                     R.id.edit_deck_DM -> {
+                        editDeckClickListener(deck)
+                        true
+                    }
+                    R.id.delete_deck_DM -> {
+                        deleteDeckClickListener(deck)
+                        true
+                    }
+                    R.id.start_quiz_DM -> {
+                        startQuizListener(deck)
+                        true
+                    }
+                    else -> false
                 }
+
             }
             popup.setOnDismissListener {
                 // Respond to popup being dismissed.

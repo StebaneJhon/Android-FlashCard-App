@@ -13,5 +13,4 @@ data class QuizGameCardModel(
     val cardType: String?,
     val cardStatus: String?,
     var isFlipped: Boolean = false
-//    val cardPosition: Int?,
 ): Parcelable

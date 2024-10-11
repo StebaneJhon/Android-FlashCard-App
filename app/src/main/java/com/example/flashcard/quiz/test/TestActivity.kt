@@ -89,7 +89,6 @@ class TestActivity :
             cardList?.let { cards ->
                 testViewModel.initOriginalCards(cards)
                 testViewModel.initLocalCards(cards)
-//                testViewModel.initTestCard()
             }
 
             lifecycleScope.launch {

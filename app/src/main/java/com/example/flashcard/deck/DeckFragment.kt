@@ -326,19 +326,30 @@ class DeckFragment :
     }
 
     private fun onDeleteDeck(deck: ImmutableDeck) {
-        appContext?.let {
-            MaterialAlertDialogBuilder(it)
-                .setTitle(getString(R.string.dialog_title_delete_deck))
-                .setMessage(getString(R.string.dialog_message_delete_deck, deck.cardSum.toString()))
-                .setNegativeButton(getString(R.string.bt_text_cancel)) { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setPositiveButton(getString(R.string.bt_text_delete)) { dialog, _ ->
-                    deckViewModel.deleteDeck(deck)
-                    dialog.dismiss()
-                    Toast.makeText(it, "Delete ${deck.deckName}", Toast.LENGTH_LONG).show()
-                }
-                .show()
+        if (deck.cardSum!! > 0) {
+            appContext?.let {
+                MaterialAlertDialogBuilder(it)
+                    .setTitle(getString(R.string.dialog_title_delete_deck))
+                    .setMessage(
+                        if (deck.cardSum > 1) {
+                            getString(R.string.dialog_message_delete_deck, deck.cardSum.toString(), "s")
+                        } else {
+                            getString(R.string.dialog_message_delete_deck, deck.cardSum.toString(), "")
+                        }
+                    )
+                    .setNegativeButton(getString(R.string.bt_text_cancel)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton(getString(R.string.bt_text_delete)) { dialog, _ ->
+                        deckViewModel.deleteDeck(deck)
+                        dialog.dismiss()
+                        Toast.makeText(it, "Delete ${deck.deckName}", Toast.LENGTH_LONG).show()
+                    }
+                    .show()
+            }
+        } else {
+            deckViewModel.deleteDeck(deck)
+            Toast.makeText(requireContext(), "Delete ${deck.deckName}", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -382,7 +393,7 @@ class DeckFragment :
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_QUIZ_MODE,
             this
-        ) { requestCode, bundle ->
+        ) { _, bundle ->
             val result = bundle.getString(QuizModeBottomSheet.START_QUIZ_BUNDLE_KEY)
             result?.let { qm ->
                 startQuiz(deckId) { deckWithCards ->

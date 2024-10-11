@@ -27,7 +27,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     private var _deckWithAllCards = MutableStateFlow<UiState<ImmutableDeckWithCards>>(UiState.Loading)
     val deckWithAllCards: StateFlow<UiState<ImmutableDeckWithCards>> = _deckWithAllCards.asStateFlow()
     private var fetchJob: Job? = null
-    val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     fun getDeckWithCards(deckId: String) {
         fetchJob?.cancel()
@@ -51,13 +51,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
        return spaceRepetitionHelper.getActualBoxLevels()
     }
 
-    fun insertCard(card: ImmutableCard, localDeck: ImmutableDeck) = viewModelScope.launch {
-//        val externalDeck = localDeck.toLocal()
-        repository.insertCard(card, localDeck, true)
-    }
-
     fun insertCards(cards: List<ImmutableCard>, externalDeck: ImmutableDeck) = viewModelScope.launch {
-//        val localDeck = externalDeck.toLocal()
         val cardsToAdd = cards.reversed()
         repository.insertCards(cardsToAdd, externalDeck)
     }

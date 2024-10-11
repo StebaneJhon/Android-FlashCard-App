@@ -26,14 +26,12 @@ class TestQuizGameViewModel(
 
     lateinit var cardList: MutableList<ImmutableCard?>
     private var originalCardList: List<ImmutableCard?>? = null
-//    private lateinit var modelCardList: MutableList<ModelCard?>
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     var deck: ImmutableDeck? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
-//        originalCardList = gameCards
     }
 
     fun initDeck(gameDeck: ImmutableDeck) {
@@ -44,13 +42,7 @@ class TestQuizGameViewModel(
         originalCardList = gameCards
     }
 
-//    fun initModelCardList(gameCards: MutableList<ImmutableCard?>) {
-//        modelCardList = gameCards.map { ModelCard(it) }.toMutableList()
-//    }
-
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
-
-//    fun getModelCardsNonStream() = modelCardList
 
     fun getMissedCard(): MutableList<ImmutableCard?> {
         val newCards = arrayListOf<ImmutableCard?>()
@@ -59,24 +51,6 @@ class TestQuizGameViewModel(
     }
 
     fun getOriginalCardList() = originalCardList
-
-
-//    private val _modelCards = MutableStateFlow<UiState<List<ModelCard?>>>(UiState.Loading)
-//    val modelCards: StateFlow<UiState<List<ModelCard?>>> = _modelCards.asStateFlow()
-//    private var fetchJob: Job? = null
-//
-//    fun getCards() {
-//        if (cardList.size == 0) {
-//            _modelCards.value = UiState.Error("No Cards To Revise")
-//        } else {
-//            fetchJob?.cancel()
-//            fetchJob = viewModelScope.launch {
-//                _modelCards.value = UiState.Success(modelCardList)
-//            }
-//        }
-//    }
-
-
 
     private lateinit var localQuizGameCards: MutableList<QuizGameCardModel>
     private var flowOfLocalQuizGameCards: Flow<List<QuizGameCardModel>> = flow {
@@ -208,39 +182,10 @@ class TestQuizGameViewModel(
         localQuizGameCards.sortBy { it.cardId }
     }
 
-//    fun unknownCardsOnly() {
-//        modelCardList = modelCardList.filter { it?.cardDetails?.cardStatus == CardLevel.L1 } as MutableList<ModelCard?>
-//    }
-
     fun cardToReviseOnly() {
         val carToRevise = originalCardList?.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
         initLocalQuizGameCards(carToRevise.toList())
     }
-
-//    fun onFlipCard(cardPosition: Int) {
-//        val cardToFlip = modelCardList[cardPosition]
-//        cardToFlip?.isFlipped = !cardToFlip?.isFlipped!!
-//    }
-//
-//    fun onCorrectAnswer(cardPosition: Int) {
-//        val card = modelCardList[cardPosition]
-//        card?.correctAnswerSum = card?.correctAnswerSum?.plus(1)!!
-//    }
-//
-//    fun onNotCorrectAnswer(card: ImmutableCard?): String {
-//        if (card !in missedCards && card != null) {
-//            missedCards.add(card)
-//
-//        } else {
-//            return Constant.FAILED
-//        }
-//        return Constant.SUCCEED
-//    }
-
-//    fun onDrag(cardPosition: Int) {
-//        val answeredCard = modelCardList[cardPosition]
-//        answeredCard?.isAnswered = true
-//    }
 
     fun isNextCardAnswered(actualCardPosition: Int): Boolean {
         val nextCardPosition = actualCardPosition.plus(1)
@@ -264,10 +209,6 @@ class TestQuizGameViewModel(
                 d.isSelected = false
             }
         }
-//        modelCardList.forEach { modelCard ->
-//            modelCard?.isFlipped = false
-//            modelCard?.isAnswered = false
-//        }
     }
 
     fun updateCardOnKnownOrKnownNot(

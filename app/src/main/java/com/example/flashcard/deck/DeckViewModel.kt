@@ -20,6 +20,7 @@ import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
+import com.example.flashcard.util.CardType.MULTIPLE_CHOICE_CARD
 import com.example.flashcard.util.DeckColorCategorySelector
 import com.example.flashcard.util.UiState
 import kotlinx.coroutines.Job
@@ -173,7 +174,7 @@ class DeckViewModel(
                 L1,
                 null,
                 null,
-                result.type
+                MULTIPLE_CHOICE_CARD
             )
 
             newCards.add(newCard)
@@ -181,8 +182,6 @@ class DeckViewModel(
         }
         return newCards
     }
-
-//    private fun toCardType(type: String) = if (type == "multiple") MULTIPLE_ANSWER_CARD else TRUE_OR_FALSE_CARD
 
     private fun generateCardDefinitions(
         correctAnswer: String,

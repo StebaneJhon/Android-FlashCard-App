@@ -73,8 +73,7 @@ import java.util.Locale
 class CardFragment :
     Fragment(),
     MenuProvider,
-    TextToSpeech.OnInitListener
-{
+    TextToSpeech.OnInitListener {
 
     private var _binding: FragmentCardBinding? = null
     private val binding get() = _binding!!
@@ -336,7 +335,6 @@ class CardFragment :
                 it,
                 appTheme,
                 cardList,
-                deck,
                 cardViewModel.getBoxLevels()!!,
                 { selectedCard ->
                     onEditCard(selectedCard!!)
@@ -365,7 +363,8 @@ class CardFragment :
             }
         }
 
-        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        val staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
@@ -478,8 +477,7 @@ class CardFragment :
             this
         ) { requestQuey, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
-            result?.let { it ->
-                val a = it
+            result?.let {
                 cardViewModel.insertCards(it, deck!!)
             }
         }
@@ -491,9 +489,9 @@ class CardFragment :
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
             this
-        ) { requestQuey, bundle ->
+        ) { _, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
-            result?.let { it ->
+            result?.let {
                 cardViewModel.updateCard(it.first())
             }
         }
@@ -505,7 +503,7 @@ class CardFragment :
         val search = menu.findItem(R.id.search_deck_menu)
         val searchView = search?.actionView as SearchView
 
-        val searchIcon = searchView.findViewById(androidx.appcompat.R.id.search_button) as ImageView
+        val searchIcon: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_button)
         searchIcon.setColorFilter(
             ThemeUtils.getThemeAttrColor(
                 requireContext(),
@@ -513,8 +511,8 @@ class CardFragment :
             ), PorterDuff.Mode.SRC_IN
         )
 
-        val searchIconClose =
-            searchView.findViewById(androidx.appcompat.R.id.search_close_btn) as ImageView
+        val searchIconClose: ImageView =
+            searchView.findViewById(androidx.appcompat.R.id.search_close_btn)
         searchIconClose.setColorFilter(
             ThemeUtils.getThemeAttrColor(
                 requireContext(),
@@ -522,8 +520,8 @@ class CardFragment :
             ), PorterDuff.Mode.SRC_IN
         )
 
-        val searchIconMag =
-            searchView.findViewById(androidx.appcompat.R.id.search_go_btn) as ImageView
+        val searchIconMag: ImageView =
+            searchView.findViewById(androidx.appcompat.R.id.search_go_btn)
         searchIconMag.setColorFilter(
             ThemeUtils.getThemeAttrColor(
                 requireContext(),
@@ -596,6 +594,7 @@ class CardFragment :
             TextToSpeech.SUCCESS -> {
                 tts.setSpeechRate(1.0f)
             }
+
             else -> {
                 Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG)
                     .show()

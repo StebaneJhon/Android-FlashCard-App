@@ -92,44 +92,6 @@ class AddedCardRecyclerViewAdapter(
                 }
             }
 
-//            when (card?.cardDefinition?.size) {
-//                1 -> {
-//                    tvAddedCardDescriptionError.visibility = View.GONE
-//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-//                    tvAddedCardDescription2.visibility = View.GONE
-//                    tvAddedCardDescription3.visibility = View.GONE
-//                    tvAddedCardDescription4.visibility = View.GONE
-//                }
-//                2 -> {
-//                    tvAddedCardDescriptionError.visibility = View.GONE
-//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-//                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
-//                    tvAddedCardDescription3.visibility = View.GONE
-//                    tvAddedCardDescription4.visibility = View.GONE
-//                }
-//                3 -> {
-//                    tvAddedCardDescriptionError.visibility = View.GONE
-//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-//                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
-//                    displayCardDefinition(context, tvAddedCardDescription3, card?.cardDefinition?.get(2))
-//                    tvAddedCardDescription4.visibility = View.GONE
-//                }
-//                4 -> {
-//                    tvAddedCardDescriptionError.visibility = View.GONE
-//                    displayCardDefinition(context, tvAddedCardDescription1, card?.cardDefinition?.get(0))
-//                    displayCardDefinition(context, tvAddedCardDescription2, card?.cardDefinition?.get(1))
-//                    displayCardDefinition(context, tvAddedCardDescription3, card?.cardDefinition?.get(2))
-//                    displayCardDefinition(context, tvAddedCardDescription4, card?.cardDefinition?.get(3))
-//                }
-//                else -> {
-//                    tvAddedCardDescriptionError.visibility = View.VISIBLE
-//                    tvAddedCardDescription1.visibility = View.GONE
-//                    tvAddedCardDescription2.visibility = View.GONE
-//                    tvAddedCardDescription3.visibility = View.GONE
-//                    tvAddedCardDescription4.visibility = View.GONE
-//                }
-//            }
-
             cardRoot.setOnClickListener {
                 editCardClickListener(
                     ModelCardWithPositionOnLocalEdit(

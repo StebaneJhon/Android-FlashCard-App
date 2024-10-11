@@ -214,20 +214,6 @@ class QuizGameActivity :
             viewModel.getDeckColorCode(),
             viewModel.deck!!,
             {userAnswer ->
-//                when (userAnswer.modelCard.cardDetails?.cardType) {
-//                    SINGLE_ANSWER_CARD -> {
-//                        onOneAndOneCardClicked(userAnswer)
-//                    }
-//                    TRUE_OR_FALSE_CARD -> {
-//                        onTrueOrFalseCardAnswered(userAnswer)
-//                    }
-//                    MULTIPLE_ANSWER_CARD -> {
-//                        onOneOrMultiAnswerCardAnswered(userAnswer)
-//                    }
-//                    else -> {
-//                        onOneAndOneCardClicked(userAnswer)
-//                    }
-//                }
                 viewModel.submitUserAnswer(userAnswer)
                 quizGameAdapter.notifyDataSetChanged()
                 if (viewModel.isAllAnswerSelected(userAnswer)) {
@@ -251,62 +237,10 @@ class QuizGameActivity :
         binding.vpCardHolder.adapter = quizGameAdapter
     }
 
-//    private fun onOneAndOneCardClicked(userResponseModel: UserResponseModel) {
-//        viewModel.onFlipCard(userResponseModel.modelCardPosition)
-//        specifyActions(userResponseModel)
-//        optionsState(userResponseModel)
-//    }
-
-//    private fun onTrueOrFalseCardAnswered(userResponseModel: UserResponseModel) {
-//        val cardModel = TrueOrFalseCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
-//        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
-//            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
-//            giveFeedback(
-//                userResponseModel.view as MaterialButton,
-//                true
-//            )
-//        } else {
-//            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
-//            giveFeedback(
-//                userResponseModel.view as MaterialButton,
-//                false
-//            )
-//        }
-//        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
-//            optionsState(userResponseModel)
-//        }
-//        specifyActions(userResponseModel)
-//    }
-
-//    private fun onOneOrMultiAnswerCardAnswered(userResponseModel: UserResponseModel) {
-//        val cardModel = OneOrMultipleAnswerCardModel(userResponseModel.modelCard, viewModel.getModelCardsNonStream())
-//        if (cardModel.isAnswerCorrect(userResponseModel.userAnswer!!)) {
-//            viewModel.onCorrectAnswer(userResponseModel.modelCardPosition)
-//            giveFeedback(
-//                userResponseModel.view as MaterialButton,
-//                true
-//            )
-//
-//        } else {
-//            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
-//            giveFeedback(
-//                userResponseModel.view as MaterialButton,
-//                false
-//            )
-//        }
-//        if (cardModel.getCorrectAnswerSum() == userResponseModel.modelCard.correctAnswerSum) {
-//            optionsState(
-////                userResponseModel
-//            )
-//        }
-//        specifyActions(userResponseModel)
-//    }
-
     private fun specifyActions(
         userResponseModel: QuizGameCardDefinitionModel
     ) {
         var fetchJob1: Job? = null
-//        viewModel.onDrag(binding.vpCardHolder.currentItem)
         binding.btKnown.setOnClickListener {
             areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             viewModel.updateCardOnKnownOrKnownNot (userResponseModel, true)
@@ -332,7 +266,6 @@ class QuizGameActivity :
         }
         binding.btKnownNot.setOnClickListener {
             viewModel.updateCardOnKnownOrKnownNot (userResponseModel, false)
-//            viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
             areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -345,7 +278,6 @@ class QuizGameActivity :
                         viewModel.getMissedCard()
                     )
                 } else {
-//                    viewModel.onNotCorrectAnswer(userResponseModel.modelCard.cardDetails)
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
                         itemPosition.plus(1),
@@ -374,12 +306,8 @@ class QuizGameActivity :
         }
     }
 
-    private fun optionsState(
-//        userResponseModel: UserResponseModel
-    ) {
-        var fetchJob1: Job? = null
-        fetchJob1?.cancel()
-        fetchJob1 = lifecycleScope.launch {
+    private fun optionsState() {
+        lifecycleScope.launch {
             delay(TIME_BEFORE_SHOWING_ACTIONS)
             areOptionsEnabled(true)
         }
@@ -468,7 +396,6 @@ class QuizGameActivity :
     ) {
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
-//        viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.initLocalQuizGameCards(cardList)
         viewModel.getQuizGameCards()
@@ -478,19 +405,6 @@ class QuizGameActivity :
     private fun isRewindButtonActive(isActive: Boolean) {
         binding.btRewind.isClickable = isActive
         binding.btRewind.isActivated = isActive
-    }
-
-    private fun giveFeedback(
-        button: MaterialButton,
-        isAnswerCorrect: Boolean
-    ) {
-        if (isAnswerCorrect) {
-            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green50)
-            button.strokeColor = ContextCompat.getColorStateList(this, R.color.green500)
-        } else {
-            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.red50)
-            button.strokeColor = ContextCompat.getColorStateList(this, R.color.red500)
-        }
     }
 
     private fun onNoCardToRevise() {

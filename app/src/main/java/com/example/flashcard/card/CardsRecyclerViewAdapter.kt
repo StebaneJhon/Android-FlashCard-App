@@ -33,7 +33,6 @@ class CardsRecyclerViewAdapter(
     private val context: Context,
     private val appTheme: String,
     private val cardList: List<ImmutableCard?>,
-    private val deck: ImmutableDeck,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
     private val editCardClickListener: (ImmutableCard?) -> Unit,
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
@@ -54,7 +53,6 @@ class CardsRecyclerViewAdapter(
             context,
             appTheme,
             cardList[position],
-            deck,
             boxLevels,
             editCardClickListener,
             deleteCardClickListener,
@@ -64,8 +62,6 @@ class CardsRecyclerViewAdapter(
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        private var isCardRevealed = false
 
         private val onCardText: TextView = view.findViewById(R.id.tv_card_content)
         private val cardDescription1: TextView = view.findViewById(R.id.tv_card_description1)
@@ -95,7 +91,6 @@ class CardsRecyclerViewAdapter(
             context: Context,
             appTheme: String,
             card: ImmutableCard?,
-            deck: ImmutableDeck,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             editCardClickListener: (ImmutableCard?) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
@@ -133,49 +128,6 @@ class CardsRecyclerViewAdapter(
                     tv.visibility = View.GONE
                 }
             }
-
-//            when (definitionTexts.size) {
-//                0 -> {
-//                    cardDescription1.visibility = View.GONE
-//                    cardDescriptionError.text = context.getString(R.string.error_no_card_definition)
-//                    cardDescriptionError.visibility = View.VISIBLE
-//                    cardDescription2.visibility = View.GONE
-//                    cardDescription3.visibility = View.GONE
-//                }
-//                1 -> {
-//                    cardDescriptionError.visibility = View.GONE
-//                    cardDescription1.visibility = View.VISIBLE
-//                    cardDescription1.text = definitionTexts[0]
-//                    cardDescription2.visibility = View.GONE
-//                    cardDescription3.visibility = View.GONE
-//                }
-//                2 -> {
-//                    cardDescriptionError.visibility = View.GONE
-//                    cardDescription1.visibility = View.VISIBLE
-//                    cardDescription1.text = definitionTexts[0]
-//                    cardDescription2.visibility = View.VISIBLE
-//                    cardDescription2.text = definitionTexts[1]
-//                    cardDescription3.visibility = View.GONE
-//                }
-//                3 -> {
-//                    cardDescriptionError.visibility = View.GONE
-//                    cardDescription1.visibility = View.VISIBLE
-//                    cardDescription1.text = definitionTexts[0]
-//                    cardDescription2.visibility = View.VISIBLE
-//                    cardDescription2.text = definitionTexts[1]
-//                    cardDescription3.visibility = View.VISIBLE
-//                    cardDescription3.text = definitionTexts[2]
-//                }
-//                else -> {
-//                     cardDescriptionError.visibility = View.GONE
-//                     cardDescription1.visibility = View.VISIBLE
-//                     cardDescription1.text = definitionTexts[0]
-//                     cardDescription2.visibility = View.VISIBLE
-//                     cardDescription2.text = definitionTexts[1]
-//                     cardDescription3.visibility = View.VISIBLE
-//                     cardDescription3.text = definitionTexts[2]
-//                 }
-//            }
 
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
@@ -311,7 +263,7 @@ class CardsRecyclerViewAdapter(
             val definitionStrings = mutableListOf<String>()
             cardDefinitions?.let { defins ->
                 defins.forEach {
-                    definitionStrings.add(it.definition!!)
+                    definitionStrings.add(it.definition)
                 }
             }
             return definitionStrings

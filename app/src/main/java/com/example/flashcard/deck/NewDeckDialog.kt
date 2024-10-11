@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
@@ -31,6 +32,7 @@ import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.card.AddedCardRecyclerViewAdapter
 import com.example.flashcard.card.NewCardDialog
+import com.example.flashcard.databinding.AddDeckLayoutDialogBinding
 import com.example.flashcard.util.DeckAdditionAction.ADD
 import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
 import com.example.flashcard.util.DeckColorCategorySelector
@@ -55,19 +57,8 @@ import java.time.format.DateTimeFormatter
 
 class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
-    private var deckNameET: EditText? = null
-    private var deckDescriptionET: EditText? = null
-    private var deckFirstLangET: AutoCompleteTextView? = null
-    private var deckSecondLangET: AutoCompleteTextView? = null
-    private var deckNameLY: TextInputLayout? = null
-    private var deckFirstLanguageLY: TextInputLayout? = null
-    private var deckSecondLanguageLY: TextInputLayout? = null
-    private var buttonDialogueN: MaterialButton? = null
-    private var buttonDialogueP: MaterialButton? = null
-    private var btAddCard: MaterialButton? = null
-    private var tvTitle: TextView? = null
-    private var rvDeckColorPicker: RecyclerView? = null
-    private var btAddTop: MaterialButton? = null
+    private var _binding: AddDeckLayoutDialogBinding? = null
+    private val binding get() = _binding!!
 
     private var deckCategoryColor: String? = null
     private val supportedLanguages = FirebaseTranslatorHelper().getSupportedLang()
@@ -85,36 +76,20 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         const val REQUEST_CODE = "0"
     }
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        _binding = AddDeckLayoutDialogBinding.inflate(LayoutInflater.from(context))
+
         val builder = MaterialAlertDialogBuilder(
             requireActivity(),
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
-        val inflater = activity?.layoutInflater
-        val view = inflater?.inflate(R.layout.add_deck_layout_dialog, null)
-
-        deckNameET = view?.findViewById(R.id.deckNameET)
-        deckSecondLangET = view?.findViewById(R.id.deckSecondLanguageET)
-        deckFirstLangET = view?.findViewById(R.id.deckFirstLanguageET)
-        deckDescriptionET = view?.findViewById(R.id.deckDescriptionET)
-
-        deckNameLY = view?.findViewById(R.id.deckNameLY)
-        deckFirstLanguageLY = view?.findViewById(R.id.deckFirstLanguageLY)
-        deckSecondLanguageLY = view?.findViewById(R.id.deckSecondLanguageLY)
-        buttonDialogueN = view?.findViewById(R.id.bt_exit)
-        buttonDialogueP = view?.findViewById(R.id.dialogPositiveBT)
-        btAddCard = view?.findViewById(R.id.bt_add_card)
-        rvDeckColorPicker = view?.findViewById(R.id.rv_deck_color_picker)
-        btAddTop = view?.findViewById(R.id.bt_add_top)
 
         gridLayoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        tvTitle = view?.findViewById(R.id.tv_title)
-
         val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
-        deckFirstLangET?.apply {
+        binding.deckFirstLanguageET.apply {
             setAdapter(arrayAdapterSupportedLanguages)
             setDropDownBackgroundDrawable(
                 ResourcesCompat.getDrawable(
@@ -124,7 +99,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 )
             )
         }
-        deckSecondLangET?.apply {
+        binding.deckSecondLanguageET.apply {
             setAdapter(arrayAdapterSupportedLanguages)
             setDropDownBackgroundDrawable(
                 ResourcesCompat.getDrawable(
@@ -136,50 +111,50 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         }
 
         if (deck != null) {
-            btAddCard?.isVisible =  false
-            tvTitle?.text = getString(R.string.tv_update_deck)
-            deckNameET?.setText(deck.deckName)
-            deckDescriptionET?.setText(deck.deckDescription)
-            deckFirstLangET?.setText(deck.deckFirstLanguage)
-            deckSecondLangET?.setText(deck.deckSecondLanguage)
+            binding.btAddCard.isVisible =  false
+            binding.tvTitle.text = getString(R.string.tv_update_deck)
+            binding.deckNameET.setText(deck.deckName)
+            binding.deckDescriptionET.setText(deck.deckDescription)
+            binding.deckFirstLanguageET.setText(deck.deckFirstLanguage)
+            binding.deckSecondLanguageET.setText(deck.deckSecondLanguage)
             deck.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
             deckCategoryColor = deck.deckColorCode
 
-            builder.setView(view)
+            builder.setView(binding.root)
 
 
-            buttonDialogueN?.setOnClickListener { dismiss() }
-            buttonDialogueP?.apply {
-                text = "Update"
+            binding.btExit.setOnClickListener { dismiss() }
+            binding.dialogPositiveBT.apply {
+                text = getString(R.string.bt_text_update)
                 setOnClickListener {
                     onUpdate(deck)
                 }
-                btAddTop?.setOnClickListener {
+                binding.btAddTop.setOnClickListener {
                     onUpdate(deck)
                 }
             }
         } else {
-            builder.setView(view)
-            btAddCard?.isVisible = true
-            tvTitle?.text = getString(R.string.tv_add_new_deck)
-            buttonDialogueN?.setOnClickListener { dismiss() }
-            buttonDialogueP?.apply {
-                text = "Add"
+            builder.setView(binding.root)
+            binding.btAddCard.isVisible = true
+            binding.tvTitle.text = getString(R.string.tv_add_new_deck)
+            binding.btExit.setOnClickListener { dismiss() }
+            binding.dialogPositiveBT.apply {
+                text = getString(R.string.bt_text_add)
                 setOnClickListener {
                     onAdd()
                 }
             }
-            btAddTop?.setOnClickListener {
+            binding.btAddTop.setOnClickListener {
                 onAdd()
             }
-            btAddCard?.setOnClickListener {
+            binding.btAddCard.setOnClickListener {
                 if (!checkError()) {
                     val newDeck = Deck(
                         now(),
-                        deckNameET?.text.toString(),
-                        deckDescriptionET?.text.toString(),
-                        deckFirstLangET?.text.toString(),
-                        deckSecondLangET?.text.toString(),
+                        binding.deckNameET.text.toString(),
+                        binding.deckDescriptionET.text.toString(),
+                        binding.deckFirstLanguageET.text.toString(),
+                        binding.deckSecondLanguageET.text.toString(),
                         deckCategoryColor,
                         0,
                         null,
@@ -191,9 +166,6 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             }
         }
 
-
-
-        // Show Color Picker
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors(), deckCategoryColor)
@@ -203,9 +175,9 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             }
         }
 
-        view?.findViewById<TextView>(R.id.colorPickerTitle)?.setOnClickListener { v ->
-            if (rvDeckColorPicker?.layoutManager == gridLayoutManager) {
-                rvDeckColorPicker?.layoutManager = linearLayoutManager
+        binding.colorPickerTitle.setOnClickListener { v ->
+            if (binding.rvDeckColorPicker.layoutManager == gridLayoutManager) {
+                binding.rvDeckColorPicker.layoutManager = linearLayoutManager
                 (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
@@ -213,7 +185,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                     0
                 )
             } else {
-                rvDeckColorPicker?.layoutManager = gridLayoutManager
+                binding.rvDeckColorPicker.layoutManager = gridLayoutManager
                 (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
                     0,
                     0,
@@ -223,8 +195,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             }
         }
 
-        builder.setView(view)
-
+        builder.setView(binding.root)
         return builder.create()
     }
 
@@ -232,10 +203,10 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         if (!checkError()) {
             val newDeck = Deck(
                 now(),
-                deckNameET?.text.toString(),
-                deckDescriptionET?.text.toString(),
-                deckFirstLangET?.text.toString(),
-                deckSecondLangET?.text.toString(),
+                binding.deckNameET.text.toString(),
+                binding.deckDescriptionET.text.toString(),
+                binding.deckFirstLanguageET.text.toString(),
+                binding.deckSecondLanguageET.text.toString(),
                 deckCategoryColor,
                 0,
                 null,
@@ -251,10 +222,10 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         if (!checkError()) {
             val newDeck = Deck(
                 deck.deckId,
-                deckNameET?.text.toString(),
-                deckDescriptionET?.text.toString(),
-                deckFirstLangET?.text.toString(),
-                deckSecondLangET?.text.toString(),
+                binding.deckNameET.text.toString(),
+                binding.deckDescriptionET.text.toString(),
+                binding.deckFirstLanguageET.text.toString(),
+                binding.deckSecondLanguageET.text.toString(),
                 deckCategoryColor,
                 deck.cardSum,
                 deck.deckCategory,
@@ -280,7 +251,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 deckColorPickerAdapter.notifyDataSetChanged()
             }
         }!!
-        rvDeckColorPicker?.apply {
+        binding.rvDeckColorPicker.apply {
             adapter = deckColorPickerAdapter
             setHasFixedSize(true)
             layoutManager = linearLayoutManager
@@ -294,28 +265,28 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
     private fun checkError(): Boolean {
         var error = true
-        val deckName = deckNameET?.text.toString()
-        val deckFirstLang = deckFirstLangET?.text.toString()
-        val deckSecondLang = deckSecondLangET?.text.toString()
+        val deckName = binding.deckNameET.text.toString()
+        val deckFirstLang = binding.deckFirstLanguageET.text.toString()
+        val deckSecondLang = binding.deckSecondLanguageET.text.toString()
         when {
             deckName.isBlank() -> {
-                deckNameLY?.error = "Deck name required"
+                binding.deckNameLY.error = getString(R.string.error_message_on_missing_deck_name)
             }
 
             deckFirstLang.isBlank() -> {
-                deckFirstLanguageLY?.error = "Deck first language required"
+                binding.deckFirstLanguageLY.error = getString(R.string.error_message_deck_missing_first_language)
             }
 
             deckSecondLang.isBlank() -> {
-                deckSecondLanguageLY?.error = "Deck second language required"
+                binding.deckSecondLanguageLY.error = getString(R.string.error_message_deck_missing_second_language)
             }
 
             deckFirstLang !in supportedLanguages -> {
-                deckFirstLanguageLY?.error = "Language not supported"
+                binding.deckFirstLanguageLY.error = getString(R.string.error_message_deck_language_not_supported)
             }
 
             deckSecondLang !in supportedLanguages -> {
-                deckSecondLanguageLY?.error = "Language not supported"
+                binding.deckSecondLanguageLY.error = getString(R.string.error_message_deck_language_not_supported)
             }
 
             else -> {

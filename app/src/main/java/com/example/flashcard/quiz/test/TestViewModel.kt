@@ -157,9 +157,6 @@ class TestViewModel(
         return temporaryList.shuffled()
     }
 
-    fun getOriginalCards() = originalCards
-
-
     private val _timer = MutableStateFlow(0L)
     val timer = _timer.asStateFlow()
     private var timerJob: Job? = null
