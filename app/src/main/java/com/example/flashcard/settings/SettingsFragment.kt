@@ -81,7 +81,8 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         }
 
         binding.settingsTopAppBar.setNavigationOnClickListener {
-            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
+//            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
+            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
         }
 
         binding.clProfileSectionRoot.setOnClickListener {

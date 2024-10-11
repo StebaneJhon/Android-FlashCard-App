@@ -569,7 +569,13 @@ class DeckFragment :
     }
 
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return true
+        return when(menuItem.itemId) {
+            R.id.settings_deck_menu -> {
+                findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
+                true
+            }
+            else -> true
+        }
     }
 
     private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {

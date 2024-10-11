@@ -24,7 +24,7 @@
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIconTint="?colorOnSurface"
                 app:title="@string/settings_hint"
-                app:navigationIcon="@drawable/icon_menu" />
+                app:navigationIcon="@drawable/icon_arrow_back" />
 
         </com.google.android.material.appbar.AppBarLayout>
 

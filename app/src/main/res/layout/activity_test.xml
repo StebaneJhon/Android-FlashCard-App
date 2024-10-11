@@ -23,7 +23,8 @@
         android:layout_height="wrap_content"
         android:background="?colorSurfaceContainerLow"
         android:minHeight="?attr/actionBarSize"
-        app:navigationIcon="@drawable/icon_chevron_left"
+        app:navigationIcon="@drawable/icon_arrow_back"
+        app:navigationIconTint="?colorOnSurface"
         app:title="@string/title_flash_card_game"
         app:subtitle="0"/>
 

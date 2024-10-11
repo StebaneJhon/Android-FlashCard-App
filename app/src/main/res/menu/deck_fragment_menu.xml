@@ -9,4 +9,11 @@
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
+    <item
+        android:id="@+id/settings_deck_menu"
+        android:icon="@drawable/icon_settings"
+        android:iconTint="?colorOnSurface"
+        android:title="@string/bt_text_settings"
+        app:showAsAction="ifRoom" />
+
 </menu>
