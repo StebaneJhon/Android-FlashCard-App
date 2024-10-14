@@ -1,7 +1,6 @@
 package com.example.flashcard.settings
 
 import android.content.Context
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.util.ThemePicker
-import com.example.flashcard.util.deckCategoryColorConst.WHITE
-import com.example.flashcard.util.themeConst.DARK_THEME
-import com.example.flashcard.util.themeConst.WHITE_THEME
+import com.example.flashcard.util.ThemeConst.DARK_THEME
+import com.example.flashcard.util.ThemeConst.WHITE_THEME
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 

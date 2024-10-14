@@ -17,10 +17,11 @@
     <dimen name="text_xl2">24sp</dimen>
     <dimen name="text_xl3">30sp</dimen>
 
-    <dimen name="bt_radius">2dp</dimen>
+    <dimen name="bt_radius">4dp</dimen>
     <dimen name="card_radius">10dp</dimen>
+    <dimen name="card_radius_sm">4dp</dimen>
     <dimen name="popUpMenu_radius">2dp</dimen>
-    <dimen name="ed_radius">2dp</dimen>
+    <dimen name="ed_radius">4dp</dimen>
     <dimen name="cp_radius">2dp</dimen>
 
     <dimen name="icon_base">25dp</dimen>

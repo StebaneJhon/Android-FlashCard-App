@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -100,7 +99,7 @@ class MultiChoiceQuizGameActivity :
             val deck = it.deck
             if (!cardList.isNullOrEmpty() && deck != null) {
                 viewModel.initOriginalCardList(cardList)
-                startTimedFlashCard(cardList, deck)
+                startMultiChoiceQuizGame(cardList, deck)
             } else {
                 onNoCardToRevise()
             }
@@ -108,7 +107,8 @@ class MultiChoiceQuizGameActivity :
         }
 
         binding.topAppBar.apply {
-            title = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
+            title = getString(R.string.multiple_choice_quiz_button_text)
+            subtitle = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
             setNavigationOnClickListener { finish() }
         }
 
@@ -431,7 +431,8 @@ class MultiChoiceQuizGameActivity :
                 finish()
             }
             btRestartQuizScoreLayout.setOnClickListener {
-                restartMultiChoiceQuiz()
+                viewModel.initTimedFlashCard()
+                startMultiChoiceQuizGame(viewModel.getOriginalCardList().toMutableList(), viewModel.deck)
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.apply {
@@ -445,7 +446,7 @@ class MultiChoiceQuizGameActivity :
                     setOnClickListener {
                         val newCards = viewModel.getMissedCard()
                         viewModel.initTimedFlashCard()
-                        startTimedFlashCard(newCards, viewModel.deck)
+                        startMultiChoiceQuizGame(newCards, viewModel.deck)
                     }
                 }
             }
@@ -461,7 +462,7 @@ class MultiChoiceQuizGameActivity :
     }
 
 
-    private fun startTimedFlashCard(cardList: MutableList<ImmutableCard?>, deck: ImmutableDeck) {
+    private fun startMultiChoiceQuizGame(cardList: MutableList<ImmutableCard?>, deck: ImmutableDeck) {
         binding.vpCardHolder.setCurrentItem(0, true)
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE

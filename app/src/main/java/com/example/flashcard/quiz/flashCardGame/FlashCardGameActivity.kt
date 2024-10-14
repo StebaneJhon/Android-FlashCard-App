@@ -926,7 +926,8 @@ class FlashCardGameActivity :
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
             setNavigationOnClickListener { finish() }
-            title = deck.deckName
+            title = getString(R.string.bt_flash_card_game_start)
+            subtitle = deck.deckName
         }
 
     }

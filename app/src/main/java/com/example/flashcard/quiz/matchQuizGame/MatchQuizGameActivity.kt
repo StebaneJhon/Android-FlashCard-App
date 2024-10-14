@@ -19,8 +19,6 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.MatchQuizGameItemModel
-import com.example.flashcard.backend.Model.toExternal
-import com.example.flashcard.backend.entities.relations.DeckWithCards
 import com.example.flashcard.databinding.ActivityMatchQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.util.MatchQuizGameClickStatus
@@ -70,7 +68,8 @@ class MatchQuizGameActivity : AppCompatActivity() {
         }
 
         binding.topAppBar.apply {
-            title = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
+            title = getString(R.string.bt_match_quiz_mode_text)
+            subtitle = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
             setNavigationOnClickListener { finish() }
         }
 
@@ -122,7 +121,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
                 activateItem(itemDetails)
                 firstSelectedItemInfo = itemDetails
             }
-            MatchQuizGameClickStatus.MATCHE -> {
+            MatchQuizGameClickStatus.MATCH -> {
                 disableItem(itemDetails)
                 disableItem(firstSelectedItemInfo!!)
                 binding.lpiMatchingQuizGameProgression.progress = viewModel.getProgression()

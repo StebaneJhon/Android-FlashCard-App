@@ -21,8 +21,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.ActionMenuItem
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -34,6 +37,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -60,6 +64,9 @@ import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.TEST
 import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
+import com.example.flashcard.util.ItemLayoutManager.LAYOUT_MANAGER
+import com.example.flashcard.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
+import com.example.flashcard.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAGER
 import com.example.flashcard.util.QuizModeBottomSheet
 import com.example.flashcard.util.UiState
 import com.google.android.material.appbar.MaterialToolbar
@@ -86,9 +93,15 @@ class CardFragment :
         ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
 
+    @SuppressLint("RestrictedApi")
+    lateinit var item: ActionMenuItemView
+
     val args: CardFragmentArgs by navArgs()
     private var deck: ImmutableDeck? = null
     private var opener: String? = null
+
+    private lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     companion object {
         const val TAG = "CardFragment"
@@ -97,7 +110,6 @@ class CardFragment :
         const val MIN_DEFINITION_LENGTH_FOR_SPAM_1 = 200
         const val MIN_CONTENT_LENGTH_FOR_SPAM_1 = 100
     }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -117,6 +129,9 @@ class CardFragment :
 
         deck = args.selectedDeck
         opener = args.opener
+
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        linearLayoutManager = LinearLayoutManager(appContext)
 
         deck?.let { _deck ->
             view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
@@ -143,21 +158,18 @@ class CardFragment :
                                 }
                                 true
                             }
-
-                            R.id.bt_multiple_choice_quiz -> {
-                                onStartQuiz { deckWithCards ->
-                                    lunchQuiz(deckWithCards, MULTIPLE_CHOICE_QUIZ)
-                                }
-                                true
-                            }
-
-                            R.id.bt_test_quiz_game -> {
+                            R.id.bt_quiz -> {
                                 onStartQuiz { deckWithCards ->
                                     lunchQuiz(deckWithCards, QUIZ)
                                 }
                                 true
                             }
-
+                            R.id.bt_test -> {
+                                onStartQuiz { deckWithCards ->
+                                    lunchQuiz(deckWithCards, TEST)
+                                }
+                                true
+                            }
                             else -> false
                         }
                     }
@@ -192,6 +204,7 @@ class CardFragment :
                 onAddNewCard()
             }
 
+
         }
 
         requireActivity()
@@ -207,6 +220,7 @@ class CardFragment :
                     )
                 }
             })
+
     }
 
     private fun onDeckEmpty() {
@@ -324,7 +338,9 @@ class CardFragment :
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun displayCards(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
+        item = binding.cardsTopAppBar.findViewById(R.id.view_deck_menu)
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         binding.cardsActivityProgressBar.isVisible = false
@@ -363,13 +379,16 @@ class CardFragment :
             }
         }
 
-        val staggeredGridLayoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
-            layoutManager = staggeredGridLayoutManager
+            layoutManager = if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+                item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                staggeredGridLayoutManager
+            } else {
+                item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                linearLayoutManager
+            }
         }
 
     }
@@ -475,7 +494,7 @@ class CardFragment :
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
             this
-        ) { requestQuey, bundle ->
+        ) { requestKey, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
             result?.let {
                 cardViewModel.insertCards(it, deck!!)
@@ -571,7 +590,7 @@ class CardFragment :
         val searchQuery = "%$query%"
         lifecycleScope.launch {
             deck?.let { cardDeck ->
-                cardViewModel.searchCard(searchQuery, cardDeck.deckId)
+                cardViewModel.searchCard(searchQuery)
                     .observe(this@CardFragment) { cardList ->
                         cardList?.let { displayCards(it, cardDeck) }
                     }
@@ -579,8 +598,39 @@ class CardFragment :
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return true
+        return when(menuItem.itemId) {
+            R.id.settings_deck_menu -> {
+                findNavController().navigate(R.id.action_cardFragment_to_settingsFragment)
+                true
+            }
+            R.id.view_deck_menu -> {
+                if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
+                    changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+                    binding.cardRecyclerView.layoutManager = linearLayoutManager
+                    item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                } else {
+                    changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+                    binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
+                    item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                }
+                true
+            }
+            else -> true
+        }
+    }
+
+    private fun getLayoutManager(): String {
+        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(LAYOUT_MANAGER, STAGGERED_GRID_LAYOUT_MANAGER) ?: STAGGERED_GRID_LAYOUT_MANAGER
+    }
+
+    private fun changeCardLayoutManager(which: String) {
+        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(LAYOUT_MANAGER, which)
+        editor.apply()
     }
 
     private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): ArrayList<T>? =

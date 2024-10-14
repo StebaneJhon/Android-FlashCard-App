@@ -17,9 +17,6 @@
             android:name="selectedDeck"
             app:argType="com.example.flashcard.backend.Model.ImmutableDeck" />
         <action
-            android:id="@+id/action_cardFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
-        <action
             android:id="@+id/action_cardFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <argument
@@ -46,9 +43,7 @@
         <action
             android:id="@+id/action_settingsFragment_to_cardFragment"
             app:destination="@id/cardFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_profileFragment"
-            app:destination="@id/profileFragment" />
+
         <action
             android:id="@+id/action_settingsFragment_to_privacyPolicyFragment"
             app:destination="@id/privacyPolicyFragment" />
@@ -58,15 +53,6 @@
         <action
             android:id="@+id/action_settingsFragment_to_deckFragment"
             app:destination="@id/deckFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.flashcard.profile.ProfileFragment"
-        android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
-        <action
-            android:id="@+id/action_profileFragment_to_cardFragment"
-            app:destination="@id/cardFragment" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"

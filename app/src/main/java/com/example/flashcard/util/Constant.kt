@@ -1,48 +1,56 @@
 package com.example.flashcard.util
 
 object Constant {
-    val ADD = "add"
-    val UPDATE = "update"
-    const val SUCCEED = "SUCCEED"
-    const val FAILED = "FAILED"
+    const val ADD = "add"
+    const val UPDATE = "update"
     const val MIN_CARD_FOR_MULTI_CHOICE_QUIZ = 4
     const val MIN_CARD_FOR_MATCHING_QUIZ = 5
 }
 
-object deckCategoryColorConst {
+object DeckCategoryColorConst {
     const val WHITE = "white"
-    const val RED = "red"
-    const val PINK = "pink"
-    const val PURPLE = "purple"
-    const val BLUE = "blue"
-    const val TEAL = "teal"
-    const val GREEN = "green"
-    const val YELLOW = "yellow"
-    const val BROWN = "brown"
     const val BLACK = "black"
     const val GREY = "grey"
+    const val RED = "red"
     const val ORANGE = "orange"
+    const val AMBER = "Amber"
+    const val YELLOW = "yellow"
     const val LIME = "lime"
+    const val GREEN = "green"
     const val EMERALD = "emerald"
+    const val TEAL = "teal"
     const val CYAN = "cyan"
     const val SKY = "sky"
+    const val BLUE = "blue"
     const val INDIGO = "indigo"
     const val VIOLET = "violet"
+    const val PURPLE = "purple"
     const val FUCHSIA = "fuchsia"
+    const val PINK = "pink"
     const val ROSE = "rose"
 }
 
-object themeConst {
-    val DARK_THEME = "DARK THEME"
-    val PURPLE_THEME = "PURPLE THEME"
-    val WHITE_THEME = "WHITE THEM"
-    val BLUE_THEME = "BLUE THEME"
-    val PINK_THEME = "PINK THEME"
-    val RED_THEME = "RED THEME"
-    val TEAL_THEME = "TEAL THEME"
-    val GREEN_THEME = "GREEN THEME"
-    val YELLOW_THEME = "YELLOW THEME"
-    val BROWN_THEME = "BROWN THEME"
+object ThemeConst {
+    const val WHITE_THEME = "WHITE THEM"
+    const val DARK_THEME = "DARK THEME"
+    const val RED_THEME = "RED THEME"
+    const val ORANGE_THEME = "ORANGE THEME"
+    const val AMBER_THEME = "AMBER THEME"
+    const val YELLOW_THEME = "YELLOW THEME"
+    const val LIME_THEME = "LIME THEME"
+    const val GREEN_THEME = "GREEN THEME"
+    const val EMERALD_THEME = "EMERALD THEME"
+    const val TEAL_THEME = "TEAL THEME"
+    const val CYAN_THEME = "CYAN THEME"
+    const val SKY_THEME = "SKY THEME"
+    const val BLUE_THEME = "BLUE THEME"
+    const val INDIGO_THEME = "INDIGO THEME"
+    const val VIOLET_THEME = "VIOLET THEME"
+    const val PURPLE_THEME = "PURPLE THEME"
+    const val FUCHSIA_THEME = "FUCHSIA THEME"
+    const val PINK_THEME = "PINK THEME"
+    const val ROSE_THEME = "ROSE THEME"
+    const val BROWN_THEME = "BROWN THEME"
 }
 
 object LevelColors {
@@ -56,13 +64,13 @@ object LevelColors {
 }
 
 object MatchQuizGameClickStatus {
-    val FIRST_TRY = "First try"
-    val MATCHE = "Match"
-    val MATCH_NOT = "Match not"
+    const val FIRST_TRY = "First try"
+    const val MATCH = "Match"
+    const val MATCH_NOT = "Match not"
 }
 
 object FlashCardTimedTimerStatus {
-    val TIMER_FINISHED = "Timer Finished"
+    const val TIMER_FINISHED = "Timer Finished"
 }
 
 object FlashCardMiniGameRef {
@@ -120,4 +128,10 @@ object ContactActions {
 object TestResultAction {
     const val BACK_TO_DECK = "Back to deck"
     const val RETAKE_TEST = "Retake test"
+}
+
+object ItemLayoutManager {
+    const val STAGGERED_GRID_LAYOUT_MANAGER = "STAGGERED GRID LAYOUT MANAGER"
+    const val LINEAR_LAYOUT_MANAGER = "LINEAR LAYOUT MANAGER"
+    const val LAYOUT_MANAGER = "LAYOUT_MANAGER"
 }

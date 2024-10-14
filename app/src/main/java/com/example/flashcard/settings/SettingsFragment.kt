@@ -8,37 +8,26 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
-import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
 import com.example.flashcard.databinding.FragmentSettingsBinding
 import com.example.flashcard.util.ContactActions.CONTACT
 import com.example.flashcard.util.ContactActions.HELP
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import com.example.flashcard.util.themeConst.BLUE_THEME
-import com.example.flashcard.util.themeConst.BROWN_THEME
-import com.example.flashcard.util.themeConst.DARK_THEME
-import com.example.flashcard.util.themeConst.GREEN_THEME
-import com.example.flashcard.util.themeConst.PINK_THEME
-import com.example.flashcard.util.themeConst.PURPLE_THEME
-import com.example.flashcard.util.themeConst.RED_THEME
-import com.example.flashcard.util.themeConst.TEAL_THEME
-import com.example.flashcard.util.themeConst.WHITE_THEME
-import com.example.flashcard.util.themeConst.YELLOW_THEME
+import com.example.flashcard.util.ThemeConst.WHITE_THEME
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.SettingsFragmentEditBoxLevelDialogListener {
@@ -54,7 +43,10 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
     private var appTheme: String? = null
     private lateinit var themePickerAdapter: ThemePickerAdapter
 
-    var sharedPref: SharedPreferences? = null
+    private lateinit var gridLayoutManager: GridLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
+
+    private var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
 
     private lateinit var settingsFragmentSpaceRepetitionViewAdapter: SettingsFragmentSpaceRepetitionViewAdapter
@@ -80,18 +72,11 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             activity?.setTheme(themRef)
         }
 
-        binding.settingsTopAppBar.setNavigationOnClickListener {
-//            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
-            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
-        }
+        gridLayoutManager = GridLayoutManager(requireContext(), 5, GridLayoutManager.VERTICAL, false)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        binding.clProfileSectionRoot.setOnClickListener {
-            findNavController().navigate(
-                R.id.profileFragment,
-                null,
-                NavOptions.Builder()
-                    .setPopUpTo(R.id.settingsFragment, true)
-                    .build())
+        binding.settingsTopAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
         }
 
         lifecycleScope.launch {
@@ -104,24 +89,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             }
             settingsFragmentViewModel.getKnownCardCount { sum ->
                 binding.tvKnownCardNumber.text = sum.toString()
-            }
-
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                settingsFragmentViewModel.getUserDetails()
-                settingsFragmentViewModel.user
-                    .collect {
-                        when (it) {
-                            is UiState.Loading -> {
-
-                            }
-                            is UiState.Error -> {
-
-                            }
-                            is UiState.Success -> {
-                                bindProfileSection(it.data[0])
-                            }
-                        }
-                    }
             }
         }
 
@@ -165,6 +132,20 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             sendEmail(CONTACT)
         }
 
+        binding.tvThemeSectionTitle.setOnClickListener { v ->
+            if (binding.rvSettingsThemePicker.layoutManager == gridLayoutManager) {
+                binding.rvSettingsThemePicker.layoutManager = linearLayoutManager
+                (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.icon_expand_more, 0
+                )
+            } else {
+                binding.rvSettingsThemePicker.layoutManager = gridLayoutManager
+                (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
+                    0, 0, R.drawable.icon_expand_less, 0
+                )
+            }
+        }
+
     }
 
     private fun displayThemes(listOfTheme: ArrayList<ThemeModel>) {
@@ -180,7 +161,7 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         binding.rvSettingsThemePicker.apply {
             adapter = themePickerAdapter
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(requireContext(), 5, GridLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
         }
     }
 
@@ -212,11 +193,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
     fun onBoxLevelCilcked(boxLevel: ImmutableSpaceRepetitionBox, boxLevelList: List<ImmutableSpaceRepetitionBox>) {
         val newDialog = SettingsFragmentEditBoxLevelDialog(boxLevel, boxLevelList)
         newDialog.show(parentFragmentManager, "Update Box Level Dialog")
-    }
-
-    private fun bindProfileSection(user: ImmutableUser) {
-        binding.tvProfileSectionUserName.text = user.name
-        binding.tvProfileSectionUserStatus.text = user.status
     }
 
     private fun updateAppTheme() {

@@ -51,11 +51,9 @@ class WritingQuizGameAdapter(
 
         private var imm: InputMethodManager? = null
 
-        private val LyCard: ConstraintLayout = itemView.findViewById(R.id.root_card)
         private val tvOnCardWord: TextView = itemView.findViewById(R.id.tv_top_on_card_word)
         private val tvOnCardWordOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_on_card_word_on_wrong_answer)
         private val tiTopCard: TextInputEditText = itemView.findViewById(R.id.ti_top_card_content)
-        private val tilTopCardContent: TextInputLayout = itemView.findViewById(R.id.tilTopCardContent)
         private val tiOnWrongAnswer: TextInputEditText = itemView.findViewById(R.id.ti_card_content_on_wrong_answer)
         private val cvCardFront: MaterialCardView = itemView.findViewById(R.id.cv_card_front)
         private val cvCardOnWrongAnswer: MaterialCardView = itemView.findViewById(R.id.cv_card_on_wrong_answer)

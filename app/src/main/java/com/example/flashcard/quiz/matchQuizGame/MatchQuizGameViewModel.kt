@@ -96,7 +96,7 @@ class MatchQuizGameViewModel : ViewModel() {
             numMove ++
             if (isMatching(firstSelectedItem!!, item)) {
                 firstSelectedItem = null
-                MatchQuizGameClickStatus.MATCHE
+                MatchQuizGameClickStatus.MATCH
             } else {
                 firstSelectedItem = null
                 numMiss++

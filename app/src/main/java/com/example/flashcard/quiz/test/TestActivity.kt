@@ -82,7 +82,7 @@ class TestActivity :
             val cardList = it.cards
 
             binding.topAppBar.apply {
-                title = deck?.deckName
+                title = getString(R.string.title_test, deck?.deckName)
                 setNavigationOnClickListener { finish() }
             }
 

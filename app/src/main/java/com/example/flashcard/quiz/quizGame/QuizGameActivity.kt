@@ -98,28 +98,12 @@ class QuizGameActivity :
         binding.vpCardHolder.isUserInputEnabled = false
 
         binding.topAppBar.apply {
-            title = getString(R.string.title_flash_card_game, viewModel.deck?.deckName)
+            title = getString(R.string.start_quiz_button_text)
+            subtitle = getString(R.string.title_flash_card_game, viewModel.deck?.deckName)
             setNavigationOnClickListener { finish() }
         }
 
         applySettings()
-
-//        lifecycleScope.launch {
-//            viewModel
-//                .modelCards
-//                .collect { state ->
-//                    when (state) {
-//                        is UiState.Loading -> {
-//                        }
-//                        is UiState.Error -> {
-//                            onNoCardToRevise()
-//                        }
-//                        is UiState.Success -> {
-//                            launchTestQuizGame(state.data)
-//                        }
-//                    }
-//                }
-//        }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

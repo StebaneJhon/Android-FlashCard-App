@@ -1,25 +1,25 @@
 package com.example.flashcard.util
 
 import com.example.flashcard.R
-import com.example.flashcard.util.deckCategoryColorConst.BLACK
-import com.example.flashcard.util.deckCategoryColorConst.BLUE
-import com.example.flashcard.util.deckCategoryColorConst.CYAN
-import com.example.flashcard.util.deckCategoryColorConst.EMERALD
-import com.example.flashcard.util.deckCategoryColorConst.GREEN
-import com.example.flashcard.util.deckCategoryColorConst.GREY
-import com.example.flashcard.util.deckCategoryColorConst.INDIGO
-import com.example.flashcard.util.deckCategoryColorConst.LIME
-import com.example.flashcard.util.deckCategoryColorConst.PINK
-import com.example.flashcard.util.deckCategoryColorConst.PURPLE
-import com.example.flashcard.util.deckCategoryColorConst.RED
-import com.example.flashcard.util.deckCategoryColorConst.ROSE
-import com.example.flashcard.util.deckCategoryColorConst.SKY
-import com.example.flashcard.util.deckCategoryColorConst.TEAL
-import com.example.flashcard.util.deckCategoryColorConst.VIOLET
-import com.example.flashcard.util.deckCategoryColorConst.WHITE
-import com.example.flashcard.util.deckCategoryColorConst.YELLOW
-import com.example.flashcard.util.deckCategoryColorConst.ORANGE
-import com.example.flashcard.util.deckCategoryColorConst.FUCHSIA
+import com.example.flashcard.util.DeckCategoryColorConst.BLACK
+import com.example.flashcard.util.DeckCategoryColorConst.BLUE
+import com.example.flashcard.util.DeckCategoryColorConst.CYAN
+import com.example.flashcard.util.DeckCategoryColorConst.EMERALD
+import com.example.flashcard.util.DeckCategoryColorConst.GREEN
+import com.example.flashcard.util.DeckCategoryColorConst.GREY
+import com.example.flashcard.util.DeckCategoryColorConst.INDIGO
+import com.example.flashcard.util.DeckCategoryColorConst.LIME
+import com.example.flashcard.util.DeckCategoryColorConst.PINK
+import com.example.flashcard.util.DeckCategoryColorConst.PURPLE
+import com.example.flashcard.util.DeckCategoryColorConst.RED
+import com.example.flashcard.util.DeckCategoryColorConst.ROSE
+import com.example.flashcard.util.DeckCategoryColorConst.SKY
+import com.example.flashcard.util.DeckCategoryColorConst.TEAL
+import com.example.flashcard.util.DeckCategoryColorConst.VIOLET
+import com.example.flashcard.util.DeckCategoryColorConst.WHITE
+import com.example.flashcard.util.DeckCategoryColorConst.YELLOW
+import com.example.flashcard.util.DeckCategoryColorConst.ORANGE
+import com.example.flashcard.util.DeckCategoryColorConst.FUCHSIA
 
 class DeckColorCategorySelector {
 

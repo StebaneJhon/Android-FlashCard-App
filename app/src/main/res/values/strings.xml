@@ -84,7 +84,7 @@
     <string name="bt_unable_unknown_cards_only_text">UNABLE UNKNOWN CARDS ONLY</string>
     <string name="tv_cards_text">Cards</string>
     <string name="tv_deck_text">Decks</string>
-    <string name="tv_known_text">Known</string>
+    <string name="tv_known_cards_text">Known cards</string>
     <string name="tv_language_section_settings">Language</string>
     <string name="tv_others_section_settings">Others</string>
     <string name="bt_privacy_text">Privacy policy</string>
@@ -115,7 +115,7 @@
     <string name="til_error_card_content">Card content required</string>
     <string name="til_error_card_definition">Card definition required</string>
     <string name="cp_error_correct_definition">At least one definition must be correct</string>
-    <string name="tv_title_data_review">Data review</string>
+    <string name="tv_title_data_review">Data</string>
     <string name="this_week_profile_title">This week</string>
     <string name="tv_add_new_deck">Add new deck</string>
     <string name="tv_update_deck">Update deck</string>
@@ -198,6 +198,7 @@
     <string name="bt_text_next_question">Next question</string>
     <string name="bt_text_previous_question">Previous question</string>
     <string name="bt_text_test">Test</string>
+    <string name="title_test">Test: %1$s</string>
     <string name="bt_text_submit">Submit</string>
     <string name="text_time">Time: %1$s</string>
     <string name="text_result">Result</string>
@@ -205,4 +206,5 @@
     <string name="bt_text_back_to_deck">Back to cards</string>
     <string name="text_action_question">Do you know this card?</string>
     <string name="bt_text_settings">Settings</string>
+    <string name="bt_change_view">Change view</string>
 </resources>

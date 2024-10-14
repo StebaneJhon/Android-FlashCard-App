@@ -19,9 +19,11 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -33,6 +35,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
@@ -60,6 +63,9 @@ import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.TEST
 import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
+import com.example.flashcard.util.ItemLayoutManager.LAYOUT_MANAGER
+import com.example.flashcard.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
+import com.example.flashcard.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAGER
 import com.example.flashcard.util.QuizModeBottomSheet
 import com.example.flashcard.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -85,10 +91,16 @@ class DeckFragment :
         )[DeckViewModel::class.java]
     }
 
+    @SuppressLint("RestrictedApi")
+    private var item: ActionMenuItemView? = null
+
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
 
-    var deckSharedPref: SharedPreferences? = null
-    var deckSharedPrefEditor: SharedPreferences.Editor? = null
+    private var deckSharedPref: SharedPreferences? = null
+    private var deckSharedPrefEditor: SharedPreferences.Editor? = null
+
+    private lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
+    private lateinit var linearLayoutManager: LinearLayoutManager
 
     companion object {
         const val TAG = "DeckFragment"
@@ -118,6 +130,28 @@ class DeckFragment :
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        linearLayoutManager = LinearLayoutManager(appContext)
+
+        binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
+
+        binding.bottomAppBarDeck.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.bt_sort_deck -> {
+                    val item: View = binding.bottomAppBarDeck.findViewById(R.id.bt_sort_deck)
+                    showMenu(item, R.menu.menu_filter_deck)
+                    true
+                }
+
+                R.id.bt_upload_deck_with_cards -> {
+                    showTriviaQuestionUploader()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getAllDecks()
@@ -138,25 +172,6 @@ class DeckFragment :
                         }
                     }
 
-            }
-        }
-
-        binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
-
-        binding.bottomAppBarDeck.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.bt_sort_deck -> {
-                    val item: View = binding.bottomAppBarDeck.findViewById(R.id.bt_sort_deck)
-                    showMenu(item, R.menu.menu_filter_deck)
-                    true
-                }
-
-                R.id.bt_upload_deck_with_cards -> {
-                    showTriviaQuestionUploader()
-                    true
-                }
-
-                else -> false
             }
         }
 
@@ -278,7 +293,9 @@ class DeckFragment :
         binding.onNoDeckTextError.visibility = View.VISIBLE
     }
 
+    @SuppressLint("RestrictedApi")
     private fun displayDecks(listOfDecks: List<ImmutableDeck>) {
+        item = binding.deckTopAppBar.findViewById(R.id.view_deck_menu)
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
@@ -298,7 +315,13 @@ class DeckFragment :
             recyclerView.apply {
                 adapter = recyclerViewAdapter
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(appContext)
+                layoutManager = if (this@DeckFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                    staggeredGridLayoutManager
+                } else {
+                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                    linearLayoutManager
+                }
             }
         }
     }
@@ -568,14 +591,39 @@ class DeckFragment :
         })
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when(menuItem.itemId) {
             R.id.settings_deck_menu -> {
                 findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
                 true
             }
+            R.id.view_deck_menu -> {
+                if (binding.deckRecycleView.layoutManager == staggeredGridLayoutManager) {
+                    changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+                    binding.deckRecycleView.layoutManager = linearLayoutManager
+                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                } else {
+                    changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+                    binding.deckRecycleView.layoutManager = staggeredGridLayoutManager
+                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                }
+                true
+            }
             else -> true
         }
+    }
+
+    private fun getLayoutManager(): String {
+        val sharedPreferences = requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER) ?: LINEAR_LAYOUT_MANAGER
+    }
+
+    private fun changeCardLayoutManager(which: String) {
+        val sharedPreferences = requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(LAYOUT_MANAGER, which)
+        editor.apply()
     }
 
     private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {

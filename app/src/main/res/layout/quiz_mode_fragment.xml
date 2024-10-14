@@ -92,7 +92,7 @@
             app:iconTint="?colorOnSurface"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_test_quiz_game"
+            android:id="@+id/bt_quiz"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:backgroundTint="?colorSurfaceContainer"

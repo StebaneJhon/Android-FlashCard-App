@@ -20,6 +20,7 @@
     <color name="grey15">#fbfbfb</color>
     <color name="grey25_transparent">#50f6f6f6</color>
 
+    <!-- Added -->
     <color name="brown700">#5d4037</color>
     <color name="brown500">#795548</color>
     <color name="brown200">#bcaaa4</color>
@@ -97,6 +98,7 @@
     <color name="stone900">#1c1917</color>
     <color name="stone950">#0c0a09</color>
 
+    <!-- Added -->
     <color name="red50">#fef2f2</color>
     <color name="red100">#fee2e2</color>
     <color name="red100_transparent">#50fee2e2</color>
@@ -110,6 +112,7 @@
     <color name="red900">#7f1d1d</color>
     <color name="red950">#450a0a</color>
 
+    <!-- Added -->
     <color name="orange50">#fff7ed</color>
     <color name="orange100">#ffedd5</color>
     <color name="orange100_transparent">#50ffedd5</color>
@@ -123,6 +126,7 @@
     <color name="orange900">#7c2d12</color>
     <color name="orange950">#431407</color>
 
+    <!-- Added -->
     <color name="amber50">#fffbeb</color>
     <color name="amber100">#fef3c7</color>
     <color name="amber100_transparent">#50fef3c7</color>
@@ -136,6 +140,7 @@
     <color name="amber900">#78350f</color>
     <color name="amber950">#451a03</color>
 
+    <!-- Added -->
     <color name="yellow50">#fefce8</color>
     <color name="yellow100">#fef9c3</color>
     <color name="yellow100_transparent">#50fef9c3</color>
@@ -149,6 +154,7 @@
     <color name="yellow900">#713f12</color>
     <color name="yellow950">#422006</color>
 
+    <!-- Added -->
     <color name="lime50">#f7fee7</color>
     <color name="lime100">#ecfccb</color>
     <color name="lime100_transparent">#50ecfccb</color>
@@ -162,6 +168,7 @@
     <color name="lime900">#365314</color>
     <color name="lime950">#1a2e05</color>
 
+    <!-- Added -->
     <color name="green50">#f0fdf4</color>
     <color name="green100">#dcfce7</color>
     <color name="green100_transparent">#dcfce7</color>
@@ -175,6 +182,7 @@
     <color name="green900">#14532d</color>
     <color name="green950">#052e16</color>
 
+    <!-- Added -->
     <color name="emerald50">#ecfdf5</color>
     <color name="emerald100">#d1fae5</color>
     <color name="emerald100_transparent">#50d1fae5</color>
@@ -188,6 +196,7 @@
     <color name="emerald900">#064e3b</color>
     <color name="emerald950">#022c22</color>
 
+    <!-- Added -->
     <color name="teal50">#f0fdfa</color>
     <color name="teal100">#ccfbf1</color>
     <color name="teal100_transparent">#50ccfbf1</color>
@@ -201,6 +210,7 @@
     <color name="teal900">#134e4a</color>
     <color name="teal950">#042f2e</color>
 
+    <!-- Added -->
     <color name="cyan50">#ecfeff</color>
     <color name="cyan100">#cffafe</color>
     <color name="cyan100_transparent">#50cffafe</color>
@@ -214,6 +224,7 @@
     <color name="cyan900">#164e63</color>
     <color name="cyan950">#083344</color>
 
+    <!-- Added -->
     <color name="sky50">#f0f9ff</color>
     <color name="sky100">#e0f2fe</color>
     <color name="sky100_transparent">#50e0f2fe</color>
@@ -227,6 +238,7 @@
     <color name="sky900">#0c4a6e</color>
     <color name="sky950">#082f49</color>
 
+    <!-- Added -->
     <color name="blue50">#eff6ff</color>
     <color name="blue100">#dbeafe</color>
     <color name="blue100_transparent">#50dbeafe</color>
@@ -240,6 +252,7 @@
     <color name="blue900">#1e3a8a</color>
     <color name="blue950">#172554</color>
 
+    <!-- Added -->
     <color name="indigo50">#eef2ff</color>
     <color name="indigo100">#e0e7ff</color>
     <color name="indigo100_transparent">#50e0e7ff</color>
@@ -253,6 +266,7 @@
     <color name="indigo900">#312e81</color>
     <color name="indigo950">#1e1b4b</color>
 
+    <!-- Added -->
     <color name="violet50">#f5f3ff</color>
     <color name="violet100">#ede9fe</color>
     <color name="violet100_transparent">#50ede9fe</color>
@@ -266,6 +280,7 @@
     <color name="violet900">#4c1d95</color>
     <color name="violet950">#2e1065</color>
 
+    <!-- Added -->
     <color name="purple50">#faf5ff</color>
     <color name="purple100">#f3e8ff</color>
     <color name="purple100_transparent">#50f3e8ff</color>
@@ -279,6 +294,7 @@
     <color name="purple900">#581c87</color>
     <color name="purple950">#3b0764</color>
 
+    <!-- Added -->
     <color name="fuchsia50">#fdf4ff</color>
     <color name="fuchsia100">#fae8ff</color>
     <color name="fuchsia100_transparent">#50fae8ff</color>
@@ -292,6 +308,7 @@
     <color name="fuchsia900">#701a75</color>
     <color name="fuchsia950">#4a044e</color>
 
+    <!-- Added -->
     <color name="pink50">#fdf2f8</color>
     <color name="pink100">#fce7f3</color>
     <color name="pink100_transparent">#50fce7f3</color>

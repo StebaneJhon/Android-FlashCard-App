@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
@@ -36,7 +37,7 @@ class SettingsFragmentSpaceRepetitionViewAdapter(
 
         private val tvSpaceRepetitionForgettingDay: TextView = view.findViewById(R.id.tv_space_repetition_forgetting_day)
         private val tvSpaceRepetitionLevel: TextView = view.findViewById(R.id.tv_space_repetition_level_name)
-        private val llSpaceRepetitionSectionItem: LinearLayout = view.findViewById(R.id.ll_space_repetition_section_item)
+        private val llSpaceRepetitionSectionItem: ConstraintLayout = view.findViewById(R.id.ll_space_repetition_section_item)
 
         fun bind(
             context: Context,

@@ -28,83 +28,6 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_profile_section_root"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/space_sm"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginTop="@dimen/space_sm"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/tv_profile_section_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="@string/profile_tab_title"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_base"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:background="@drawable/rounded_background"
-                android:backgroundTint="?colorSurfaceContainerHigh"
-                android:gravity="center"
-                android:layout_marginTop="5dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_profile_section_title">
-                <TextView
-                    android:id="@+id/initialName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:text="A"
-                    android:textAlignment="center"
-                    android:textColor="?colorOnPrimary"
-                    android:textSize="@dimen/text_xl2"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tv_profile_section_user_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="Anonymous"
-                android:textColor="?colorOnSurface"
-                android:layout_marginStart="@dimen/space_xs"
-                android:textSize="@dimen/text_sm"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout"
-                app:layout_constraintTop_toTopOf="@+id/linearLayout"
-                app:layout_constraintVertical_bias="0.267" />
-
-            <TextView
-                android:id="@+id/tv_profile_section_user_status"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_light"
-                android:text="User"
-                android:textSize="@dimen/text_sm"
-                android:textColor="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tv_profile_section_user_name"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout"
-                app:layout_constraintStart_toStartOf="@+id/tv_profile_section_user_name"
-                app:layout_constraintTop_toBottomOf="@+id/tv_profile_section_user_name" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
         <TextView
             android:id="@+id/tv_title_data_review"
             android:layout_width="match_parent"
@@ -124,7 +47,7 @@
         <GridLayout
             android:id="@+id/ll_general_data_info"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="85dp"
             android:layout_marginStart="@dimen/space_sm"
             android:layout_marginEnd="@dimen/space_xs"
             android:layout_marginTop="@dimen/space_xs"
@@ -134,7 +57,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title_data_review">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cv_deck_number_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -147,27 +70,39 @@
 
                 <TextView
                     android:id="@+id/tv_deck_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/open_sans_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/open_sans"
+                    android:textAlignment="gravity"
+                    android:gravity="center"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_xl"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_xl"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_deck_number_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="100" />
 
                 <TextView
                     android:id="@+id/tv_deck_number_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/tv_deck_text"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_base" />
+                    android:textSize="@dimen/text_sm"
+                    android:layout_margin="@dimen/space_xs"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cv_card_number_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -180,27 +115,39 @@
 
                 <TextView
                     android:id="@+id/tv_card_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/open_sans_bold"
+                    android:textAlignment="gravity"
+                    android:gravity="center"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_xl"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_xl"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_card_number_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="100" />
 
                 <TextView
                     android:id="@+id/tv_card_number_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/tv_cards_text"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_base" />
+                    android:textSize="@dimen/text_sm"
+                    android:layout_margin="@dimen/space_xs"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cv_known_card_number_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -213,31 +160,43 @@
 
                 <TextView
                     android:id="@+id/tv_known_card_number"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/open_sans_bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:fontFamily="@font/open_sans"
+                    android:textAlignment="gravity"
+                    android:gravity="center"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_xl"
+                    app:autoSizeMaxTextSize="@dimen/text_xl3"
+                    app:autoSizeMinTextSize="@dimen/text_xl"
+                    app:autoSizeStepGranularity="2sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_known_card_number_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="100" />
 
                 <TextView
                     android:id="@+id/tv_known_card_number_text"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:textAlignment="center"
                     android:fontFamily="@font/open_sans_light"
-                    android:text="@string/tv_known_text"
+                    android:text="@string/tv_known_cards_text"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_base" />
+                    android:textSize="@dimen/text_sm"
+                    android:layout_margin="@dimen/space_xs"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </GridLayout>
 
         <LinearLayout
             android:id="@+id/ll_theme_section"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginStart="@dimen/space_xs"
             android:layout_marginEnd="@dimen/space_xs"
@@ -251,12 +210,13 @@
                 android:textColor="?colorOnSurface"
                 android:text="@string/themes_head_text"
                 android:textSize="@dimen/text_base"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/icon_expand_more"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_settings_theme_picker"
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_xs"/>
 
         </LinearLayout>

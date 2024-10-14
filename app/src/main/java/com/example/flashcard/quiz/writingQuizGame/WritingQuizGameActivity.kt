@@ -105,7 +105,8 @@ class WritingQuizGameActivity :
         }
 
         binding.topAppBar.apply {
-            title = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
+            title = getString(R.string.bt_start_writing_quiz_game_text)
+            subtitle = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
             setNavigationOnClickListener { finish() }
         }
 
@@ -344,7 +345,6 @@ class WritingQuizGameActivity :
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
-//            lpiQuizResultDiagramScoreLayout.progress = viewModel.progress
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
             tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()

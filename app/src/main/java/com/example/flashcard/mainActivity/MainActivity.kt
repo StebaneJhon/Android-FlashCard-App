@@ -34,7 +34,7 @@ class MainActivity :
     }
     lateinit var navController: NavController
 
-    var sharedPref: SharedPreferences? = null
+    private var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
     private val SETTINGS_CODE = 12334
 
@@ -64,7 +64,7 @@ class MainActivity :
         
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
-        binding.nvvDrawer.setupWithNavController(navController)
+//        binding.nvvDrawer.setupWithNavController(navController)
 
     }
 

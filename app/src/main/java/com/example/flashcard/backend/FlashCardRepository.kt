@@ -5,12 +5,10 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.Model.ImmutableSpaceRepetitionBox
-import com.example.flashcard.backend.Model.ImmutableUser
 import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.Model.toLocal
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.backend.entities.SpaceRepetitionBox
-import com.example.flashcard.backend.entities.User
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -28,8 +26,8 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     suspend fun allCards(): Flow<List<ImmutableCard?>> {
         val cards = flashCardDao.getAllCards().map { cardList ->
             cardList.map { card ->
-                card.cardId?.let { cardId ->
-                    cardId?.let { id ->
+                card.cardId.let { cardId ->
+                    cardId.let { id ->
                         val cardContent = flashCardDao.getCardAndContent(id).cardContent
                         val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
                         card.toExternal(cardContent, cardDefinitions)
@@ -57,30 +55,14 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun getDeckByName(title: String): ImmutableDeck {
-        val deck = flashCardDao.getDeckName(title)
-        return deck.toExternal()
-    }
-
-    // Cards
-
-    /*
-    @WorkerThread
-    fun getDeckWithCards(deckId: Int): Flow<DeckWithCards> {
-        return flashCardDao.getDeckWithCards(deckId)
-    }
-
-     */
-
-    @WorkerThread
     suspend fun getImmutableDeckWithCards(deckId: String): Flow<ImmutableDeckWithCards> {
         val deckWithCards = flashCardDao.getDeckWithCards(deckId)
         val immutableDeckWithCards =
             deckWithCards.map { localDeckWithCards ->
                 val deck = localDeckWithCards.deck.toExternal()
                 val cardList = localDeckWithCards.cards.map { card ->
-                    card.cardId?.let { cardId ->
-                        cardId?.let { id ->
+                    card.cardId.let { cardId ->
+                        cardId.let { id ->
                             val cardContent = flashCardDao.getCardAndContent(id).cardContent
                             val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
                             card.toExternal(cardContent, cardDefinitions)
@@ -93,18 +75,6 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
         return immutableDeckWithCards
     }
-
-    /*
-    @WorkerThread
-    suspend fun getCardAndContent(cardId: Int): CardAndContent {
-        return flashCardDao.getCardAndContent(cardId)
-    }
-
-    @WorkerThread
-    suspend fun getCardWithDefinition(cardId: Int): CardWithDefinitions {
-        return flashCardDao.getCardWithDefinition(cardId)
-    }
-     */
 
     @WorkerThread
     suspend fun insertDeck(deck: Deck) {
@@ -144,7 +114,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
+    fun searchCard(searchQuery: String): Flow<List<ImmutableCard>> {
         return flashCardDao.searchCard(searchQuery).map { cardList ->
             cardList.map { card ->
                 val cardContent = flashCardDao.getCardAndContent(card.cardId).cardContent
@@ -155,23 +125,11 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun getCard(deckId: Int): ImmutableCard? {
-        val card = flashCardDao.getCard(deckId)
-        return card.cardId?.let { cardId ->
-            cardId?.let { id ->
-                val cardContent = flashCardDao.getCardAndContent(cardId).cardContent
-                val cardDefinitions = flashCardDao.getCardWithDefinition(cardId).definition
-                card.toExternal(cardContent, cardDefinitions)
-            }
-        }
-    }
-
-    @WorkerThread
     suspend fun getCards(deckId: String): List<ImmutableCard?> {
         val cards = flashCardDao.getCards(deckId)
         return cards.map { card ->
-            card.cardId?.let { cardId ->
-                cardId?.let { id ->
+            card.cardId.let { cardId ->
+                cardId.let { id ->
                     val cardContent = flashCardDao.getCardAndContent(id).cardContent
                     val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
                     card.toExternal(cardContent, cardDefinitions)
@@ -202,7 +160,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         flashCardDao.updateCardContent(card.cardContent!!)
         card.cardDefinition?.forEach {
             when {
-                it.definition.isNullOrEmpty() -> {
+                it.definition.isEmpty() -> {
                     flashCardDao.deleteCardDefinition(it)
                 }
 
@@ -217,21 +175,6 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
         }
         flashCardDao.updateCard(card.toLocal())
-    }
-
-    @WorkerThread
-    suspend fun createUser(user: User) {
-        flashCardDao.createUser(user)
-    }
-
-    @WorkerThread
-    fun getUser(): Flow<List<ImmutableUser>> {
-        return flashCardDao.getUser().map { it.toExternal() }
-    }
-
-    @WorkerThread
-    suspend fun updateUser(user: User) {
-        flashCardDao.updateUser(user)
     }
 
     @WorkerThread

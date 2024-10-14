@@ -47,6 +47,8 @@ class MultiChoiceQuizGameViewModel(
         originalCardList = gameCards
     }
 
+    fun getOriginalCardList() = originalCardList
+
     private fun getWordAlternatives(
         cards: List<ImmutableCard?>,
         correctAlternative: String,

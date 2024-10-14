@@ -39,7 +39,7 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
         }
     }
 
-    fun getAllCards() {
+    private fun getAllCards() {
         fetchJob?.cancel()
         _allCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {

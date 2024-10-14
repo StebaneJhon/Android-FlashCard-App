@@ -31,9 +31,6 @@ interface FlashCardDao {
     suspend fun insertCard(card: Card)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun createUser(user: User)
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCardContent(cardContent: CardContent)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -48,22 +45,9 @@ interface FlashCardDao {
     @Query("SELECT * FROM deck WHERE deck_name LIKE :searchQuery OR deck_description LIKE :searchQuery OR deck_first_language LIKE :searchQuery OR deck_second_language LIKE :searchQuery OR deck_color_code LIKE :searchQuery")
     fun searchDeck(searchQuery: String): Flow<List<Deck>>
 
-    @Query("SELECT * FROM deck WHERE deck_name = :deckName")
-    fun getDeckName(deckName: String): Deck
-
-    @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    suspend fun getDeckById(deckId: String): Deck
-
-    @Query("DELETE FROM card WHERE deckId = :deckId")
-    suspend fun deleteCards(deckId: Int)
-
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
     fun getDeckWithCards(deckId: String): Flow<DeckWithCards>
-
-    @Transaction
-    @Query("SELECT * FROM deck WHERE deckId = :deckId")
-    suspend fun getSimpleDeckWithCards(deckId: Int): DeckWithCards
 
     @Transaction
     @Query("SELECT * FROM cardContent WHERE cardId = :cardId")
@@ -82,13 +66,7 @@ interface FlashCardDao {
     fun searchCard(searchQuery: String): Flow<List<Card>>
 
     @Query("SELECT * FROM card WHERE deckId = :deckId")
-    fun getCard(deckId: Int): Card
-
-    @Query("SELECT * FROM card WHERE deckId = :deckId")
     suspend fun getCards(deckId: String): List<Card>
-
-    @Query("SELECT * FROM card WHERE cardId = :cardId")
-    suspend fun getCardById(cardId: String): Card
 
     @Query("SELECT * FROM card")
     fun getAllCards(): Flow<List<Card>>
@@ -99,24 +77,14 @@ interface FlashCardDao {
     @Query("SELECT COUNT(*) FROM card WHERE card_status <> 'L1' ")
     suspend fun getKnownCardCount(): Int
 
-    @Query("SELECT * FROM card")
-    fun getAllCardsNoFlow(): List<Card>
-
-    @Query("SELECT * FROM user")
-    fun getUser(): Flow<List<User>>
-
     @Query("SELECT * FROM spaceRepetitionBox")
     fun getBox(): Flow<List<SpaceRepetitionBox>>
-
 
     @Update()
     suspend fun updateDeck(deck: Deck)
 
     @Update()
     suspend fun updateCard(card: Card)
-
-    @Update
-    suspend fun updateUser(user: User)
 
     @Update
     suspend fun updateBoxLevel(boxLevel: SpaceRepetitionBox)

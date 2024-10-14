@@ -69,7 +69,7 @@ class QuizModeBottomSheet: BottomSheetDialogFragment() {
             )
         }
 
-        binding.btTestQuizGame.setOnClickListener {
+        binding.btQuiz.setOnClickListener {
             sendQuizMode(
                 REQUEST_CODE_QUIZ_MODE,
                 START_QUIZ_BUNDLE_KEY,

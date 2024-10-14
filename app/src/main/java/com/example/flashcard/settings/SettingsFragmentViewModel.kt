@@ -20,38 +20,8 @@ import java.io.IOException
 
 class SettingsFragmentViewModel(private val repository: FlashCardRepository): ViewModel() {
 
-    private var userFetchJob: Job? = null
-    private var _user = MutableStateFlow<UiState<List<ImmutableUser>>>(UiState.Loading)
-    val user: StateFlow<UiState<List<ImmutableUser>>> = _user.asStateFlow()
-
-    fun getUserDetails() {
-        userFetchJob?.cancel()
-        _user.value = UiState.Loading
-        userFetchJob = viewModelScope.launch {
-            try {
-                repository.getUser().collect() {
-                    if (it.isEmpty()) {
-                        _user.value = UiState.Success(
-                            listOf(ImmutableUser(
-                                userId = null,
-                                name = "Anonymous",
-                                initial = "A",
-                                status = "User",
-                                creation = null
-                            ))
-                        )
-                    } else {
-                        _user.value = UiState.Success(it)
-                    }
-                }
-            } catch (e: IOException) {
-                _user.value = UiState.Error(e.toString())
-            }
-        }
-    }
-
     private var boxFetchJob: Job? = null
-    val _boxLevels = MutableStateFlow<UiState<List<ImmutableSpaceRepetitionBox>>>(UiState.Loading)
+    private val _boxLevels = MutableStateFlow<UiState<List<ImmutableSpaceRepetitionBox>>>(UiState.Loading)
     val boxLevels: StateFlow<UiState<List<ImmutableSpaceRepetitionBox>>> = _boxLevels.asStateFlow()
 
     fun getBox() {
@@ -73,8 +43,6 @@ class SettingsFragmentViewModel(private val repository: FlashCardRepository): Vi
     }
 
     fun updateBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch { repository.updateBoxLevel(boxLevel) }
-
-    fun insertBoxLevel(boxLevel: SpaceRepetitionBox) = viewModelScope.launch { repository.insertBoxLevel(boxLevel) }
 
     private var _themSelectionList = MutableStateFlow<ArrayList<ThemeModel>>(arrayListOf())
     val themSelectionList: StateFlow<ArrayList<ThemeModel>> = _themSelectionList.asStateFlow()
