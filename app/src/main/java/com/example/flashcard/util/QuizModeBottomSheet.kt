@@ -61,14 +61,6 @@ class QuizModeBottomSheet: BottomSheetDialogFragment() {
             )
         }
 
-        binding.btFlashCardGameTimed.setOnClickListener {
-            sendQuizMode(
-                REQUEST_CODE_QUIZ_MODE,
-                START_QUIZ_BUNDLE_KEY,
-                TIMED_FLASH_CARD_QUIZ
-            )
-        }
-
         binding.btQuiz.setOnClickListener {
             sendQuizMode(
                 REQUEST_CODE_QUIZ_MODE,

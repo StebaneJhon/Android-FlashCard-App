@@ -26,9 +26,9 @@ import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
-import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityTestBinding
 import com.example.flashcard.quiz.quizGame.QuizGameActivity
+import com.example.flashcard.util.LanguageUtil
 import com.example.flashcard.util.TestResultAction.BACK_TO_DECK
 import com.example.flashcard.util.TestResultAction.RETAKE_TEST
 import com.example.flashcard.util.ThemePicker
@@ -380,7 +380,7 @@ class TestActivity :
         speechListener: UtteranceProgressListener
     ) {
         tts.language = Locale.forLanguageTag(
-            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")

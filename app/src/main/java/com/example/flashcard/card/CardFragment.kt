@@ -21,7 +21,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.ActionMenuItem
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
@@ -48,7 +47,6 @@ import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.databinding.FragmentCardBinding
 import com.example.flashcard.deck.NewDeckDialog
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
-import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.quizGame.QuizGameActivity
@@ -57,12 +55,12 @@ import com.example.flashcard.quiz.writingQuizGame.WritingQuizGameActivity
 import com.example.flashcard.util.Constant
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MATCHING_QUIZ
 import com.example.flashcard.util.Constant.MIN_CARD_FOR_MULTI_CHOICE_QUIZ
+import com.example.flashcard.util.LanguageUtil
 import com.example.flashcard.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MATCHING_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.TEST
-import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
 import com.example.flashcard.util.ItemLayoutManager.LAYOUT_MANAGER
 import com.example.flashcard.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
@@ -281,12 +279,6 @@ class CardFragment :
                 startActivity(intent)
             }
 
-            TIMED_FLASH_CARD_QUIZ -> {
-                val intent = Intent(appContext, FlashCardGameTimedActivity::class.java)
-                intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
-            }
-
             MULTIPLE_CHOICE_QUIZ -> {
                 if (deckWithCards.cards?.size!! > MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
                     val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
@@ -434,7 +426,7 @@ class CardFragment :
         val params = Bundle()
 
         tts.language = Locale.forLanguageTag(
-            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
@@ -654,8 +646,11 @@ class CardFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        tts.stop()
-        tts.shutdown()
+        tts?.let {
+            it.stop()
+            it.shutdown()
+        }
+
     }
 
 }

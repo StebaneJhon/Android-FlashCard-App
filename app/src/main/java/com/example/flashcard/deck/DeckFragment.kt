@@ -44,7 +44,6 @@ import com.example.flashcard.backend.Model.toExternal
 import com.example.flashcard.backend.entities.Deck
 import com.example.flashcard.databinding.FragmentDeckBinding
 import com.example.flashcard.quiz.flashCardGame.FlashCardGameActivity
-import com.example.flashcard.quiz.flashCardGameTimed.FlashCardGameTimedActivity
 import com.example.flashcard.quiz.matchQuizGame.MatchQuizGameActivity
 import com.example.flashcard.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
 import com.example.flashcard.quiz.quizGame.QuizGameActivity
@@ -456,12 +455,6 @@ class DeckFragment :
             FLASH_CARD_QUIZ -> {
                 val intent = Intent(appContext, FlashCardGameActivity::class.java)
                 intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
-            }
-
-            TIMED_FLASH_CARD_QUIZ -> {
-                val intent = Intent(appContext, FlashCardGameTimedActivity::class.java)
-                intent.putExtra(FlashCardGameTimedActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
 

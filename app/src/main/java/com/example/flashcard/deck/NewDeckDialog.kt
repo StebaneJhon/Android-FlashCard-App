@@ -22,7 +22,7 @@ import com.example.flashcard.databinding.AddDeckLayoutDialogBinding
 import com.example.flashcard.util.DeckAdditionAction.ADD
 import com.example.flashcard.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
 import com.example.flashcard.util.DeckColorCategorySelector
-import com.example.flashcard.util.FirebaseTranslatorHelper
+import com.example.flashcard.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -34,7 +34,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
     private val binding get() = _binding!!
 
     private var deckCategoryColor: String? = null
-    private val supportedLanguages = FirebaseTranslatorHelper().getSupportedLang()
+    private val supportedLanguages = LanguageUtil().getSupportedLang()
     private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
     private val newDeckDialogViewModel: NewDeckDialogViewModel by viewModels()

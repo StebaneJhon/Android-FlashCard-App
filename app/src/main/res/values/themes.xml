@@ -28,6 +28,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -63,6 +64,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -100,6 +102,7 @@
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="actionModeStyle">@style/MyActionBarTheme</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
@@ -132,6 +135,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -165,6 +169,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -198,6 +203,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -231,6 +237,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -264,6 +271,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -297,6 +305,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -330,6 +339,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -363,6 +373,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -396,6 +407,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -429,6 +441,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -462,6 +475,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -495,6 +509,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -528,6 +543,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -561,6 +577,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -594,6 +611,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -627,6 +645,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -660,6 +679,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -694,6 +714,7 @@
         <item name="actionMenuTextColor">?colorOnSurface</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
         <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
@@ -702,6 +723,10 @@
     <!--Action Bar theme-->
     <style name="MyActionBarTheme" parent="Widget.AppCompat.ActionMode">
         <item name="titleTextColor">@color/blue500</item>
+    </style>
+
+    <style name="RecallOverflowButton" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:src">@drawable/icon_more</item>
     </style>
 
     <!--Dialog theme-->

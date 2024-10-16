@@ -25,9 +25,6 @@
             android:name=".quiz.quizGame.QuizGameActivity"
             android:exported="false" />
         <activity
-            android:name=".quiz.flashCardGameTimed.FlashCardGameTimedActivity"
-            android:exported="false" />
-        <activity
             android:name=".quiz.flashCardGame.FlashCardGameActivity"
             android:exported="false" />
         <activity

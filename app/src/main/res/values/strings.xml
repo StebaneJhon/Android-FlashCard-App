@@ -207,4 +207,7 @@
     <string name="text_action_question">Do you know this card?</string>
     <string name="bt_text_settings">Settings</string>
     <string name="bt_change_view">Change view</string>
+    <string name="error_message_permission_not_granted_camera">You need to grant the camera permission to use this function</string>
+    <string name="bt_text_translate">Translate</string>
+    <string name="bt_text_detect_text_with_image">Detect text with image</string>
 </resources>

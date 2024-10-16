@@ -44,21 +44,6 @@
             app:iconGravity="start"/>
 
         <com.google.android.material.button.MaterialButton
-            android:visibility="gone"
-            android:id="@+id/bt_flash_card_game_timed"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:text="@string/bt_text_flash_card_timed"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
-            app:cornerRadius="@dimen/bt_radius"
-            app:icon="@drawable/icon_timer"
-            app:iconTint="?colorOnSurface"
-            app:iconGravity="start"/>
-
-        <com.google.android.material.button.MaterialButton
             android:id="@+id/multiChoiceQuizButton"
             android:layout_width="match_parent"
             android:layout_height="60dp"

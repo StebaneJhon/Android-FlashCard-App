@@ -22,13 +22,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -42,24 +39,18 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.flashcard.R
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.entities.CardContent
 import com.example.flashcard.backend.entities.CardDefinition
 import com.example.flashcard.databinding.AddCardLayoutDialogBinding
-import com.example.flashcard.databinding.LyItemCardOnAddNewCardBinding
 import com.example.flashcard.util.CardLevel.L1
 import com.example.flashcard.util.CardType.SINGLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.MULTIPLE_ANSWER_CARD
 import com.example.flashcard.util.CardType.MULTIPLE_CHOICE_CARD
 import com.example.flashcard.util.Constant
-import com.example.flashcard.util.FirebaseTranslatorHelper
-import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.chip.Chip
+import com.example.flashcard.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -95,6 +86,7 @@ class NewCardDialog(
     private var appContext: Context? = null
     private var definitionList = mutableSetOf<CardDefinition>()
     private var selectedField: EditText? = null
+    private var selectedFieldLy: TextInputLayout? = null
     private var actualFieldLanguage: String? = null
     private val newCardViewModel: NewCardDialogViewModel by viewModels()
     private var actionMode: ActionMode? = null
@@ -141,9 +133,6 @@ class NewCardDialog(
                 } else {
                     selectedField?.setText(result?.get(0))
                 }
-                actionMode = null
-                selectedField = null
-                actualFieldLanguage = null
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -152,6 +141,20 @@ class NewCardDialog(
                 ).show()
             }
         }
+
+    private val requestCameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {isGranted ->
+        if (isGranted) {
+            openCamera()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.error_message_permission_not_granted_camera),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     companion object {
         private const val RecordAudioRequestCode = 3455
@@ -288,6 +291,11 @@ class NewCardDialog(
                         true
                     }
 
+                    R.id.bt_translate -> {
+                        onTranslateText(binding.tieContentMultiAnswerCard.text.toString(), selectedField, selectedFieldLy)
+                        true
+                    }
+
                     R.id.save -> {
                         if (card != null && action == Constant.UPDATE) {
                             sendCardsOnEdit(
@@ -322,6 +330,7 @@ class NewCardDialog(
         binding.tieContentMultiAnswerCard.apply {
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
+                    binding.tilContentMultiAnswerCard,
                     v,
                     deck.deckSecondLanguage,
                     hasFocus,
@@ -335,6 +344,7 @@ class NewCardDialog(
         definitionFields.forEach { definitionField ->
             definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
+                    definitionField.fieldLy,
                     v,
                     deck.deckSecondLanguage,
                     hasFocus,
@@ -359,6 +369,7 @@ class NewCardDialog(
     }
 
     private fun onActiveTopAppBarMode(
+        ly: TextInputLayout?,
         v: View?,
         language: String?,
         hasFocus: Boolean,
@@ -366,6 +377,7 @@ class NewCardDialog(
         title: String
     ) {
         if (hasFocus) {
+            selectedFieldLy = ly
             selectedField = v as EditText
             actionMode = view?.startActionMode(callback)
             actionMode?.title = title
@@ -410,30 +422,13 @@ class NewCardDialog(
                 android.Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(
-                    android.Manifest.permission.CAMERA
-                ),
-                PERMISSION_REQUEST_CODE_PHOTO_CAMERA
-            )
+            startCameraPermissionRequest()
         } else {
-            openCamera2()
+            openCamera()
         }
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == PERMISSION_REQUEST_CODE_PHOTO_CAMERA && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            openCamera2()
-        }
-    }
-
-    private fun openCamera2() {
+    private fun openCamera() {
         uri = createImageUri()
         takePreview.launch(uri)
     }
@@ -494,9 +489,6 @@ class NewCardDialog(
                 } else {
                     selectedField?.setText(visionText.text)
                 }
-                selectedField = null
-                actionMode = null
-                actualFieldLanguage = null
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
@@ -536,6 +528,7 @@ class NewCardDialog(
             it.chip.isChecked = false
         }
         binding.btAdd.text = getString(R.string.bt_text_add)
+        actionMode?.finish()
     }
 
     private fun onCloseDialog() {
@@ -858,7 +851,7 @@ class NewCardDialog(
             checkPermission()
         } else {
             val languageExtra =
-                if (language != null) FirebaseTranslatorHelper().getLanguageCodeForSpeechAndText(
+                if (language != null) LanguageUtil().getLanguageCodeForSpeechAndText(
                     language
                 ) else Locale.getDefault()
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -894,11 +887,15 @@ class NewCardDialog(
         }
     }
 
-    private fun onTranslateText(text: String) {
-        animProgressBar()
+    private fun onTranslateText(
+        text: String,
+        actualField: EditText?,
+        ly: TextInputLayout?
+    ) {
+        animProgressBar(ly)
 
-        val fl = FirebaseTranslatorHelper().getLanguageCodeForTranslation(deck.deckFirstLanguage!!)
-        val tl = FirebaseTranslatorHelper().getLanguageCodeForTranslation(deck.deckSecondLanguage!!)
+        val fl = LanguageUtil().getLanguageCodeForTranslation(deck.deckFirstLanguage!!)
+        val tl = LanguageUtil().getLanguageCodeForTranslation(deck.deckSecondLanguage!!)
         if (fl != null && tl != null) {
             val options = TranslatorOptions.Builder()
                 .setSourceLanguage(fl)
@@ -911,41 +908,40 @@ class NewCardDialog(
                 .build()
             appTranslator.downloadModelIfNeeded(conditions)
                 .addOnSuccessListener {
-//                    cardValue?.setText("Translation in progress...")
+                    actualField?.setText("Translation in progress...")
                     appTranslator.translate(text)
                         .addOnSuccessListener {
-//                            cardValue?.setText(it)
-                            setEditTextEndIconOnClick()
+                            actualField?.setText(it)
+                            setEditTextEndIconOnClick(ly)
                         }
                         .addOnFailureListener {
-//                            cardValue?.setText(it.toString())
-                            setEditTextEndIconOnClick()
+                            actualField?.setText(it.toString())
+                            setEditTextEndIconOnClick(ly)
                         }
                 }
                 .addOnFailureListener { exception ->
-                    setEditTextEndIconOnClick()
-//                    cardValue?.setText(exception.toString())
+                    setEditTextEndIconOnClick(ly)
+                    actualField?.setText(exception.toString())
                 }
         }
     }
 
-    private fun animProgressBar() {
+    private fun animProgressBar(ly: TextInputLayout?) {
         val drawableChargeIcon = appContext?.getProgressBarDrawable()
-//        cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
-//        cardValueLY?.endIconDrawable = drawableChargeIcon
+        ly?.endIconMode = TextInputLayout.END_ICON_CUSTOM
+        ly?.endIconDrawable = drawableChargeIcon
         (drawableChargeIcon as? Animatable)?.start()
     }
 
-    private fun setEditTextEndIconOnClick() {
+    private fun setEditTextEndIconOnClick(ly: TextInputLayout?) {
         lifecycleScope.launch {
             val states = ColorStateList(arrayOf(intArrayOf()),
                 appContext?.fetchPrimaryColor()?.let { intArrayOf(it) })
             val drawable =
                 AppCompatResources.getDrawable(requireContext(), R.drawable.icon_translate)
-//            cardValueLY?.setEndIconTintList(states)
+            ly?.setEndIconTintList(states)
             drawable?.setTintList(states)
-//            cardValueLY?.endIconMode = TextInputLayout.END_ICON_CUSTOM
-//            cardValueLY?.endIconDrawable = drawable
+            ly?.endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
         }
     }
 
@@ -1047,7 +1043,10 @@ class NewCardDialog(
             }
             index++
         }
+    }
 
+    private fun startCameraPermissionRequest() {
+        requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
     }
 
     private fun clearField(field: DefinitionFieldModel) {

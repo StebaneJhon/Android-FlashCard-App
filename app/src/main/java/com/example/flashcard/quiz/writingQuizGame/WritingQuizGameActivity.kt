@@ -4,7 +4,6 @@ import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -27,17 +26,14 @@ import com.example.flashcard.backend.FlashCardApplication
 import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
-import com.example.flashcard.backend.Model.toExternal
-import com.example.flashcard.backend.entities.relations.DeckWithCards
-import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityWritingQuizGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
+import com.example.flashcard.util.LanguageUtil
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
@@ -314,7 +310,7 @@ class WritingQuizGameActivity :
         speechListener: UtteranceProgressListener
     ) {
         tts.language = Locale.forLanguageTag(
-            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")

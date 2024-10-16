@@ -36,7 +36,6 @@ class MainActivity :
 
     private var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
-    private val SETTINGS_CODE = 12334
 
     companion object {
         private const val TAG = "MainActivity"
@@ -64,15 +63,6 @@ class MainActivity :
         
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
-//        binding.nvvDrawer.setupWithNavController(navController)
-
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == SETTINGS_CODE) {
-            this.recreate()
-        }
     }
 
     override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {

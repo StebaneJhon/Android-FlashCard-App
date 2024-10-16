@@ -4,10 +4,10 @@
 
     <item
         android:id="@+id/bt_scan_image"
-        android:title="Detect text with image"
+        android:title="@string/bt_text_detect_text_with_image"
         android:icon="@drawable/icon_document_scanner"
         android:iconTint="?colorOnSurface"
-        android:contentDescription="Detect text with image"
+        android:contentDescription="@string/bt_text_detect_text_with_image"
         app:showAsAction="ifRoom" />
 
     <item
@@ -16,6 +16,14 @@
         android:iconTint="?colorOnSurface"
         android:title="@string/bt_text_mic"
         android:contentDescription="@string/bt_text_mic"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/bt_translate"
+        android:icon="@drawable/icon_translate"
+        android:iconTint="?colorOnSurface"
+        android:title="@string/bt_text_translate"
+        android:contentDescription="@string/bt_text_translate"
         app:showAsAction="ifRoom" />
 
     <item

@@ -19,18 +19,13 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
@@ -38,12 +33,11 @@ import com.example.flashcard.backend.Model.ImmutableCard
 import com.example.flashcard.backend.Model.ImmutableDeck
 import com.example.flashcard.backend.Model.ImmutableDeckWithCards
 import com.example.flashcard.backend.entities.CardDefinition
-import com.example.flashcard.card.TextClickedModel
-import com.example.flashcard.card.TextToSpeechHelper
 import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
 import com.example.flashcard.util.DeckColorCategorySelector
+import com.example.flashcard.util.LanguageUtil
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
@@ -868,7 +862,7 @@ class FlashCardGameActivity :
         speechListener: UtteranceProgressListener
     ) {
         tts.language = Locale.forLanguageTag(
-            TextToSpeechHelper().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
