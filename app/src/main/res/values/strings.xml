@@ -210,4 +210,5 @@
     <string name="error_message_permission_not_granted_camera">You need to grant the camera permission to use this function</string>
     <string name="bt_text_translate">Translate</string>
     <string name="bt_text_detect_text_with_image">Detect text with image</string>
+    <string name="message_translation_in_progress">Translation in progress…</string>
 </resources>

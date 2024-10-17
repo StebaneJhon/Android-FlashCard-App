@@ -332,7 +332,7 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     binding.tilContentMultiAnswerCard,
                     v,
-                    deck.deckSecondLanguage,
+                    deck.deckFirstLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
@@ -908,20 +908,20 @@ class NewCardDialog(
                 .build()
             appTranslator.downloadModelIfNeeded(conditions)
                 .addOnSuccessListener {
-                    actualField?.setText("Translation in progress...")
+                    actualField?.setText(getString(R.string.message_translation_in_progress))
                     appTranslator.translate(text)
                         .addOnSuccessListener {
                             actualField?.setText(it)
                             setEditTextEndIconOnClick(ly)
                         }
                         .addOnFailureListener {
-                            actualField?.setText(it.toString())
+                            ly?.error = it.toString()
                             setEditTextEndIconOnClick(ly)
                         }
                 }
                 .addOnFailureListener { exception ->
                     setEditTextEndIconOnClick(ly)
-                    actualField?.setText(exception.toString())
+                    ly?.error = exception.toString()
                 }
         }
     }
