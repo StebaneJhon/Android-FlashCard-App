@@ -1,10 +1,17 @@
 package com.example.flashcard.onboarding
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsetsController
+import android.view.WindowManager
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.flashcard.R
 import com.example.flashcard.onboarding.onBoardingFragments.OnboardingFragment1
@@ -19,6 +26,20 @@ class OnBoardingViewPagerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_on_boarding_view_pager, container, false)
+
+        val window = activity?.window
+        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.royal_blue)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window?.insetsController?.setSystemBarsAppearance(
+                0,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else {
+            val windowInsetController = ViewCompat.getWindowInsetsController(window?.decorView!!)
+            windowInsetController?.isAppearanceLightStatusBars = false
+        }
+
 
         val fragmentList = arrayListOf<Fragment>(
             OnboardingFragment1(),

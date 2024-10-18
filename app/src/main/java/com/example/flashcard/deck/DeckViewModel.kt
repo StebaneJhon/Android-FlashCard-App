@@ -134,22 +134,24 @@ class DeckViewModel(
         fetchOpenTriviaJob?.cancel()
         fetchOpenTriviaJob = viewModelScope.launch {
             val newDeck = generateDeck(deckName, deckDescription)
-            delay(100)
+            delay(200)
             repository.insertDeck(newDeck)
-            delay(100)
+            delay(200)
             val newCards = resultsToImmutableCards(newDeck, cards)
             delay(200)
             repository.insertCards(newCards, newDeck.toExternal())
         }
     }
 
-    private fun resultsToImmutableCards(
+    private suspend fun resultsToImmutableCards(
         deck: Deck,
         results: List<OpenTriviaQuestion>?
     ): List<ImmutableCard> {
         val newCards = arrayListOf<ImmutableCard>()
         results?.forEach { result ->
+            delay(10)
             val newCardId = now()
+            delay(10)
             val contentId = now()
             val newCardContent =
                 generateCardContent(result.question, newCardId, contentId, deck.deckId)

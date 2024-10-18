@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
@@ -18,6 +19,7 @@ import com.example.flashcard.settings.SettingsFragmentEditBoxLevelDialog
 import com.example.flashcard.settings.SettingsFragmentViewModel
 import com.example.flashcard.settings.SettingsFragmentViewModelFactory
 import com.example.flashcard.util.ThemePicker
+import com.google.android.material.color.MaterialColors
 
 class MainActivity :
     AppCompatActivity(),
@@ -60,7 +62,7 @@ class MainActivity :
         }
 
         setContentView(view)
-        
+
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
     }

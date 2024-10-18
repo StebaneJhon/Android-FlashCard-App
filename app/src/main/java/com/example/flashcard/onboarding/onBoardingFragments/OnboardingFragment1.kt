@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
 import com.example.flashcard.R
@@ -25,5 +26,4 @@ class OnboardingFragment1 : Fragment() {
         }
         return view
     }
-
 }

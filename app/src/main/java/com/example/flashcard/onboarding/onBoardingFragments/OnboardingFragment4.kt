@@ -1,18 +1,25 @@
 package com.example.flashcard.onboarding.onBoardingFragments
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.widget.Button
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.flashcard.R
 import com.example.flashcard.backend.FlashCardApplication
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.color.MaterialColors
 
 class OnboardingFragment4 : Fragment() {
 
@@ -33,10 +40,30 @@ class OnboardingFragment4 : Fragment() {
     }
 
     private fun onBoardingFinished() {
-        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putBoolean("Finished", true)
         editor.apply()
+        setThemedStatusBar()
+
+    }
+
+    private fun setThemedStatusBar() {
+        val window = activity?.window
+        window?.statusBarColor = MaterialColors.getColor(
+            requireView(),
+            com.google.android.material.R.attr.colorSurfaceContainerLow
+        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window?.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else {
+            val windowInsetController = ViewCompat.getWindowInsetsController(window?.decorView!!)
+            windowInsetController?.isAppearanceLightStatusBars = true
+        }
     }
 
 }

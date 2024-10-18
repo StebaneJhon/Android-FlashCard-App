@@ -16,6 +16,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -113,17 +114,27 @@ class CardFragment :
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+//        val window = activity?.window
+//        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+//        window?.statusBarColor = MaterialColors.getColor(requireView(), com.google.android.material.R.attr.colorSurfaceContainerLow)
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         appContext = container?.context
         tts = TextToSpeech(appContext, this)
         return binding.root
     }
 
-    @SuppressLint("UnsafeRepeatOnLifecycleDetector")
+    private fun setThemedStatusBar() {
+//        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+
+//            ContextCompat.getColor(requireContext(), R.color.royal_blue)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
+
+
 
         deck = args.selectedDeck
         opener = args.opener

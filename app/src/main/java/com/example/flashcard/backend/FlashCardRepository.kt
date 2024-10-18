@@ -109,6 +109,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         localDeck.cardSum = localDeck.cardSum?.plus(cards.size)
         flashCardDao.updateDeck(localDeck)
         cards.forEach { card ->
+//            delay(300)
             insertCard(card, deck, false)
         }
     }

@@ -4,8 +4,8 @@
     <string name="deck_name_hint">Deck Name</string>
     <string name="deck_description_hint">Deck Description</string>
     <string name="add_your_new_deck_text">Add Your New Deck</string>
-    <string name="deck_first_language_hint">Deck First Language</string>
-    <string name="deck_second_language_hint">Deck Second Language</string>
+    <string name="deck_first_language_hint">Deck content language</string>
+    <string name="deck_second_language_hint">Deck definition language</string>
     <string name="deck_color">Deck Color</string>
     <string name="add_new_card_button_description">Add New Card Button</string>
     <string name="card_content_hint">%1$s word, sentence</string>
