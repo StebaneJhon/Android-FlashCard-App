@@ -163,7 +163,6 @@ class NewCardDialog(
         const val SAVE_CARDS_BUNDLE_KEY = "1"
         const val EDIT_CARD_BUNDLE_KEY = "2"
         const val REQUEST_CODE_CARD = "0"
-        private const val PERMISSION_REQUEST_CODE_PHOTO_CAMERA = 123453244
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -354,9 +353,6 @@ class NewCardDialog(
                 )
             }
             definitionField.fieldEd.setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
-            definitionField.chip.setOnCheckedChangeListener { buttonView, isChecked ->
-                onIsDefinitionIsTrueClicked(isChecked, buttonView)
-            }
             definitionField.btDeleteField.setOnClickListener {
                 deleteDefinitionField(definitionField.fieldEd)
             }
@@ -561,6 +557,7 @@ class NewCardDialog(
                         getString(R.string.message_card_not_registered),
                         Toast.LENGTH_LONG
                     ).show()
+                    newCardViewModel.clearAddedCards()
                     dismiss()
                 }
                 .setNeutralButton("Keep adding") { dialog, _ ->
@@ -608,14 +605,6 @@ class NewCardDialog(
 
     fun isCorrect(index: Int?) = index == 1
     fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
-
-    private fun onIsDefinitionIsTrueClicked(isChecked: Boolean, buttonView: CompoundButton) {
-        if (isChecked) {
-            buttonView.text = getString(R.string.cp_true_text)
-        } else {
-            buttonView.text = getString(R.string.cp_false_text)
-        }
-    }
 
     private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null): Boolean {
         val newCard = if (action == Constant.ADD) {

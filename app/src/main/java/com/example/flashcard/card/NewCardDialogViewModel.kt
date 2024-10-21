@@ -16,6 +16,10 @@ class NewCardDialogViewModel() : ViewModel() {
 
     fun areThereUnSavedAddedCards() = _addedCards.value.size != 0
 
+    fun clearAddedCards() {
+        _addedCards.value.clear()
+    }
+
     fun addCard(card: ImmutableCard) {
         _addedCards.value.add(0, card)
     }
