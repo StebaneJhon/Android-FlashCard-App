@@ -60,7 +60,6 @@ import com.example.flashcard.util.FlashCardMiniGameRef.MATCHING_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.TEST
-import com.example.flashcard.util.FlashCardMiniGameRef.TIMED_FLASH_CARD_QUIZ
 import com.example.flashcard.util.FlashCardMiniGameRef.WRITING_QUIZ
 import com.example.flashcard.util.ItemLayoutManager.LAYOUT_MANAGER
 import com.example.flashcard.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
