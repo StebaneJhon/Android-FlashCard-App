@@ -592,14 +592,18 @@ class DeckFragment :
                 true
             }
             R.id.view_deck_menu -> {
-                if (binding.deckRecycleView.layoutManager == staggeredGridLayoutManager) {
-                    changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
-                    binding.deckRecycleView.layoutManager = linearLayoutManager
-                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                if (item == null) {
+                    Toast.makeText(requireContext(), getString(R.string.error_message_change_view_deck), Toast.LENGTH_LONG).show()
                 } else {
-                    changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
-                    binding.deckRecycleView.layoutManager = staggeredGridLayoutManager
-                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                    if (binding.deckRecycleView.layoutManager == staggeredGridLayoutManager) {
+                        changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+                        binding.deckRecycleView.layoutManager = linearLayoutManager
+                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                    } else {
+                        changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+                        binding.deckRecycleView.layoutManager = staggeredGridLayoutManager
+                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                    }
                 }
                 true
             }

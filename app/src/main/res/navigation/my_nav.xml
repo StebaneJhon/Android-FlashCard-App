@@ -53,6 +53,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_deckFragment"
             app:destination="@id/deckFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_aboutRecallFragment"
+            app:destination="@id/aboutRecallFragment" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"
@@ -109,4 +112,13 @@
         android:name="com.example.flashcard.quiz.test.TestResultFragment"
         android:label="fragment_test_result"
         tools:layout="@layout/fragment_test_result" />
+    <fragment
+        android:id="@+id/aboutRecallFragment"
+        android:name="com.example.flashcard.settings.AboutRecallFragment"
+        android:label="fragment_about_recall"
+        tools:layout="@layout/fragment_about_recall" >
+        <action
+            android:id="@+id/action_aboutRecallFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 </navigation>

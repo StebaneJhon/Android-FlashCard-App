@@ -63,7 +63,7 @@ class MultiChoiceQuizGameActivity :
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
     private var fetchJob: Job? = null
 
     companion object {
@@ -241,7 +241,7 @@ class MultiChoiceQuizGameActivity :
                 }
             }
         }) {
-            if (tts.isSpeaking) {
+            if (tts?.isSpeaking == true) {
                 stopReading(it.views, it.speakButton)
             } else {
                 val cardOrientation = getCardOrientation()
@@ -273,7 +273,7 @@ class MultiChoiceQuizGameActivity :
         speakButton: Button
         ) {
         speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
-        tts.stop()
+        tts?.stop()
         views.forEach { v ->
             (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
         }
@@ -360,12 +360,12 @@ class MultiChoiceQuizGameActivity :
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts.language = Locale.forLanguageTag(
+        tts?.language = Locale.forLanguageTag(
             LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-        tts.setOnUtteranceProgressListener(speechListener)
+        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.setOnUtteranceProgressListener(speechListener)
     }
 
     private fun onWrongAnswer(
@@ -526,7 +526,7 @@ class MultiChoiceQuizGameActivity :
     override fun onInit(status: Int) {
         when(status) {
             TextToSpeech.SUCCESS -> {
-                tts.setSpeechRate(1.0f)
+                tts?.setSpeechRate(1.0f)
             }
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG)

@@ -47,7 +47,7 @@ class TestActivity :
 
     private var deckWithCards: ImmutableDeckWithCards? = null
 
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
 
     private val testViewModel: TestViewModel by viewModels {
         TestViewModelFactory((application as FlashCardApplication).repository)
@@ -144,7 +144,7 @@ class TestActivity :
                 testAdapter.notifyDataSetChanged()
             }
         ) { dataToRead ->
-            if (tts.isSpeaking) {
+            if (tts?.isSpeaking == true) {
                 stopReading(dataToRead.views)
             } else {
                 readText(
@@ -210,6 +210,7 @@ class TestActivity :
                             onShowTestResult()
                         }
                     }
+                    tts?.stop()
                 }
                 binding.btPreviousQuestion.apply {
                     if (binding.vpCardHolder.currentItem > 0) {
@@ -238,6 +239,7 @@ class TestActivity :
                                 )!!
                             )
                     }
+                    tts?.stop()
                 }
             }
 
@@ -348,7 +350,7 @@ class TestActivity :
     private fun stopReading(
         views: List<View>
     ) {
-        tts.stop()
+        tts?.stop()
         views.forEach { v ->
             (v as TextView).setTextColor(
                 MaterialColors.getColor(
@@ -379,12 +381,12 @@ class TestActivity :
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts.language = Locale.forLanguageTag(
+        tts?.language = Locale.forLanguageTag(
             LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-        tts.setOnUtteranceProgressListener(speechListener)
+        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.setOnUtteranceProgressListener(speechListener)
     }
 
     private fun onReading(
@@ -412,7 +414,7 @@ class TestActivity :
     override fun onInit(status: Int) {
         when (status) {
             TextToSpeech.SUCCESS -> {
-                tts.setSpeechRate(1.0f)
+                tts?.setSpeechRate(1.0f)
             }
 
             else -> {

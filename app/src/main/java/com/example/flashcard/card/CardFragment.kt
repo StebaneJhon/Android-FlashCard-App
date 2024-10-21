@@ -85,7 +85,7 @@ class CardFragment :
     private val binding get() = _binding!!
     private var appContext: Context? = null
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -93,7 +93,7 @@ class CardFragment :
     }
 
     @SuppressLint("RestrictedApi")
-    lateinit var item: ActionMenuItemView
+    private var item: ActionMenuItemView? = null
 
     val args: CardFragmentArgs by navArgs()
     private var deck: ImmutableDeck? = null
@@ -114,19 +114,10 @@ class CardFragment :
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        val window = activity?.window
-//        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-//        window?.statusBarColor = MaterialColors.getColor(requireView(), com.google.android.material.R.attr.colorSurfaceContainerLow)
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         appContext = container?.context
         tts = TextToSpeech(appContext, this)
         return binding.root
-    }
-
-    private fun setThemedStatusBar() {
-//        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-
-//            ContextCompat.getColor(requireContext(), R.color.royal_blue)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -362,13 +353,13 @@ class CardFragment :
                     cardViewModel.deleteCard(selectedCard, deck)
                 },
                 { text ->
-                    if (tts.isSpeaking) {
+                    if (tts?.isSpeaking == true) {
                         stopReading(text)
                     } else {
                         readText(text, deck.deckFirstLanguage!!)
                     }
                 }) { text ->
-                if (tts.isSpeaking) {
+                if (tts?.isSpeaking == true) {
                     stopReading(text)
                 } else {
                     readText(text, deck.deckSecondLanguage!!)
@@ -386,10 +377,10 @@ class CardFragment :
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
             layoutManager = if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
-                item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
                 staggeredGridLayoutManager
             } else {
-                item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
                 linearLayoutManager
             }
         }
@@ -436,13 +427,13 @@ class CardFragment :
 
         val params = Bundle()
 
-        tts.language = Locale.forLanguageTag(
+        tts?.language = Locale.forLanguageTag(
             LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
 
-        tts.setOnUtteranceProgressListener(speechListener)
+        tts?.setOnUtteranceProgressListener(speechListener)
 
     }
 
@@ -454,7 +445,7 @@ class CardFragment :
             Color.GRAY
         )
         view.setTextColor(textColor)
-        tts.stop()
+        tts?.stop()
     }
 
     private fun getSpanSize(
@@ -609,14 +600,18 @@ class CardFragment :
                 true
             }
             R.id.view_deck_menu -> {
-                if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
-                    changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
-                    binding.cardRecyclerView.layoutManager = linearLayoutManager
-                    item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                if (item == null) {
+                    Toast.makeText(requireContext(), getString(R.string.error_message_change_view_card), Toast.LENGTH_LONG).show()
                 } else {
-                    changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
-                    binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
-                    item.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                    if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
+                        changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+                        binding.cardRecyclerView.layoutManager = linearLayoutManager
+                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                    } else {
+                        changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+                        binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
+                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                    }
                 }
                 true
             }
@@ -645,7 +640,7 @@ class CardFragment :
     override fun onInit(status: Int) {
         when (status) {
             TextToSpeech.SUCCESS -> {
-                tts.setSpeechRate(1.0f)
+                tts?.setSpeechRate(1.0f)
             }
 
             else -> {

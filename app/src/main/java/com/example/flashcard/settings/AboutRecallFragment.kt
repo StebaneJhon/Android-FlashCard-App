@@ -8,37 +8,39 @@ import android.view.ViewGroup
 import android.webkit.WebViewClient
 import androidx.navigation.fragment.findNavController
 import com.example.flashcard.R
-import com.example.flashcard.databinding.FragmentPrivacyPolicyBinding
+import com.example.flashcard.databinding.FragmentAboutRecallBinding
 
-class PrivacyPolicyFragment : Fragment() {
+class AboutRecallFragment : Fragment() {
 
-    private var _binding: FragmentPrivacyPolicyBinding? = null
+    private var _binding: FragmentAboutRecallBinding? = null
     private val binding get() = _binding!!
+
+    companion object {
+        private const val LINK_TO_RECALL_ABOUT = "https://sites.google.com/view/recall-mobileapp/accueil"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPrivacyPolicyBinding.inflate(inflater, container, false)
+        _binding = FragmentAboutRecallBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.PrivacyPolicyTopAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_privacyPolicyFragment_to_settingsFragment)
+        binding.AboutTopAppBar.setNavigationOnClickListener {
+            findNavController().navigate(R.id.action_aboutRecallFragment_to_settingsFragment)
         }
-
         weViewSetup()
-
     }
 
     private fun weViewSetup() {
-        binding.wvPrivacyPolicy.apply {
+        binding.wvAbout.apply {
             webViewClient = WebViewClient()
-            loadUrl("https://sites.google.com/view/recall-mobileapp/privacy-policy")
+            loadUrl("https://sites.google.com/view/recall-mobileapp/accueil")
             settings.safeBrowsingEnabled = true
         }
     }
+
 }

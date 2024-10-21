@@ -59,7 +59,7 @@ class QuizGameActivity :
     private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var quizGameAdapter: QuizGameAdapter
 
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
 
     companion object {
         private const val TAG = "QuizGameActivity"
@@ -206,7 +206,7 @@ class QuizGameActivity :
                 specifyActions(userAnswer)
             },
             {dataToRead ->
-                if (tts.isSpeaking) {
+                if (tts?.isSpeaking == true) {
                     stopReading(dataToRead.views)
                 } else {
                     readText(
@@ -455,7 +455,7 @@ class QuizGameActivity :
     private fun stopReading (
         views: List<View>
     ) {
-        tts.stop()
+        tts?.stop()
         views.forEach { v ->
             (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
         }
@@ -492,12 +492,12 @@ class QuizGameActivity :
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts.language = Locale.forLanguageTag(
+        tts?.language = Locale.forLanguageTag(
             LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-        tts.setOnUtteranceProgressListener(speechListener)
+        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.setOnUtteranceProgressListener(speechListener)
     }
 
     private fun restoreAnswerButtons() {
@@ -535,7 +535,7 @@ class QuizGameActivity :
     override fun onInit(status: Int) {
         when(status) {
             TextToSpeech.SUCCESS -> {
-                tts.setSpeechRate(1.0f)
+                tts?.setSpeechRate(1.0f)
             }
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()

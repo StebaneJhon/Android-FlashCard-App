@@ -62,7 +62,7 @@ class WritingQuizGameActivity :
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
 
 
     companion object {
@@ -234,7 +234,7 @@ class WritingQuizGameActivity :
                 }
             },
             {dataToRead ->
-                if (tts.isSpeaking) {
+                if (tts?.isSpeaking == true) {
                     stopReading(dataToRead.views, dataToRead.speakButton)
                 } else {
                     readText(
@@ -253,7 +253,7 @@ class WritingQuizGameActivity :
         speakButton: Button
     ) {
         speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
-        tts.stop()
+        tts?.stop()
         (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
     }
 
@@ -309,12 +309,12 @@ class WritingQuizGameActivity :
         text: String,
         speechListener: UtteranceProgressListener
     ) {
-        tts.language = Locale.forLanguageTag(
+        tts?.language = Locale.forLanguageTag(
             LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
-        tts.setOnUtteranceProgressListener(speechListener)
+        tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.setOnUtteranceProgressListener(speechListener)
     }
 
     private fun onWrongAnswer(
@@ -424,7 +424,7 @@ class WritingQuizGameActivity :
     override fun onInit(status: Int) {
         when(status) {
             TextToSpeech.SUCCESS -> {
-                tts.setSpeechRate(1.0f)
+                tts?.setSpeechRate(1.0f)
             }
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()

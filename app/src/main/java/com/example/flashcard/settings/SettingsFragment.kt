@@ -123,7 +123,7 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
         }
         binding.btAboutOthersSection.setOnClickListener {
-            findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
+            findNavController().navigate(R.id.action_settingsFragment_to_aboutRecallFragment)
         }
         binding.btHelpOthersSection.setOnClickListener {
             sendEmail(HELP)

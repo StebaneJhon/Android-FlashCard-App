@@ -21,7 +21,7 @@
             android:id="@+id/deckTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name_2">
+            app:title="@string/app_name">
 
         </com.google.android.material.appbar.MaterialToolbar>
 

@@ -78,7 +78,7 @@ class FlashCardGameActivity :
     private var dy: Float = 0.0f
 
     private var modalBottomSheet: MiniGameSettingsSheet? = null
-    private lateinit var tts: TextToSpeech
+    private var tts: TextToSpeech? = null
 
     private lateinit var tvDefinitions: List<TextView>
 
@@ -765,7 +765,7 @@ class FlashCardGameActivity :
         )
 
         binding.btCardFrontSpeak.setOnClickListener { v ->
-            if (tts.isSpeaking) {
+            if (tts?.isSpeaking == true) {
                 stopReading(listOf(binding.tvQuizFront), v as Button)
             } else {
                 readText(
@@ -777,12 +777,7 @@ class FlashCardGameActivity :
             }
         }
         binding.btCardBackSpeak.setOnClickListener { v ->
-//            val views = listOf(
-//                binding.tvQuizBack1,
-//                binding.tvQuizBack2,
-//                binding.tvQuizBack3,
-//            )
-            if (tts.isSpeaking) {
+            if (tts?.isSpeaking == true) {
                 stopReading(views, v as Button)
             } else {
                 val definitions = cardDefinitionsToStrings(correctDefinitions)
@@ -797,7 +792,7 @@ class FlashCardGameActivity :
     }
 
     private fun stopReading(views: List<TextView>, button: Button) {
-        tts.stop()
+        tts?.stop()
         button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         views.forEach { v ->
             v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
@@ -861,12 +856,12 @@ class FlashCardGameActivity :
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
-        tts.language = Locale.forLanguageTag(
+        tts?.language = Locale.forLanguageTag(
             LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
-        tts.setOnUtteranceProgressListener(speechListener)
+        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.setOnUtteranceProgressListener(speechListener)
     }
 
 
@@ -948,7 +943,7 @@ class FlashCardGameActivity :
     override fun onInit(status: Int) {
         when(status) {
             TextToSpeech.SUCCESS -> {
-                tts.setSpeechRate(1.0f)
+                tts?.setSpeechRate(1.0f)
             }
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
