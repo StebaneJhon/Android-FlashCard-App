@@ -10,9 +10,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
 import android.speech.tts.TextToSpeech
@@ -23,6 +23,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -37,7 +38,6 @@ import com.example.flashcard.databinding.ActivityFlashCardGameBinding
 import com.example.flashcard.mainActivity.MainActivity
 import com.example.flashcard.settings.MiniGameSettingsSheet
 import com.example.flashcard.util.DeckColorCategorySelector
-import com.example.flashcard.util.LanguageUtil
 import com.example.flashcard.util.FlashCardMiniGameRef
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
 import com.example.flashcard.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
@@ -48,12 +48,14 @@ import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_CREATION_DATE
 import com.example.flashcard.util.FlashCardMiniGameRef.FILTER_RANDOM
 import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
 import com.example.flashcard.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
+import com.example.flashcard.util.LanguageUtil
 import com.example.flashcard.util.ThemePicker
 import com.example.flashcard.util.UiState
 import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
+
 
 class FlashCardGameActivity :
     AppCompatActivity(),
@@ -81,6 +83,7 @@ class FlashCardGameActivity :
     private var tts: TextToSpeech? = null
 
     private lateinit var tvDefinitions: List<TextView>
+    private val EXTRA_MARGIN = 18
 
     companion object {
         private val MIN_SWIPE_DISTANCE = -275
@@ -160,9 +163,13 @@ class FlashCardGameActivity :
         }
 
         binding.btRewind.setOnClickListener {
-            viewModel.rewind()
-            if (!isFront) {
-                initCardLayout()
+            if (viewModel.getCurrentCardNumber() > 1) {
+                viewModel.rewind()
+                if (!isFront) {
+                    initCardLayout()
+                }
+            } else {
+                Toast.makeText(this, getString(R.string.error_message_previous_card), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -237,7 +244,7 @@ class FlashCardGameActivity :
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 20
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - EXTRA_MARGIN
         val currentX = card.x
         val currentY = card.y
         completeSwipeToRight(card, currentX)
@@ -256,7 +263,7 @@ class FlashCardGameActivity :
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - 20
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - EXTRA_MARGIN
         val currentX = card.x
         val currentY = card.y
         completeSwipeToLeft(card, currentX)
@@ -381,7 +388,7 @@ class FlashCardGameActivity :
             val cardWidth = view.width
             val cardHeight = binding.cvCardFront.height
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = ((displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)) - 20
+            val cardStartY = ((displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)) - EXTRA_MARGIN
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -526,8 +533,9 @@ class FlashCardGameActivity :
     }
 
     private fun completeSwipeToLeft(view: View, currentX1: Float) {
+        val width = Resources.getSystem().displayMetrics.widthPixels
         view.animate()
-            .x(currentX1 - 1000)
+            .x(currentX1 - width)
             .setDuration(250)
             .start()
     }
@@ -579,9 +587,10 @@ class FlashCardGameActivity :
     }
 
     private fun completeSwipeToRight(view: View, currentX1: Float) {
+        val width = Resources.getSystem().displayMetrics.widthPixels
         view.animate()
-            .x(currentX1 + 10000)
-            .setDuration(1000)
+            .x(currentX1 + width)
+            .setDuration(250)
             .start()
     }
 
@@ -710,47 +719,6 @@ class FlashCardGameActivity :
                 tv.visibility = View.GONE
             }
         }
-
-//        when (correctDefinitions?.size) {
-//            1 -> {
-//                binding.tvQuizBack1.visibility = View.VISIBLE
-//                binding.tvQuizBack1.text = correctDefinitions[0].definition
-//                binding.tvQuizBack2.visibility = View.GONE
-//                binding.tvQuizBack3.visibility = View.GONE
-//                binding.tvQuizBack4.visibility = View.GONE
-//            }
-//
-//            2 -> {
-//                binding.tvQuizBack1.visibility = View.VISIBLE
-//                binding.tvQuizBack1.text = correctDefinitions[0].definition
-//                binding.tvQuizBack2.visibility = View.VISIBLE
-//                binding.tvQuizBack2.text = correctDefinitions[1].definition
-//                binding.tvQuizBack3.visibility = View.GONE
-//                binding.tvQuizBack4.visibility = View.GONE
-//            }
-//
-//            3 -> {
-//                binding.tvQuizBack1.visibility = View.VISIBLE
-//                binding.tvQuizBack1.text = correctDefinitions[0].definition
-//                binding.tvQuizBack2.visibility = View.VISIBLE
-//                binding.tvQuizBack2.text = correctDefinitions[1].definition
-//                binding.tvQuizBack3.visibility = View.VISIBLE
-//                binding.tvQuizBack3.text = correctDefinitions[2].definition
-//                binding.tvQuizBack4.visibility = View.GONE
-//            }
-//
-//            4 -> {
-//                binding.tvQuizBack1.visibility = View.VISIBLE
-//                binding.tvQuizBack1.text = correctDefinitions[0].definition
-//                binding.tvQuizBack2.visibility = View.VISIBLE
-//                binding.tvQuizBack2.text = correctDefinitions[1].definition
-//                binding.tvQuizBack3.visibility = View.VISIBLE
-//                binding.tvQuizBack3.text = correctDefinitions[2].definition
-//                binding.tvQuizBack4.visibility = View.VISIBLE
-//                binding.tvQuizBack4.text = correctDefinitions[3].definition
-//            }
-//        }
-        //binding.tvQuizBack.text = onScreenCards.top.cardDefinition?.first()?.definition
 
         binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
         binding.tvFlashCardFrontProgression.text = getString(

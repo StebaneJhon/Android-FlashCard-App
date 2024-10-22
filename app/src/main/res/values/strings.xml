@@ -210,4 +210,5 @@
     <string name="message_translation_in_progress">Translation in progress…</string>
     <string name="error_message_change_view_card">Start adding cards by pressing at the + button below.</string>
     <string name="error_message_change_view_deck">Start adding decks by pressing at the + button below.</string>
+    <string name="error_message_previous_card">This is the first card</string>
 </resources>

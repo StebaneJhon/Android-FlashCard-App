@@ -125,8 +125,6 @@ class CardFragment :
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
 
-
-
         deck = args.selectedDeck
         opener = args.opener
 
