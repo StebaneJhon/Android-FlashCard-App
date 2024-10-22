@@ -1,12 +1,9 @@
 package com.example.flashcard.settings
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -87,9 +84,9 @@ class EmailFragment : Fragment() {
             })
 
             val mimeMessage = MimeMessage(session)
-            mimeMessage.addRecipient(Message.RecipientType.TO, InternetAddress(userEmail))
-            mimeMessage.subject = getString(R.string.email_object, userSubject, userName)
-            mimeMessage.setText(userMessage)
+            mimeMessage.addRecipient(Message.RecipientType.TO, InternetAddress(Credential.RECALL_MAIL))
+            mimeMessage.subject = getString(R.string.email_object, getString(R.string.app_name),userSubject)
+            mimeMessage.setText(getString(R.string.email_user_mail, userName, userEmail, userMessage))
 
             val t = Thread {
                 try {

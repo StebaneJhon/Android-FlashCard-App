@@ -150,12 +150,13 @@
     <string name="hint_email">Email</string>
     <string name="hint_message">Message</string>
     <string name="bt_text_send">Send</string>
-    <string name="email_object">%1$s From %2$s</string>
+    <string name="email_object">%1$s %2$s</string>
     <string name="error_message_missing_email">Enter your email here.</string>
     <string name="error_message_missing_message">Enter your message here.</string>
     <string name="error_message_missing_subject">Enter your a subject here.</string>
     <string name="error_message_missing_mail_app">Missing mail.</string>
     <string name="error_message_email_not_sent">Email not sent</string>
+    <string name="email_user_mail">User name: %1$s.\nUser email: %2$s \nUser message: %3$s</string>
     <string name="success_message_email_sent">A mail has been sent to the developer. Thank you for your time! You will receive an answer as soon as possible.</string>
     <string name="bt_text_dismiss">Dismiss</string>
     <string name="error_message_starting_quiz">At least %1$s cards to play start this quiz mode</string>
