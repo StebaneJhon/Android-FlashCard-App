@@ -6,13 +6,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.flashcard.R
 import com.example.flashcard.databinding.FragmentEmailBinding
+import com.example.flashcard.util.Credential
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import javax.mail.Authenticator
+import javax.mail.Message
+import javax.mail.MessagingException
+import javax.mail.PasswordAuthentication
+import javax.mail.Session
+import javax.mail.Transport
+import javax.mail.internet.AddressException
+import javax.mail.internet.InternetAddress
+import javax.mail.internet.MimeMessage
 
 class EmailFragment : Fragment() {
 
@@ -46,35 +57,57 @@ class EmailFragment : Fragment() {
             val userMessage = binding.tieMessage.text?.toString()?.trim()
             val userName = binding.tieName.text?.toString()?.trim()
 
-            if(verifyEmailAndMessageField(userEmail, userMessage)) {
-                sendEmail(userEmail, userMessage, subject, userName)
+            if (verifyEmailAndMessageField(userEmail, userMessage)) {
+                sendEmailSMTP(userEmail, userMessage, subject, userName)
             }
         }
     }
 
-    private fun sendEmail(
+    private fun sendEmailSMTP(
         userEmail: String?,
         userMessage: String?,
-        userSubject: String?,
-        userName: String?,
+        userSubject: String,
+        userName: String?
     ) {
-        val addresses = arrayOf("ssoaharison@gmail.com", userEmail)
-        val subject = "Recall App $userSubject $userName"
-
-        val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:")
-            putExtra(Intent.EXTRA_EMAIL, addresses)
-            putExtra(Intent.EXTRA_SUBJECT, subject)
-            putExtra(Intent.EXTRA_TEXT, userMessage)
-        }
-
         try {
-            startActivity(intent)
-            isEmailSent(true)
-        } catch (e: Exception) {
+            val stringHost = "smtp.gmail.com"
+            val properties = System.getProperties()
+            properties["mail.smtp.host"] = stringHost
+            properties["mail.smtp.port"] = "465"
+            properties["mail.smtp.ssl.enable"] = "true"
+            properties["mail.smtp.auth"] = "true"
+
+            val session = Session.getInstance(properties, object : Authenticator() {
+                override fun getPasswordAuthentication(): PasswordAuthentication {
+                    return PasswordAuthentication(
+                        Credential.RECALL_MAIL,
+                        Credential.RECALL_MAIL_APP_PASSWORD
+                    )
+                }
+            })
+
+            val mimeMessage = MimeMessage(session)
+            mimeMessage.addRecipient(Message.RecipientType.TO, InternetAddress(userEmail))
+            mimeMessage.subject = getString(R.string.email_object, userSubject, userName)
+            mimeMessage.setText(userMessage)
+
+            val t = Thread {
+                try {
+                    Transport.send(mimeMessage)
+                } catch (e: MessagingException) {
+                    isEmailSent(false)
+                    showError(getString(R.string.error_message_email_not_sent))
+                }
+            }
+            t.start()
+        } catch (e: AddressException) {
             isEmailSent(false)
             showError(getString(R.string.error_message_missing_mail_app))
+        } catch (e: MessagingException) {
+            isEmailSent(false)
+            showError(getString(R.string.error_message_email_not_sent))
         }
+        isEmailSent(true)
     }
 
     private fun showError(errorMessage: String) {
@@ -90,6 +123,9 @@ class EmailFragment : Fragment() {
     private fun isEmailSent(isSent: Boolean) {
         binding.imvCheck.isVisible = isSent
         binding.tvSuccessMessage.isVisible = isSent
+        binding.tieEmail.text?.clear()
+        binding.tieName.text?.clear()
+        binding.tieMessage.text?.clear()
     }
 
     private fun verifyEmailAndMessageField(

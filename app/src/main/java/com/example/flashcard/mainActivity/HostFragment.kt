@@ -19,13 +19,11 @@ class HostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_host, container, false)
-//        if (onBoardingFinished()) {
-//            findNavController().navigate(R.id.action_hostFragment_to_deckFragment2)
-//        } else {
-//            findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
-//        }
-        findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
-
+        if (onBoardingFinished()) {
+            findNavController().navigate(R.id.action_hostFragment_to_deckFragment2)
+        } else {
+            findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
+        }
         return view
     }
 
