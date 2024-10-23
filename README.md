@@ -13,7 +13,7 @@
 If you are to compile your own variation of this app, please consider two things:
 - Create and configure a Firebase project and include your own Firebase config file in the project as shown in this official tutorial from the Firebase youtube channel: https://www.youtube.com/watch?v=jbHfJpoOzkI. This is for the text translating function of the app.
 - In “app/src/main/java/com/ssoaharison/recall/util”, add a new file “Credential.kt” with the following content:
-  ![Credential.]().\n This is for the mail sending function of the app.
+  ![Credential.](assets/assets/credential_class.png) </br> This is for the mail sending function of the app.
 
 ## Background
 This app started as a simple Flash Card app meant to be a tool to take quick question/answer notes to assist in exam preparation. It developed quickly into a general quiz creation app and handles a large range of question types and various manners of revising them. 
