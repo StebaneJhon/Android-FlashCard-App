@@ -77,14 +77,14 @@ class EmailFragment : Fragment() {
             val session = Session.getInstance(properties, object : Authenticator() {
                 override fun getPasswordAuthentication(): PasswordAuthentication {
                     return PasswordAuthentication(
-                        Credential.RECALL_MAIL,
+                        Credential.RECALL_EMAIL,
                         Credential.RECALL_MAIL_APP_PASSWORD
                     )
                 }
             })
 
             val mimeMessage = MimeMessage(session)
-            mimeMessage.addRecipient(Message.RecipientType.TO, InternetAddress(Credential.RECALL_MAIL))
+            mimeMessage.addRecipient(Message.RecipientType.TO, InternetAddress(Credential.RECALL_EMAIL))
             mimeMessage.subject = getString(R.string.email_object, getString(R.string.app_name),userSubject)
             mimeMessage.setText(getString(R.string.email_user_mail, userName, userEmail, userMessage))
 
