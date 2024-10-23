@@ -23,7 +23,8 @@
             android:background="?colorSurfaceContainerLow"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/mn_flash_card_top_app_bar"
-            app:navigationIcon="@drawable/icon_chevron_left"
+            app:navigationIcon="@drawable/icon_arrow_back"
+            app:navigationIconTint="?colorOnSurface"
             app:title="@string/title_flash_card_game" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -32,13 +33,13 @@
         android:id="@+id/cv_card_bottom"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/space_sm"
         android:backgroundTint="?colorPrimary"
         app:cardCornerRadius="@dimen/card_radius"
+        android:layout_marginBottom="@dimen/space_sm"
         app:layout_constraintBottom_toTopOf="@+id/bt_rewind"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+        app:layout_constraintEnd_toEndOf="@+id/cl_on_screen_card_root"
+        app:layout_constraintStart_toStartOf="@+id/cl_on_screen_card_root"
+        app:layout_constraintTop_toTopOf="@+id/cl_on_screen_card_root">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_card_bottom_container"
             android:layout_width="match_parent"
@@ -124,14 +125,14 @@
             android:id="@+id/cv_card_back"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="77dp"
             android:backgroundTint="?colorPrimary"
-            app:cardCornerRadius="@dimen/card_radius"
             android:alpha="0"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginBottom="@dimen/space_sm"
+            app:cardCornerRadius="@dimen/card_radius"
+            app:layout_constraintBottom_toTopOf="@+id/bt_iv_rewind"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -160,11 +161,11 @@
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_speak"
                     app:iconSize="@dimen/icon_base"
-                    app:rippleColor="@color/transparent"
                     app:iconTint="?colorOnSurface"
                     app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_back_progression"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_flash_card_back_progression" />
+                    app:layout_constraintTop_toTopOf="@+id/tv_flash_card_back_progression"
+                    app:rippleColor="@color/transparent" />
 
 
                 <TextView
@@ -352,13 +353,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_light"
+                    android:text="@string/hint_flash_card_game_flip"
                     android:textAlignment="center"
                     android:textColor="?colorOnSurface"
                     android:textSize="@dimen/text_sm"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:text="@string/hint_flash_card_game_flip" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -367,13 +368,13 @@
             android:id="@+id/cv_card_front"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="77dp"
+            android:layout_marginBottom="@dimen/space_sm"
             android:backgroundTint="?colorPrimary"
             app:cardCornerRadius="@dimen/card_radius"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintBottom_toTopOf="@+id/bt_iv_rewind">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -442,6 +443,23 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
+
+        <Button
+            android:id="@+id/bt_iv_rewind"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:alpha="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:contentDescription="@string/bt_rewind"
+            android:padding="@dimen/space_xl"
+            app:icon="@drawable/icon_rewind"
+            app:iconTint="?colorPrimary"
+            app:rippleColor="?colorSurfaceContainerHighest"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

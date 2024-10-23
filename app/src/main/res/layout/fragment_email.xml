@@ -20,7 +20,7 @@
             android:id="@+id/emailTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/icon_chevron_left"
+            app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
             app:title="@string/settings_hint" />
 

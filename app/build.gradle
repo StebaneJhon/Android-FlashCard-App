@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.flashcard'
+    namespace 'com.ssoaharison.recall'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.flashcard"
+        applicationId "com.ssoaharison.recall"
         minSdk 26
         targetSdk 34
         versionCode 1
@@ -45,6 +45,15 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+
+
+    packagingOptions {
+        resources {
+            pickFirsts.add('META-INF/NOTICE.md')
+            pickFirsts.add('META-INF/LICENSE.md')
+        }
+    }
+
 }
 
 dependencies {
@@ -104,4 +113,8 @@ dependencies {
     implementation 'com.google.mlkit:text-recognition-devanagari:16.0.1'
     implementation 'com.google.mlkit:text-recognition-japanese:16.0.1'
     implementation 'com.google.mlkit:text-recognition-korean:16.0.1'
+
+    //SMTP mail service
+    implementation 'com.sun.mail:android-mail:1.6.6'
+    implementation 'com.sun.mail:android-activation:1.6.7'
 }

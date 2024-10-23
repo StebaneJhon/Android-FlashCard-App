@@ -52,7 +52,7 @@
         android:backgroundTint="@color/blue50"
         android:contentDescription="@string/next"
         android:padding="@dimen/space_lg"
-        app:icon="@drawable/icon_chevron_left"
+        app:icon="@drawable/icon_arrow_back"
         app:iconTint="@color/royal_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -80,7 +80,7 @@
         android:backgroundTint="@color/blue50"
         android:contentDescription="@string/next"
         android:padding="@dimen/space_lg"
-        app:icon="@drawable/icon_chevron_right"
+        app:icon="@drawable/icon_arrow_forward"
         app:iconTint="@color/royal_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

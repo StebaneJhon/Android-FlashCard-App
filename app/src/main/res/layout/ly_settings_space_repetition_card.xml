@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="65dp"
     android:layout_height="65dp"
     xmlns:tools="http://schemas.android.com/tools"
@@ -13,21 +14,33 @@
         <TextView
             android:id="@+id/tv_space_repetition_forgetting_day"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans_bold"
-            tools:text="2"
-            android:textAlignment="center"
+            android:layout_height="0dp"
+            android:fontFamily="@font/open_sans"
+            android:textAlignment="gravity"
+            android:gravity="center"
             android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_xl" />
+            app:autoSizeMaxTextSize="@dimen/text_xl2"
+            app:autoSizeMinTextSize="@dimen/text_xl"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@+id/tv_space_repetition_level_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2" />
 
         <TextView
             android:id="@+id/tv_space_repetition_level_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:textAlignment="center"
             android:fontFamily="@font/open_sans_light"
-            tools:text="L2"
             android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_base" />
+            android:textSize="@dimen/text_sm"
+            android:layout_margin="@dimen/space_xs"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="L2" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

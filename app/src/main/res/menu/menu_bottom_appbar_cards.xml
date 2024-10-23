@@ -8,15 +8,15 @@
         android:contentDescription="@string/flash_card_button_text"
         app:showAsAction="ifRoom"/>
     <item
-        android:id="@+id/bt_multiple_choice_quiz"
-        android:icon="@drawable/icon_quiz"
-        android:title="@string/multiple_choice_quiz_button_text"
-        android:contentDescription="@string/multiple_choice_quiz_button_text"
-        app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/bt_test_quiz_game"
+        android:id="@+id/bt_quiz"
         android:icon="@drawable/icon_neurology"
         android:title="@string/bt_test_quiz_game_text"
         android:contentDescription="@string/bt_test_quiz_game_text"
+        app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/bt_test"
+        android:icon="@drawable/icon_fire"
+        android:title="@string/bt_text_test"
+        android:contentDescription="@string/bt_text_test"
         app:showAsAction="ifRoom"/>
 </menu>
