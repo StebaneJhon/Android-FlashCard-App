@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "934936181677",
-    "project_id": "flashcardapp-79945",
-    "storage_bucket": "flashcardapp-79945.appspot.com"
+    "project_number": "722426987184",
+    "project_id": "recall-11723",
+    "storage_bucket": "recall-11723.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:934936181677:android:15891875608d34720abf24",
+        "mobilesdk_app_id": "1:722426987184:android:f2c2b1a1821683f8bf7175",
         "android_client_info": {
-          "package_name": "com.example.flashcard"
+          "package_name": "com.ssoaharison.recall"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "934936181677-i483gecm1tbkptim9bi5bnps31hmpmje.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBpotfQeMbcXjMTE9JybLw_tpLFDYSr1WA"
+          "current_key": "AIzaSyBfN_HhAII6UpIwGgFz9mp_Fo6DCikYFGg"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "934936181677-i483gecm1tbkptim9bi5bnps31hmpmje.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

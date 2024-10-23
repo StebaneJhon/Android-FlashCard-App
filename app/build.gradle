@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.flashcard'
+    namespace 'com.ssoaharison.recall'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.flashcard"
+        applicationId "com.ssoaharison.recall"
         minSdk 26
         targetSdk 34
         versionCode 1

@@ -61,7 +61,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="package com.example.flashcard.card.FileProvider"
+            android:authorities="package com.ssoaharison.recall.card.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

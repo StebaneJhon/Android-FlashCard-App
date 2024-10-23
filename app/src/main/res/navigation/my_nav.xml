@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/cardFragment"
-        android:name="com.example.flashcard.card.CardFragment"
+        android:name="com.ssoaharison.recall.card.CardFragment"
         android:label="fragment_card"
         tools:layout="@layout/fragment_card" >
         <action
@@ -15,7 +15,7 @@
             app:destination="@id/deckFragment" />
         <argument
             android:name="selectedDeck"
-            app:argType="com.example.flashcard.backend.Model.ImmutableDeck" />
+            app:argType="com.ssoaharison.recall.backend.Model.ImmutableDeck" />
         <action
             android:id="@+id/action_cardFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/deckFragment"
-        android:name="com.example.flashcard.deck.DeckFragment"
+        android:name="com.ssoaharison.recall.deck.DeckFragment"
         android:label="fragment_deck"
         tools:layout="@layout/fragment_deck" >
         <action
@@ -37,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.example.flashcard.settings.SettingsFragment"
+        android:name="com.ssoaharison.recall.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -59,7 +59,7 @@
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"
-        android:name="com.example.flashcard.onboarding.OnBoardingViewPagerFragment"
+        android:name="com.ssoaharison.recall.onboarding.OnBoardingViewPagerFragment"
         android:label="fragment_on_boarding_view_pager"
         tools:layout="@layout/fragment_on_boarding_view_pager" >
 
@@ -71,7 +71,7 @@
     </fragment>
     <fragment
         android:id="@+id/hostFragment"
-        android:name="com.example.flashcard.mainActivity.HostFragment"
+        android:name="com.ssoaharison.recall.mainActivity.HostFragment"
         android:label="fragment_host"
         tools:layout="@layout/fragment_host" >
         <action
@@ -88,7 +88,7 @@
     </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
-        android:name="com.example.flashcard.settings.PrivacyPolicyFragment"
+        android:name="com.ssoaharison.recall.settings.PrivacyPolicyFragment"
         android:label="fragment_privacy_policy"
         tools:layout="@layout/fragment_privacy_policy" >
         <action
@@ -97,7 +97,7 @@
     </fragment>
     <fragment
         android:id="@+id/emailFragment"
-        android:name="com.example.flashcard.settings.EmailFragment"
+        android:name="com.ssoaharison.recall.settings.EmailFragment"
         android:label="fragment_email"
         tools:layout="@layout/fragment_email" >
         <argument
@@ -109,12 +109,12 @@
     </fragment>
     <fragment
         android:id="@+id/testResultFragment"
-        android:name="com.example.flashcard.quiz.test.TestResultFragment"
+        android:name="com.ssoaharison.recall.quiz.test.TestResultFragment"
         android:label="fragment_test_result"
         tools:layout="@layout/fragment_test_result" />
     <fragment
         android:id="@+id/aboutRecallFragment"
-        android:name="com.example.flashcard.settings.AboutRecallFragment"
+        android:name="com.ssoaharison.recall.settings.AboutRecallFragment"
         android:label="fragment_about_recall"
         tools:layout="@layout/fragment_about_recall" >
         <action
