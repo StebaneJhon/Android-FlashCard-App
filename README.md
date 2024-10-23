@@ -8,6 +8,14 @@
 <img align="left" alt="Test quiz" width="100px" src="assets/recall_demo_test.png" style="padding-right:10px;"/>
 <img alt="Settings fragment" width="100px" src="assets/recall_demo_theme_fragment.png" style="padding-right:10px;"/>
 
+## Tech stack: 
+- Kotlin: Programming language
+- XML: UI Library
+- Retrofit: API library used to upload data from “Open trivia database”
+- Room DB: For storing data on device
+- SMTP: For mail sending
+- Firebase: For text translation api
+
 ## Instructions
 If you are to compile your own variation of this app, please consider two things:
 - Create and configure a Firebase project and include your own Firebase config file in the project as shown in this official tutorial from the Firebase youtube channel: https://www.youtube.com/watch?v=jbHfJpoOzkI. This is for the text translating function of the app.
