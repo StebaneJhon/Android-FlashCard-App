@@ -1,7 +1,6 @@
 # Recall 
 **`An open-source Quiz & Flashcard app`**
 
-## Screenshots
 <img align="left" alt="Card fragment" width="100px" src="assets/Recall_demo_cads_fragment.png" style="padding-right:10px;"/>
 <img align="left" alt="Space repetition in action" width="100px" src="assets/Recall_demo_space_repetition.png" style="padding-right:10px;"/>
 <img align="left" alt="Deck fragment" width="100px" src="assets/recall_demo_deck_fragment.png" style="padding-right:10px;"/>
