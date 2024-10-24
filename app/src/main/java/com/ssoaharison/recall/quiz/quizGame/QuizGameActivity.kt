@@ -42,8 +42,7 @@ import java.util.Locale
 class QuizGameActivity :
     AppCompatActivity(),
     MiniGameSettingsSheet.SettingsApplication,
-    TextToSpeech.OnInitListener
-{
+    TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityTestQuizGameBinding
     private val viewModel: TestQuizGameViewModel by viewModels {
@@ -72,7 +71,10 @@ class QuizGameActivity :
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
-        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePref = getSharedPreferences(
+            FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
+            Context.MODE_PRIVATE
+        )
         miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
@@ -113,9 +115,11 @@ class QuizGameActivity :
                         is UiState.Error -> {
                             onNoCardToRevise()
                         }
+
                         is UiState.Loading -> {
 
                         }
+
                         is UiState.Success -> {
                             launchTestQuizGame(state.data)
                         }
@@ -197,7 +201,7 @@ class QuizGameActivity :
             data,
             viewModel.getDeckColorCode(),
             viewModel.deck!!,
-            {userAnswer ->
+            { userAnswer ->
                 viewModel.submitUserAnswer(userAnswer)
                 quizGameAdapter.notifyDataSetChanged()
                 if (viewModel.isAllAnswerSelected(userAnswer)) {
@@ -205,7 +209,7 @@ class QuizGameActivity :
                 }
                 specifyActions(userAnswer)
             },
-            {dataToRead ->
+            { dataToRead ->
                 if (tts?.isSpeaking == true) {
                     stopReading(dataToRead.views)
                 } else {
@@ -227,7 +231,7 @@ class QuizGameActivity :
         var fetchJob1: Job? = null
         binding.btKnown.setOnClickListener {
             areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-            viewModel.updateCardOnKnownOrKnownNot (userResponseModel, true)
+            viewModel.updateCardOnKnownOrKnownNot(userResponseModel, true)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -249,7 +253,7 @@ class QuizGameActivity :
             restoreAnswerButtons()
         }
         binding.btKnownNot.setOnClickListener {
-            viewModel.updateCardOnKnownOrKnownNot (userResponseModel, false)
+            viewModel.updateCardOnKnownOrKnownNot(userResponseModel, false)
             areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -288,6 +292,28 @@ class QuizGameActivity :
         } else {
             isRewindButtonActive(false)
         }
+        binding.btNext.setOnClickListener {
+            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            fetchJob1?.cancel()
+            fetchJob1 = lifecycleScope.launch {
+                delay(TIME_BEFORE_HIDING_ACTIONS)
+                if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
+                    displayReview(
+                        viewModel.getKnownCardSum(),
+                        viewModel.getMissedCardSum(),
+                        viewModel.getQuizGameCardsSum(),
+                        viewModel.getMissedCard()
+                    )
+                } else {
+                    val itemPosition = binding.vpCardHolder.currentItem
+                    binding.vpCardHolder.setCurrentItem(
+                        itemPosition.plus(1),
+                        true
+                    )
+                }
+            }
+            restoreAnswerButtons()
+        }
     }
 
     private fun optionsState() {
@@ -302,14 +328,15 @@ class QuizGameActivity :
         missedCardsSum: Int,
         totalCardsSum: Int,
         missedCardsList: List<ImmutableCard?>
-        ) {
+    ) {
 
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.lyContainerOptions.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
-            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "TestActivity")
+            tvScoreTitleScoreLayout.text =
+                getString(R.string.flashcard_score_title_text, getString(R.string.start_quiz_button_text))
             tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
             tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
             tvKnownCardsSumScoreLayout.text = knownCardsSum.toString()
@@ -423,8 +450,13 @@ class QuizGameActivity :
 
         var position = 0
         val textSum = text.size
-        val onStopColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onStopColor = MaterialColors.getColor(
+            this,
+            com.google.android.material.R.attr.colorOnSurface,
+            Color.BLACK
+        )
+        val onReadColor =
+            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
@@ -444,7 +476,11 @@ class QuizGameActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(this@QuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@QuizGameActivity,
+                    getString(R.string.error_read),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -452,12 +488,18 @@ class QuizGameActivity :
 
     }
 
-    private fun stopReading (
+    private fun stopReading(
         views: List<View>
     ) {
         tts?.stop()
         views.forEach { v ->
-            (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+            (v as TextView).setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
         }
     }
 
@@ -503,10 +545,19 @@ class QuizGameActivity :
     private fun restoreAnswerButtons() {
 
         val buttonsDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral300)
-        val buttonsOriginalColorStateList = MaterialColors.getColorStateList(this, com.google.android.material.R.attr.colorSurfaceContainerLowest, buttonsDefaultColorStateList!!)
+        val buttonsOriginalColorStateList = MaterialColors.getColorStateList(
+            this,
+            com.google.android.material.R.attr.colorSurfaceContainerLowest,
+            buttonsDefaultColorStateList!!
+        )
 
-        val buttonsStrokeDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral500)
-        val buttonsStrokeOriginalColorStateList = MaterialColors.getColorStateList(this, com.google.android.material.R.attr.colorSurfaceContainerHigh, buttonsStrokeDefaultColorStateList!!)
+        val buttonsStrokeDefaultColorStateList =
+            ContextCompat.getColorStateList(this, R.color.neutral500)
+        val buttonsStrokeOriginalColorStateList = MaterialColors.getColorStateList(
+            this,
+            com.google.android.material.R.attr.colorSurfaceContainerHigh,
+            buttonsStrokeDefaultColorStateList!!
+        )
 
         binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1).apply {
             backgroundTintList = buttonsOriginalColorStateList
@@ -533,10 +584,11 @@ class QuizGameActivity :
     }
 
     override fun onInit(status: Int) {
-        when(status) {
+        when (status) {
             TextToSpeech.SUCCESS -> {
                 tts?.setSpeechRate(1.0f)
             }
+
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }

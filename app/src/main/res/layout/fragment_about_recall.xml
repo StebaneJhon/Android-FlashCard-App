@@ -21,7 +21,8 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIconTint="?colorOnSurface"
             app:title="@string/bt_about_recall_text"
-            app:navigationIcon="@drawable/icon_arrow_back">
+            app:navigationIcon="@drawable/icon_arrow_back"
+            app:navigationContentDescription="@string/bt_description_back_to_settings">
 
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>

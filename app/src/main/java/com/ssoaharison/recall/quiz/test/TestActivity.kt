@@ -219,9 +219,20 @@ class TestActivity :
                         backgroundTintList = MaterialColors
                             .getColorStateList(
                                 this@TestActivity,
-                                com.google.android.material.R.attr.colorSurfaceContainerLow,
+                                com.google.android.material.R.attr.colorPrimary,
                                 ContextCompat.getColorStateList(
-                                    this@TestActivity, R.color.neutral300
+                                    this@TestActivity, R.color.neutral700
+                                )!!
+                            )
+                        setOnClickListener {
+                            binding.vpCardHolder.currentItem -= 1
+                        }
+                        iconTint = MaterialColors
+                            .getColorStateList(
+                                this@TestActivity,
+                                com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                ContextCompat.getColorStateList(
+                                    this@TestActivity, R.color.neutral50
                                 )!!
                             )
                         setOnClickListener {
@@ -236,6 +247,14 @@ class TestActivity :
                                 com.google.android.material.R.attr.colorSurfaceContainerLowest,
                                 ContextCompat.getColorStateList(
                                     this@TestActivity, R.color.neutral50
+                                )!!
+                            )
+                        iconTint = MaterialColors
+                            .getColorStateList(
+                                this@TestActivity,
+                                com.google.android.material.R.attr.colorPrimary,
+                                ContextCompat.getColorStateList(
+                                    this@TestActivity, R.color.neutral700
                                 )!!
                             )
                     }

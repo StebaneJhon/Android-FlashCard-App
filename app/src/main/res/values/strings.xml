@@ -6,7 +6,7 @@
     <string name="deck_first_language_hint">Deck content language</string>
     <string name="deck_second_language_hint">Deck definition language</string>
     <string name="deck_color">Deck Color</string>
-    <string name="add_new_card_button_description">Add New Card Button</string>
+    <string name="bt_description_add_new_card">Add New Card</string>
     <string name="card_content_hint">%1$s word, sentence</string>
     <string name="card_content_definition_hint">%1$s word or sentence Definition</string>
     <string name="card_definition">%1$s word, sentence</string>
@@ -36,7 +36,7 @@
     <string name="category_color_picker_title">Category Color</string>
     <string name="background_text_title">Background</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_new_deck_button">Add new deck button</string>
+    <string name="bt_description_add_new_deck">Add new deck</string>
     <string name="profile_tab_title">Profile</string>
     <string name="deck_tab_hint">Deck</string>
     <string name="timed_flash_card_text_button">Timed Flash Card</string>
@@ -54,7 +54,6 @@
     <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
     <string name="bt_continue_match_quiz_score">%1$s CARDS LEFT CONTINUE ?</string>
     <string name="bt_restart_match_quiz_score">RESTART</string>
-    <string name="bt_start">START</string>
     <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
@@ -213,4 +212,13 @@
     <string name="error_message_change_view_deck">Start adding decks by pressing at the + button below.</string>
     <string name="error_message_previous_card">This is the first card</string>
     <string name="error_message_function_not_available">This function is under development.</string>
+    <string name="bt_description_back_to_settings">Back to settings</string>
+    <string name="bt_description_back_to_decks">Back to decks</string>
+    <string name="bt_description_back">Exit settings</string>
+    <string name="bt_description_exit">Exit</string>
+    <string name="bt_description_next">Exit</string>
+    <string name="bt_description_previous">Previous</string>
+    <string name="bt_description_start">START</string>
+    <string name="bt_description_app_theme">App theme</string>
+    <string name="bt_description_deck_color">Deck color</string>
 </resources>

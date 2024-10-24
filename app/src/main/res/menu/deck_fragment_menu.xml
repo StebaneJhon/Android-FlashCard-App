@@ -5,6 +5,7 @@
     <item
         android:id="@+id/search_deck_menu"
         android:title="@string/search_deck_title"
+        android:contentDescription="@string/search_deck_title"
         android:icon="@drawable/icon_search"
         app:showAsAction="ifRoom"
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
@@ -14,6 +15,7 @@
         android:icon="@drawable/icon_grid_view"
         android:iconTint="?colorOnSurface"
         android:title="@string/bt_change_view"
+        android:contentDescription="@string/bt_change_view"
         app:showAsAction="ifRoom" />
 
     <item
@@ -21,6 +23,7 @@
         android:icon="@drawable/icon_settings"
         android:iconTint="?colorOnSurface"
         android:title="@string/bt_text_settings"
+        android:contentDescription="@string/bt_text_settings"
         app:showAsAction="ifRoom" />
 
 </menu>

@@ -24,7 +24,8 @@
                 android:layout_height="?attr/actionBarSize"
                 app:navigationIconTint="?colorOnSurface"
                 app:title="@string/settings_hint"
-                app:navigationIcon="@drawable/icon_arrow_back" />
+                app:navigationIcon="@drawable/icon_arrow_back"
+                app:navigationContentDescription="@string/bt_description_back"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -211,7 +212,9 @@
                 android:text="@string/themes_head_text"
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold"
-                app:drawableEndCompat="@drawable/icon_expand_more"/>
+                app:drawableEndCompat="@drawable/icon_expand_more"
+                android:paddingBottom="@dimen/space_sm"
+                android:paddingTop="@dimen/space_md"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_settings_theme_picker"
@@ -272,6 +275,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="English"
+                android:textColor="?colorOnSurface"
                 android:fontFamily="@font/open_sans"
                 android:textSize="@dimen/text_sm"/>
 
@@ -301,52 +305,52 @@
                 android:id="@+id/bt_privacy_others_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?colorSurfaceContainer"
+                android:backgroundTint="?colorPrimary"
                 app:cornerRadius="@dimen/bt_radius"
                 android:text="@string/bt_privacy_text"
                 android:textSize="@dimen/text_sm"
-                android:textColor="?colorOnSurface"/>
+                android:textColor="?colorSurfaceContainerLowest"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_contact_others_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?colorSurfaceContainer"
+                android:backgroundTint="?colorPrimary"
                 app:cornerRadius="@dimen/bt_radius"
                 android:text="@string/bt_contact_text"
                 android:textSize="@dimen/text_sm"
-                android:textColor="?colorOnSurface"/>
+                android:textColor="?colorSurfaceContainerLowest"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_help_others_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?colorSurfaceContainer"
+                android:backgroundTint="?colorPrimary"
                 app:cornerRadius="@dimen/bt_radius"
                 android:text="@string/bt_help_text"
                 android:textSize="@dimen/text_sm"
-                android:textColor="?colorOnSurface"/>
+                android:textColor="?colorSurfaceContainerLowest"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_rate_others_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?colorSurfaceContainer"
+                android:backgroundTint="?colorPrimary"
                 app:cornerRadius="@dimen/bt_radius"
                 android:text="@string/bt_rate_the_app_text"
                 android:textSize="@dimen/text_sm"
-                android:textColor="?colorOnSurface"/>
+                android:textColor="?colorSurfaceContainerLowest"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_about_others_section"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="?colorSurfaceContainer"
+                android:backgroundTint="?colorPrimary"
                 app:cornerRadius="@dimen/bt_radius"
                 android:text="@string/bt_about_recall_text"
                 android:textSize="@dimen/text_sm"
                 android:layout_marginBottom="@dimen/space_xs"
-                android:textColor="?colorOnSurface"/>
+                android:textColor="?colorSurfaceContainerLowest"/>
 
         </LinearLayout>
 

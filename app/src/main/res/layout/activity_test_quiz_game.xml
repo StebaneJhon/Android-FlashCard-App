@@ -107,7 +107,6 @@
             app:icon="@drawable/icon_arrow_left"
             app:iconTint="?colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/bt_known"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_action_question"
             app:rippleColor="?colorSurfaceContainerHighest" />
@@ -124,10 +123,9 @@
             android:padding="@dimen/space_md"
             app:icon="@drawable/icon_check"
             app:iconTint="@color/green700"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_action_question"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_known_not"
+            app:layout_constraintStart_toEndOf="@+id/bt_known_not"
+            app:layout_constraintTop_toTopOf="@+id/bt_known_not"
             app:rippleColor="@color/green400" />
 
         <com.google.android.material.button.MaterialButton
@@ -143,10 +141,27 @@
             app:icon="@drawable/icon_exit"
             app:iconTint="@color/red700"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bt_known"
+            app:layout_constraintEnd_toStartOf="@+id/bt_next"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_action_question"
             app:rippleColor="@color/red400" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_next"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_sm"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:clickable="false"
+            android:contentDescription="@string/bt_description_next"
+            android:padding="@dimen/space_md"
+            app:icon="@drawable/icon_arrow_right"
+            app:iconTint="?colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_action_question"
+            app:rippleColor="?colorSurfaceContainerHighest" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

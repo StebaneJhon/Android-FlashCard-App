@@ -5,7 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="@dimen/card_radius_sm"
     android:id="@+id/cv_item_theme_picker"
-    android:layout_margin="@dimen/space_xs">
+    android:layout_margin="@dimen/space_xs"
+    android:contentDescription="@string/bt_description_app_theme">
 
     <ImageView
         android:id="@+id/im_on_theme_checked"
@@ -13,6 +14,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/icon_check"
         android:layout_margin="@dimen/space_sm"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
 </com.google.android.material.card.MaterialCardView>

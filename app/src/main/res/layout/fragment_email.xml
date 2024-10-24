@@ -22,6 +22,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
+            app:navigationContentDescription="@string/bt_description_back_to_settings"
             app:title="@string/settings_hint" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -34,7 +35,7 @@
         android:layout_marginTop="@dimen/space_md"
         android:layout_marginStart="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
-        android:textColorHint="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
         app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
         app:boxCornerRadiusBottomStart="@dimen/ed_radius"
         app:boxCornerRadiusTopEnd="@dimen/ed_radius"
@@ -53,7 +54,8 @@
             android:hint="@string/hint_name"
             android:inputType="text"
             android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface" />
+            android:textColorHint="?colorOnSurface"
+            android:fontFamily="@font/open_sans" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -62,7 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
-        android:textColorHint="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
         app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
         app:boxCornerRadiusBottomStart="@dimen/ed_radius"
         app:boxCornerRadiusTopEnd="@dimen/ed_radius"
@@ -78,16 +80,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:inputType="textEmailSubject"
-            android:textColor="?colorOnSurface"
             android:hint="@string/hint_email"
-            android:textColorHint="@color/grey200" />
+            android:textColor="?colorOnSurface"
+            android:textColorHint="?colorOnSurface"
+            android:fontFamily="@font/open_sans"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
         android:layout_marginStart="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
         app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -111,7 +114,8 @@
             android:autofillHints="@string/hint_message"
             android:hint="@string/hint_message"
             android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface" />
+            android:textColorHint="?colorOnSurface"
+            android:fontFamily="@font/open_sans"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
@@ -131,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/space_sm"
         android:text="@string/success_message_email_sent"
-        android:textColor="@color/green500"
+        android:textColor="@color/green600"
         android:fontFamily="@font/open_sans"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imv_check"

@@ -25,7 +25,8 @@
                     android:layout_height="wrap_content"
                     style="@style/Widget.Material3.Button.IconButton"
                     app:icon="@drawable/icon_exit"
-                    app:iconTint="?colorOnSurface"/>
+                    app:iconTint="?colorOnSurface"
+                    android:contentDescription="@string/bt_description_exit"/>
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -49,7 +50,8 @@
                     android:layout_marginTop="0dp"
                     app:icon="@drawable/icon_check"
                     app:iconTint="?colorOnSurface"
-                    tools:ignore="RelativeOverlap" />
+                    tools:ignore="RelativeOverlap"
+                    android:contentDescription="@string/bt_add_deck"/>
 
             </RelativeLayout>
 
@@ -181,7 +183,9 @@
                 android:text="@string/category_color_picker_title"
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_sm"
-                android:layout_marginTop="@dimen/text_lg"
+                android:layout_marginTop="@dimen/space_sm"
+                android:paddingTop="@dimen/space_sm"
+                android:paddingBottom="@dimen/space_xxs"
                 android:textStyle="bold"
                 app:drawableEndCompat="@drawable/icon_expand_more" />
 

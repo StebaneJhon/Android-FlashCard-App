@@ -25,6 +25,7 @@
                 android:minHeight="?attr/actionBarSize"
                 app:menu="@menu/menu_add_new_card_top_app_bar"
                 app:navigationIcon="@drawable/icon_exit"
+                app:navigationContentDescription="@string/bt_description_exit"
                 app:title="New card" />
 
         </com.google.android.material.appbar.AppBarLayout>

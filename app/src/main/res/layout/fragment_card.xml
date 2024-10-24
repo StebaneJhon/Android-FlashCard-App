@@ -25,6 +25,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
+            app:navigationContentDescription="@string/bt_description_back_to_decks"
             app:title="@string/deck_activity_title" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -109,7 +110,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="?colorPrimary"
-            android:contentDescription="@string/add_new_card_button_description"
+            android:contentDescription="@string/bt_description_add_new_card"
             app:layout_anchor="@id/bottomAppBar"
             app:srcCompat="@drawable/add_icon_button" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

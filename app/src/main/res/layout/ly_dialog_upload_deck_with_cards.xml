@@ -16,7 +16,7 @@
             style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/exit_button_text_hint"
+            android:contentDescription="@string/bt_description_exit"
             app:icon="@drawable/icon_exit"
             app:iconSize="25sp"
             app:iconTint="?colorOnSurface"

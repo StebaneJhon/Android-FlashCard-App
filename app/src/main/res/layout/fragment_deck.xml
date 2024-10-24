@@ -108,7 +108,7 @@
             android:layout_height="wrap_content"
             app:layout_anchor="@id/bottomAppBar_deck"
             android:backgroundTint="?colorPrimary"
-            android:contentDescription="@string/add_new_deck_button"
+            android:contentDescription="@string/bt_description_add_new_deck"
             app:srcCompat="@drawable/add_icon_button" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
