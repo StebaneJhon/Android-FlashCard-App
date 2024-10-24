@@ -15,8 +15,8 @@ android {
         applicationId "com.ssoaharison.recall"
         minSdk 26
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.2.3"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -24,6 +24,9 @@ android {
             arguments {
                 arg("room.schemaLocation", "$projectDir/schemas")
             }
+        }
+        ndk {
+            debugSymbolLevel 'FULL'
         }
     }
 
