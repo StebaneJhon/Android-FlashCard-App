@@ -105,6 +105,9 @@ class EmailFragment : Fragment() {
             showError(getString(R.string.error_message_email_not_sent))
         }
         isEmailSent(true)
+        binding.tilName.error = null
+        binding.tilMessage.error = null
+        binding.tilEmail.error = null
     }
 
     private fun showError(errorMessage: String) {
@@ -131,6 +134,10 @@ class EmailFragment : Fragment() {
     ): Boolean {
         if (userEmail.isNullOrBlank()) {
             binding.tilEmail.error = getString(R.string.error_message_missing_email)
+            return false
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()) {
+            binding.tilEmail.error = getString(R.string.error_message_email_not_valid)
             return false
         }
         if (userMessage.isNullOrBlank()) {

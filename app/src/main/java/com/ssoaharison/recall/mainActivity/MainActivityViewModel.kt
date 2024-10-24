@@ -26,6 +26,7 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
 
     init {
         getAllCards()
+        SpaceRepetitionAlgorithmHelper()
         viewModelScope.launch {
             _allCards.collect { state ->
                 when (state) {

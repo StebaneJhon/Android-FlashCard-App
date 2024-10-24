@@ -152,6 +152,7 @@
     <string name="bt_text_send">Send</string>
     <string name="email_object">%1$s %2$s</string>
     <string name="error_message_missing_email">Enter your email here.</string>
+    <string name="error_message_email_not_valid">Please enter a valid email, which the developer will use to com back to you.</string>
     <string name="error_message_missing_message">Enter your message here.</string>
     <string name="error_message_missing_subject">Enter your a subject here.</string>
     <string name="error_message_missing_mail_app">Missing mail.</string>
@@ -211,4 +212,5 @@
     <string name="error_message_change_view_card">Start adding cards by pressing at the + button below.</string>
     <string name="error_message_change_view_deck">Start adding decks by pressing at the + button below.</string>
     <string name="error_message_previous_card">This is the first card</string>
+    <string name="error_message_function_not_available">This function is under development.</string>
 </resources>

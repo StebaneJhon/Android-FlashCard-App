@@ -131,6 +131,9 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         binding.btContactOthersSection.setOnClickListener {
             sendEmail(CONTACT)
         }
+        binding.btRateOthersSection.setOnClickListener {
+            Toast.makeText(requireContext(), getString(R.string.error_message_function_not_available), Toast.LENGTH_LONG).show()
+        }
 
         binding.tvThemeSectionTitle.setOnClickListener { v ->
             if (binding.rvSettingsThemePicker.layoutManager == gridLayoutManager) {

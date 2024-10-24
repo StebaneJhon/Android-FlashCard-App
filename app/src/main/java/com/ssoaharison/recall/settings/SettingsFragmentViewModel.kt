@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
+import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +28,7 @@ class SettingsFragmentViewModel(private val repository: FlashCardRepository): Vi
             try {
                 repository.getBox().collect {
                     if (it.isEmpty()) {
-                        _boxLevels.value = UiState.Error("Your Space Repetition Box is not initiated. Please do initiate your box for a better experience in the Quizeo")
+                        SpaceRepetitionAlgorithmHelper()
                     } else {
                         _boxLevels.value = UiState.Success(it)
                     }
