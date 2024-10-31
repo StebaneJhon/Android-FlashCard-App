@@ -376,7 +376,7 @@ class QuizGameActivity :
                 finish()
             }
 
-            btRestartQuizScoreLayout.setOnClickListener {
+            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
                 viewModel.initQuizGame()
                 val newCards = viewModel.getOriginalCardList()?.toMutableList()
                 startTest(

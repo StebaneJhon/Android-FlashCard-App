@@ -430,7 +430,7 @@ class MultiChoiceQuizGameActivity :
                 startActivity(Intent(this@MultiChoiceQuizGameActivity, MainActivity::class.java))
                 finish()
             }
-            btRestartQuizScoreLayout.setOnClickListener {
+            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
                 viewModel.initTimedFlashCard()
                 startMultiChoiceQuizGame(viewModel.getOriginalCardList().toMutableList(), viewModel.deck)
             }

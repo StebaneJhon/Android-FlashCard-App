@@ -91,6 +91,7 @@ object FlashCardMiniGameRef {
     const val FILTER_BY_LEVEL = "Filter By Level"
     const val CARD_ORIENTATION_BACK_AND_FRONT = "Orientation Back and Front"
     const val CARD_ORIENTATION_FRONT_AND_BACK = "Orientation Front and Back"
+    const val CARD_COUNT = "Card count"
 }
 
 object DeckRef {

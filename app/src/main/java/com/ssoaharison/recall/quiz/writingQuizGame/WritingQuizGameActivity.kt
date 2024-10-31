@@ -36,6 +36,8 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -63,6 +65,7 @@ class WritingQuizGameActivity :
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     private var tts: TextToSpeech? = null
+    private var writingQuizJob: Job? = null
 
 
     companion object {
@@ -107,27 +110,7 @@ class WritingQuizGameActivity :
         }
 
         applySettings()
-
-        lifecycleScope.launch {
-            viewModel
-                .actualCard
-                .collect { state ->
-                when (state) {
-                    is UiState.Loading -> {
-                        binding.pbCardLoadingLy.visibility = View.VISIBLE
-                        binding.cvCardErrorLy.visibility = View.GONE
-                    }
-                    is UiState.Error -> {
-                        onNoCardToRevise()
-                    }
-                    is UiState.Success -> {
-                        binding.cvCardErrorLy.visibility = View.GONE
-                        binding.pbCardLoadingLy.visibility = View.GONE
-                        launchWritingQuizGame(state.data)
-                    }
-                }
-            }
-        }
+        completelyRestartWritingQuiz()
 
         modalBottomSheet = MiniGameSettingsSheet()
 
@@ -144,6 +127,7 @@ class WritingQuizGameActivity :
 
     override fun onSettingsApplied() {
         applySettings()
+        completelyRestartWritingQuiz()
     }
 
     private fun applySettings() {
@@ -186,7 +170,6 @@ class WritingQuizGameActivity :
             viewModel.sortCardsByLevel()
         }
 
-        restartWritingQuiz()
     }
 
     private fun onNoCardToRevise() {
@@ -200,6 +183,7 @@ class WritingQuizGameActivity :
             btUnableUnknownCardOnly.setOnClickListener {
                 unableShowUnKnownCardOnly()
                 applySettings()
+                completelyRestartWritingQuiz()
             }
         }
         //isFlashCardGameScreenHidden(true)
@@ -223,11 +207,11 @@ class WritingQuizGameActivity :
             cards,
             viewModel.deck.deckColorCode!!,
             {
-                if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer)) {
-                    if (viewModel.swipe()) {
+                if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer, it.cardId)) {
+                    if (viewModel.swipe(cards.size)) {
                         binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
                     } else {
-                        onQuizComplete()
+                        onQuizComplete(viewModel.cardLeft(), cards)
                     }
                 } else {
                     onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
@@ -336,19 +320,22 @@ class WritingQuizGameActivity :
         }
     }
 
-    private fun onQuizComplete() {
+    private fun onQuizComplete(
+        cardsLeft: Int,
+        onBoardItems: List<WritingQuizGameModel>
+    ) {
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
             tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
-            tvTotalCardsSumScoreLayout.text = viewModel.cardSum().toString()
+            tvTotalCardsSumScoreLayout.text = onBoardItems.size.toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
-            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
+            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum(onBoardItems.size).toString()
 
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getKnownCardSum().toFloat() / viewModel.cardSum(),
+                viewModel.getKnownCardSum(onBoardItems.size).toFloat() / viewModel.cardSum(),
                 ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green50),
                 ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green400),
             ) as Int
@@ -360,7 +347,7 @@ class WritingQuizGameActivity :
             ) as Int
 
             val textColorKnownCards =
-                if (viewModel.cardSum() / 2 < viewModel.getKnownCardSum())
+                if (viewModel.cardSum() / 2 < viewModel.getKnownCardSum(onBoardItems.size))
                     ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green50)
                 else ContextCompat.getColor(this@WritingQuizGameActivity, R.color.green400)
 
@@ -381,8 +368,11 @@ class WritingQuizGameActivity :
                 startActivity(Intent(this@WritingQuizGameActivity, MainActivity::class.java))
                 finish()
             }
-            btRestartQuizScoreLayout.setOnClickListener {
+            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
                 restartWritingQuiz()
+            }
+            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
+                completelyRestartWritingQuiz()
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false
@@ -391,9 +381,53 @@ class WritingQuizGameActivity :
                 btReviseMissedCardScoreLayout.isActivated = true
                 btReviseMissedCardScoreLayout.isVisible = true
                 btReviseMissedCardScoreLayout.setOnClickListener {
-                    val newCards = viewModel.getMissedCard()
-                    viewModel.initWritingQuizGame()
-                    startWritingQuizGame(newCards, viewModel.deck)
+                    writingQuizJob?.cancel()
+                    writingQuizJob = lifecycleScope.launch {
+                        viewModel.updateCardOnReviseMissedCards(getCardOrientation())
+                        viewModel.actualCard.collect {state ->
+                            when (state) {
+                                is UiState.Error -> {
+                                    Toast.makeText(this@WritingQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                }
+                                is UiState.Loading -> {}
+                                is UiState.Success -> {
+                                    binding.gameReviewContainerMQ.visibility = View.GONE
+                                    binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
+                                    binding.vpCardHolder.visibility = View.VISIBLE
+                                    binding.vpCardHolder.setCurrentItem(0, true)
+                                    viewModel.initCurrentCardPosition()
+                                    viewModel.initProgress()
+                                    launchWritingQuizGame(state.data)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (cardsLeft < 0) {
+                btContinueQuizScoreLayout.visibility = View.GONE
+            } else {
+                btContinueQuizScoreLayout.apply {
+                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
+                    setOnClickListener {
+                        writingQuizJob?.cancel()
+                        writingQuizJob = lifecycleScope.launch {
+                            viewModel.updateOnscreenCard(getCardOrientation(), getCardCount())
+                            viewModel.actualCard.collect { state ->
+                                when (state) {
+                                    is UiState.Error -> {
+                                        Toast.makeText(this@WritingQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                    }
+                                    is UiState.Loading -> {}
+                                    is UiState.Success -> {
+                                        restartWritingQuiz()
+                                        launchWritingQuizGame(state.data)
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -403,8 +437,8 @@ class WritingQuizGameActivity :
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
+        binding.vpCardHolder.setCurrentItem(0, true)
         viewModel.initWritingQuizGame()
-        viewModel.updateCard(getCardOrientation())
     }
 
     private fun startWritingQuizGame(cardList: MutableList<ImmutableCard?>, deck: ImmutableDeck) {
@@ -413,8 +447,37 @@ class WritingQuizGameActivity :
         binding.vpCardHolder.setCurrentItem(0, true)
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
-        viewModel.updateCard(getCardOrientation())
     }
+
+    private fun completelyRestartWritingQuiz() {
+        restartWritingQuiz()
+        viewModel.onRestartQuiz()
+        writingQuizJob?.cancel()
+        writingQuizJob = lifecycleScope.launch {
+            viewModel.updateOnscreenCard(getCardOrientation(), getCardCount())
+            viewModel
+                .actualCard
+                .collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.pbCardLoadingLy.visibility = View.VISIBLE
+                            binding.cvCardErrorLy.visibility = View.GONE
+                        }
+                        is UiState.Error -> {
+                            onNoCardToRevise()
+                        }
+                        is UiState.Success -> {
+                            binding.cvCardErrorLy.visibility = View.GONE
+                            binding.pbCardLoadingLy.visibility = View.GONE
+                            launchWritingQuizGame(state.data)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10
+
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)

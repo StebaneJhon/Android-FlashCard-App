@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.util
+package com.ssoaharison.recall.quiz.matchQuizGame
 
 enum class MatchQuizGameBorderSize(val numChoice: Int) {
     DEFAULT(10);

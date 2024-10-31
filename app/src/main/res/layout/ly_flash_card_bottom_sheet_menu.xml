@@ -48,7 +48,9 @@
         <RelativeLayout
             android:id="@+id/rl_filter_title_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm">
 
             <TextView
                 android:id="@+id/tv_filters_section_title"
@@ -119,7 +121,9 @@
         <RelativeLayout
             android:id="@+id/rl_space_repetition_title_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm">
 
             <TextView
                 android:id="@+id/tv_space_repetition_title"
@@ -158,6 +162,7 @@
 
     </LinearLayout>
 
+
     <LinearLayout
         android:id="@+id/ll_card_orientation_settings_container"
         android:layout_width="match_parent"
@@ -173,7 +178,9 @@
         <RelativeLayout
             android:id="@+id/rl_card_orientation_title_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm">
 
             <TextView
                 android:id="@+id/tv_card_orientation_section_title"
@@ -221,6 +228,46 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_card_count_settings_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/settings_section_bg"
+        android:orientation="vertical"
+        android:padding="@dimen/space_sm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ll_space_repetition_settings_container">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_card_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="?colorSurfaceContainerHighest"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            android:textColor="?colorOnSurface"
+            android:fontFamily="@font/open_sans">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tie_card_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/deck_name_hint"
+                android:hint="@string/tv_card_count_setting_section_hint"
+                android:inputType="number"
+                android:textColor="?colorOnSurface"
+                android:textColorHint="?colorSurfaceContainerHigh"
+                android:fontFamily="@font/open_sans"
+                android:maxLines="5"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_apply_restart_flash_card_mini_game"
         android:layout_width="match_parent"
@@ -230,6 +277,8 @@
         android:text="@string/bt_apply_and_restart_quiz_settings_text"
         android:textColor="?colorOnSurface"
         app:cornerRadius="@dimen/bt_radius"
+        android:paddingTop="@dimen/space_lg"
+        android:paddingBottom="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_card_orientation_settings_container" />

@@ -24,7 +24,7 @@
             android:layout_marginBottom="@dimen/space_md"
             android:fontFamily="@font/montserrat_bold"
             android:text="@string/tv_quiz_mode_title"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_base"
             android:textStyle="bold" />
@@ -38,10 +38,11 @@
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans"
             app:cornerRadius="@dimen/bt_radius"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             app:icon="@drawable/icon_flip"
             app:iconTint="?colorOnSurface"
-            app:iconGravity="start"/>
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/multiChoiceQuizButton"
@@ -51,11 +52,12 @@
             android:text="@string/multiple_choice_quiz_button_text"
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_quiz"
             app:iconTint="?colorOnSurface"
-            app:iconGravity="start"/>
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_writing_quiz_game"
@@ -65,11 +67,12 @@
             android:text="@string/bt_start_writing_quiz_game_text"
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_writing"
             app:iconTint="?colorOnSurface"
-            app:iconGravity="start"/>
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_matching_quiz_game"
@@ -79,11 +82,12 @@
             android:text="@string/bt_match_quiz_mode_text"
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_dashboard"
             app:iconTint="?colorOnSurface"
-            app:iconGravity="start"/>
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_quiz"
@@ -93,11 +97,12 @@
             android:text="@string/bt_test_quiz_game_text"
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_neurology"
             app:iconTint="?colorOnSurface"
-            app:iconGravity="start"/>
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_test"
@@ -107,10 +112,11 @@
             android:text="@string/bt_text_test"
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans"
-            android:textAlignment="center"
+            android:textAlignment="textStart"
             app:cornerRadius="@dimen/bt_radius"
             app:icon="@drawable/icon_fire"
             app:iconTint="?colorOnSurface"
-            app:iconGravity="start" />
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"/>
 
 </LinearLayout>

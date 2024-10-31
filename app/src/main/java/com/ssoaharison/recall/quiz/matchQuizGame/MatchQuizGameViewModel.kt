@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.Model.ImmutableCard
 import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.Model.MatchQuizGameItemModel
-import com.ssoaharison.recall.util.MatchQuizGameBorderSize
 import com.ssoaharison.recall.util.MatchQuizGameClickStatus
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
@@ -168,7 +167,7 @@ class MatchQuizGameViewModel : ViewModel() {
     private fun toMatchQuizGameItem(card: ImmutableCard?): List<MatchQuizGameItemModel>? {
         if (!card?.cardContent?.content.isNullOrEmpty() && !card?.cardDefinition.isNullOrEmpty()) {
             val item1 = MatchQuizGameItemModel(card?.cardContent?.content!!, card.cardDefinition?.first()?.definition!!)
-            val item2 = MatchQuizGameItemModel(card.cardDefinition.first().definition!!, card.cardContent.content)
+            val item2 = MatchQuizGameItemModel(card.cardDefinition.first().definition, card.cardContent.content)
             return listOf(item1, item2)
         }
         return null
@@ -188,7 +187,7 @@ class MatchQuizGameViewModel : ViewModel() {
                 var result = listOf<ImmutableCard?>()
                 if (passedCards <= quizCardList.size) {
                     if (restCard > borderHeight) {
-                        result = quizCardList.slice(passedCards..borderHeight.minus(1))
+                        result = quizCardList.slice(passedCards..passedCards.plus(borderHeight).minus(1))
                         passedCards += borderHeight
                     } else {
                         result = quizCardList.slice(passedCards..quizCardList.size.minus(1))

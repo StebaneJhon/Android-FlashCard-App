@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.Model.MatchQuizGameItemModel
-import com.ssoaharison.recall.util.MatchQuizGameBorderSize
 import com.google.android.material.card.MaterialCardView
 
 class MatchQuizGameAdapter(

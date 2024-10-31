@@ -341,7 +341,7 @@ class FlashCardGameActivity :
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
                 finish()
             }
-            btRestartQuizScoreLayout.setOnClickListener {
+            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
                 restartFlashCard(getCardOrientation())
             }
             if (viewModel.getMissedCardSum() == 0) {

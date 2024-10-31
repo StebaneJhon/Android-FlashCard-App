@@ -27,9 +27,10 @@
     <string name="flashcard_score_title_text">%1$s Complete:</string>
     <string name="known_cards_text">Known cards</string>
     <string name="missed_cards_text">Missed cards</string>
-    <string name="revise_missed_cards_button_txt">REVISE MISSED CARDS</string>
-    <string name="restart_flashcard_button_text">RESTART FLASHCARD</string>
-    <string name="back_to_deck_text_button">BACK TO DECK</string>
+    <string name="revise_missed_cards_button_txt">Revise missed cards</string>
+    <string name="restart_quiz_with_previous_cards_button_text">Restart quiz with previous cards</string>
+    <string name="restart_quiz_with_all_cards_button_text">Restart quiz with all cards</string>
+    <string name="back_to_deck_text_button">Back to deck</string>
     <string name="edit_deck_menu_hint">Edit Deck</string>
     <string name="delete_deck_menu_hint">Delete Deck</string>
     <string name="expand_card_button_text">Expand</string>
@@ -42,7 +43,7 @@
     <string name="timed_flash_card_text_button">Timed Flash Card</string>
     <string name="known_button_text">Known</string>
     <string name="no_button_text">known Not</string>
-    <string name="total_cards_text">Total cards:</string>
+    <string name="total_revised_cards_text">Revised cards:</string>
     <string name="multiple_choice_quiz_button_text">Multiple-choice quiz</string>
     <string name="warning_icon">Warning Icon</string>
     <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
@@ -52,7 +53,7 @@
     <string name="bt_match_quiz_mode_text">Matching cards</string>
     <string name="title_match_quiz_score">You did it!</string>
     <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
-    <string name="bt_continue_match_quiz_score">%1$s CARDS LEFT CONTINUE ?</string>
+    <string name="bt_continue_match_quiz_score">%1$s cards left. Continue?</string>
     <string name="bt_restart_match_quiz_score">RESTART</string>
     <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
     <string name="hint_deck_search_field">Deck name</string>
@@ -73,8 +74,10 @@
     <string name="tv_space_repetition_settings_title">Space repetition</string>
     <string name="rb_by_card_level_setting_text">By card level</string>
     <string name="cb_card_to_be_revised_first_setting_text">Card to be revised first</string>
-    <string name="cb_card_to_be_revised_only_setting_text">Card to be revised Only only</string>
+    <string name="cb_card_to_be_revised_only_setting_text">Card to be revised only</string>
     <string name="tv_card_orientation_setting_section_title">Card orientation</string>
+    <string name="tv_card_count_setting_section_title">Card count</string>
+    <string name="tv_card_count_setting_section_hint">card count</string>
     <string name="rb_front_and_back_setting_text">Front and Back</string>
     <string name="rb_back_and_front_setting_text">Back and Front</string>
     <string name="bt_apply_and_restart_quiz_settings_text">APPLY AND RESTART QUIZ</string>
@@ -221,4 +224,5 @@
     <string name="bt_description_start">START</string>
     <string name="bt_description_app_theme">App theme</string>
     <string name="bt_description_deck_color">Deck color</string>
+    <string name="error_message_insufficient_card_count">At least 1 card for the quiz to work.</string>
 </resources>

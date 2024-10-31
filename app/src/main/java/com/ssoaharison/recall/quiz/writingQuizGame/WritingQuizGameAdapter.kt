@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.quiz.writingQuizGame
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,7 +69,7 @@ class WritingQuizGameAdapter(
             deckColorCode: String,
             onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
-
+            Log.e("WritingQuizGameActivity", card.answer.first())
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             tiTopCard.setText("")
             tiOnWrongAnswer.setText("")
@@ -86,6 +87,7 @@ class WritingQuizGameAdapter(
                     val correctAnswer = card.answer
                     userAnswer(
                         WritingQuizGameUserResponseModel(
+                            card.cardId,
                             userInput,
                             correctAnswer,
                             cvCardFront,

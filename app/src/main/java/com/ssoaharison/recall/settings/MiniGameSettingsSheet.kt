@@ -20,6 +20,7 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_A
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 
 class MiniGameSettingsSheet: BottomSheetDialogFragment() {
 
@@ -55,12 +56,6 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         flashCardMiniGamePref = activity?.getSharedPreferences(FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
         editor = flashCardMiniGamePref?.edit()
         initSettingState()
-
-        /*
-        val activity = requireActivity()
-        flashCardViewModel = ViewModelProvider(activity)[FlashCardGameViewModel::class.java]
-
-         */
 
        binding.btRevealFilterSettings.setOnClickListener {
            isFilterSectionRevealed(!isFilterSectionRevealed)
@@ -108,8 +103,10 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         }
 
         binding.btApplyRestartFlashCardMiniGame.setOnClickListener {
-            listener?.onSettingsApplied()
-            dismiss()
+            if (setCardCount()) {
+                listener?.onSettingsApplied()
+                dismiss()
+            }
         }
 
         binding.cbUnknownCardOnly.setOnCheckedChangeListener { _, isChecked ->
@@ -146,6 +143,8 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
             flashCardMiniGamePref?.getBoolean(IS_UNKNOWN_CARD_ONLY, false)
         val cbUnknownCardFirstCheckState =
             flashCardMiniGamePref?.getBoolean(IS_UNKNOWN_CARD_FIRST, true)
+        val cardCount = flashCardMiniGamePref?.getString(CARD_COUNT, "10")
+
         checkedFilter?.apply {
             selectFilter(this)
         }
@@ -158,6 +157,7 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         cbUnknownCardOnlyCheckState?.apply {
             isUnknownCardOnlyBoxChecked(this)
         }
+        binding.tieCardCount.setText(cardCount.toString())
     }
 
     private fun isUnknownCardFirstBoxChecked(checkedState: Boolean) {
@@ -186,6 +186,21 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
             putString(CHECKED_CARD_ORIENTATION, orientation)
             apply()
         }
+    }
+
+    private fun setCardCount(): Boolean {
+        binding.tilCardCount.error = null
+        val amount = binding.tieCardCount.text.toString()
+        if (amount.isBlank() || amount.toInt() <= 0 ) {
+            binding.tilCardCount.error = getString(R.string.error_message_insufficient_card_count)
+        } else {
+            editor?.apply {
+                putString(CARD_COUNT, amount)
+                apply()
+                return true
+            }
+        }
+        return false
     }
 
     private fun selectFilter(filter: String) {

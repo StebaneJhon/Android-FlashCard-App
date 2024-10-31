@@ -210,7 +210,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/space_sm"
                         android:fontFamily="@font/open_sans_bold"
-                        android:text="@string/total_cards_text"
+                        android:text="@string/total_revised_cards_text"
                         android:textAlignment="center"
                         android:textColor="?colorOnSurface"
                         android:textSize="@dimen/text_sm"
