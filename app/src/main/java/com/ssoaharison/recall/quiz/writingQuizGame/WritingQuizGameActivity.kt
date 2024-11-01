@@ -384,7 +384,7 @@ class WritingQuizGameActivity :
                     writingQuizJob?.cancel()
                     writingQuizJob = lifecycleScope.launch {
                         viewModel.updateCardOnReviseMissedCards(getCardOrientation())
-                        viewModel.actualCard.collect {state ->
+                        viewModel.actualCard.collect { state ->
                             when (state) {
                                 is UiState.Error -> {
                                     Toast.makeText(this@WritingQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()

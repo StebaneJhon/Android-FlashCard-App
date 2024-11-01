@@ -25,15 +25,19 @@ class FlashCardGameViewModel(
     private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
     val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
     private var originalCardList: List<ImmutableCard?>? = null
-    private var cardList: MutableList<ImmutableCard?>? = null
+    private lateinit var cardList: MutableList<ImmutableCard?>
     var deck: ImmutableDeck? = null
     var progress: Int = 0
+    private var cardToRevise: MutableList<ImmutableCard?>? = null
+    private var passedCards = 0
+    private var restCards = 0
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
+        initRestCards()
     }
 
     fun initOriginalCardList(gameCards: MutableList<ImmutableCard?>) {
@@ -44,43 +48,73 @@ class FlashCardGameViewModel(
         deck = gameDeck
     }
 
+    fun updateCardToRevise(amount: Int) {
+        when {
+            cardList.isEmpty() -> {
+                cardToRevise = null
+            }
+            cardList.size == amount -> {
+                cardToRevise = cardList
+            }
+            else -> {
+                if (passedCards <= cardList.size) {
+                    if (restCards >= amount) {
+                        cardToRevise = cardList.slice(passedCards..passedCards.plus(amount).minus(1)).toMutableList()
+                        passedCards += amount
+                    } else {
+                        cardToRevise = cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
+                        passedCards += cardList.size.plus(50)
+                    }
+                }
+                restCards = cardList.size - passedCards
+            }
+        }
+    }
+
+    fun updateCardOnReviseMissedCards() {
+        cardToRevise = missedCards.clone() as MutableList<ImmutableCard?>
+        missedCards.clear()
+    }
+
+    fun getCardToRevise() = cardToRevise
+
     private val topCard
-        get() = cardList?.get(currentCardPosition)
+        get() = cardToRevise?.get(currentCardPosition)
     private val bottomCard
-        get() = cardList?.let { getBottomCard(it, currentCardPosition) }
+        get() = cardToRevise?.let { getBottomCard(it, currentCardPosition) }
 
     fun sortCardsByLevel() {
-        cardList?.sortBy { it?.cardStatus }
+        cardList.sortBy { it?.cardStatus }
     }
 
     fun getOriginalCardList() = originalCardList
 
     fun shuffleCards() {
-        cardList?.shuffle()
+        cardList.shuffle()
     }
 
+    fun getCardLeft() = restCards
+
     fun sortByCreationDate() {
-        cardList?.sortBy { it?.cardId }
+        cardList.sortBy { it?.cardId }
     }
 
     fun unknownCardsOnly() {
-        cardList = cardList?.filter { it?.cardStatus == L1 } as MutableList<ImmutableCard?>
+        cardList = cardList.filter { it?.cardStatus == L1 } as MutableList<ImmutableCard?>
     }
 
     fun cardToReviseOnly() {
-        cardList = cardList?.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
     fun restoreCardList() {
-        cardList = originalCardList?.toMutableList()
+        cardList = originalCardList?.toMutableList()!!
     }
 
     fun swipe(isKnown: Boolean): Boolean {
-        val isQuizComplete = currentCardPosition == cardList?.size?.minus(1)
+        val isQuizComplete = currentCardPosition == cardToRevise?.size?.minus(1)
         if (!isKnown) {
-            missedCards.add(cardList!![currentCardPosition])
-        } else {
-            progress += 100/getTotalCards()
+            missedCards.add(cardToRevise?.get(currentCardPosition))
         }
         onCardSwiped(isKnown)
         if (!isQuizComplete) {
@@ -93,7 +127,7 @@ class FlashCardGameViewModel(
 
     fun rewind() {
         currentCardPosition -= 1
-        cardList?.get(currentCardPosition)?.let {
+        cardToRevise?.get(currentCardPosition)?.let {
             if (it in missedCards) {
                 missedCards.remove(it)
             } else {
@@ -104,12 +138,12 @@ class FlashCardGameViewModel(
     }
 
     fun getKnownCardSum(): Int {
-        cardList?.let { return it.size - missedCards.size }
+        cardToRevise?.let { return it.size - missedCards.size }
         return 0
     }
 
     fun getTotalCards(): Int {
-        cardList?.let { return it.size }
+        cardToRevise?.let { return it.size }
         return 0
     }
 
@@ -142,8 +176,30 @@ class FlashCardGameViewModel(
         currentCardPosition = 0
     }
 
+    private fun initPassedCards() {
+        passedCards = 0
+    }
+
+    private fun initRestCards() {
+        restCards = cardList.size
+    }
+
+    fun onRestartQuizWithAllCards() {
+        initFlashCard()
+        initPassedCards()
+        initRestCards()
+    }
+
+    fun initProgress() {
+        progress = 0
+    }
+
+    fun initCurrentCardPosition() {
+        currentCardPosition = 0
+    }
+
     fun updateOnScreenCards() {
-        cardList?.let {cards ->
+        cardToRevise?.let {cards ->
             if (cards.size == 0) {
                 _actualCards.value = UiState.Error("No Cards To Revise")
             } else {
@@ -162,7 +218,7 @@ class FlashCardGameViewModel(
     }
 
      private fun onCardSwiped(isKnown: Boolean) {
-        cardList?.let {cards ->
+        cardToRevise?.let {cards ->
             val card = cards[currentCardPosition]
             if (card != null) {
                 val newStatus = spaceRepetitionHelper.status(card, isKnown)

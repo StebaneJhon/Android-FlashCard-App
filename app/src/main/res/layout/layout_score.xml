@@ -28,7 +28,7 @@
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintHeight_min="300dp"
+        app:layout_constraintHeight_min="200dp"
         android:layout_marginStart="@dimen/space_xs"
         android:layout_marginEnd="@dimen/space_xs"
         android:layout_marginTop="@dimen/space_xxl"

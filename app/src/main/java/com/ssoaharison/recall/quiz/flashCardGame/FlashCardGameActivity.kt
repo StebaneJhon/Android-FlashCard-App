@@ -52,6 +52,8 @@ import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -126,13 +128,14 @@ class FlashCardGameActivity :
             }
         }
 
-        applySettings()
+//        applySettings()
 
         tvDefinitions = listOf(
             binding.tvQuizBack1, binding.tvQuizBack2, binding.tvQuizBack3, binding.tvQuizBack4, binding.tvQuizBack5,
             binding.tvQuizBack6, binding.tvQuizBack7, binding.tvQuizBack8, binding.tvQuizBack9, binding.tvQuizBack10,
         )
 
+        applySettings()
         lifecycleScope.launch {
             viewModel
                 .actualCards
@@ -188,6 +191,7 @@ class FlashCardGameActivity :
 
     override fun onSettingsApplied() {
         applySettings()
+        completelyRestartFlashCard(getCardOrientation())
     }
 
     private fun applySettings() {
@@ -229,14 +233,14 @@ class FlashCardGameActivity :
         if (unKnownCardFirst == true) {
             viewModel.sortCardsByLevel()
         }
-
-        restartFlashCard(getCardOrientation())
     }
 
     private fun getCardOrientation() = miniGamePref?.getString(
         CHECKED_CARD_ORIENTATION,
         CARD_ORIENTATION_FRONT_AND_BACK
     ) ?: CARD_ORIENTATION_FRONT_AND_BACK
+
+    private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10
 
     private fun onKnownButtonClicked() {
         val card = binding.clOnScreenCardRoot
@@ -285,6 +289,7 @@ class FlashCardGameActivity :
             btUnableUnknownCardOnly.setOnClickListener {
                 unableShowUnKnownCardOnly()
                 applySettings()
+                completelyRestartFlashCard(getCardOrientation())
             }
         }
         isFlashCardGameScreenHidden(true)
@@ -342,7 +347,19 @@ class FlashCardGameActivity :
                 finish()
             }
             btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-                restartFlashCard(getCardOrientation())
+                isFlashCardGameScreenHidden(false)
+                binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+                binding.lyGameReviewContainer.isVisible = false
+                viewModel.initFlashCard()
+                viewModel.updateOnScreenCards()
+                if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
+                    initCardLayout()
+                } else {
+                    onCardOrientationBackFront()
+                }
+            }
+            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
+                completelyRestartFlashCard(getCardOrientation())
             }
             if (viewModel.getMissedCardSum() == 0) {
                 btReviseMissedCardScoreLayout.isActivated = false
@@ -351,11 +368,43 @@ class FlashCardGameActivity :
                 btReviseMissedCardScoreLayout.isActivated = true
                 btReviseMissedCardScoreLayout.isVisible = true
                 btReviseMissedCardScoreLayout.setOnClickListener {
-                    val newCards = viewModel.getMissedCards()
-                    viewModel.initFlashCard()
-                    initFlashCard(newCards, viewModel.deck!!)
+                    isFlashCardGameScreenHidden(false)
+                    binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+                    binding.lyGameReviewContainer.isVisible = false
+                    viewModel.initCurrentCardPosition()
+                    viewModel.initProgress()
+                    viewModel.updateCardOnReviseMissedCards()
+                    viewModel.updateOnScreenCards()
+                    if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
+                        initCardLayout()
+                    } else {
+                        onCardOrientationBackFront()
+                    }
                 }
             }
+
+            if (viewModel.getCardLeft() <= 0) {
+                btContinueQuizScoreLayout.visibility = View.GONE
+            } else {
+                btContinueQuizScoreLayout.apply {
+                    visibility = View.VISIBLE
+                    text = getString(R.string.cards_left_match_quiz_score, "${viewModel.getCardLeft()}")
+                    setOnClickListener {
+                        isFlashCardGameScreenHidden(false)
+                        binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+                        binding.lyGameReviewContainer.isVisible = false
+                        viewModel.initFlashCard()
+                        viewModel.updateCardToRevise(getCardCount())
+                        viewModel.updateOnScreenCards()
+                        if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
+                            initCardLayout()
+                        } else {
+                            onCardOrientationBackFront()
+                        }
+                    }
+                }
+            }
+
         }
     }
 
@@ -364,8 +413,24 @@ class FlashCardGameActivity :
         binding.lyOnNoMoreCardsErrorContainer.isVisible = false
         binding.lyGameReviewContainer.isVisible = false
         viewModel.initFlashCard()
+        viewModel.updateCardToRevise(getCardCount())
         viewModel.updateOnScreenCards()
         initFlashCard(viewModel.getOriginalCardList()?.toMutableList()!!, viewModel.deck!!)
+        if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+            initCardLayout()
+        } else {
+            onCardOrientationBackFront()
+        }
+    }
+
+    private fun completelyRestartFlashCard(orientation: String) {
+        isFlashCardGameScreenHidden(false)
+        binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+        binding.lyGameReviewContainer.isVisible = false
+        viewModel.onRestartQuizWithAllCards()
+        viewModel.updateCardToRevise(getCardCount())
+        viewModel.updateOnScreenCards()
+//        initFlashCard(viewModel.getOriginalCardList()?.toMutableList()!!, viewModel.deck!!)
         if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             initCardLayout()
         } else {
@@ -689,12 +754,7 @@ class FlashCardGameActivity :
                 sumCardsInDeck
             )
         }
-
-
-
         bindCardFrontAndBack(deckColorCode, onScreenCards, currentCardNumber, sumCardsInDeck)
-
-
     }
 
     private fun bindCardFrontAndBack(
@@ -879,6 +939,7 @@ class FlashCardGameActivity :
         initCardLayout()
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
+        viewModel.updateCardToRevise(getCardCount())
         if (initOriginalCardList) { viewModel.initOriginalCardList(cardList) }
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
