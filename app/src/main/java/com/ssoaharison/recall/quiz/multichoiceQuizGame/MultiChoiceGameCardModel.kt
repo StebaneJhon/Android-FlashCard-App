@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.quiz.multichoiceQuizGame
 
 data class MultiChoiceGameCardModel(
+    val cardId: String,
     val onCardWord: String,
     val answers: List<String>,
     val alternative1: String,

@@ -34,6 +34,7 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -59,6 +60,7 @@ class QuizGameActivity :
     private lateinit var quizGameAdapter: QuizGameAdapter
 
     private var tts: TextToSpeech? = null
+    private var quizJob: Job? = null
 
     companion object {
         private const val TAG = "QuizGameActivity"
@@ -91,8 +93,9 @@ class QuizGameActivity :
             val cardList = it.cards?.toMutableList()
             val deck = it.deck
             if (!cardList.isNullOrEmpty() && deck != null) {
+                viewModel.initCardList(cardList)
                 viewModel.initOriginalCardList(cardList)
-                viewModel.initLocalQuizGameCards(cardList.toList())
+//                viewModel.initLocalQuizGameCards(cardList.toList())
                 startTest(cardList, deck)
             }
         }
@@ -106,27 +109,7 @@ class QuizGameActivity :
         }
 
         applySettings()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getQuizGameCards()
-                viewModel.externalQuizGameCards.collect { state ->
-                    when (state) {
-                        is UiState.Error -> {
-                            onNoCardToRevise()
-                        }
-
-                        is UiState.Loading -> {
-
-                        }
-
-                        is UiState.Success -> {
-                            launchTestQuizGame(state.data)
-                        }
-                    }
-                }
-            }
-        }
+        completelyRestartQuiz()
 
         modalBottomSheet = MiniGameSettingsSheet()
 
@@ -143,6 +126,7 @@ class QuizGameActivity :
 
     override fun onSettingsApplied() {
         applySettings()
+        completelyRestartQuiz()
     }
 
     private fun applySettings() {
@@ -185,11 +169,11 @@ class QuizGameActivity :
             viewModel.sortCardsByLevel()
         }
 
-        viewModel.initQuizGame()
-        binding.gameReviewContainerMQ.visibility = View.GONE
-        binding.vpCardHolder.visibility = View.VISIBLE
-        viewModel.getQuizGameCards()
-        binding.vpCardHolder.setCurrentItem(0, true)
+//        viewModel.initQuizGame()
+//        binding.gameReviewContainerMQ.visibility = View.GONE
+//        binding.vpCardHolder.visibility = View.VISIBLE
+//        viewModel.getQuizGameCards()
+//        binding.vpCardHolder.setCurrentItem(0, true)
 
     }
 
@@ -240,7 +224,8 @@ class QuizGameActivity :
                         viewModel.getKnownCardSum(),
                         viewModel.getMissedCardSum(),
                         viewModel.getQuizGameCardsSum(),
-                        viewModel.getMissedCard()
+                        viewModel.getMissedCard(),
+                        viewModel.cardLeft()
                     )
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
@@ -263,7 +248,8 @@ class QuizGameActivity :
                         viewModel.getKnownCardSum(),
                         viewModel.getMissedCardSum(),
                         viewModel.getQuizGameCardsSum(),
-                        viewModel.getMissedCard()
+                        viewModel.getMissedCard(),
+                        viewModel.cardLeft()
                     )
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
@@ -302,7 +288,8 @@ class QuizGameActivity :
                         viewModel.getKnownCardSum(),
                         viewModel.getMissedCardSum(),
                         viewModel.getQuizGameCardsSum(),
-                        viewModel.getMissedCard()
+                        viewModel.getMissedCard(),
+                        viewModel.cardLeft()
                     )
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
@@ -327,7 +314,8 @@ class QuizGameActivity :
         knownCardsSum: Int,
         missedCardsSum: Int,
         totalCardsSum: Int,
-        missedCardsList: List<ImmutableCard?>
+        missedCardsList: List<ImmutableCard?>,
+        cardsLeft: Int,
     ) {
 
         binding.vpCardHolder.visibility = View.GONE
@@ -377,12 +365,17 @@ class QuizGameActivity :
             }
 
             btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-                viewModel.initQuizGame()
-                val newCards = viewModel.getOriginalCardList()?.toMutableList()
-                startTest(
-                    newCards!!,
-                    viewModel.deck!!
-                )
+//                viewModel.initQuizGame()
+//                val newCards = viewModel.getOriginalCardList()?.toMutableList()
+//                startTest(
+//                    newCards!!,
+//                    viewModel.deck!!
+//                )
+                restartQuiz()
+            }
+
+            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
+                completelyRestartQuiz()
             }
 
             if (missedCardsSum == 0) {
@@ -392,11 +385,60 @@ class QuizGameActivity :
                 btReviseMissedCardScoreLayout.isActivated = true
                 btReviseMissedCardScoreLayout.isVisible = true
                 btReviseMissedCardScoreLayout.setOnClickListener {
-                    val newCards = missedCardsList.toMutableList()
-                    viewModel.initQuizGame()
-                    startTest(newCards, viewModel.deck!!)
+//                    val newCards = missedCardsList.toMutableList()
+//                    viewModel.initQuizGame()
+//                    startTest(newCards, viewModel.deck!!)
+                    viewModel.updateActualCardsWithMissedCards()
+                    quizJob?.cancel()
+                    quizJob = lifecycleScope.launch {
+                        viewModel.getQuizGameCards()
+                        viewModel.externalQuizGameCards.collect { state ->
+                            when (state) {
+                                is UiState.Error -> {
+                                    onNoCardToRevise()
+                                }
+                                is UiState.Loading -> {}
+                                is UiState.Success -> {
+                                    binding.gameReviewContainerMQ.visibility = View.GONE
+                                    binding.vpCardHolder.visibility = View.VISIBLE
+                                    binding.vpCardHolder.setCurrentItem(0, true)
+                                    viewModel.resetLocalQuizGameCardsState()
+                                    launchTestQuizGame(state.data)
+                                }
+                            }
+                        }
+                    }
                 }
             }
+
+            if (cardsLeft <= 0) {
+                btContinueQuizScoreLayout.visibility = View.GONE
+            } else {
+                btContinueQuizScoreLayout.apply {
+                    visibility = View.VISIBLE
+                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
+                    setOnClickListener {
+                        viewModel.updateActualCards(getCardCount())
+                        quizJob?.cancel()
+                        quizJob = lifecycleScope.launch {
+                            viewModel.getQuizGameCards()
+                            viewModel.externalQuizGameCards.collect { state ->
+                                when (state) {
+                                    is UiState.Error -> {
+                                        onNoCardToRevise()
+                                    }
+                                    is UiState.Loading -> {}
+                                    is UiState.Success -> {
+                                        restartQuiz()
+                                        launchTestQuizGame(state.data)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
     }
@@ -407,10 +449,46 @@ class QuizGameActivity :
     ) {
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
+        viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
-        viewModel.initLocalQuizGameCards(cardList)
-        viewModel.getQuizGameCards()
+        viewModel.updateActualCards(getCardCount())
+//        viewModel.getQuizGameCards()
         binding.vpCardHolder.setCurrentItem(0, true)
+    }
+
+    private fun restartQuiz() {
+        viewModel.initQuizGame()
+        binding.gameReviewContainerMQ.visibility = View.GONE
+        binding.vpCardHolder.visibility = View.VISIBLE
+        binding.vpCardHolder.setCurrentItem(0, true)
+
+    }
+
+    private fun completelyRestartQuiz() {
+        restartQuiz()
+        viewModel.onRestartQuiz()
+        viewModel.updateActualCards(getCardCount())
+        quizJob?.cancel()
+        quizJob  = lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.getQuizGameCards()
+                viewModel.externalQuizGameCards.collect { state ->
+                    when (state) {
+                        is UiState.Error -> {
+                            onNoCardToRevise()
+                        }
+
+                        is UiState.Loading -> {
+
+                        }
+
+                        is UiState.Success -> {
+                            launchTestQuizGame(state.data)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun isRewindButtonActive(isActive: Boolean) {
@@ -428,11 +506,19 @@ class QuizGameActivity :
             }
 
             btUnableUnknownCardOnly.setOnClickListener {
-                //unableShowUnKnownCardOnly()
-                //applySettings()
+                unableShowUnKnownCardOnly()
+                applySettings()
+                completelyRestartQuiz()
             }
         }
         //isFlashCardGameScreenHidden(true)
+    }
+
+    private fun unableShowUnKnownCardOnly() {
+        miniGamePrefEditor?.apply {
+            putBoolean(FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY, false)
+            apply()
+        }
     }
 
     private fun areOptionsEnabled(optionsEnabled: Boolean) {
@@ -577,6 +663,8 @@ class QuizGameActivity :
         }
 
     }
+
+    private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)

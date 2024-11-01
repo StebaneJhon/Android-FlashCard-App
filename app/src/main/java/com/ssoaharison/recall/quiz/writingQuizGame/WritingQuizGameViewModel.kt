@@ -84,7 +84,7 @@ class WritingQuizGameViewModel(
         increaseAttemptTime()
     }
 
-    fun getLocalCardById(cardId: String): ImmutableCard? {
+    private fun getLocalCardById(cardId: String): ImmutableCard? {
         var i = 0
         var result: ImmutableCard? = null
         while (true) {
@@ -265,7 +265,7 @@ class WritingQuizGameViewModel(
         }
     }
 
-    fun getCardsAmount(
+    private fun getCardsAmount(
         quizCardList: List<ImmutableCard?>,
         amount: Int
     ): List<ImmutableCard?>? {

@@ -405,10 +405,11 @@ class WritingQuizGameActivity :
                 }
             }
 
-            if (cardsLeft < 0) {
+            if (cardsLeft <= 0) {
                 btContinueQuizScoreLayout.visibility = View.GONE
             } else {
                 btContinueQuizScoreLayout.apply {
+                    visibility = View.VISIBLE
                     text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
                     setOnClickListener {
                         writingQuizJob?.cancel()

@@ -4,6 +4,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 
 data class MultiChoiceQuizGameUserChoiceModel(
+    val cardId: String,
     val answer: List<String>,
     val userChoice: String,
     val cvCard: MaterialCardView,

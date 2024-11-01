@@ -31,11 +31,13 @@ class MultiChoiceQuizGameViewModel(
     private lateinit var cardList: MutableList<ImmutableCard?>
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard?>
-
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private var passedCards: Int = 0
+    private var restCard = 0
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
+        initRestCards()
     }
     fun initDeck(gameDeck: ImmutableDeck) {
         deck = gameDeck
@@ -43,6 +45,32 @@ class MultiChoiceQuizGameViewModel(
 
     fun initOriginalCardList(gameCards: List<ImmutableCard?>) {
         originalCardList = gameCards
+    }
+
+    fun initCurrentCardPosition() {
+        currentCardPosition = 0
+    }
+
+    fun initProgress() {
+        progress = 0
+    }
+
+    private fun initPassedCards() {
+        passedCards = 0
+    }
+
+    private fun initRestCards() {
+        restCard = cardSum()
+    }
+
+    fun initMissedCards() {
+        missedCards.clear()
+    }
+
+    fun onRestartQuiz() {
+        initTimedFlashCard()
+        initPassedCards()
+        initRestCards()
     }
 
     fun getOriginalCardList() = originalCardList
@@ -71,15 +99,15 @@ class MultiChoiceQuizGameViewModel(
     }
 
     private fun getRandomCorrectDefinition(definitions: List<CardDefinition>?): String? {
-        val correctDefinitions = definitions?.let {defins -> defins.filter { isCorrect(it.isCorrectDefinition!!) }}
+        val correctDefinitions = definitions?.let {defins -> defins.filter { isCorrect(it.isCorrectDefinition) }}
         return correctDefinitions?.random()?.definition
     }
 
     private fun getCorrectDefinitions(definitions: List<CardDefinition>?): List<String>? {
-        val correctDefinitions = definitions?.let {defins -> defins.filter { isCorrect(it.isCorrectDefinition!!) }}
+        val correctDefinitions = definitions?.let {defins -> defins.filter { isCorrect(it.isCorrectDefinition) }}
         val correctAlternative = mutableListOf<String>()
         correctDefinitions?.forEach {
-            correctAlternative.add(it.definition!!)
+            correctAlternative.add(it.definition)
         }
         return  correctAlternative
     }
@@ -91,46 +119,61 @@ class MultiChoiceQuizGameViewModel(
         attemptTime += 1
     }
 
-    fun swipe(): Boolean {
+    fun swipe(cardCount: Int): Boolean {
         if (attemptTime == 0) {
             progress += 100/cardSum()
         } else {
             attemptTime = 0
         }
         currentCardPosition += 1
-        return currentCardPosition != cardSum()
+        return currentCardPosition != cardCount
     }
     fun getCurrentCardPosition() = currentCardPosition
     fun cardSum() = cardList.size
     fun getMissedCardSum() = missedCards.size
-    fun getKnownCardSum() = cardSum() - getMissedCardSum()
+    fun getKnownCardSum(cardCount: Int) = cardCount - getMissedCardSum()
     fun getMissedCard(): MutableList<ImmutableCard?> {
         val newCards = arrayListOf<ImmutableCard?>()
         missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
         return newCards
     }
+
+    fun cardLeft() = restCard
+
     fun initTimedFlashCard() {
         missedCards.clear()
         progress = 0
         currentCardPosition = 0
     }
 
-    fun onCardMissed() {
-        val missedCard = cardList[currentCardPosition]
+    fun onCardMissed(cardId: String) {
+        val missedCard = getLocalCardById(cardId)
         if (missedCard !in missedCards) {
             missedCards.add(missedCard)
         }
         increaseAttemptTime()
     }
 
-    fun isUserChoiceCorrect(userChoice: String, correctChoice: List<String>): Boolean {
+    private fun getLocalCardById(cardId: String): ImmutableCard? {
+        var i = 0
+        while (true) {
+            val c = cardList[i]
+            if (c?.cardId == cardId) {
+                return c
+            }
+            i++
+        }
+        return null
+    }
+
+    fun isUserChoiceCorrect(userChoice: String, correctChoice: List<String>, cardId: String): Boolean {
         val isCorrect = userChoice in correctChoice
         if (!isCorrect) {
-            onCardMissed()
-            onUserAnswered(isCorrect)
+            onCardMissed(cardId)
+            onUserAnswered(isCorrect, cardId)
         }
         if (attemptTime == 0 && isCorrect) {
-            onUserAnswered(isCorrect)
+            onUserAnswered(isCorrect, cardId)
         }
         return isCorrect
     }
@@ -144,7 +187,8 @@ class MultiChoiceQuizGameViewModel(
                 val alternatives = getWordAlternatives(originalCardList, correctAlternative, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
-                        it?.cardContent?.content!!,
+                        it?.cardId!!,
+                        it.cardContent?.content!!,
                         correctAlternatives,
                         alternatives[0],
                         alternatives[1],
@@ -156,6 +200,7 @@ class MultiChoiceQuizGameViewModel(
                 val alternatives = getWordAlternatives(originalCardList, it?.cardContent?.content!!, 4, cardOrientation)
                 temporaryList.add(
                     MultiChoiceGameCardModel(
+                        it.cardId,
                         correctAlternative,
                         listOf(it.cardContent.content),
                         alternatives[0],
@@ -170,13 +215,30 @@ class MultiChoiceQuizGameViewModel(
         return temporaryList
     }
 
-    fun updateCard(cardOrientation: String) {
+    fun updateCard(cardOrientation: String, cardCount: Int) {
         if (cardList.size == 0) {
             _actualCards.value = UiState.Error("No Cards To Revise")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(cardList, cardOrientation))
+                val cards = getCardsAmount(cardCount)
+                if (cards.isNullOrEmpty()) {
+                    _actualCards.value = UiState.Error("No Cards To Revise")
+                } else {
+                    _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(cards, cardOrientation))
+                }
+            }
+        }
+    }
+
+    fun updateCardOnReviseMissedCards(cardOrientation: String) {
+        if (missedCards.isEmpty()) {
+            _actualCards.value = UiState.Error("No Cards To Revise")
+        } else {
+            fetchJob?.cancel()
+            fetchJob = viewModelScope.launch {
+                _actualCards.value = UiState.Success(toListOfMultiChoiceQuizGameCardModel(missedCards, cardOrientation))
+                missedCards.clear()
             }
         }
     }
@@ -205,9 +267,35 @@ class MultiChoiceQuizGameViewModel(
         cardList = originalCardList.toMutableList()
     }
 
-    private fun onUserAnswered(isKnown: Boolean) {
-        cardList.let {cards ->
-            val card = cards[currentCardPosition]
+    private fun getCardsAmount( amount: Int ): List<ImmutableCard?>? {
+        return when {
+            cardList.isEmpty() -> {
+                null
+            }
+
+            cardList.size == amount -> {
+                cardList
+            }
+
+            else -> {
+                var result = listOf<ImmutableCard?>()
+                if (passedCards <= cardList.size) {
+                    if (restCard >= amount) {
+                        result = cardList.slice(passedCards..passedCards.plus(amount).minus(1))
+                        passedCards += amount
+                    } else {
+                        result = cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
+                        passedCards += cardList.size.plus(50)
+                    }
+                }
+                restCard = cardList.size - passedCards
+                result
+            }
+        }
+    }
+
+    private fun onUserAnswered(isKnown: Boolean, cardId: String) {
+            val card = getLocalCardById(cardId)
             if (card != null) {
                 val newStatus = spaceRepetitionHelper.status(card, isKnown)
                 val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
@@ -230,7 +318,6 @@ class MultiChoiceQuizGameViewModel(
                 )
                 updateCard(newCard)
             }
-        }
     }
 
     fun updateCard(card: ImmutableCard) = viewModelScope.launch {

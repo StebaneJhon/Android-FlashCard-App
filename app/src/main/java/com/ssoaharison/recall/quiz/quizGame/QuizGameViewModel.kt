@@ -29,6 +29,8 @@ class TestQuizGameViewModel(
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     var deck: ImmutableDeck? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private var passedCards: Int = 0
+    private var restCard = 0
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
@@ -40,6 +42,15 @@ class TestQuizGameViewModel(
 
     fun initOriginalCardList(gameCards: List<ImmutableCard?>) {
         originalCardList = gameCards
+        initRestCards()
+    }
+
+    private fun initRestCards() {
+        restCard = cardList.size
+    }
+
+    private fun initPassedCards() {
+        passedCards = 0
     }
 
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
@@ -77,8 +88,41 @@ class TestQuizGameViewModel(
         }
     }
 
-    fun initLocalQuizGameCards(cards: List<ImmutableCard?>) {
-        localQuizGameCards = cards.map { card ->
+//    fun initLocalQuizGameCards(cards: List<ImmutableCard?>) {
+//        localQuizGameCards = cards.map { card ->
+//            val externalDefinitions = toQuizGameCardDefinitionModel(card?.cardId!!, card.cardType!!, card.cardDefinition!!).shuffled()
+//            QuizGameCardModel(
+//                card.cardId,
+//                card.cardContent,
+//                externalDefinitions,
+//                card.cardType,
+//                card.cardStatus
+//            )
+//        }.toMutableList()
+//    }
+
+    fun onRestartQuiz() {
+        initQuizGame()
+        initPassedCards()
+        initRestCards()
+    }
+
+    fun updateActualCards(amount: Int) {
+        val cards = getCardsAmount(cardList, amount)
+        localQuizGameCards = cards?.map { card ->
+            val externalDefinitions = toQuizGameCardDefinitionModel(card?.cardId!!, card.cardType!!, card.cardDefinition!!).shuffled()
+            QuizGameCardModel(
+                card.cardId,
+                card.cardContent,
+                externalDefinitions,
+                card.cardType,
+                card.cardStatus
+            )
+        }!!.toMutableList()
+    }
+
+    fun updateActualCardsWithMissedCards() {
+        localQuizGameCards = missedCards.map { card ->
             val externalDefinitions = toQuizGameCardDefinitionModel(card?.cardId!!, card.cardType!!, card.cardDefinition!!).shuffled()
             QuizGameCardModel(
                 card.cardId,
@@ -88,6 +132,7 @@ class TestQuizGameViewModel(
                 card.cardStatus
             )
         }.toMutableList()
+        missedCards.clear()
     }
 
     fun getQuizGameCardsSum() = localQuizGameCards.size
@@ -95,6 +140,8 @@ class TestQuizGameViewModel(
     fun getMissedCardSum() = missedCards.size
 
     fun getKnownCardSum() = getQuizGameCardsSum() - getMissedCardSum()
+
+    fun cardLeft() = restCard
 
     fun submitUserAnswer(answer: QuizGameCardDefinitionModel) {
         when (answer.cardType) {
@@ -171,20 +218,19 @@ class TestQuizGameViewModel(
 
 
     fun sortCardsByLevel() {
-        localQuizGameCards.sortBy { it.cardStatus }
+        cardList.sortBy { it?.cardStatus }
     }
 
     fun shuffleCards() {
-        localQuizGameCards.shuffle()
+        cardList.shuffle()
     }
 
     fun sortByCreationDate() {
-        localQuizGameCards.sortBy { it.cardId }
+        cardList.sortBy { it?.cardId }
     }
 
     fun cardToReviseOnly() {
-        val carToRevise = originalCardList?.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
-        initLocalQuizGameCards(carToRevise.toList())
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
     fun isNextCardAnswered(actualCardPosition: Int): Boolean {
@@ -211,6 +257,15 @@ class TestQuizGameViewModel(
         }
     }
 
+    fun resetLocalQuizGameCardsState() {
+        localQuizGameCards.forEach {
+            it.isFlipped = false
+            it.cardDefinition.forEach { d ->
+                d.isSelected = false
+            }
+        }
+    }
+
     fun updateCardOnKnownOrKnownNot(
         answer: QuizGameCardDefinitionModel,
         knownOrNot: Boolean
@@ -221,6 +276,37 @@ class TestQuizGameViewModel(
                 if (!knownOrNot) {
                     missedCards.add(it)
                 }
+            }
+        }
+    }
+
+    private fun getCardsAmount(
+        quizCardList: List<ImmutableCard?>,
+        amount: Int
+    ): List<ImmutableCard?>? {
+
+        return when {
+            quizCardList.isEmpty() -> {
+                null
+            }
+
+            quizCardList.size == amount -> {
+                quizCardList
+            }
+
+            else -> {
+                var result = listOf<ImmutableCard?>()
+                if (passedCards <= quizCardList.size) {
+                    if (restCard > amount) {
+                        result = quizCardList.slice(passedCards..passedCards.plus(amount).minus(1))
+                        passedCards += amount
+                    } else {
+                        result = quizCardList.slice(passedCards..quizCardList.size.minus(1)).toMutableList()
+                        passedCards += quizCardList.size.plus(50)
+                    }
+                }
+                restCard = quizCardList.size - passedCards
+                result
             }
         }
     }

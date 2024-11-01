@@ -83,6 +83,7 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.cardId,
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
@@ -99,6 +100,7 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.cardId,
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
@@ -115,6 +117,7 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.cardId,
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
@@ -131,6 +134,7 @@ class MultiChoiceQuizGameAdapter(
                 setOnClickListener {
                     userChoiceModel(
                         MultiChoiceQuizGameUserChoiceModel(
+                            card.cardId,
                             card.answers,
                             this.text.toString(),
                             cvCardItem,
