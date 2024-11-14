@@ -54,8 +54,11 @@ class DecksRecyclerViewAdapter(
         private val deckNameTV: TextView? = view.findViewById(R.id.deckNameTV)
         private val deckDescriptionTV: TextView? = view.findViewById(R.id.deckDescriptionTV)
         private val deckRoot: MaterialCardView? = view.findViewById(R.id.deckRoot)
-        private val deckLanguages: TextView? = view.findViewById(R.id.languages)
+        private val deckContendLanguages: TextView? = view.findViewById(R.id.tv_content_language)
+        private val deckDefinitionLanguages: TextView? = view.findViewById(R.id.tv_definition_language)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
+        private val tvKnownCardSum: TextView? = view.findViewById(R.id.tv_known_cards_Sum)
+        private val tvUnKnownCardSum: TextView? = view.findViewById(R.id.tv_un_known_cards_Sum)
         private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
         private val ICON_MARGIN = 5
 
@@ -71,12 +74,21 @@ class DecksRecyclerViewAdapter(
         ) {
             deckNameTV?.text = deck.deckName
             deckDescriptionTV?.text = deck.deckDescription
-            deckLanguages?.text = context.getString(
-                R.string.deck_languages,
-                deck.cardContentDefaultLanguage,
-                deck.cardDefinitionDefaultLanguage
-            )
-            cardSum?.text = context.getString(R.string.cards_sum, deck.cardSum.toString())
+            deckContendLanguages?.text = deck.cardContentDefaultLanguage
+            deckDefinitionLanguages?.text = deck.cardDefinitionDefaultLanguage
+            cardSum?.text = deck.cardSum.toString()
+            if (deck.knownCardCount!! > 0) {
+                tvKnownCardSum?.visibility = View.VISIBLE
+                tvKnownCardSum?.text = deck.knownCardCount.toString()
+            } else {
+                tvKnownCardSum?.visibility = View.GONE
+            }
+            if (deck.unKnownCardCount!! > 0) {
+                tvUnKnownCardSum?.visibility = View.VISIBLE
+                tvUnKnownCardSum?.text = deck.unKnownCardCount.toString()
+            } else {
+                tvUnKnownCardSum?.visibility = View.GONE
+            }
 
             val deckColorCode = deck.deckColorCode?.let {
                 DeckColorCategorySelector().selectColor(

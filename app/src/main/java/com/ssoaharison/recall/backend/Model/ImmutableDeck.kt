@@ -12,6 +12,8 @@ data class ImmutableDeck (
     val cardDefinitionDefaultLanguage: String? = "",
     val deckColorCode: String? = "",
     val cardSum: Int? = 0,
+    val knownCardCount: Int? = 0,
+    val unKnownCardCount: Int? = 0,
     val deckCategory: String? = "",
     val isFavorite: Boolean? = false,
 ): Parcelable

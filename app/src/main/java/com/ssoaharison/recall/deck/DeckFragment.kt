@@ -237,7 +237,7 @@ class DeckFragment :
         val sortedListOfDeck =
             sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
         if (appContext != null) {
-            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, {
+            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!,{
                 onEditDeck(it)
             }, { deck ->
                 onDeleteDeck(deck)
@@ -320,7 +320,7 @@ class DeckFragment :
             result?.let { it ->
                 deckViewModel.insertDeck(it.deck)
                 if (it.action == ADD_DECK_FORWARD_TO_CARD_ADDITION) {
-                    navigateTo(it.deck.toExternal(), NewDeckDialog.TAG)
+                    navigateTo(it.deck.toExternal(0, 0, 0), NewDeckDialog.TAG)
                 }
             }
         }

@@ -26,20 +26,22 @@ fun ImmutableDeck.toLocal() = Deck(
 fun List<ImmutableDeck>.toLocal() = map(ImmutableDeck::toLocal)
 
 // Local to External
-fun Deck.toExternal() = ImmutableDeck(
+fun Deck.toExternal(cardCount: Int, knownCardCount: Int, unKnownCardCount: Int) = ImmutableDeck(
     deckId = deckId,
     deckName = deckName,
     deckDescription = deckDescription,
     cardContentDefaultLanguage = cardContentDefaultLanguage,
     cardDefinitionDefaultLanguage = cardDefinitionDefaultLanguage,
     deckColorCode = deckColorCode,
-    cardSum = cardSum,
+    cardSum = cardCount,
+    knownCardCount = knownCardCount,
+    unKnownCardCount = unKnownCardCount,
     deckCategory = deckCategory,
     isFavorite = isCorrect(isFavorite),
 )
 
 @JvmName("localToExternal")
-fun List<Deck>.toExternal() = map(Deck::toExternal)
+fun List<Deck>.toExternal(cardCount: Int, knownCardCount: Int, unKnownCardCount: Int) = map { deck -> deck.toExternal(cardCount, knownCardCount, unKnownCardCount)}
 
 // Cards Ex
 fun ImmutableCard.toLocal() = Card(

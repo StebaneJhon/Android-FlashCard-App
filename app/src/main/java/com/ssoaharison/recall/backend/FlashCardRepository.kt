@@ -18,7 +18,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     @WorkerThread
     fun allDecks(): Flow<List<ImmutableDeck>> {
         return flashCardDao.getAllDecks().map { decks ->
-            decks.toExternal()
+            decks.map { deck ->
+                val cardCount = flashCardDao.countCardsInDeck(deck.deckId)
+                val knownCardCount = flashCardDao.countKnownCardsInDeck(deck.deckId)
+                val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(deck.deckId)
+                deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
+            }
         }
     }
 
@@ -49,8 +54,13 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     fun searchDeck(searchQuery: String): Flow<List<ImmutableDeck>> {
-        return flashCardDao.searchDeck(searchQuery).map {
-            it.toExternal()
+        return flashCardDao.searchDeck(searchQuery).map { decks ->
+            decks.map { deck ->
+                val cardCount = flashCardDao.countCardsInDeck(deck.deckId)
+                val knownCardCount = flashCardDao.countKnownCardsInDeck(deck.deckId)
+                val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(deck.deckId)
+                deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
+            }
         }
     }
 
@@ -59,7 +69,10 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         val deckWithCards = flashCardDao.getDeckWithCards(deckId)
         val immutableDeckWithCards =
             deckWithCards.map { localDeckWithCards ->
-                val deck = localDeckWithCards.deck.toExternal()
+                val cardCount = flashCardDao.countCardsInDeck(localDeckWithCards.deck.deckId)
+                val knownCardCount = flashCardDao.countKnownCardsInDeck(localDeckWithCards.deck.deckId)
+                val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(localDeckWithCards.deck.deckId)
+                val deck = localDeckWithCards.deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
                 val cardList = localDeckWithCards.cards.map { card ->
                     card.cardId.let { cardId ->
                         cardId.let { id ->

@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <item
         android:id="@+id/bt_sort_deck"
         android:icon="@drawable/icon_sort"
         android:title="@string/bt_text_sort_deck"
         android:contentDescription="@string/bt_text_sort_deck"
         app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/bt_upload_deck_with_cards"
-        android:icon="@drawable/icon_upload"
-        android:title="@string/bt_text_upload_deck_with_cards"
-        android:contentDescription="@string/bt_text_upload_deck_with_cards"
-        app:showAsAction="ifRoom"/>
+
 </menu>
