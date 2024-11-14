@@ -6,15 +6,19 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.method.ScrollingMovementMethod
 import android.text.style.ForegroundColorSpan
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.FOCUS_DOWN
 import android.view.ViewGroup
+import androidx.core.view.ScrollingView
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.FragmentOnBoardingViewPagerBinding
+
 
 class OnBoardingViewPagerFragment : Fragment() {
 
@@ -35,6 +39,7 @@ class OnBoardingViewPagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.tvAppIntroduction.movementMethod = ScrollingMovementMethod()
         introductionTexts = listOf(
             getString(R.string.content_welcome_to_recall),
             getString(R.string.content_cards),
@@ -66,10 +71,13 @@ class OnBoardingViewPagerFragment : Fragment() {
 
     }
 
+
     private fun progressOnBoarding() {
         lastShownTextPosition++
         val lastStringLength = binding.tvAppIntroduction.text.length
-        val text = "${binding.tvAppIntroduction.text} ${introductionTexts[lastShownTextPosition]}"
+        binding.tvAppIntroduction.append(" ${introductionTexts[lastShownTextPosition]}")
+
+        val text = binding.tvAppIntroduction.text
 
         val spannableText = SpannableString(text)
         val previousTextColor = ForegroundColorSpan(
@@ -103,7 +111,9 @@ class OnBoardingViewPagerFragment : Fragment() {
             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
         )
         binding.tvAppIntroduction.text = spannableText
+
         applyLayoutTransition()
+//        binding.svAppIntroduction.fullScroll(View.FOCUS_DOWN)
     }
 
     private fun onBoardingFinished() {
@@ -118,7 +128,7 @@ class OnBoardingViewPagerFragment : Fragment() {
         val transition = LayoutTransition()
         transition.setDuration(300)
         transition.enableTransitionType(LayoutTransition.CHANGING)
-        binding.flAppIntroduction.setLayoutTransition(transition)
+        binding.fmAppIntroduction.setLayoutTransition(transition)
     }
 
 }

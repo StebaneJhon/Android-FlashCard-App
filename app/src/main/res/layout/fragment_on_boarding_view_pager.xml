@@ -21,42 +21,50 @@
             android:layout_height="wrap_content"
             android:background="?colorSurfaceContainerLow"
             android:minHeight="?attr/actionBarSize"
-            app:title="@string/app_name"
-            app:menu="@menu/menu_on_boarding_screen"/>
+            app:menu="@menu/menu_on_boarding_screen"
+            app:title="@string/app_name" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <FrameLayout
-        android:id="@+id/fl_app_introduction"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/space_lg"
         app:layout_constraintBottom_toTopOf="@+id/bt_next"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:translationZ="-1dp">
+        app:layout_constraintTop_toBottomOf="@+id/topToolBar">
 
-        <TextView
-            android:id="@+id/tv_app_introduction"
+        <FrameLayout
+            android:id="@+id/fm_app_introduction"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/space_lg"
-            android:elegantTextHeight="true"
-            android:fontFamily="@font/open_sans_extra_bold"
-            android:gravity="bottom"
-            android:text="@string/content_welcome_to_recall"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_xl" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            tools:ignore="UselessParent">
+            <TextView
+                android:id="@+id/tv_app_introduction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_lg"
+                android:elegantTextHeight="true"
+                android:fontFamily="@font/open_sans_extra_bold"
+                android:gravity="bottom"
+                android:scrollbars="vertical"
+                android:text="@string/content_welcome_to_recall"
+                android:textAlignment="gravity"
+                android:textColor="?colorOnSurface"
+                android:textSize="@dimen/text_xl2"
+                app:layout_constraintBottom_toTopOf="@+id/bt_next"
+                app:layout_constraintTop_toBottomOf="@+id/topToolBar" />
+
+        </FrameLayout>
+
     </FrameLayout>
 
     <TextView
         android:id="@+id/tv_progress_indicator"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_lg"
         android:fontFamily="@font/open_sans"
         android:text="1/4"
-        android:textAlignment="textStart"
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_base"
         android:textStyle="normal"
@@ -64,25 +72,24 @@
         app:layout_constraintEnd_toStartOf="@+id/bt_next"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bt_next"
-        android:layout_marginStart="@dimen/space_lg"/>
+        app:layout_constraintTop_toTopOf="@+id/bt_next" />
 
     <Button
         android:id="@+id/bt_next"
         style="?attr/materialIconButtonFilledStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_lg"
         android:backgroundTint="?colorOnSurface"
         android:contentDescription="@string/next"
+        android:paddingStart="@dimen/button_with_text_and_icon_adding_end"
+        android:paddingEnd="@dimen/button_with_text_and_icon_adding_start"
         android:text="@string/next"
         app:icon="@drawable/icon_arrow_forward"
-        app:iconTint="?colorSurfaceContainerLowest"
         app:iconGravity="end"
         app:iconPadding="@dimen/icon_padding_submit_button"
-        android:paddingEnd="@dimen/button_with_text_and_icon_adding_start"
-        android:paddingStart="@dimen/button_with_text_and_icon_adding_end"
+        app:iconTint="?colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="@dimen/space_lg"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
