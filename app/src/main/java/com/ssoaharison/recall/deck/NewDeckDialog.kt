@@ -88,8 +88,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             binding.tvTitle.text = getString(R.string.tv_update_deck)
             binding.deckNameET.setText(deck.deckName)
             binding.deckDescriptionET.setText(deck.deckDescription)
-            binding.deckFirstLanguageET.setText(deck.deckFirstLanguage)
-            binding.deckSecondLanguageET.setText(deck.deckSecondLanguage)
+            binding.deckFirstLanguageET.setText(deck.cardContentDefaultLanguage)
+            binding.deckSecondLanguageET.setText(deck.cardDefinitionDefaultLanguage)
             deck.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
             deckCategoryColor = deck.deckColorCode
 

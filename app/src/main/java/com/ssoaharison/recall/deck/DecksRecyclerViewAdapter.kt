@@ -73,8 +73,8 @@ class DecksRecyclerViewAdapter(
             deckDescriptionTV?.text = deck.deckDescription
             deckLanguages?.text = context.getString(
                 R.string.deck_languages,
-                deck.deckFirstLanguage,
-                deck.deckSecondLanguage
+                deck.cardContentDefaultLanguage,
+                deck.cardDefinitionDefaultLanguage
             )
             cardSum?.text = context.getString(R.string.cards_sum, deck.cardSum.toString())
 

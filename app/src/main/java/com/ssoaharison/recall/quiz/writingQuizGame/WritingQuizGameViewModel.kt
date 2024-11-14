@@ -10,6 +10,7 @@ import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -133,12 +134,12 @@ class WritingQuizGameViewModel(
 
     fun isUserAnswerCorrect(
         userAnswer: String,
-        correctAnswers: List<String>,
+        correctAnswers: List<TextWithLanguageModel>,
         cardId: String
     ): Boolean {
         var isCorrect = false
         correctAnswers.forEach { answer ->
-            if (answer.trim().lowercase() == userAnswer) {
+            if (answer.text.trim().lowercase() == userAnswer) {
                 isCorrect = true
             }
         }
@@ -184,23 +185,23 @@ class WritingQuizGameViewModel(
         val newList = mutableListOf<WritingQuizGameModel>()
         if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             cards.forEach { item ->
-                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition)
+                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition, item?.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!)
                 newList.add(
                     WritingQuizGameModel(
                         item?.cardId!!,
-                        item.cardContent?.content!!,
+                        TextWithLanguageModel(item.cardContent?.content!!, item.cardContentLanguage ?: deck.cardContentDefaultLanguage!!),
                         correctAlternatives
                     )
                 )
             }
         } else {
             cards.forEach { item ->
-                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition)
+                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition, item?.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!)
                 newList.add(
                     WritingQuizGameModel(
                         item?.cardId!!,
                         correctAlternatives.random(),
-                        listOf(item.cardContent?.content!!)
+                        listOf(TextWithLanguageModel(item.cardContent?.content!!, item.cardContentLanguage ?: deck.cardContentDefaultLanguage!!))
                     )
                 )
             }
@@ -208,12 +209,12 @@ class WritingQuizGameViewModel(
         return newList
     }
 
-    private fun getCorrectDefinitions(definitions: List<CardDefinition>?): List<String> {
+    private fun getCorrectDefinitions(definitions: List<CardDefinition>?, definitionLanguage: String): List<TextWithLanguageModel> {
         val correctDefinitions =
             definitions?.let { defins -> defins.filter { isCorrect(it.isCorrectDefinition) } }
-        val correctAlternative = mutableListOf<String>()
+        val correctAlternative = mutableListOf<TextWithLanguageModel>()
         correctDefinitions?.forEach {
-            correctAlternative.add(it.definition)
+            correctAlternative.add(TextWithLanguageModel(it.definition, definitionLanguage))
         }
         return correctAlternative
     }
@@ -321,6 +322,8 @@ class WritingQuizGameViewModel(
                 nextForgettingDate,
                 nextRevision,
                 card.cardType,
+                card.cardContentLanguage,
+                card.cardDefinitionLanguage
             )
             updateCard(newCard)
         }

@@ -21,6 +21,7 @@ class HostFragment : Fragment() {
         } else {
             findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
         }
+//        findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
         return view
     }
 

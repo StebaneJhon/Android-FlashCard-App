@@ -4,16 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?colorSurfaceContainerLowest"
     tools:context=".onboarding.OnBoardingViewPagerFragment">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/vp_onBoarding"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/topToolBar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?colorSurfaceContainerLow"
+            android:minHeight="?attr/actionBarSize"
+            app:title="@string/app_name"
+            app:menu="@menu/menu_on_boarding_screen"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <FrameLayout
+        android:id="@+id/fl_app_introduction"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/space_lg"
+        app:layout_constraintBottom_toTopOf="@+id/bt_next"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:translationZ="-1dp">
+
+        <TextView
+            android:id="@+id/tv_app_introduction"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/space_lg"
+            android:elegantTextHeight="true"
+            android:fontFamily="@font/open_sans_extra_bold"
+            android:gravity="bottom"
+            android:text="@string/content_welcome_to_recall"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_xl" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_progress_indicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans"
+        android:text="1/4"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_base"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_next"
+        app:layout_constraintEnd_toStartOf="@+id/bt_next"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintTop_toTopOf="@+id/bt_next"
+        android:layout_marginStart="@dimen/space_lg"/>
+
+    <Button
+        android:id="@+id/bt_next"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?colorOnSurface"
+        android:contentDescription="@string/next"
+        android:text="@string/next"
+        app:icon="@drawable/icon_arrow_forward"
+        app:iconTint="?colorSurfaceContainerLowest"
+        app:iconGravity="end"
+        app:iconPadding="@dimen/icon_padding_submit_button"
+        android:paddingEnd="@dimen/button_with_text_and_icon_adding_start"
+        android:paddingStart="@dimen/button_with_text_and_icon_adding_end"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/space_lg"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -35,6 +35,7 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -84,6 +85,10 @@ class TestActivity :
             binding.topAppBar.apply {
                 title = getString(R.string.title_test, deck?.deckName)
                 setNavigationOnClickListener { finish() }
+            }
+
+            deck?.let { d ->
+                testViewModel.initDeck(d)
             }
 
             cardList?.let { cards ->
@@ -150,8 +155,6 @@ class TestActivity :
                 readText(
                     dataToRead.text,
                     dataToRead.views,
-                    deck.deckFirstLanguage!!,
-                    deck.deckSecondLanguage!!
                 )
             }
 
@@ -235,9 +238,9 @@ class TestActivity :
                                     this@TestActivity, R.color.neutral50
                                 )!!
                             )
-                        setOnClickListener {
-                            binding.vpCardHolder.currentItem -= 1
-                        }
+//                        setOnClickListener {
+//                            binding.vpCardHolder.currentItem -= 1
+//                        }
                     } else {
                         isActivated = false
                         isClickable = false
@@ -323,10 +326,8 @@ class TestActivity :
     }
 
     private fun readText(
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         view: List<View>,
-        firstLanguage: String,
-        secondLanguage: String,
     ) {
 
         var position = 0
@@ -349,7 +350,7 @@ class TestActivity :
                 onReadingStop(position, view, onStopColor)
                 position += 1
                 if (position < textSum) {
-                    speak(secondLanguage, params, text, position, this)
+                    speak(params, text, position, this)
                 } else {
                     position = 0
                     return
@@ -362,7 +363,7 @@ class TestActivity :
             }
         }
 
-        speak(firstLanguage, params, text, position, speechListener)
+        speak(params, text, position, speechListener)
 
     }
 
@@ -394,17 +395,16 @@ class TestActivity :
     }
 
     private fun speak(
-        language: String,
         params: Bundle,
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.speak(text[position].text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 

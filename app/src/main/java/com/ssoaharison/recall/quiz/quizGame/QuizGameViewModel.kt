@@ -28,6 +28,7 @@ class TestQuizGameViewModel(
     private var originalCardList: List<ImmutableCard?>? = null
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
     var deck: ImmutableDeck? = null
+    private var attemptTime = 0
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
     private var passedCards: Int = 0
     private var restCard = 0
@@ -63,6 +64,16 @@ class TestQuizGameViewModel(
 
     fun getOriginalCardList() = originalCardList
 
+    fun increaseAttemptTime() {
+        attemptTime += 1
+    }
+
+    fun initAttemptTime() {
+        attemptTime = 0
+    }
+
+    fun getAttemptTime() = attemptTime
+
     private lateinit var localQuizGameCards: MutableList<QuizGameCardModel>
     private var flowOfLocalQuizGameCards: Flow<List<QuizGameCardModel>> = flow {
         emit(localQuizGameCards)
@@ -83,7 +94,7 @@ class TestQuizGameViewModel(
                     }
                 }
             } catch (e: IOException) {
-                _externalQuizGameCards.value = UiState.Error(e.toString())
+                _externalQuizGameCards.value = UiState.Error(e.message.toString())
             }
         }
     }
@@ -102,7 +113,7 @@ class TestQuizGameViewModel(
 //    }
 
     fun onRestartQuiz() {
-        initQuizGame()
+//        initQuizGame()
         initPassedCards()
         initRestCards()
     }
@@ -114,7 +125,9 @@ class TestQuizGameViewModel(
             QuizGameCardModel(
                 card.cardId,
                 card.cardContent,
+                card.cardContentLanguage ?: deck?.cardContentDefaultLanguage!!,
                 externalDefinitions,
+                card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!,
                 card.cardType,
                 card.cardStatus
             )
@@ -127,7 +140,9 @@ class TestQuizGameViewModel(
             QuizGameCardModel(
                 card.cardId,
                 card.cardContent,
+                card.cardContentLanguage ?: deck?.cardContentDefaultLanguage!!,
                 externalDefinitions,
+                card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!,
                 card.cardType,
                 card.cardStatus
             )
@@ -268,13 +283,22 @@ class TestQuizGameViewModel(
 
     fun updateCardOnKnownOrKnownNot(
         answer: QuizGameCardDefinitionModel,
-        knownOrNot: Boolean
+        knownOrNot: Boolean?
     ) {
         originalCardList?.forEach {
             if (it?.cardId == answer.cardId) {
-                upOrDowngradeCard(knownOrNot, it)
-                if (!knownOrNot) {
-                    missedCards.add(it)
+                if (knownOrNot != null) {
+                    upOrDowngradeCard(knownOrNot, it)
+                    if (!knownOrNot) {
+                        missedCards.add(it)
+                    }
+                } else {
+                    if (answer.isSelected && answer.isCorrect == 1) {
+                        upOrDowngradeCard(true, it)
+                    } else {
+                        upOrDowngradeCard(false, it)
+                        missedCards.add(it)
+                    }
                 }
             }
         }
@@ -332,6 +356,8 @@ class TestQuizGameViewModel(
                 nextForgettingDate,
                 nextRevision,
                 card.cardType,
+                card.cardContentLanguage,
+                card.cardDefinitionLanguage
             )
             updateCard(newCard)
         }

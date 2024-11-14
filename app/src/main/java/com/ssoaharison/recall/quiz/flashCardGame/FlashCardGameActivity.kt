@@ -53,7 +53,7 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
-import kotlinx.coroutines.Job
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -85,7 +85,7 @@ class FlashCardGameActivity :
     private var tts: TextToSpeech? = null
 
     private lateinit var tvDefinitions: List<TextView>
-    private val EXTRA_MARGIN = 18
+    private val EXTRA_MARGIN = -2
 
     companion object {
         private val MIN_SWIPE_DISTANCE = -275
@@ -127,8 +127,6 @@ class FlashCardGameActivity :
                 onNoCardToRevise()
             }
         }
-
-//        applySettings()
 
         tvDefinitions = listOf(
             binding.tvQuizBack1, binding.tvQuizBack2, binding.tvQuizBack3, binding.tvQuizBack4, binding.tvQuizBack5,
@@ -408,21 +406,6 @@ class FlashCardGameActivity :
         }
     }
 
-    private fun restartFlashCard(orientation: String) {
-        isFlashCardGameScreenHidden(false)
-        binding.lyOnNoMoreCardsErrorContainer.isVisible = false
-        binding.lyGameReviewContainer.isVisible = false
-        viewModel.initFlashCard()
-        viewModel.updateCardToRevise(getCardCount())
-        viewModel.updateOnScreenCards()
-        initFlashCard(viewModel.getOriginalCardList()?.toMutableList()!!, viewModel.deck!!)
-        if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-            initCardLayout()
-        } else {
-            onCardOrientationBackFront()
-        }
-    }
-
     private fun completelyRestartFlashCard(orientation: String) {
         isFlashCardGameScreenHidden(false)
         binding.lyOnNoMoreCardsErrorContainer.isVisible = false
@@ -430,7 +413,6 @@ class FlashCardGameActivity :
         viewModel.onRestartQuizWithAllCards()
         viewModel.updateCardToRevise(getCardCount())
         viewModel.updateOnScreenCards()
-//        initFlashCard(viewModel.getOriginalCardList()?.toMutableList()!!, viewModel.deck!!)
         if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             initCardLayout()
         } else {
@@ -796,10 +778,11 @@ class FlashCardGameActivity :
             if (tts?.isSpeaking == true) {
                 stopReading(listOf(binding.tvQuizFront), v as Button)
             } else {
+                val language = onScreenCards.top.cardContentLanguage ?: viewModel.deck?.cardContentDefaultLanguage!!
+                val textToRead = TextWithLanguageModel(onScreenCards.top.cardContent?.content!!, language)
                 readText(
-                    listOf(onScreenCards.top.cardContent?.content!!),
+                    listOf(textToRead),
                     listOf(binding.tvQuizFront),
-                    viewModel.deck?.deckFirstLanguage!!,
                     v as Button
                 )
             }
@@ -809,10 +792,13 @@ class FlashCardGameActivity :
                 stopReading(views, v as Button)
             } else {
                 val definitions = cardDefinitionsToStrings(correctDefinitions)
+                val textsToRead = definitions.map { d ->
+                    val language = onScreenCards.top.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage!!
+                    TextWithLanguageModel(d, language)
+                }
                 readText(
-                    definitions,
+                    textsToRead,
                     views,
-                    viewModel.deck?.deckSecondLanguage!!,
                     v as Button
                 )
             }
@@ -821,7 +807,6 @@ class FlashCardGameActivity :
 
     private fun stopReading(views: List<TextView>, button: Button) {
         tts?.stop()
-        button.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         views.forEach { v ->
             v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
         }
@@ -836,32 +821,28 @@ class FlashCardGameActivity :
     }
 
     private fun readText(
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         view: List<TextView>,
-        language: String,
         v: Button
     ) {
 
         var position = 0
         val textSum = text.size
         val textColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
-        val onReadColor =
-            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
 
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                v.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
                 view[position].setTextColor(onReadColor)
             }
 
             override fun onDone(utteranceId: String?) {
-                v.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
                 view[position].setTextColor(textColor)
                 position += 1
                 if (position < textSum) {
-                    speak(language, params, text, position, this)
+                    speak(params, text, position, this)
                 } else {
                     position = 0
                     return
@@ -873,22 +854,21 @@ class FlashCardGameActivity :
             }
         }
 
-        speak(language, params, text, position, speechListener)
+        speak(params, text, position, speechListener)
 
     }
 
     private fun speak(
-        language: String,
         params: Bundle,
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.speak(text[position].text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 
@@ -920,13 +900,12 @@ class FlashCardGameActivity :
 
     private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
         definitions?.let { defins ->
-            return defins.filter { isCorrect(it.isCorrectDefinition!!) }
+            return defins.filter { isCorrect(it.isCorrectDefinition) }
         }
         return null
     }
 
     fun isCorrect(index: Int?) = index == 1
-    fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
     private fun initFlashCard(
         cardList: MutableList<ImmutableCard?>,

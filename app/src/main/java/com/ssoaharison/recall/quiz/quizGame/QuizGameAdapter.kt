@@ -21,6 +21,7 @@ import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.TextWithLanguageModel
 
 class QuizGameAdapter(
     val context: Context,
@@ -219,22 +220,20 @@ class QuizGameAdapter(
                 btSpeakBack.setOnClickListener {
                     onSpeak(
                         QuizSpeakModel(
-                            text = listOf(card.cardDefinition.first().definition),
+                            text = listOf(TextWithLanguageModel(card.cardDefinition.first().definition, card.cardDefinitionLanguage!!)),
                             views = listOf(tvDefinition),
-                            deck.deckSecondLanguage!!
                         )
                     )
                 }
                 btSpeak.setOnClickListener {
                     frontSpeak(
                         listOf(tvContent),
-                        listOf(card.cardContent?.content!!),
-                        deck.deckFirstLanguage!!
+                        listOf(TextWithLanguageModel(card.cardContent?.content!!, card.cardContentLanguage!!)),
                     )
                 }
             } else {
                 flCardRoot.isClickable = false
-                val texts = arrayListOf(card.cardContent?.content!!)
+                val texts = arrayListOf(TextWithLanguageModel(card.cardContent?.content!!, card.cardContentLanguage!!))
                 val views = arrayListOf(tvContent)
                 btAlternatives.forEachIndexed { index, materialButton ->
                     if (index < card.cardDefinition.size) {
@@ -243,27 +242,25 @@ class QuizGameAdapter(
                             text = card.cardDefinition[index].definition
                             onAlternativeClicked(card.cardDefinition[index], cardOnClick)
                         }
-                        texts.add(card.cardDefinition[index].definition)
+                        texts.add(TextWithLanguageModel(card.cardDefinition[index].definition, card.cardDefinitionLanguage!!))
                         views.add(materialButton)
                     } else {
                         materialButton.visibility = View.GONE
                     }
                 }
-                frontSpeak(views, texts, deck.deckFirstLanguage!!)
+                frontSpeak(views, texts)
             }
         }
 
         private fun frontSpeak(
             views: List<View>,
-            texts: List<String>,
-            language: String,
+            texts: List<TextWithLanguageModel>,
         ) {
             btSpeak.setOnClickListener {
                 onSpeak(
                     QuizSpeakModel(
                         text = texts,
                         views = views,
-                        language
                     )
                 )
             }

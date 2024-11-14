@@ -3,6 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/bt_upload_card"
+        android:title="@string/bt_text_upload"
+        android:contentDescription="@string/bt_text_upload"
+        android:icon="@drawable/icon_upload"
+        android:iconTint="?colorOnSurface"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/save"
         android:title="@string/bt_save"
         android:contentDescription="@string/content_description_save"

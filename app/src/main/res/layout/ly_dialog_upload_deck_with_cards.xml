@@ -38,33 +38,6 @@
             app:layout_constraintStart_toEndOf="@+id/bt_back_to_quiz"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tf_deck_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/deck_name_hint"
-            android:layout_marginTop="@dimen/space_md"
-            android:layout_marginBottom="@dimen/space_xs"
-            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-            app:boxCornerRadiusTopStart="@dimen/ed_radius"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            android:textColorHint="@color/neutral400">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/tv_deck_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textColor="?colorOnSurface"
-                android:fontFamily="@font/open_sans"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tf_category"
@@ -80,7 +53,7 @@
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tf_deck_name"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
             app:endIconTint="?colorOnSurface"
             android:textColor="?colorOnSurface"
             android:fontFamily="@font/open_sans">

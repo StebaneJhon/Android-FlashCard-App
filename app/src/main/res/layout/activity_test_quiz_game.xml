@@ -78,10 +78,10 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:visibility="gone">
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/tv_action_question"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -95,6 +95,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
             android:id="@+id/bt_rewind"
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
@@ -112,6 +113,7 @@
             app:rippleColor="?colorSurfaceContainerHighest" />
 
         <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
             android:id="@+id/bt_known"
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
@@ -129,6 +131,7 @@
             app:rippleColor="@color/green400" />
 
         <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
             android:id="@+id/bt_known_not"
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"
@@ -147,6 +150,7 @@
             app:rippleColor="@color/red400" />
 
         <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
             android:id="@+id/bt_next"
             style="?attr/materialIconButtonFilledTonalStyle"
             android:layout_width="wrap_content"

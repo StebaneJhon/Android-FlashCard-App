@@ -8,7 +8,9 @@ import kotlinx.parcelize.Parcelize
 data class QuizGameCardModel(
     val cardId: String,
     val cardContent: CardContent?,
+    val cardContentLanguage: String?,
     val cardDefinition: List<QuizGameCardDefinitionModel>,
+    val cardDefinitionLanguage: String?,
     val cardType: String?,
     val cardStatus: String?,
     var isFlipped: Boolean = false

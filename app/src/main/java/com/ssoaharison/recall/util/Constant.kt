@@ -4,7 +4,8 @@ object Constant {
     const val ADD = "add"
     const val UPDATE = "update"
     const val MIN_CARD_FOR_MULTI_CHOICE_QUIZ = 4
-    const val MIN_CARD_FOR_MATCHING_QUIZ = 5
+    const val MIN_CARD_FOR_MATCHING_QUIZ = 4
+    const val MIN_CARD_FOR_TEST = 4
 }
 
 object DeckCategoryColorConst {
@@ -135,4 +136,10 @@ object ItemLayoutManager {
     const val STAGGERED_GRID_LAYOUT_MANAGER = "STAGGERED GRID LAYOUT MANAGER"
     const val LINEAR_LAYOUT_MANAGER = "LINEAR LAYOUT MANAGER"
     const val LAYOUT_MANAGER = "LAYOUT_MANAGER"
+}
+
+object BoardSizes {
+    const val BOARD_SIZE_1 = "4 : 2"
+    const val BOARD_SIZE_2 = "4 : 3"
+    const val BOARD_SIZE_3 = "6 : 3"
 }

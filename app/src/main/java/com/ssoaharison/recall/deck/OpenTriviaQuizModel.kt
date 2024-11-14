@@ -5,7 +5,6 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OpenTriviaQuizModel(
-    var deckName: String,
     var number: Int = 10,
     var category: Int = 0,
     var difficulty: String = "",

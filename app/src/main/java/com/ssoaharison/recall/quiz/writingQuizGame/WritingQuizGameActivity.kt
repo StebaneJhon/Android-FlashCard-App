@@ -37,6 +37,7 @@ import com.ssoaharison.recall.util.UiState
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -224,7 +225,7 @@ class WritingQuizGameActivity :
                     readText(
                         dataToRead.text,
                         dataToRead.views,
-                        viewModel.deck.deckFirstLanguage!!,
+//                        viewModel.deck.cardContentDefaultLanguage!!,
                         dataToRead.speakButton
                     )
                 }
@@ -242,9 +243,8 @@ class WritingQuizGameActivity :
     }
 
     private fun readText(
-        text: String,
+        text: TextWithLanguageModel,
         view: View,
-        language: String,
         speakButton: Button,
     ) {
         val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
@@ -265,7 +265,7 @@ class WritingQuizGameActivity :
             }
         }
 
-        speak(language, params, text, speechListener)
+        speak(text.language, params, text.text, speechListener)
 
     }
 
@@ -332,7 +332,6 @@ class WritingQuizGameActivity :
             tvTotalCardsSumScoreLayout.text = onBoardItems.size.toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum(onBoardItems.size).toString()
-
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
                 viewModel.getKnownCardSum(onBoardItems.size).toFloat() / viewModel.cardSum(),
@@ -478,7 +477,6 @@ class WritingQuizGameActivity :
     }
 
     private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10
-
 
     private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
         Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)

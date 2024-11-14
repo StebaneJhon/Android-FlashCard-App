@@ -69,12 +69,12 @@ class WritingQuizGameAdapter(
             deckColorCode: String,
             onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
-            Log.e("WritingQuizGameActivity", card.answer.first())
+            Log.e("WritingQuizGameActivity", card.answer.first().text)
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            tiTopCard.setText("")
-            tiOnWrongAnswer.setText("")
-            tvOnCardWord.text = card.onCardWord
-            tvOnCardWordOnWrongAnswer.text = card.onCardWord
+            tiTopCard.text?.clear()
+            tiOnWrongAnswer.text?.clear()
+            tvOnCardWord.text = card.onCardWord.text
+            tvOnCardWordOnWrongAnswer.text = card.onCardWord.text
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvProgressionOnWrongAnswer.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black

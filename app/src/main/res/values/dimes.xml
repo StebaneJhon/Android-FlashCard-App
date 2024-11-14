@@ -33,5 +33,7 @@
 
     <dimen name="icon_padding_submit_button">10dp</dimen>
     <dimen name="icon_padding_next_question_button">0dp</dimen>
+    <dimen name="button_with_text_and_icon_adding_start">10dp</dimen>
+    <dimen name="button_with_text_and_icon_adding_end">15dp</dimen>
 
 </resources>

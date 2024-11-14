@@ -34,7 +34,9 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -61,6 +63,7 @@ class QuizGameActivity :
 
     private var tts: TextToSpeech? = null
     private var quizJob: Job? = null
+    private var fetchJob1: Job? = null
 
     companion object {
         private const val TAG = "QuizGameActivity"
@@ -95,7 +98,6 @@ class QuizGameActivity :
             if (!cardList.isNullOrEmpty() && deck != null) {
                 viewModel.initCardList(cardList)
                 viewModel.initOriginalCardList(cardList)
-//                viewModel.initLocalQuizGameCards(cardList.toList())
                 startTest(cardList, deck)
             }
         }
@@ -121,7 +123,6 @@ class QuizGameActivity :
                 false
             }
         }
-
     }
 
     override fun onSettingsApplied() {
@@ -168,13 +169,6 @@ class QuizGameActivity :
         if (unKnownCardFirst == true) {
             viewModel.sortCardsByLevel()
         }
-
-//        viewModel.initQuizGame()
-//        binding.gameReviewContainerMQ.visibility = View.GONE
-//        binding.vpCardHolder.visibility = View.VISIBLE
-//        viewModel.getQuizGameCards()
-//        binding.vpCardHolder.setCurrentItem(0, true)
-
     }
 
     private fun launchTestQuizGame(
@@ -187,11 +181,14 @@ class QuizGameActivity :
             viewModel.deck!!,
             { userAnswer ->
                 viewModel.submitUserAnswer(userAnswer)
+                if (userAnswer.cardType != SINGLE_ANSWER_CARD && viewModel.getAttemptTime() == 0) {
+                    viewModel.updateCardOnKnownOrKnownNot(userAnswer, null)
+                }
                 quizGameAdapter.notifyDataSetChanged()
                 if (viewModel.isAllAnswerSelected(userAnswer)) {
-                    optionsState()
+                    optionsState(userAnswer)
                 }
-                specifyActions(userAnswer)
+                viewModel.increaseAttemptTime()
             },
             { dataToRead ->
                 if (tts?.isSpeaking == true) {
@@ -200,8 +197,6 @@ class QuizGameActivity :
                     readText(
                         dataToRead.text,
                         dataToRead.views,
-                        dataToRead.language,
-                        viewModel.deck?.deckSecondLanguage!!
                     )
                 }
 
@@ -209,12 +204,10 @@ class QuizGameActivity :
         binding.vpCardHolder.adapter = quizGameAdapter
     }
 
-    private fun specifyActions(
-        userResponseModel: QuizGameCardDefinitionModel
-    ) {
-        var fetchJob1: Job? = null
+    private fun specifyKnownAndKnownNotActions(userResponseModel: QuizGameCardDefinitionModel) {
         binding.btKnown.setOnClickListener {
-            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             viewModel.updateCardOnKnownOrKnownNot(userResponseModel, true)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -224,7 +217,6 @@ class QuizGameActivity :
                         viewModel.getKnownCardSum(),
                         viewModel.getMissedCardSum(),
                         viewModel.getQuizGameCardsSum(),
-                        viewModel.getMissedCard(),
                         viewModel.cardLeft()
                     )
                 } else {
@@ -235,11 +227,12 @@ class QuizGameActivity :
                     )
                 }
             }
-            restoreAnswerButtons()
+            viewModel.initAttemptTime()
         }
         binding.btKnownNot.setOnClickListener {
             viewModel.updateCardOnKnownOrKnownNot(userResponseModel, false)
-            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -248,7 +241,6 @@ class QuizGameActivity :
                         viewModel.getKnownCardSum(),
                         viewModel.getMissedCardSum(),
                         viewModel.getQuizGameCardsSum(),
-                        viewModel.getMissedCard(),
                         viewModel.cardLeft()
                     )
                 } else {
@@ -259,12 +251,15 @@ class QuizGameActivity :
                     )
                 }
             }
-            restoreAnswerButtons()
+            viewModel.initAttemptTime()
         }
+    }
+
+    private fun specifyNextAndBackActions() {
         if (binding.vpCardHolder.currentItem > 0) {
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
-                areOptionsEnabled(true)
+                areNextAndBackButtonsVisible(true)
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -275,11 +270,12 @@ class QuizGameActivity :
                     }
                 }
             }
+            viewModel.initAttemptTime()
         } else {
             isRewindButtonActive(false)
         }
         binding.btNext.setOnClickListener {
-            areOptionsEnabled(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -288,7 +284,6 @@ class QuizGameActivity :
                         viewModel.getKnownCardSum(),
                         viewModel.getMissedCardSum(),
                         viewModel.getQuizGameCardsSum(),
-                        viewModel.getMissedCard(),
                         viewModel.cardLeft()
                     )
                 } else {
@@ -299,14 +294,26 @@ class QuizGameActivity :
                     )
                 }
             }
-            restoreAnswerButtons()
+            viewModel.initAttemptTime()
         }
     }
 
-    private fun optionsState() {
+    private fun optionsState(userResponseModel: QuizGameCardDefinitionModel) {
         lifecycleScope.launch {
             delay(TIME_BEFORE_SHOWING_ACTIONS)
-            areOptionsEnabled(true)
+            when (userResponseModel.cardType) {
+                SINGLE_ANSWER_CARD -> {
+                    specifyKnownAndKnownNotActions(userResponseModel)
+                    specifyNextAndBackActions()
+                    areKnownAndKnownNotButtonsVisible(true)
+                    areNextAndBackButtonsVisible(true)
+                }
+                else -> {
+                    specifyNextAndBackActions()
+                    areNextAndBackButtonsVisible(true)
+                    areKnownAndKnownNotButtonsVisible(false)
+                }
+            }
         }
     }
 
@@ -314,17 +321,18 @@ class QuizGameActivity :
         knownCardsSum: Int,
         missedCardsSum: Int,
         totalCardsSum: Int,
-        missedCardsList: List<ImmutableCard?>,
         cardsLeft: Int,
     ) {
-
+        viewModel.initAttemptTime()
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
-        binding.lyContainerOptions.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
             tvScoreTitleScoreLayout.text =
-                getString(R.string.flashcard_score_title_text, getString(R.string.start_quiz_button_text))
+                getString(
+                    R.string.flashcard_score_title_text,
+                    getString(R.string.start_quiz_button_text)
+                )
             tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
             tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
             tvKnownCardsSumScoreLayout.text = knownCardsSum.toString()
@@ -365,12 +373,6 @@ class QuizGameActivity :
             }
 
             btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-//                viewModel.initQuizGame()
-//                val newCards = viewModel.getOriginalCardList()?.toMutableList()
-//                startTest(
-//                    newCards!!,
-//                    viewModel.deck!!
-//                )
                 restartQuiz()
             }
 
@@ -385,9 +387,6 @@ class QuizGameActivity :
                 btReviseMissedCardScoreLayout.isActivated = true
                 btReviseMissedCardScoreLayout.isVisible = true
                 btReviseMissedCardScoreLayout.setOnClickListener {
-//                    val newCards = missedCardsList.toMutableList()
-//                    viewModel.initQuizGame()
-//                    startTest(newCards, viewModel.deck!!)
                     viewModel.updateActualCardsWithMissedCards()
                     quizJob?.cancel()
                     quizJob = lifecycleScope.launch {
@@ -397,6 +396,7 @@ class QuizGameActivity :
                                 is UiState.Error -> {
                                     onNoCardToRevise()
                                 }
+
                                 is UiState.Loading -> {}
                                 is UiState.Success -> {
                                     binding.gameReviewContainerMQ.visibility = View.GONE
@@ -427,6 +427,7 @@ class QuizGameActivity :
                                     is UiState.Error -> {
                                         onNoCardToRevise()
                                     }
+
                                     is UiState.Loading -> {}
                                     is UiState.Success -> {
                                         restartQuiz()
@@ -452,7 +453,7 @@ class QuizGameActivity :
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateActualCards(getCardCount())
-//        viewModel.getQuizGameCards()
+        viewModel.initAttemptTime()
         binding.vpCardHolder.setCurrentItem(0, true)
     }
 
@@ -461,30 +462,29 @@ class QuizGameActivity :
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
         binding.vpCardHolder.setCurrentItem(0, true)
-
+        areNextAndBackButtonsVisible(false)
+        areKnownAndKnownNotButtonsVisible(false)
     }
 
     private fun completelyRestartQuiz() {
-        restartQuiz()
         viewModel.onRestartQuiz()
         viewModel.updateActualCards(getCardCount())
         quizJob?.cancel()
-        quizJob  = lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.getQuizGameCards()
-                viewModel.externalQuizGameCards.collect { state ->
-                    when (state) {
-                        is UiState.Error -> {
-                            onNoCardToRevise()
-                        }
+        quizJob = lifecycleScope.launch {
+            viewModel.getQuizGameCards()
+            viewModel.externalQuizGameCards.collect { state ->
+                when (state) {
+                    is UiState.Error -> {
+                        onNoCardToRevise()
+                    }
 
-                        is UiState.Loading -> {
+                    is UiState.Loading -> {
 
-                        }
+                    }
 
-                        is UiState.Success -> {
-                            launchTestQuizGame(state.data)
-                        }
+                    is UiState.Success -> {
+                        restartQuiz()
+                        launchTestQuizGame(state.data)
                     }
                 }
             }
@@ -511,7 +511,6 @@ class QuizGameActivity :
                 completelyRestartQuiz()
             }
         }
-        //isFlashCardGameScreenHidden(true)
     }
 
     private fun unableShowUnKnownCardOnly() {
@@ -521,17 +520,20 @@ class QuizGameActivity :
         }
     }
 
-    private fun areOptionsEnabled(optionsEnabled: Boolean) {
-        binding.lyContainerOptions.isVisible = optionsEnabled
-        binding.btKnown.isClickable = optionsEnabled
-        binding.btKnownNot.isClickable = optionsEnabled
+    private fun areNextAndBackButtonsVisible(areVisible: Boolean) {
+        binding.btRewind.isVisible = areVisible
+        binding.btNext.isVisible = areVisible
+    }
+
+    private fun areKnownAndKnownNotButtonsVisible(areVisible: Boolean) {
+        binding.btKnown.isVisible = areVisible
+        binding.btKnownNot.isVisible = areVisible
+        binding.tvActionQuestion.isVisible = areVisible
     }
 
     private fun readText(
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         view: List<View>,
-        firstLanguage: String,
-        secondLanguage: String,
     ) {
 
         var position = 0
@@ -554,7 +556,7 @@ class QuizGameActivity :
                 onReadingStop(position, view, onStopColor)
                 position += 1
                 if (position < textSum) {
-                    speak(secondLanguage, params, text, position, this)
+                    speak(params, text, position, this)
                 } else {
                     position = 0
                     return
@@ -570,7 +572,7 @@ class QuizGameActivity :
             }
         }
 
-        speak(firstLanguage, params, text, position, speechListener)
+        speak(params, text, position, speechListener)
 
     }
 
@@ -614,54 +616,17 @@ class QuizGameActivity :
     }
 
     private fun speak(
-        language: String,
         params: Bundle,
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.speak(text[position].text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts?.setOnUtteranceProgressListener(speechListener)
-    }
-
-    private fun restoreAnswerButtons() {
-
-        val buttonsDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral300)
-        val buttonsOriginalColorStateList = MaterialColors.getColorStateList(
-            this,
-            com.google.android.material.R.attr.colorSurfaceContainerLowest,
-            buttonsDefaultColorStateList!!
-        )
-
-        val buttonsStrokeDefaultColorStateList =
-            ContextCompat.getColorStateList(this, R.color.neutral500)
-        val buttonsStrokeOriginalColorStateList = MaterialColors.getColorStateList(
-            this,
-            com.google.android.material.R.attr.colorSurfaceContainerHigh,
-            buttonsStrokeDefaultColorStateList!!
-        )
-
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative2).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative3).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative4).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-
     }
 
     private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10

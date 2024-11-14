@@ -81,11 +81,9 @@ class DeckFragment :
 
     private val deckViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
-        val openTriviaRepository =
-            (requireActivity().application as FlashCardApplication).openTriviaRepository
         ViewModelProvider(
             this,
-            DeckViewModelFactory(repository, openTriviaRepository)
+            DeckViewModelFactory(repository)
         )[DeckViewModel::class.java]
     }
 
@@ -138,11 +136,6 @@ class DeckFragment :
                 R.id.bt_sort_deck -> {
                     val item: View = binding.bottomAppBarDeck.findViewById(R.id.bt_sort_deck)
                     showMenu(item, R.menu.menu_filter_deck)
-                    true
-                }
-
-                R.id.bt_upload_deck_with_cards -> {
-                    showTriviaQuestionUploader()
                     true
                 }
 
@@ -228,62 +221,6 @@ class DeckFragment :
             apply()
         }
     }
-
-    private fun showTriviaQuestionUploader() {
-        val newDeckDialog = UploadOpenTriviaQuizDialog()
-        newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requstQuery, bundle ->
-            val result =
-                bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
-            lifecycleScope.launch {
-                deckViewModel.getOpenTriviaQuestions(
-                    result?.number!!,
-                    result.category,
-                    result.difficulty,
-                    result.type
-                )
-                deckViewModel.openTriviaResponse.collect { response ->
-                    when (response) {
-                        is UiState.Error -> {
-                            val message = when (response.errorMessage) {
-                                "1" -> {
-                                    getString(R.string.error_message_open_trivia_1)
-                                }
-
-                                "2" -> {
-                                    getString(R.string.error_message_open_trivia_2)
-                                }
-
-                                "5" -> {
-                                    getString(R.string.error_message_open_trivia_5)
-                                }
-
-                                else -> {
-                                    getString(R.string.error_message_open_trivia_4)
-                                }
-                            }
-                            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                        }
-
-                        is UiState.Loading -> {
-                            binding.mainActivityProgressBar.isVisible = true
-                        }
-
-                        is UiState.Success -> {
-                            deckViewModel.insertOpenTriviaQuestions(
-                                result.deckName,
-                                result.difficulty,
-                                response.data.results
-                            )
-                            binding.mainActivityProgressBar.visibility = View.GONE
-                        }
-                    }
-                }
-            }
-
-        }
-    }
-
 
     private fun onNoDeckError() {
         binding.mainActivityProgressBar.visibility = View.GONE

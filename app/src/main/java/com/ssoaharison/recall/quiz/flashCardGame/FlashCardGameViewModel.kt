@@ -239,6 +239,8 @@ class FlashCardGameViewModel(
                     nextForgettingDate,
                     nextRevision,
                     card.cardType,
+                    card.cardContentLanguage,
+                    card.cardDefinitionLanguage
                 )
                 updateCard(newCard)
             }

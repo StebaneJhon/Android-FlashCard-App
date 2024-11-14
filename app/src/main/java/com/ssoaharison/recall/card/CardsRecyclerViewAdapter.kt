@@ -24,11 +24,14 @@ import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
+import com.ssoaharison.recall.backend.Model.ImmutableDeck
+import com.ssoaharison.recall.util.TextWithLanguageModel
 
 
 class CardsRecyclerViewAdapter(
     private val context: Context,
     private val appTheme: String,
+    private val deck: ImmutableDeck,
     private val cardList: List<ImmutableCard?>,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
     private val editCardClickListener: (ImmutableCard?) -> Unit,
@@ -49,6 +52,7 @@ class CardsRecyclerViewAdapter(
         return holder.bind(
             context,
             appTheme,
+            deck,
             cardList[position],
             boxLevels,
             editCardClickListener,
@@ -87,6 +91,7 @@ class CardsRecyclerViewAdapter(
         fun bind(
             context: Context,
             appTheme: String,
+            deck: ImmutableDeck,
             card: ImmutableCard?,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             editCardClickListener: (ImmutableCard?) -> Unit,
@@ -121,6 +126,28 @@ class CardsRecyclerViewAdapter(
                     tv.visibility = View.VISIBLE
                     cardDescriptionError.visibility = View.GONE
                     tv.text = definitionTexts[index]
+                    tv.setOnClickListener { it as TextView
+                        val text = it.text.toString().lowercase()
+                        val language = if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage!!
+//                        onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
+                        onReadDefinition(
+                            TextClickedModel(
+                                TextWithLanguageModel(text, language),
+                                it
+                            )
+                        )
+                    }
+                    tv.setOnLongClickListener { v: View ->
+                        showMenu(
+                            context,
+                            v,
+                            R.menu.card_popup_menu,
+                            editCardClickListener,
+                            deleteCardClickListener,
+                            card
+                        )
+                        true
+                    }
                 } else {
                     tv.visibility = View.GONE
                 }
@@ -140,7 +167,16 @@ class CardsRecyclerViewAdapter(
 
             onCardText.apply {
                 setOnClickListener {it as TextView
-                    onReadContent(TextClickedModel(it.text.toString().lowercase(), it))
+
+                    val text = it.text.toString().lowercase()
+                    val language = if (card?.cardContentLanguage != null) card.cardContentLanguage else deck.cardContentDefaultLanguage!!
+//                    onReadContent(TextClickedModel(it.text.toString().lowercase(), it))
+                    onReadContent(
+                        TextClickedModel(
+                            TextWithLanguageModel(text, language),
+                            it
+                        )
+                    )
                 }
                 setOnLongClickListener { v: View ->
                     showMenu(
@@ -155,54 +191,54 @@ class CardsRecyclerViewAdapter(
                 }
             }
 
-            cardDescription1.apply {
-                setOnClickListener { it as TextView
-                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
-                }
-                setOnLongClickListener { v: View ->
-                    showMenu(
-                        context,
-                        v,
-                        R.menu.card_popup_menu,
-                        editCardClickListener,
-                        deleteCardClickListener,
-                        card
-                    )
-                    true
-                }
-            }
-            cardDescription2.apply {
-                setOnClickListener { it as TextView
-                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
-                }
-                setOnLongClickListener { v: View ->
-                    showMenu(
-                        context,
-                        v,
-                        R.menu.card_popup_menu,
-                        editCardClickListener,
-                        deleteCardClickListener,
-                        card
-                    )
-                    true
-                }
-            }
-            cardDescription3.apply {
-                setOnClickListener { it as TextView
-                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
-                }
-                setOnLongClickListener { v: View ->
-                    showMenu(
-                        context,
-                        v,
-                        R.menu.card_popup_menu,
-                        editCardClickListener,
-                        deleteCardClickListener,
-                        card
-                    )
-                    true
-                }
-            }
+//            cardDescription1.apply {
+//                setOnClickListener { it as TextView
+//                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
+//                }
+//                setOnLongClickListener { v: View ->
+//                    showMenu(
+//                        context,
+//                        v,
+//                        R.menu.card_popup_menu,
+//                        editCardClickListener,
+//                        deleteCardClickListener,
+//                        card
+//                    )
+//                    true
+//                }
+//            }
+//            cardDescription2.apply {
+//                setOnClickListener { it as TextView
+//                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
+//                }
+//                setOnLongClickListener { v: View ->
+//                    showMenu(
+//                        context,
+//                        v,
+//                        R.menu.card_popup_menu,
+//                        editCardClickListener,
+//                        deleteCardClickListener,
+//                        card
+//                    )
+//                    true
+//                }
+//            }
+//            cardDescription3.apply {
+//                setOnClickListener { it as TextView
+//                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
+//                }
+//                setOnLongClickListener { v: View ->
+//                    showMenu(
+//                        context,
+//                        v,
+//                        R.menu.card_popup_menu,
+//                        editCardClickListener,
+//                        deleteCardClickListener,
+//                        card
+//                    )
+//                    true
+//                }
+//            }
 
         }
 

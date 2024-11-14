@@ -82,7 +82,7 @@ class TestResultRecyclerViewAdapter(
             v: TextView
         ) {
             v.visibility = View.VISIBLE
-            v.text = definition.definition
+            v.text = definition.definition.text
             if (definition.isSelected) {
                 if (definition.isCorrect == 1 && definition.attachedCardId == definition.cardId) {
                     onCorrectAnswer(context, v)

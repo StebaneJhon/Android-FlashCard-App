@@ -21,10 +21,8 @@ class MatchQuizGameViewModel : ViewModel() {
     val actualCards: StateFlow<UiState<List<MatchQuizGameItemModel>>> = _actualCards.asStateFlow()
     private lateinit var cardList: List<ImmutableCard?>
     lateinit var deck: ImmutableDeck
-    private var progression = 0
     private lateinit var originalCardList: List<ImmutableCard?>
     private var passedCards: Int = 0
-    var boardSize = MatchQuizGameBorderSize.DEFAULT
     private var onBoarItems = mutableListOf<MatchQuizGameItemModel>()
     private var firstSelectedItem: MatchQuizGameItemModel? = null
     private var numMatch = 0
@@ -58,21 +56,26 @@ class MatchQuizGameViewModel : ViewModel() {
         }
     }
 
+    fun initQuiz() {
+        passedCards = 0
+        restCard = cardSum()
+    }
+
     fun getNumMove() = numMove
     fun getNumMiss() = numMiss
 
     fun getUserPerformance() = (100/numMove) * numMiss
 
-    fun getOnBoardCardSum() = boardSize.getHeight()
+    fun getOnBoardCardSum(boardSize: MatchQuizGameBorderSize) = boardSize.getCardCount()
 
 
-    fun updateBoard() {
+    fun updateBoardCards(boardSize: MatchQuizGameBorderSize ) {
         if (passedCards == cardList.size) {
             _actualCards.value = UiState.Error("Quiz Complete")
         } else {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
-                val cards = getCards(cardList, boardSize.getHeight())
+                val cards = getCards(cardList, boardSize.getCardCount())
                 if (cards.isNullOrEmpty()) {
                     _actualCards.value = UiState.Error("Too Few Cards")
                 } else {
@@ -122,17 +125,10 @@ class MatchQuizGameViewModel : ViewModel() {
             }
         }
         numMatch++
-        updateProgression()
         return true
     }
 
-    private fun updateProgression() {
-        progression += 100/boardSize.getHeight()
-    }
-
-    fun getProgression() = progression
-
-    fun isQuizComplete() = numMatch == boardSize.getNumCards()
+    fun isQuizComplete(boardSize: MatchQuizGameBorderSize) = numMatch == boardSize.getCardCount()
 
     fun isItemActive(item: MatchQuizGameItemModel) = item.isActive
 
@@ -173,41 +169,52 @@ class MatchQuizGameViewModel : ViewModel() {
         return null
     }
 
-    fun getCards(quizCardList: List<ImmutableCard?>, borderHeight: Int): List<ImmutableCard?>? {
+    private fun getCards(quizCardList: List<ImmutableCard?>, borderHeight: Int): List<ImmutableCard?>? {
         return when {
             quizCardList.size == borderHeight -> {
                 quizCardList
             }
 
             quizCardList.size < borderHeight -> {
-                null
-            }
-
-            quizCardList.size > borderHeight -> {
-                var result = listOf<ImmutableCard?>()
-                if (passedCards <= quizCardList.size) {
-                    if (restCard > borderHeight) {
-                        result = quizCardList.slice(passedCards..passedCards.plus(borderHeight).minus(1))
-                        passedCards += borderHeight
-                    } else {
-                        result = quizCardList.slice(passedCards..quizCardList.size.minus(1))
-                            .toMutableList()
-                        while (result.size != borderHeight) {
-                            val randomCard = quizCardList.random()
-                            if (randomCard !in result) {
-                                result.add(randomCard)
-                            }
-                        }
-                        passedCards += quizCardList.size.plus(50)
+                val cardAmountForBoard2 = MatchQuizGameBorderSize.BOARD_2.getCardCount()
+                val cardAmountForBoard1 = MatchQuizGameBorderSize.BOARD_1.getCardCount()
+                when {
+                    quizCardList.size >= cardAmountForBoard2 -> {
+                        getCardAmount(quizCardList, cardAmountForBoard2)
+                    }
+                    quizCardList.size >= cardAmountForBoard1 -> {
+                        getCardAmount(quizCardList, cardAmountForBoard1)
+                    }
+                    else -> {
+                        null
                     }
                 }
-                restCard = quizCardList.size - passedCards
-                result
             }
-
             else -> {
-                null
+                getCardAmount(quizCardList, borderHeight)
             }
         }
+    }
+
+    private fun getCardAmount(quizCardList: List<ImmutableCard?>, amount: Int): List<ImmutableCard?> {
+        var result = listOf<ImmutableCard?>()
+        if (passedCards <= quizCardList.size) {
+            if (restCard > amount) {
+                result = quizCardList.slice(passedCards..passedCards.plus(amount).minus(1))
+                passedCards += amount
+            } else {
+                result = quizCardList.slice(passedCards..quizCardList.size.minus(1))
+                    .toMutableList()
+                while (result.size != amount) {
+                    val randomCard = quizCardList.random()
+                    if (randomCard !in result) {
+                        result.add(randomCard)
+                    }
+                }
+                passedCards += quizCardList.size.plus(50)
+            }
+        }
+        restCard = quizCardList.size - passedCards
+        return result
     }
 }

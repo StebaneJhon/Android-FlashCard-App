@@ -70,6 +70,7 @@ import com.ssoaharison.recall.util.UiState
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -321,9 +322,19 @@ class CardFragment :
             }
 
             TEST -> {
-                val intent = Intent(appContext, TestActivity::class.java)
-                intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
+                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_TEST) {
+                    val intent = Intent(appContext, TestActivity::class.java)
+                    intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
+                    startActivity(intent)
+                } else {
+                    onStartingQuizError(
+                        getString(
+                            R.string.error_message_starting_quiz,
+                            "$MIN_CARD_FOR_TEST"
+                        )
+                    )
+                }
+
             }
 
         }
@@ -341,6 +352,7 @@ class CardFragment :
             CardsRecyclerViewAdapter(
                 it,
                 appTheme,
+                deck,
                 cardList,
                 cardViewModel.getBoxLevels()!!,
                 { selectedCard ->
@@ -353,13 +365,13 @@ class CardFragment :
                     if (tts?.isSpeaking == true) {
                         stopReading(text)
                     } else {
-                        readText(text, deck.deckFirstLanguage!!)
+                        readText(text, text.text.language)
                     }
                 }) { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
                 } else {
-                    readText(text, deck.deckSecondLanguage!!)
+                    readText(text, text.text.language)
                 }
             }
         }!!
@@ -400,7 +412,7 @@ class CardFragment :
 
     private fun readText(textAndView: TextClickedModel, language: String) {
 
-        val text = textAndView.text
+        val text = textAndView.text.text
         val view = textAndView.view
         val textColor = view.textColors
         val onReadColor = MaterialColors.getColor(
@@ -653,7 +665,6 @@ class CardFragment :
             it.stop()
             it.shutdown()
         }
-
     }
 
 }

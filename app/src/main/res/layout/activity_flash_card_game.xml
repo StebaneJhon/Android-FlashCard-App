@@ -118,9 +118,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
 
-        <!-- to calculate the margin bottom: action buttons height (icon height + padding ) plus margin * 2 -->
-        <!-- in this case (24 + 16) + 8 + 8 -->
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_card_back"
             android:layout_width="0dp"
@@ -453,7 +450,7 @@
             android:layout_alignParentStart="true"
             android:backgroundTint="?colorSurfaceContainerLow"
             android:contentDescription="@string/bt_rewind"
-            android:padding="@dimen/space_xl"
+            android:padding="@dimen/space_md"
             app:icon="@drawable/icon_rewind"
             app:iconTint="?colorPrimary"
             app:rippleColor="?colorSurfaceContainerHighest"
@@ -472,7 +469,7 @@
         android:layout_margin="@dimen/space_sm"
         android:backgroundTint="@color/red100"
         android:contentDescription="@string/known_button_text"
-        android:padding="@dimen/space_xl"
+        android:padding="@dimen/space_md"
         app:icon="@drawable/icon_exit"
         app:iconTint="@color/red700"
         app:rippleColor="@color/red400"
@@ -490,7 +487,7 @@
         android:layout_margin="@dimen/space_sm"
         android:backgroundTint="?colorSurfaceContainerLow"
         android:contentDescription="@string/bt_rewind"
-        android:padding="@dimen/space_xl"
+        android:padding="@dimen/space_md"
         app:icon="@drawable/icon_rewind"
         app:iconTint="?colorPrimary"
         app:rippleColor="?colorSurfaceContainerHighest"
@@ -508,7 +505,7 @@
         android:layout_margin="@dimen/space_sm"
         android:backgroundTint="@color/green100"
         android:contentDescription="@string/no_button_text"
-        android:padding="@dimen/space_xl"
+        android:padding="@dimen/space_md"
         app:icon="@drawable/icon_check"
         app:iconTint="@color/green700"
         app:rippleColor="@color/green400"

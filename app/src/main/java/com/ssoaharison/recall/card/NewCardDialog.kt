@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Parcelable
 import android.speech.RecognizerIntent
 import android.util.TypedValue
 import android.view.ActionMode
@@ -35,6 +36,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,6 +66,12 @@ import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions
 import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import com.ssoaharison.recall.backend.FlashCardApplication
+import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
+import com.ssoaharison.recall.deck.OpenTriviaQuizModel
+import com.ssoaharison.recall.deck.UploadOpenTriviaQuizDialog
+import com.ssoaharison.recall.util.UiState
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -87,7 +95,17 @@ class NewCardDialog(
     private var selectedField: EditText? = null
     private var selectedFieldLy: TextInputLayout? = null
     private var actualFieldLanguage: String? = null
-    private val newCardViewModel: NewCardDialogViewModel by viewModels()
+    var cardUploadingJob: Job? = null
+
+    //    private val newCardViewModel: NewCardDialogViewModel by viewModels()
+    private val newCardViewModel by lazy {
+        val openTriviaRepository =
+            (requireActivity().application as FlashCardApplication).openTriviaRepository
+        ViewModelProvider(
+            this,
+            NewCardDialogViewModelFactory(openTriviaRepository)
+        )[NewCardDialogViewModel::class.java]
+    }
     private var actionMode: ActionMode? = null
     private var uri: Uri? = null
     private var revealedDefinitionFields: Int = 1
@@ -143,7 +161,7 @@ class NewCardDialog(
 
     private val requestCameraPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) {isGranted ->
+    ) { isGranted ->
         if (isGranted) {
             openCamera()
         } else {
@@ -192,16 +210,66 @@ class NewCardDialog(
         super.onViewCreated(view, savedInstanceState)
 
         definitionFields = listOf(
-            DefinitionFieldModel(binding.tilDefinition1MultiAnswerCard, binding.tieDefinition1MultiAnswerCard, binding.cpDefinition1IsTrue, binding.btDeleteField1),
-            DefinitionFieldModel(binding.tilDefinition2MultiAnswerCard, binding.tieDefinition2MultiAnswerCard, binding.cpDefinition2IsTrue, binding.btDeleteField2),
-            DefinitionFieldModel(binding.tilDefinition3MultiAnswerCard, binding.tieDefinition3MultiAnswerCard, binding.cpDefinition3IsTrue, binding.btDeleteField3),
-            DefinitionFieldModel(binding.tilDefinition4MultiAnswerCard, binding.tieDefinition4MultiAnswerCard, binding.cpDefinition4IsTrue, binding.btDeleteField4),
-            DefinitionFieldModel(binding.tilDefinition5MultiAnswerCard, binding.tieDefinition5MultiAnswerCard, binding.cpDefinition5IsTrue, binding.btDeleteField5),
-            DefinitionFieldModel(binding.tilDefinition6MultiAnswerCard, binding.tieDefinition6MultiAnswerCard, binding.cpDefinition6IsTrue, binding.btDeleteField6),
-            DefinitionFieldModel(binding.tilDefinition7MultiAnswerCard, binding.tieDefinition7MultiAnswerCard, binding.cpDefinition7IsTrue, binding.btDeleteField7),
-            DefinitionFieldModel(binding.tilDefinition8MultiAnswerCard, binding.tieDefinition8MultiAnswerCard, binding.cpDefinition8IsTrue, binding.btDeleteField8),
-            DefinitionFieldModel(binding.tilDefinition9MultiAnswerCard, binding.tieDefinition9MultiAnswerCard, binding.cpDefinition9IsTrue, binding.btDeleteField9),
-            DefinitionFieldModel(binding.tilDefinition10MultiAnswerCard, binding.tieDefinition10MultiAnswerCard, binding.cpDefinition10IsTrue, binding.btDeleteField10),
+            DefinitionFieldModel(
+                binding.tilDefinition1MultiAnswerCard,
+                binding.tieDefinition1MultiAnswerCard,
+                binding.cpDefinition1IsTrue,
+                binding.btDeleteField1
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition2MultiAnswerCard,
+                binding.tieDefinition2MultiAnswerCard,
+                binding.cpDefinition2IsTrue,
+                binding.btDeleteField2
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition3MultiAnswerCard,
+                binding.tieDefinition3MultiAnswerCard,
+                binding.cpDefinition3IsTrue,
+                binding.btDeleteField3
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition4MultiAnswerCard,
+                binding.tieDefinition4MultiAnswerCard,
+                binding.cpDefinition4IsTrue,
+                binding.btDeleteField4
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition5MultiAnswerCard,
+                binding.tieDefinition5MultiAnswerCard,
+                binding.cpDefinition5IsTrue,
+                binding.btDeleteField5
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition6MultiAnswerCard,
+                binding.tieDefinition6MultiAnswerCard,
+                binding.cpDefinition6IsTrue,
+                binding.btDeleteField6
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition7MultiAnswerCard,
+                binding.tieDefinition7MultiAnswerCard,
+                binding.cpDefinition7IsTrue,
+                binding.btDeleteField7
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition8MultiAnswerCard,
+                binding.tieDefinition8MultiAnswerCard,
+                binding.cpDefinition8IsTrue,
+                binding.btDeleteField8
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition9MultiAnswerCard,
+                binding.tieDefinition9MultiAnswerCard,
+                binding.cpDefinition9IsTrue,
+                binding.btDeleteField9
+            ),
+            DefinitionFieldModel(
+                binding.tilDefinition10MultiAnswerCard,
+                binding.tieDefinition10MultiAnswerCard,
+                binding.cpDefinition10IsTrue,
+                binding.btDeleteField10
+            ),
         )
 
         if (card != null) {
@@ -247,7 +315,8 @@ class NewCardDialog(
                     true
                 }
 
-                R.id.bt_scan_image -> {
+                R.id.bt_upload_card -> {
+                    showTriviaQuestionUploader()
                     true
                 }
 
@@ -290,7 +359,11 @@ class NewCardDialog(
                     }
 
                     R.id.bt_translate -> {
-                        onTranslateText(binding.tieContentMultiAnswerCard.text.toString(), selectedField, selectedFieldLy)
+                        onTranslateText(
+                            binding.tieContentMultiAnswerCard.text.toString(),
+                            selectedField,
+                            selectedFieldLy
+                        )
                         true
                     }
 
@@ -330,13 +403,13 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     binding.tilContentMultiAnswerCard,
                     v,
-                    deck.deckFirstLanguage,
+                    deck.cardContentDefaultLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
                 )
             }
-            setHint(getString(R.string.card_content_hint, deck.deckFirstLanguage))
+            setHint(getString(R.string.card_content_hint, deck.cardContentDefaultLanguage))
         }
 
         definitionFields.forEach { definitionField ->
@@ -344,13 +417,18 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     definitionField.fieldLy,
                     v,
-                    deck.deckSecondLanguage,
+                    deck.cardDefinitionDefaultLanguage,
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
                 )
             }
-            definitionField.fieldEd.setHint(getString(R.string.card_definition, deck.deckSecondLanguage))
+            definitionField.fieldEd.setHint(
+                getString(
+                    R.string.card_definition,
+                    deck.cardDefinitionDefaultLanguage
+                )
+            )
             definitionField.btDeleteField.setOnClickListener {
                 deleteDefinitionField(definitionField.fieldEd)
             }
@@ -361,6 +439,66 @@ class NewCardDialog(
             onAddMoreDefinition()
         }
 
+    }
+
+    private fun showTriviaQuestionUploader() {
+        val newDeckDialog = UploadOpenTriviaQuizDialog()
+        newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requstQuery, bundle ->
+            val result = bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
+            cardUploadingJob?.cancel()
+            cardUploadingJob = lifecycleScope.launch {
+                newCardViewModel.getOpenTriviaQuestions(
+                    result?.number!!,
+                    result.category,
+                    result.difficulty,
+                    result.type
+                )
+                newCardViewModel.openTriviaResponse.collect { response ->
+                    when (response) {
+                        is UiState.Error -> {
+                            val message = when (response.errorMessage) {
+                                "1" -> {
+                                    getString(R.string.error_message_open_trivia_1)
+                                }
+
+                                "2" -> {
+                                    getString(R.string.error_message_open_trivia_2)
+                                }
+
+                                "5" -> {
+                                    getString(R.string.error_message_open_trivia_5)
+                                }
+
+                                else -> {
+                                    getString(R.string.error_message_open_trivia_4)
+                                }
+                            }
+                            binding.llAddCardProgressBar.visibility = View.GONE
+                            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                        }
+
+                        is UiState.Loading -> {
+                            binding.llAddCardProgressBar.isVisible = true
+                        }
+
+                        is UiState.Success -> {
+                            val newCards = newCardViewModel.resultsToImmutableCards(
+                                deck.deckId,
+                                response.data.results
+                            )
+                            newCards.forEach { card ->
+                                newCardViewModel.addCard(card)
+                                rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
+                                initCardAdditionPanel()
+                            }
+                            binding.llAddCardProgressBar.visibility = View.GONE
+                        }
+                    }
+                }
+            }
+
+        }
     }
 
     private fun onActiveTopAppBarMode(
@@ -433,7 +571,7 @@ class NewCardDialog(
             File(appContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
         return FileProvider.getUriForFile(
             requireContext(),
-            "package com.example.flashcard.card.FileProvider",
+            "com.ssoaharison.recall.FileProvider",
             image
         )
     }
@@ -447,24 +585,31 @@ class NewCardDialog(
             "Chinese" -> {
                 TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
             }
+
             "Vietnamese" -> {
                 TextRecognition.getClient(ChineseTextRecognizerOptions.Builder().build())
             }
+
             "Japanese" -> {
                 TextRecognition.getClient(JapaneseTextRecognizerOptions.Builder().build())
             }
+
             "Korean" -> {
                 TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
             }
+
             "Indonesian" -> {
                 TextRecognition.getClient(KoreanTextRecognizerOptions.Builder().build())
             }
+
             "Hindi" -> {
                 TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
             }
+
             "Marathi" -> {
                 TextRecognition.getClient(DevanagariTextRecognizerOptions.Builder().build())
             }
+
             else -> {
                 TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
             }
@@ -624,8 +769,11 @@ class NewCardDialog(
 
     private fun generateCardOnUpdate(): ImmutableCard? {
 
-        val content = getContent2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
-        val definitions = getDefinition2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!) ?: return null
+        val content = getContent2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+            ?: return null
+        val definitions =
+            getDefinition2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+                ?: return null
 
         val updateCardDefinitions = mutableListOf<CardDefinition>()
         for (i in 0..card?.cardDefinition?.size?.minus(1)!!) {
@@ -671,6 +819,8 @@ class NewCardDialog(
             card!!.nextMissMemorisationDate,
             card!!.nextRevisionDate,
             getCardType(definitions),
+            card!!.cardContentLanguage,
+            card!!.cardDefinitionLanguage,
         )
     }
 
@@ -711,9 +861,11 @@ class NewCardDialog(
             correctDefinitions == 1 && definitionSum == 1 -> {
                 SINGLE_ANSWER_CARD
             }
+
             correctDefinitions == 1 && definitionSum > 1 -> {
                 MULTIPLE_CHOICE_CARD
             }
+
             else -> {
                 MULTIPLE_ANSWER_CARD
             }
@@ -739,10 +891,14 @@ class NewCardDialog(
         var isText = false
         var isTrueAnswer = false
         definitionFields.forEach {
-            if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank())  {
+            if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString()
+                    .isNotBlank()
+            ) {
                 isText = true
             }
-            if (it.chip.isChecked && it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank()) {
+            if (it.chip.isChecked && it.fieldEd.text.toString()
+                    .isNotEmpty() && it.fieldEd.text.toString().isNotBlank()
+            ) {
                 if (isText) {
                     return false
                 }
@@ -752,10 +908,12 @@ class NewCardDialog(
             }
         }
         if (!isTrueAnswer) {
-            binding.tilDefinition1MultiAnswerCard.error = getString(R.string.cp_error_correct_definition)
+            binding.tilDefinition1MultiAnswerCard.error =
+                getString(R.string.cp_error_correct_definition)
         }
         if (!isText) {
-            binding.tilDefinition1MultiAnswerCard.error = getString(R.string.til_error_card_definition)
+            binding.tilDefinition1MultiAnswerCard.error =
+                getString(R.string.til_error_card_definition)
         }
         return true
     }
@@ -770,7 +928,9 @@ class NewCardDialog(
         } else {
             definitionList.clear()
             definitionFields.forEach {
-                if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString().isNotBlank()) {
+                if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString()
+                        .isNotBlank()
+                ) {
                     definitionList.add(
                         createDefinition(
                             it.fieldEd.text.toString(),
@@ -882,8 +1042,8 @@ class NewCardDialog(
     ) {
         animProgressBar(ly)
 
-        val fl = LanguageUtil().getLanguageCodeForTranslation(deck.deckFirstLanguage!!)
-        val tl = LanguageUtil().getLanguageCodeForTranslation(deck.deckSecondLanguage!!)
+        val fl = LanguageUtil().getLanguageCodeForTranslation(deck.cardContentDefaultLanguage!!)
+        val tl = LanguageUtil().getLanguageCodeForTranslation(deck.cardDefinitionDefaultLanguage!!)
         if (fl != null && tl != null) {
             val options = TranslatorOptions.Builder()
                 .setSourceLanguage(fl)
@@ -1051,6 +1211,11 @@ class NewCardDialog(
             }
         }
         revealedDefinitionFields--
+    }
+
+    private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
+        Build.VERSION.SDK_INT >= 33 -> getParcelable(key, T::class.java)
+        else -> @Suppress("DEPRECATION") getParcelable<T>(key)
     }
 
 }

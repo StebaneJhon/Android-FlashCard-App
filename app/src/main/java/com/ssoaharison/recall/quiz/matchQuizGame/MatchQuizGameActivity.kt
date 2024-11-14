@@ -13,7 +13,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.Model.ImmutableCard
 import com.ssoaharison.recall.backend.Model.ImmutableDeck
@@ -25,6 +25,10 @@ import com.ssoaharison.recall.util.MatchQuizGameClickStatus
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
+import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
+import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -35,6 +39,9 @@ class MatchQuizGameActivity : AppCompatActivity() {
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
 
+    private var matchingQuizSettingsSharedPref: SharedPreferences? = null
+    private var matchingQuizSettingsSharedPrefEditor: SharedPreferences.Editor? = null
+
     private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var matchQuizGameRecyclerView: MatchQuizGameAdapter
 
@@ -42,18 +49,27 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
     private var firstSelectedItemInfo: MatchingQuizGameSelectedItemInfo? = null
 
+    private var matchingQuizJob: Job? = null
+
     companion object {
         const val DECK_ID_KEY = "Deck_id_key"
         private const val TAG = "MatchQuizGameActivity"
+        const val REQUEST_KEY_SETTINGS = "400"
+        const val BOARD_SIZE = "board_size"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
+        matchingQuizSettingsSharedPref =
+            getSharedPreferences("matchingQuizSettingsPref", Context.MODE_PRIVATE)
+        matchingQuizSettingsSharedPrefEditor = matchingQuizSettingsSharedPref?.edit()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) { setTheme(themRef) }
+        if (themRef != null) {
+            setTheme(themRef)
+        }
         binding = ActivityMatchQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -73,46 +89,119 @@ class MatchQuizGameActivity : AppCompatActivity() {
             setNavigationOnClickListener { finish() }
         }
 
-        lifecycleScope.launch {
-            viewModel.updateBoard()
-            viewModel
-                .actualCards
-                .collect { state ->
-                    when (state) {
-                        is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
-                        is UiState.Loading -> {}
-                        is UiState.Success -> {
-                            displayMatchQuizGameItems(state.data)
-                        }
-                    }
-                }
+        setUpBoard()
+
+        binding.topAppBar.setOnMenuItemClickListener { menuItem ->
+            if (menuItem.itemId == R.id.mn_bt_settings) {
+
+                showMatchingQuizSettings()
+
+                true
+            } else {
+                false
+            }
         }
 
+    }
+
+    private fun showMatchingQuizSettings() {
+        val settings = BottomSheetMatchingQuizSettings()
+        settings.show(supportFragmentManager, BottomSheetMatchingQuizSettings.TAG)
+        supportFragmentManager.setFragmentResultListener(
+            REQUEST_KEY_SETTINGS,
+            this
+        ) { requestKey, bundle ->
+            val result = bundle.getString(BottomSheetMatchingQuizSettings.BUNDLE_KEY_BOARD_SIZE)
+            if (!result.isNullOrBlank()) {
+                viewModel.initQuiz()
+                setBoardSize(result)
+                setUpBoard()
+            }
+        }
+    }
+
+    private fun setBoardSize(board: String) {
+        matchingQuizSettingsSharedPrefEditor?.apply {
+            putString(BOARD_SIZE, board)
+            apply()
+        }
     }
 
     private fun displayMatchQuizGameItems(items: List<MatchQuizGameItemModel>) {
         binding.gameScoreContainer.visibility = View.GONE
         binding.rvMatchingGame.visibility = View.VISIBLE
-        binding.lpiMatchingQuizGameProgression.progress = 0
-        viewModel.initOnBoardItems(items.toMutableList())
-        matchQuizGameRecyclerView = MatchQuizGameAdapter(this@MatchQuizGameActivity, items, viewModel.boardSize) {
-            onItemClicked(it, items)
+
+        val boardSize = when {
+            items.size.div(2) == getBoardSize().getCardCount() -> {
+                getBoardSize()
+            }
+            items.size.div(2) == MatchQuizGameBorderSize.BOARD_2.getCardCount() -> {
+                MatchQuizGameBorderSize.BOARD_2
+            }
+            items.size.div(2) == MatchQuizGameBorderSize.BOARD_1.getCardCount() -> {
+                MatchQuizGameBorderSize.BOARD_1
+            }
+            else -> {
+                null
+            }
         }
-        binding.rvMatchingGame.apply {
-            adapter = matchQuizGameRecyclerView
-            setHasFixedSize(true)
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        boardSize?.let {
+            updateBoard(items, boardSize)
         }
     }
 
-    private fun onItemClicked(itemDetails: MatchingQuizGameSelectedItemInfo, items: List<MatchQuizGameItemModel>) {
-        if (viewModel.isQuizComplete()) {
-            Snackbar.make(binding.lyMatchQuizGameRoot, getString(R.string.message_on_quiz_already_done), Snackbar.LENGTH_LONG).show()
+    private fun updateBoard(items: List<MatchQuizGameItemModel>, boardSize: MatchQuizGameBorderSize) {
+        viewModel.initOnBoardItems(items.toMutableList())
+        matchQuizGameRecyclerView =
+            MatchQuizGameAdapter(this@MatchQuizGameActivity, items, boardSize) {
+                onItemClicked(it, items)
+            }
+        binding.rvMatchingGame.apply {
+            adapter = matchQuizGameRecyclerView
+            layoutManager = GridLayoutManager(this@MatchQuizGameActivity, boardSize.getWidth())
+            setHasFixedSize(true)
+        }
+    }
+
+    private fun getBoardSize(): MatchQuizGameBorderSize {
+        return when (matchingQuizSettingsSharedPref?.getString(BOARD_SIZE, BOARD_SIZE_1)) {
+            BOARD_SIZE_1 -> {
+                MatchQuizGameBorderSize.BOARD_1
+            }
+
+            BOARD_SIZE_2 -> {
+                MatchQuizGameBorderSize.BOARD_2
+            }
+
+            BOARD_SIZE_3 -> {
+                MatchQuizGameBorderSize.BOARD_3
+            }
+
+            else -> {
+                MatchQuizGameBorderSize.BOARD_1
+            }
+        }
+    }
+
+    private fun onItemClicked(
+        itemDetails: MatchingQuizGameSelectedItemInfo,
+        items: List<MatchQuizGameItemModel>
+    ) {
+        if (viewModel.isQuizComplete(getBoardSize())) {
+            Snackbar.make(
+                binding.lyMatchQuizGameRoot,
+                getString(R.string.message_on_quiz_already_done),
+                Snackbar.LENGTH_LONG
+            ).show()
             return
         }
 
         if (viewModel.isItemActive(itemDetails.item) && firstSelectedItemInfo != null) {
-            Snackbar.make(binding.lyMatchQuizGameRoot, getString(R.string.error_message_select_another_item), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(
+                binding.lyMatchQuizGameRoot,
+                getString(R.string.error_message_select_another_item),
+                Snackbar.LENGTH_LONG
+            ).show()
             return
         }
 
@@ -121,16 +210,21 @@ class MatchQuizGameActivity : AppCompatActivity() {
                 activateItem(itemDetails)
                 firstSelectedItemInfo = itemDetails
             }
+
             MatchQuizGameClickStatus.MATCH -> {
                 disableItem(itemDetails)
                 disableItem(firstSelectedItemInfo!!)
-                binding.lpiMatchingQuizGameProgression.progress = viewModel.getProgression()
-                if (viewModel.isQuizComplete()) {
-                    Snackbar.make(binding.lyMatchQuizGameRoot, getString(R.string.message_on_quiz_done), Snackbar.LENGTH_LONG).show()
-                    onQuizComplete(viewModel.cardLeft(), items)
+                if (viewModel.isQuizComplete(getBoardSize())) {
+                    Snackbar.make(
+                        binding.lyMatchQuizGameRoot,
+                        getString(R.string.message_on_quiz_done),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    onQuizComplete(items)
                 }
                 firstSelectedItemInfo = null
             }
+
             MatchQuizGameClickStatus.MATCH_NOT -> {
                 activateItemOnWrong(firstSelectedItemInfo!!)
                 activateItemOnWrong(itemDetails)
@@ -170,34 +264,35 @@ class MatchQuizGameActivity : AppCompatActivity() {
         }
     }
 
-    private fun onQuizComplete(cardsLeft: Int, onBoardItems: List<MatchQuizGameItemModel>) {
+    private fun onQuizComplete(onBoardItems: List<MatchQuizGameItemModel>) {
         binding.gameScoreContainer.visibility = View.VISIBLE
         binding.rvMatchingGame.visibility = View.GONE
         binding.lyGameScore.apply {
-            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Matching Quiz")
+            tvScoreTitleScoreLayout.text =
+                getString(R.string.flashcard_score_title_text, "Matching Quiz")
             tvMoveNumberSumLayout.text = viewModel.getNumMove().toString()
             tvMissedMoveSumLayout.text = viewModel.getNumMiss().toString()
-            tvTotalCardSumScoreLayout.text = viewModel.getOnBoardCardSum().toString()
+            tvTotalCardSumScoreLayout.text = viewModel.getOnBoardCardSum(getBoardSize()).toString()
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getNumMove().toFloat() / viewModel.getOnBoardCardSum(),
+                viewModel.getNumMove().toFloat() / viewModel.getOnBoardCardSum(getBoardSize()),
                 ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50),
                 ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400),
             ) as Int
 
             val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getNumMiss().toFloat() / viewModel.getOnBoardCardSum(),
+                viewModel.getNumMiss().toFloat() / viewModel.getOnBoardCardSum(getBoardSize()),
                 ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50),
                 ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400),
             ) as Int
 
             val textColorKnownCards =
-                if (viewModel.getOnBoardCardSum() / 2 < viewModel.getNumMove())
+                if (viewModel.getOnBoardCardSum(getBoardSize()) / 2 < viewModel.getNumMove())
                     ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50)
                 else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400)
 
             val textColorMissedCards =
-                if (viewModel.getOnBoardCardSum() / 2 < viewModel.getNumMiss())
+                if (viewModel.getOnBoardCardSum(getBoardSize()) / 2 < viewModel.getNumMiss())
                     ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50)
                 else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400)
 
@@ -215,31 +310,45 @@ class MatchQuizGameActivity : AppCompatActivity() {
             btRestart.setOnClickListener {
                 displayMatchQuizGameItems(onBoardItems)
             }
-            if (cardsLeft < 0) {
+            if (viewModel.cardLeft() < 0) {
                 btContinue.visibility = View.GONE
             } else {
                 btContinue.apply {
-                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
+                    text =
+                        getString(R.string.cards_left_match_quiz_score, "${viewModel.cardLeft()}")
                     setOnClickListener {
-                        lifecycleScope.launch {
-                            viewModel.updateBoard()
-                            viewModel
-                                .actualCards
-                                .collect { state ->
-                                    when (state) {
-                                        is UiState.Error -> Toast.makeText(this@MatchQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
-                                        is UiState.Loading -> {}
-                                        is UiState.Success -> {
-                                            displayMatchQuizGameItems(state.data)
-                                        }
-                                    }
-                                }
-                        }
+                        setUpBoard()
                     }
                 }
             }
 
         }
+    }
+
+    private fun setUpBoard() {
+        matchingQuizJob?.cancel()
+        matchingQuizJob = lifecycleScope.launch {
+            viewModel.updateBoardCards(getBoardSize())
+            viewModel
+                .actualCards
+                .collect { state ->
+                    when (state) {
+                        is UiState.Error -> showToast(state.errorMessage)
+                        is UiState.Loading -> {}
+                        is UiState.Success -> {
+                            displayMatchQuizGameItems(state.data)
+                        }
+                    }
+                }
+        }
+    }
+
+    private fun showToast(state: String) {
+        Toast.makeText(
+            this@MatchQuizGameActivity,
+            state,
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun startMatchQuizGame(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {

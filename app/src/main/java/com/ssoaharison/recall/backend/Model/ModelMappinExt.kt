@@ -15,8 +15,8 @@ fun ImmutableDeck.toLocal() = Deck(
     deckId = deckId,
     deckName = deckName,
     deckDescription = deckDescription,
-    deckFirstLanguage = deckFirstLanguage,
-    deckSecondLanguage = deckSecondLanguage,
+    cardContentDefaultLanguage = cardContentDefaultLanguage,
+    cardDefinitionDefaultLanguage = cardDefinitionDefaultLanguage,
     deckColorCode = deckColorCode,
     cardSum = cardSum,
     deckCategory = deckCategory,
@@ -30,8 +30,8 @@ fun Deck.toExternal() = ImmutableDeck(
     deckId = deckId,
     deckName = deckName,
     deckDescription = deckDescription,
-    deckFirstLanguage = deckFirstLanguage,
-    deckSecondLanguage = deckSecondLanguage,
+    cardContentDefaultLanguage = cardContentDefaultLanguage,
+    cardDefinitionDefaultLanguage = cardDefinitionDefaultLanguage,
     deckColorCode = deckColorCode,
     cardSum = cardSum,
     deckCategory = deckCategory,
@@ -54,6 +54,8 @@ fun ImmutableCard.toLocal() = Card(
     nextMissMemorisationDate = nextMissMemorisationDate,
     nextRevisionDate = nextRevisionDate,
     cardType = cardType,
+    cardContentLanguage = cardContentLanguage,
+    cardDefinitionLanguage = cardDefinitionLanguage
 )
 
 @JvmName("cardExternalToLocal")
@@ -75,6 +77,8 @@ fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefiniti
         nextMissMemorisationDate = nextMissMemorisationDate,
         nextRevisionDate = nextRevisionDate,
         cardType = cardType,
+        cardContentLanguage = cardContentLanguage,
+        cardDefinitionLanguage = cardDefinitionLanguage,
     )
 
 @JvmName("cardLocalToExternal")

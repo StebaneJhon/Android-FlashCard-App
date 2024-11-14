@@ -8,7 +8,9 @@ import kotlinx.parcelize.Parcelize
 data class TestCardModel (
     val cardId: String,
     val cardContent: CardContent,
+    val cardContentLanguage: String?,
     val cardDefinition: List<TestCardDefinitionModel>,
+    val cardDefinitionLanguage: String?,
     val cardType: String,
 //    var userAnswers: ArrayList<TestCardDefinitionModel>? = null
 ): Parcelable

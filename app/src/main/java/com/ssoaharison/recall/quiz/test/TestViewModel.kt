@@ -5,10 +5,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.Model.ImmutableCard
+import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
 import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -24,6 +26,8 @@ import java.io.IOException
 class TestViewModel(
     private val repository: FlashCardRepository
 ) : ViewModel() {
+
+    var deck: ImmutableDeck? = null
 
     private lateinit var originalCards: List<ImmutableCard?>
     private lateinit var localCards: List<TestCardModel>
@@ -57,15 +61,17 @@ class TestViewModel(
     fun initLocalCards(cards: List<ImmutableCard?>) {
         localCards = cards.map { card ->
             val cardDefinitions = if (card?.cardType == SINGLE_ANSWER_CARD) {
-                getCardDefinitions(card.cardType, card.cardDefinition!!, 4, card.cardId)
+                getCardDefinitions(card.cardType, card.cardDefinition!!, card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!, 4, card.cardId)
             } else {
-                getCardDefinitions(card?.cardType!!, card.cardDefinition!!, card.cardDefinition.size, card.cardId)
+                getCardDefinitions(card?.cardType!!, card.cardDefinition!!, card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!, card.cardDefinition.size, card.cardId)
             }
             TestCardModel(
                 cardId = card.cardId,
                 cardContent = card.cardContent!!,
+                cardContentLanguage = card.cardContentLanguage ?: deck?.cardContentDefaultLanguage!!,
                 cardType = card.cardType,
-                cardDefinition = cardDefinitions
+                cardDefinition = cardDefinitions,
+                cardDefinitionLanguage = card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
             )
         }
     }
@@ -80,6 +86,10 @@ class TestViewModel(
 
     fun initOriginalCards(cards: List<ImmutableCard?>) {
         originalCards = cards
+    }
+
+    fun initDeck(gameDeck: ImmutableDeck) {
+        deck = gameDeck
     }
 
     fun noteSingleUserAnswer(answer: TestCardDefinitionModel) {
@@ -119,24 +129,49 @@ class TestViewModel(
     private fun getCardDefinitions(
         cardType: String,
         definitions: List<CardDefinition>,
+        cardDefinitionLanguage: String,
         requiredAlternativeSum: Int,
         cardId: String,
     ): List<TestCardDefinitionModel> {
 
-        val localDefinitions =
-            getAnswerAlternatives(originalCards, definitions, requiredAlternativeSum)
-        return localDefinitions.map {
+//        val localDefinitions = getAnswerAlternatives(originalCards, definitions, requiredAlternativeSum)
+
+        val temporaryTestCardDefinitionModel = definitions.map {
             TestCardDefinitionModel(
                 definitionId = it.definitionId,
                 attachedCardId = cardId,
                 cardId = it.cardId,
-                definition = it.definition,
+                definition = TextWithLanguageModel(it.definition, cardDefinitionLanguage),
                 cardType = cardType,
                 isCorrect = it.isCorrectDefinition,
                 isSelected = false
             )
-        }
+        }.toMutableList()
 
+        val temporaryDefinitionList = definitions.toMutableList()
+
+        while (temporaryTestCardDefinitionModel.size < requiredAlternativeSum) {
+            val randomCard = originalCards.random()
+            val randomDefinition = randomCard?.cardDefinition?.random()
+            if (randomDefinition !in temporaryDefinitionList) {
+                if (randomDefinition != null) {
+                    val randomCardDefinitionLanguage = randomCard.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!
+                    temporaryTestCardDefinitionModel.add(
+                        TestCardDefinitionModel(
+                            definitionId = randomDefinition.definitionId,
+                            attachedCardId = cardId,
+                            cardId = randomCard.cardId,
+                            definition = TextWithLanguageModel(randomDefinition.definition, randomCardDefinitionLanguage),
+                            cardType = cardType,
+                            isCorrect = randomDefinition.isCorrectDefinition,
+                            isSelected = false
+                        )
+                    )
+                    temporaryDefinitionList.add(randomDefinition)
+                }
+            }
+        }
+        return temporaryTestCardDefinitionModel.shuffled()
     }
 
     private fun getAnswerAlternatives(
@@ -216,6 +251,8 @@ class TestViewModel(
                 nextForgettingDate,
                 nextRevision,
                 card.cardType,
+                card.cardContentLanguage,
+                card.cardDefinitionLanguage
             )
             updateCard(newCard)
         }

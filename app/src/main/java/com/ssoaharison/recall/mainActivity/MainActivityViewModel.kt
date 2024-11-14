@@ -88,6 +88,8 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
                     nextForgettingDate,
                     nextRevision,
                     card.cardType,
+                    card.cardContentLanguage,
+                    card.cardDefinitionLanguage,
                 )
                 updateCard(newCard)
             }

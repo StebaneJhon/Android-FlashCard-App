@@ -78,7 +78,6 @@ class UploadOpenTriviaQuizDialog : DialogFragment() {
                     .selectCategory(binding.tvCategory.text.toString())
                     ?.let { it1 ->
                         OpenTriviaQuizModel(
-                            deckName = binding.tvDeckName.text.toString(),
                             number = binding.tvQuestionNumber.text.toString().toInt(),
                             category = it1,
                             difficulty = OpenTriviaQuizCategoryHelper().encodeDifficulty(
@@ -100,11 +99,6 @@ class UploadOpenTriviaQuizDialog : DialogFragment() {
     }
 
     private fun checkForError(): Boolean {
-        if (binding.tvDeckName.text.isNullOrBlank()) {
-            binding.tvDeckName.error =
-                getString(R.string.error_message_on_missing_deck_name)
-            return false
-        }
         if (binding.tvQuestionNumber.text.toString().isBlank()) {
             binding.tvQuestionNumber.error =
                 getString(R.string.error_message_dialog_upload_deck_with_cards_on_missing_card_sum)

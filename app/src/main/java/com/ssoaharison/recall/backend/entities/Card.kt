@@ -20,4 +20,6 @@ data class Card (
     @ColumnInfo(name = "next_miss_memorisation_date") val nextMissMemorisationDate: String?,
     @ColumnInfo(name = "next_revision_date") val nextRevisionDate: String?,
     @ColumnInfo(name = "card_type") val cardType: String?,
+    @ColumnInfo(name = "card_content_language", defaultValue = "null") val cardContentLanguage: String?,
+    @ColumnInfo(name = "card_definition_language", defaultValue = "null") val cardDefinitionLanguage: String?,
 ): Parcelable

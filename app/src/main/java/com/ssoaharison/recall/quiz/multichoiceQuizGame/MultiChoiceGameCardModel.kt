@@ -1,11 +1,9 @@
 package com.ssoaharison.recall.quiz.multichoiceQuizGame
 
+import com.ssoaharison.recall.util.TextWithLanguageModel
+
 data class MultiChoiceGameCardModel(
     val cardId: String,
-    val onCardWord: String,
-    val answers: List<String>,
-    val alternative1: String,
-    val alternative2: String,
-    val alternative3: String,
-    val alternative4: String
+    val onCardWord: TextWithLanguageModel,
+    val alternatives: List<MultiChoiceCardDefinitionModel>
 )

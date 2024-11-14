@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.quiz.multichoiceQuizGame
 
 import android.animation.ArgbEvaluator
+import android.animation.LayoutTransition
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,13 +15,14 @@ import android.speech.tts.UtteranceProgressListener
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.Model.ImmutableCard
@@ -38,6 +40,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
+import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,8 +68,8 @@ class MultiChoiceQuizGameActivity :
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     private var tts: TextToSpeech? = null
-    private var fetchJob: Job? = null
     private var multiChoiceQuizJob: Job? = null
+    private lateinit var multiChoiceGameAdapter: MultiChoiceQuizGameAdapter
 
     companion object {
         private const val TAG = "MultiChoiceQuizGameActivity"
@@ -88,11 +92,10 @@ class MultiChoiceQuizGameActivity :
         if (themRef != null) {
             setTheme(themRef)
         }
-        tts = TextToSpeech(this, this)
         binding = ActivityMultichoiceQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.vpCardHolder.isUserInputEnabled = false
+        tts = TextToSpeech(this, this)
 
         animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
         animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
@@ -107,8 +110,9 @@ class MultiChoiceQuizGameActivity :
             } else {
                 onNoCardToRevise()
             }
-
         }
+
+        binding.vpCardHolder.isUserInputEnabled = false
 
         binding.topAppBar.apply {
             title = getString(R.string.multiple_choice_quiz_button_text)
@@ -129,7 +133,6 @@ class MultiChoiceQuizGameActivity :
                 false
             }
         }
-
     }
 
     override fun onSettingsApplied() {
@@ -138,9 +141,9 @@ class MultiChoiceQuizGameActivity :
     }
 
     private fun getCardOrientation() = miniGamePref?.getString(
-        FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION,
-        FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
-    ) ?: FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
+        CHECKED_CARD_ORIENTATION,
+        CARD_ORIENTATION_FRONT_AND_BACK
+    ) ?: CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun applySettings() {
 
@@ -181,7 +184,6 @@ class MultiChoiceQuizGameActivity :
         if (unKnownCardFirst == true) {
             viewModel.sortCardsByLevel()
         }
-//        restartMultiChoiceQuiz()
     }
 
     private fun onNoCardToRevise() {
@@ -208,65 +210,153 @@ class MultiChoiceQuizGameActivity :
     }
 
     private fun launchMultiChoiceQuizGame(data: List<MultiChoiceGameCardModel>) {
-        val multiChoiceGameAdapter =
+        multiChoiceGameAdapter =
             MultiChoiceQuizGameAdapter(this, data, viewModel.deck.deckColorCode!!, {
-                if (viewModel.isUserChoiceCorrect(it.userChoice, it.answer, it.cardId)) {
-                    giveFeedback(it.selectedButton, true)
-                    fetchJob?.cancel()
-                    fetchJob = lifecycleScope.launch {
-                        delay(WAITING_TIME_ON_CORRECT_ANSWER_BEFORE_SWIPE)
-                        if (viewModel.swipe(data.size)) {
-                            binding.vpCardHolder.setCurrentItem(
-                                viewModel.getCurrentCardPosition(),
-                                true
-                            )
-                            restoreAnswerButtons()
-                        } else {
-                            onQuizComplete(viewModel.cardLeft(), data.size)
-                        }
-                    }
-                } else {
-                    onWrongAnswer(it.cvCard, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
-                    fetchJob?.cancel()
-                    fetchJob = lifecycleScope.launch {
-                        delay(WAITING_TIME_ON_WRONG_ANSWER_BEFORE_FEEDBACK)
-                        giveFeedback(it.selectedButton, false)
-                        giveFeedback(it.selectedButtonOnWrong, false)
-                    }
+                if (viewModel.isUserChoiceCorrect(it)) {
+                    areOptionsEnabled(true)
                 }
+                multiChoiceGameAdapter.notifyDataSetChanged()
+                specifyOptions(data.size)
             }) {
                 if (tts?.isSpeaking == true) {
-                    stopReading(it.views, it.speakButton)
+                    stopReading(it.views)
                 } else {
                     val cardOrientation = getCardOrientation()
                     if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
                         readText(
                             it.text,
                             it.views,
-                            viewModel.deck.deckFirstLanguage!!,
-                            viewModel.deck.deckSecondLanguage!!,
-                            it.speakButton,
                         )
                     } else {
                         readText(
                             it.text,
                             it.views,
-                            viewModel.deck.deckSecondLanguage!!,
-                            viewModel.deck.deckFirstLanguage!!,
-                            it.speakButton
                         )
                     }
                 }
 
             }
         binding.vpCardHolder.adapter = multiChoiceGameAdapter
+        binding.vpCardHolder.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                binding.btNextQuestion.apply {
+                    if (position == data.size.minus(1)) {
+                        text = getString(R.string.text_finish)
+                        iconPadding = resources.getDimension(R.dimen.icon_padding_next_question_button).toInt()
+                    }
+                }
+                binding.btPreviousQuestion.apply {
+                    if (position > 0) {
+                        isActivated = true
+                        isClickable = true
+                        backgroundTintList = MaterialColors
+                            .getColorStateList(
+                                this@MultiChoiceQuizGameActivity,
+                                com.google.android.material.R.attr.colorPrimary,
+                                ContextCompat.getColorStateList(
+                                    this@MultiChoiceQuizGameActivity, R.color.neutral700
+                                )!!
+                            )
+                        iconTint = MaterialColors
+                            .getColorStateList(
+                                this@MultiChoiceQuizGameActivity,
+                                com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                ContextCompat.getColorStateList(
+                                    this@MultiChoiceQuizGameActivity, R.color.neutral50
+                                )!!
+                            )
+                        setTextColor(MaterialColors
+                            .getColorStateList(
+                                this@MultiChoiceQuizGameActivity,
+                                com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                ContextCompat.getColorStateList(
+                                    this@MultiChoiceQuizGameActivity, R.color.neutral50
+                                )!!
+                            ))
+                    } else {
+                        isActivated = false
+                        isClickable = false
+                        backgroundTintList = MaterialColors
+                            .getColorStateList(
+                                this@MultiChoiceQuizGameActivity,
+                                com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                ContextCompat.getColorStateList(
+                                    this@MultiChoiceQuizGameActivity, R.color.neutral50
+                                )!!
+                            )
+                        iconTint = MaterialColors
+                            .getColorStateList(
+                                this@MultiChoiceQuizGameActivity,
+                                com.google.android.material.R.attr.colorPrimary,
+                                ContextCompat.getColorStateList(
+                                    this@MultiChoiceQuizGameActivity, R.color.neutral700
+                                )!!
+                            )
+
+                        setTextColor(MaterialColors
+                            .getColorStateList(
+                                this@MultiChoiceQuizGameActivity,
+                                com.google.android.material.R.attr.colorPrimary,
+                                ContextCompat.getColorStateList(
+                                    this@MultiChoiceQuizGameActivity, R.color.neutral700
+                                )!!
+                            ))
+                    }
+                }
+            }
+        })
+    }
+
+    private fun areOptionsEnabled(enabled: Boolean) {
+        binding.lyContainerOptions.isVisible = enabled
+        binding.btNextQuestion.isClickable = enabled
+        binding.btPreviousQuestion.isClickable = enabled
+    }
+
+    private fun specifyOptions(cardCount: Int) {
+        binding.btNextQuestion.setOnClickListener {
+            areOptionsEnabled(viewModel.isNextCardAnsweredCorrectly())
+            if (viewModel.increaseCurrentCardPosition(cardCount)) {
+                binding.vpCardHolder.setCurrentItem(
+                    viewModel.getCurrentCardPosition(),
+                    true
+                )
+                if (viewModel.isNextCardAnsweredCorrectly()) {
+                    viewModel.initAttemptTime()
+                }
+            } else {
+                onQuizComplete(viewModel.cardLeft(), cardCount)
+            }
+            tts?.stop()
+        }
+        binding.btPreviousQuestion.setOnClickListener {
+            if (viewModel.getCurrentCardPosition() > 0) {
+                viewModel.decreaseCurrentCardPosition()
+                binding.vpCardHolder.setCurrentItem(
+                    viewModel.getCurrentCardPosition(),
+                    true
+                )
+                tts?.stop()
+            }
+        }
+        if (viewModel.getCurrentCardPosition() <= 0) {
+            binding.btPreviousQuestion.isClickable = false
+            binding.btPreviousQuestion.isActivated = false
+        } else {
+            binding.btPreviousQuestion.isClickable = true
+            binding.btPreviousQuestion.isActivated = true
+        }
     }
 
     private fun stopReading(
         views: List<View>,
-        speakButton: Button
     ) {
-        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         tts?.stop()
         views.forEach { v ->
             (v as TextView).setTextColor(
@@ -279,25 +369,9 @@ class MultiChoiceQuizGameActivity :
         }
     }
 
-    private fun giveFeedback(
-        button: MaterialButton,
-        isAnswerCorrect: Boolean
-    ) {
-        if (isAnswerCorrect) {
-            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.green50)
-            button.strokeColor = ContextCompat.getColorStateList(this, R.color.green500)
-        } else {
-            button.backgroundTintList = ContextCompat.getColorStateList(this, R.color.red50)
-            button.strokeColor = ContextCompat.getColorStateList(this, R.color.red500)
-        }
-    }
-
     private fun readText(
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         view: List<View>,
-        firstLanguage: String,
-        secondLanguage: String,
-        speakButton: Button
     ) {
         var position = 0
         val textSum = text.size
@@ -314,14 +388,14 @@ class MultiChoiceQuizGameActivity :
         val params = Bundle()
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor, speakButton)
+                onReading(position, view, onReadColor)
             }
 
             override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, onStopColor, speakButton)
+                onReadingStop(position, view, onStopColor)
                 position += 1
                 if (position < textSum) {
-                    speak(secondLanguage, params, text, position, this)
+                    speak(params, text, position, this)
                 } else {
                     position = 0
                     return
@@ -336,16 +410,14 @@ class MultiChoiceQuizGameActivity :
                 ).show()
             }
         }
-        speak(firstLanguage, params, text, position, speechListener)
+        speak(params, text, position, speechListener)
     }
 
     private fun onReading(
         position: Int,
         view: List<View>,
         onReadColor: Int,
-        speakButton: Button
     ) {
-        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_stop, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -357,9 +429,7 @@ class MultiChoiceQuizGameActivity :
         position: Int,
         view: List<View>,
         onReadColor: Int,
-        speakButton: Button
     ) {
-        speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         if (position == 0) {
             (view[position] as TextView).setTextColor(onReadColor)
         } else {
@@ -368,43 +438,43 @@ class MultiChoiceQuizGameActivity :
     }
 
     private fun speak(
-        language: String,
         params: Bundle,
-        text: List<String>,
+        text: List<TextWithLanguageModel>,
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts?.speak(text[position], TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.speak(text[position].text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 
-    private fun onWrongAnswer(
-        card: MaterialCardView,
-        onWrongCard: MaterialCardView,
-        animFadeIn: Animation,
-        animFadeOut: Animation
-    ) {
-        card.startAnimation(animFadeOut)
-        card.visibility = View.GONE
-        onWrongCard.visibility = View.VISIBLE
-        onWrongCard.startAnimation(animFadeIn)
-        lifecycleScope.launch {
-            delay(500)
-            onWrongCard.startAnimation(animFadeOut)
-            onWrongCard.visibility = View.GONE
-            card.visibility = View.VISIBLE
-            card.startAnimation(animFadeIn)
-        }
-    }
+//    private fun onWrongAnswer(
+//        card: MaterialCardView,
+//        onWrongCard: MaterialCardView,
+//        animFadeIn: Animation,
+//        animFadeOut: Animation
+//    ) {
+//        card.startAnimation(animFadeOut)
+//        card.visibility = View.GONE
+//        onWrongCard.visibility = View.VISIBLE
+//        onWrongCard.startAnimation(animFadeIn)
+//        lifecycleScope.launch {
+//            delay(500)
+//            onWrongCard.startAnimation(animFadeOut)
+//            onWrongCard.visibility = View.GONE
+//            card.visibility = View.VISIBLE
+//            card.startAnimation(animFadeIn)
+//        }
+//    }
 
     private fun onQuizComplete(
         cardsLeft: Int,
         cardCount: Int,
-        ) {
+    ) {
+        tts?.stop()
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
@@ -449,11 +519,6 @@ class MultiChoiceQuizGameActivity :
                 finish()
             }
             btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-//                viewModel.initTimedFlashCard()
-//                startMultiChoiceQuizGame(
-//                    viewModel.getOriginalCardList().toMutableList(),
-//                    viewModel.deck
-//                )
                 restartMultiChoiceQuiz()
             }
             btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
@@ -469,15 +534,16 @@ class MultiChoiceQuizGameActivity :
                     isActivated = true
                     isVisible = true
                     setOnClickListener {
-//                        val newCards = viewModel.getMissedCard()
-//                        viewModel.initTimedFlashCard()
-//                        startMultiChoiceQuizGame(newCards, viewModel.deck)
+                        viewModel.updateActualCardsWithMissedCards(getCardOrientation())
                         multiChoiceQuizJob?.cancel()
                         multiChoiceQuizJob = lifecycleScope.launch {
-                            viewModel.updateCardOnReviseMissedCards(getCardOrientation())
-                            viewModel.actualCards.collect { state ->
+                            viewModel.getMultiChoiceCards()
+                            viewModel.externalMultiChoiceCards.collect { state ->
                                 when (state) {
-                                    is UiState.Error -> {onNoCardToRevise()}
+                                    is UiState.Error -> {
+                                        onNoCardToRevise()
+                                    }
+
                                     is UiState.Loading -> {}
                                     is UiState.Success -> {
                                         binding.gameReviewContainerMQ.visibility = View.GONE
@@ -502,12 +568,16 @@ class MultiChoiceQuizGameActivity :
                     visibility = View.VISIBLE
                     text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
                     setOnClickListener {
+                        viewModel.updateActualCards(getCardCount(), getCardOrientation())
                         multiChoiceQuizJob?.cancel()
                         multiChoiceQuizJob = lifecycleScope.launch {
-                            viewModel.updateCard(getCardOrientation(), getCardCount())
-                            viewModel.actualCards.collect { state ->
+                            viewModel.getMultiChoiceCards()
+                            viewModel.externalMultiChoiceCards.collect { state ->
                                 when (state) {
-                                    is UiState.Error -> { onNoCardToRevise() }
+                                    is UiState.Error -> {
+                                        onNoCardToRevise()
+                                    }
+
                                     is UiState.Loading -> {}
                                     is UiState.Success -> {
                                         restartMultiChoiceQuiz()
@@ -529,7 +599,7 @@ class MultiChoiceQuizGameActivity :
         binding.vpCardHolder.visibility = View.VISIBLE
         binding.vpCardHolder.setCurrentItem(0, true)
         viewModel.initTimedFlashCard()
-//        viewModel.updateCard(getCardOrientation())
+        viewModel.initAttemptTime()
     }
 
 
@@ -542,92 +612,31 @@ class MultiChoiceQuizGameActivity :
         binding.vpCardHolder.visibility = View.VISIBLE
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
-//        viewModel.updateCard(getCardOrientation())
+        viewModel.updateActualCards(getCardCount(), getCardOrientation())
     }
 
     private fun completelyRestartMultiChoiceQuiz() {
         restartMultiChoiceQuiz()
         viewModel.onRestartQuiz()
+        viewModel.updateActualCards(getCardCount(), getCardOrientation())
         multiChoiceQuizJob?.cancel()
         multiChoiceQuizJob = lifecycleScope.launch {
-            viewModel.updateCard(getCardOrientation(), getCardCount())
-            viewModel.actualCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                        }
+            viewModel.getMultiChoiceCards()
+            viewModel.externalMultiChoiceCards.collect { state ->
+                when (state) {
+                    is UiState.Loading -> {
+                    }
 
-                        is UiState.Error -> {
-                            onNoCardToRevise()
-                        }
+                    is UiState.Error -> {
+                        onNoCardToRevise()
+                    }
 
-                        is UiState.Success -> {
-                            launchMultiChoiceQuizGame(state.data)
-                        }
+                    is UiState.Success -> {
+                        launchMultiChoiceQuizGame(state.data)
                     }
                 }
-        }
-    }
-
-    private fun restoreAnswerButtons() {
-
-        val buttonsDefaultColorStateList = ContextCompat.getColorStateList(this, R.color.neutral300)
-        val buttonsOriginalColorStateList = MaterialColors.getColorStateList(
-            this,
-            com.google.android.material.R.attr.colorSurfaceContainerLowest,
-            buttonsDefaultColorStateList!!
-        )
-
-        val buttonsStrokeDefaultColorStateList =
-            ContextCompat.getColorStateList(this, R.color.neutral500)
-        val buttonsStrokeOriginalColorStateList = MaterialColors.getColorStateList(
-            this,
-            com.google.android.material.R.attr.colorSurfaceContainerHigh,
-            buttonsStrokeDefaultColorStateList!!
-        )
-
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative2).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative3).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative4).apply {
-            backgroundTintList = buttonsOriginalColorStateList
-            strokeColor = buttonsStrokeOriginalColorStateList
-        }
-
-        val onWrongButtonsOriginalColorStateList =
-            ContextCompat.getColorStateList(this, R.color.red50)
-        val onWrongButtonsStrokeOriginalColorStateList =
-            ContextCompat.getColorStateList(this, R.color.red500)
-
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative1_on_wrong_answer)
-            .apply {
-                backgroundTintList = onWrongButtonsOriginalColorStateList
-                strokeColor = onWrongButtonsStrokeOriginalColorStateList
             }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative2_on_wrong_answer)
-            .apply {
-                backgroundTintList = onWrongButtonsOriginalColorStateList
-                strokeColor = onWrongButtonsStrokeOriginalColorStateList
-            }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative3_on_wrong_answer)
-            .apply {
-                backgroundTintList = onWrongButtonsOriginalColorStateList
-                strokeColor = onWrongButtonsStrokeOriginalColorStateList
-            }
-        binding.vpCardHolder.findViewById<MaterialButton>(R.id.bt_alternative4_on_wrong_answer)
-            .apply {
-                backgroundTintList = onWrongButtonsOriginalColorStateList
-                strokeColor = onWrongButtonsStrokeOriginalColorStateList
-            }
-
+        }
     }
 
     private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10

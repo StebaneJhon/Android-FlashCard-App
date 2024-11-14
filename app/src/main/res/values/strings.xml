@@ -61,7 +61,7 @@
     <string name="title_flash_card_game">%1$s</string>
     <string name="tx_flash_card_game_progression">%1$s/%2$s</string>
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
-    <string name="tx_flash_card_game_card_orientation_back">Back</string>
+    <string name="text_back">Back</string>
     <string name="hint_flash_card_game_flip">Tap to flip</string>
     <string name="bt_flash_card_game_start">Flash card</string>
     <string name="text_move">Move Sum:</string>
@@ -126,14 +126,14 @@
     <string name="bt_save">SAVE</string>
     <string name="content_description_save">Save the all created cards</string>
     <string name="title_welcome_to_recall">Welcome to Recall</string>
-    <string name="content_welcome_to_recall">An app for creating your own quizzes and interacting with them in multiple ways. This is for making a quick revision of your course, checking how well you know your topic, or just for taking notes.</string>
+    <string name="content_welcome_to_recall">Welcome to Recall 📣 \nAn app for creating your own quizzes and interacting with them in multiple ways. This is for making a quick revision of your courses 📚, checking how well you know your topic 🎓, or just for taking notes 🗒️.</string>
     <string name="title_cards">Decks and cards</string>
-    <string name="content_cards">In recall, questions are represented as cards that are stored in decks. A question can have one or multiple answers. Answers can be right or wrong.</string>
+    <string name="content_cards">In recall, questions are represented as cards 🃏 that are stored in decks. A question can have one or multiple answers. Answers can be right ✅ or wrong ❎.</string>
     <string name="next">Next</string>
     <string name="title_quiz">Quiz</string>
-    <string name="content_quiz">Recall offers a variety of quiz types to help trigger your memory in different ways. These include “Flashcards”, “Multiple choice quiz”, “Writing quiz”, “Matching quiz”, “Simple quiz”, and “Timed test”.</string>
+    <string name="content_quiz">Recall offers a variety of quiz types to help trigger your memory in different ways 🛣️. These include: FlashCards, Multiple-choice, Writing, Matching, Quiz and Test.</string>
     <string name="title_space_repetition">Space repetition</string>
-    <string name="content_space_repetition">Recall classifies your cards by memorization level. This helps in knowing how well you know a specific card and how frequently the card should be shown during quizzes.</string>
+    <string name="content_space_repetition">Recall classifies your cards by memorization level 🧮. This helps in knowing how well you know a specific card and how frequently the card should be shown during quizzes.</string>
     <string name="error_message_on_no_description_found">No description found</string>
     <string name="title_unsaved_cards">Unsaved cards</string>
     <string name="message_unsaved_cards">You have some unsaved cards do you want to save them?</string>
@@ -173,7 +173,7 @@
     <string name="question_type_text_hint">Question type</string>
     <string name="question_number_text_hint">Question number</string>
     <string name="bt_apply_text">Apply</string>
-    <string name="bt_text_upload">Upload</string>
+    <string name="bt_text_upload">Upload cards</string>
     <string name="error_message_open_trivia_1">No Results</string>
     <string name="error_message_open_trivia_2">Invalid Parameter</string>
     <string name="error_message_open_trivia_5">Rate Limit</string>
@@ -221,8 +221,13 @@
     <string name="bt_description_exit">Exit</string>
     <string name="bt_description_next">Exit</string>
     <string name="bt_description_previous">Previous</string>
-    <string name="bt_description_start">START</string>
+    <string name="bt_text_start">Start</string>
     <string name="bt_description_app_theme">App theme</string>
     <string name="bt_description_deck_color">Deck color</string>
     <string name="error_message_insufficient_card_count">At least 1 card for the quiz to work.</string>
+    <string name="text_board_size">Board size</string>
+    <string name="text_skip">Skip</string>
+    <string name="text_on_boarding_screen_progression">%1$s/4</string>
+    <string name="error_message_not_enough_cards">Not enough card</string>
+    <string name="text_finish">Finish</string>
 </resources>
