@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.quiz.test
 
 import android.animation.ArgbEvaluator
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -28,7 +29,7 @@ class TestResultFragment(
     private var _binding: FragmentTestResultBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var recyclerViewAdapter: TestResultRecyclerViewAdapter
+    private lateinit var recyclerViewAdapter: TestResultRecyclerViewAdapter
 
     private val testViewModel: TestViewModel by activityViewModels()
 
@@ -115,7 +116,6 @@ class TestResultFragment(
                 ContextCompat.getColor(requireContext(), R.color.red50)
             else ContextCompat.getColor(requireContext(), R.color.red400)
 
-        binding.tvScoreTitleTestResult.text = getString(R.string.flashcard_score_title_text, "Test")
         binding.tvTotalCardsSumTestResult.text = totalCards.toString()
         binding.tvKnownCardsSumTestResult.apply {
             text = knowCards.toString()
@@ -130,9 +130,12 @@ class TestResultFragment(
         binding.cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
         binding.cvContainerTotalMissedCards.background.setTint(missedCardsBackgroundColor)
 
+        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         recyclerViewAdapter = TestResultRecyclerViewAdapter(
             requireContext(),
-            c
+            c,
+            appTheme
         )
     }
 

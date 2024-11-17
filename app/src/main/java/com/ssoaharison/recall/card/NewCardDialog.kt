@@ -21,6 +21,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,12 +30,12 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -96,8 +97,8 @@ class NewCardDialog(
     private var selectedFieldLy: TextInputLayout? = null
     private var actualFieldLanguage: String? = null
     var cardUploadingJob: Job? = null
+    private val supportedLanguages = LanguageUtil().getSupportedLang()
 
-    //    private val newCardViewModel: NewCardDialogViewModel by viewModels()
     private val newCardViewModel by lazy {
         val openTriviaRepository =
             (requireActivity().application as FlashCardApplication).openTriviaRepository
@@ -214,7 +215,7 @@ class NewCardDialog(
                 binding.tilDefinition1MultiAnswerCard,
                 binding.tieDefinition1MultiAnswerCard,
                 binding.cpDefinition1IsTrue,
-                binding.btDeleteField1
+                null
             ),
             DefinitionFieldModel(
                 binding.tilDefinition2MultiAnswerCard,
@@ -271,6 +272,8 @@ class NewCardDialog(
                 binding.btDeleteField10
             ),
         )
+
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         if (card != null) {
             binding.tvTitleAddedCards.isVisible = false
@@ -409,8 +412,9 @@ class NewCardDialog(
                     getString(R.string.til_card_content_hint)
                 )
             }
-            setHint(getString(R.string.card_content_hint, deck.cardContentDefaultLanguage))
         }
+
+        binding.tilContentMultiAnswerCard.hint = getString(R.string.card_content_hint, deck.cardContentDefaultLanguage)
 
         definitionFields.forEach { definitionField ->
             definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
@@ -423,13 +427,11 @@ class NewCardDialog(
                     getString(R.string.til_card_definition_hint)
                 )
             }
-            definitionField.fieldEd.setHint(
-                getString(
-                    R.string.card_definition,
-                    deck.cardDefinitionDefaultLanguage
-                )
+            definitionField.fieldLy.hint = getString(
+                R.string.card_definition,
+                deck.cardDefinitionDefaultLanguage
             )
-            definitionField.btDeleteField.setOnClickListener {
+            definitionField.btDeleteField?.setOnClickListener {
                 deleteDefinitionField(definitionField.fieldEd)
             }
         }
@@ -439,13 +441,62 @@ class NewCardDialog(
             onAddMoreDefinition()
         }
 
+        binding.btShowContentLanguageField.setOnClickListener {
+            isContentLanguageFieldShown(!binding.tilContentLanguage.isVisible)
+        }
+
+        binding.btShowDefinitionLanguageField.setOnClickListener {
+            isDefinitionLanguageFieldShown(!binding.tilDefinitionLanguage.isVisible)
+        }
+
+        binding.tieContentLanguage.apply {
+            setAdapter(arrayAdapterSupportedLanguages)
+            setDropDownBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.filter_spinner_dropdown_background,
+                    requireActivity().theme
+                )
+            )
+        }
+
+        binding.tieDefinitionLanguage.apply {
+            setAdapter(arrayAdapterSupportedLanguages)
+            setDropDownBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.filter_spinner_dropdown_background,
+                    requireActivity().theme
+                )
+            )
+        }
+
+    }
+
+    private fun isContentLanguageFieldShown(isShown: Boolean) {
+        binding.tilContentLanguage.isVisible = isShown
+        if (isShown) {
+            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_less)
+        } else {
+            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_more)
+        }
+    }
+
+    private fun isDefinitionLanguageFieldShown(isShown: Boolean) {
+        binding.tilDefinitionLanguage.isVisible = isShown
+        if (isShown) {
+            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_less)
+        } else {
+            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_more)
+        }
     }
 
     private fun showTriviaQuestionUploader() {
         val newDeckDialog = UploadOpenTriviaQuizDialog()
         newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requstQuery, bundle ->
-            val result = bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
+            val result =
+                bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
             cardUploadingJob?.cancel()
             cardUploadingJob = lifecycleScope.launch {
                 newCardViewModel.getOpenTriviaQuestions(
@@ -636,11 +687,14 @@ class NewCardDialog(
     }
 
     private fun displayAddedCard(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
+        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         rvAddedCardRecyclerViewAdapter = appContext?.let { it ->
             AddedCardRecyclerViewAdapter(
                 it,
                 cardList,
                 deck,
+                appTheme,
                 { cardWithPosition ->
                     card = cardWithPosition.cardToEdit
                     onUpdateCard(card!!, cardWithPosition.position)
@@ -669,6 +723,16 @@ class NewCardDialog(
         }
         binding.btAdd.text = getString(R.string.bt_text_add)
         actionMode?.finish()
+        isContentLanguageFieldShown(false)
+        isDefinitionLanguageFieldShown(false)
+        binding.tieDefinitionLanguage.apply {
+            text?.clear()
+            error = null
+        }
+        binding.tieContentLanguage.apply {
+            text?.clear()
+            error = null
+        }
     }
 
     private fun onCloseDialog() {
@@ -736,14 +800,30 @@ class NewCardDialog(
             if (index < card.cardDefinition?.size!!) {
                 fl.fieldLy.visibility = View.VISIBLE
                 fl.chip.visibility = View.VISIBLE
-                fl.btDeleteField.visibility = View.VISIBLE
+                fl.btDeleteField?.visibility = View.VISIBLE
                 fl.fieldEd.setText(card.cardDefinition[index].definition)
                 fl.chip.isChecked = isCorrect(card.cardDefinition[index].isCorrectDefinition)
+                revealedDefinitionFields++
             } else {
                 fl.fieldLy.visibility = View.GONE
                 fl.chip.visibility = View.GONE
             }
         }
+
+        if (!card.cardContentLanguage.isNullOrBlank()) {
+            isContentLanguageFieldShown(true)
+            binding.tieContentLanguage.setText(card.cardContentLanguage)
+        } else {
+            isContentLanguageFieldShown(false)
+        }
+
+        if (!card.cardDefinitionLanguage.isNullOrBlank()) {
+            isDefinitionLanguageFieldShown(true)
+            binding.tieDefinitionLanguage.setText(card.cardDefinitionLanguage)
+        } else {
+            isDefinitionLanguageFieldShown(false)
+        }
+
     }
 
     fun isCorrect(index: Int?) = index == 1
@@ -769,10 +849,10 @@ class NewCardDialog(
 
     private fun generateCardOnUpdate(): ImmutableCard? {
 
-        val content = getContent2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+        val content = getContent(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
             ?: return null
         val definitions =
-            getDefinition2(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
+            getDefinition(card?.cardId!!, card!!.cardContent?.contentId!!, card?.deckId!!)
                 ?: return null
 
         val updateCardDefinitions = mutableListOf<CardDefinition>()
@@ -805,6 +885,19 @@ class NewCardDialog(
             }
         }
 
+        val contentLanguage = getContentLanguage()
+        val definitionLanguage = getDefinitionLanguage()
+
+        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
+            binding.tilContentLanguage.error = getString(R.string.error_message_deck_language_not_supported)
+            return null
+        }
+
+        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
+            binding.tilDefinitionLanguage.error = getString(R.string.error_message_deck_language_not_supported)
+            return null
+        }
+
         return ImmutableCard(
             card!!.cardId,
             content,
@@ -819,16 +912,29 @@ class NewCardDialog(
             card!!.nextMissMemorisationDate,
             card!!.nextRevisionDate,
             getCardType(definitions),
-            card!!.cardContentLanguage,
-            card!!.cardDefinitionLanguage,
+            contentLanguage,
+            definitionLanguage,
         )
     }
 
     private fun generateCardOnAdd(): ImmutableCard? {
         val cardId = now()
         val contentId = now()
-        val newCardContent = getContent2(cardId, contentId, deck.deckId)
-        val newCardDefinition = getDefinition2(cardId, contentId, deck.deckId)
+        val newCardContent = getContent(cardId, contentId, deck.deckId)
+        val newCardDefinition = getDefinition(cardId, contentId, deck.deckId)
+
+        val contentLanguage = getContentLanguage()
+        val definitionLanguage = getDefinitionLanguage()
+
+        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
+            binding.tilContentLanguage.error = getString(R.string.error_message_deck_language_not_supported)
+            return null
+        }
+
+        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
+            binding.tilDefinitionLanguage.error = getString(R.string.error_message_deck_language_not_supported)
+            return null
+        }
 
         if (newCardContent == null) {
             return null
@@ -851,8 +957,18 @@ class NewCardDialog(
             null,
             null,
             getCardType(newCardDefinition),
+            contentLanguage,
+            definitionLanguage
         )
     }
+
+    private fun getContentLanguage() =
+        if (binding.tieContentLanguage.text.isNullOrBlank()) null
+        else binding.tieContentLanguage.text.toString()
+
+    private fun getDefinitionLanguage() =
+        if (binding.tieDefinitionLanguage.text.isNullOrBlank()) null
+        else binding.tieDefinitionLanguage.text.toString()
 
     private fun getCardType(definitions: List<CardDefinition>): String {
         val definitionSum = definitions.size
@@ -872,7 +988,7 @@ class NewCardDialog(
         }
     }
 
-    private fun getContent2(cardId: String, contentId: String, deckId: String): CardContent? {
+    private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
         val cardContentText = binding.tieContentMultiAnswerCard.text.toString()
         return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
             CardContent(
@@ -918,7 +1034,7 @@ class NewCardDialog(
         return true
     }
 
-    private fun getDefinition2(
+    private fun getDefinition(
         cardId: String,
         contentId: String,
         deckId: String
@@ -944,25 +1060,6 @@ class NewCardDialog(
             }
         }
         return definitionList.toList()
-    }
-
-    private fun getContentOnAddMAC(
-        cardId: String,
-        contentId: String,
-        deckId: String
-    ): CardContent? {
-        val cardContentText = binding.tieContentMultiAnswerCard.text.toString()
-        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
-            CardContent(
-                contentId,
-                cardId,
-                deckId,
-                cardContentText
-            )
-        } else {
-            binding.tilContentMultiAnswerCard.error = getString(R.string.til_error_card_content)
-            null
-        }
     }
 
     private fun createDefinition(
@@ -1149,7 +1246,7 @@ class NewCardDialog(
                 fieldLy.isVisible = true
                 fieldEd.isVisible = true
                 chip.isVisible = true
-                btDeleteField.isVisible = true
+                btDeleteField?.isVisible = true
             }
             revealedDefinitionFields++
 
@@ -1199,7 +1296,7 @@ class NewCardDialog(
 
     private fun clearField(field: DefinitionFieldModel) {
         field.apply {
-            btDeleteField.visibility = View.GONE
+            btDeleteField?.visibility = View.GONE
             fieldLy.visibility = View.GONE
             fieldEd.apply {
                 visibility = View.GONE

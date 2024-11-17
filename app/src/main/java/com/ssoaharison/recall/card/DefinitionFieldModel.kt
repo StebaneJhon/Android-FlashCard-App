@@ -9,5 +9,5 @@ data class DefinitionFieldModel(
     val fieldLy: TextInputLayout,
     val fieldEd: TextInputEditText,
     val chip: MaterialCheckBox,
-    val btDeleteField: MaterialButton,
+    val btDeleteField: MaterialButton?,
 )

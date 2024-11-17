@@ -129,7 +129,6 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                         binding.deckFirstLanguageET.text.toString(),
                         binding.deckSecondLanguageET.text.toString(),
                         deckCategoryColor,
-                        0,
                         null,
                         0
                     )
@@ -181,7 +180,6 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 binding.deckFirstLanguageET.text.toString(),
                 binding.deckSecondLanguageET.text.toString(),
                 deckCategoryColor,
-                0,
                 null,
                 0
             )
@@ -200,7 +198,6 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 binding.deckFirstLanguageET.text.toString(),
                 binding.deckSecondLanguageET.text.toString(),
                 deckCategoryColor,
-                deck.cardSum,
                 deck.deckCategory,
                 isCorrectRevers(deck.isFavorite)
             )

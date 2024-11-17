@@ -18,7 +18,7 @@ fun ImmutableDeck.toLocal() = Deck(
     cardContentDefaultLanguage = cardContentDefaultLanguage,
     cardDefinitionDefaultLanguage = cardDefinitionDefaultLanguage,
     deckColorCode = deckColorCode,
-    cardSum = cardSum,
+//    cardSum = cardSum,
     deckCategory = deckCategory,
     isFavorite = isCorrectRevers(isFavorite),
 )

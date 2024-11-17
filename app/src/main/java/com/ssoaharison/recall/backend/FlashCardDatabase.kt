@@ -3,6 +3,7 @@ package com.ssoaharison.recall.backend
 import android.content.Context
 import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteColumn
 import androidx.room.RenameColumn
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -24,10 +25,11 @@ import com.ssoaharison.recall.backend.entities.WeeklyReview
         SpaceRepetitionBox::class,
         CardContent::class,
         CardDefinition::class,],
-    version = 3,
+    version = 4,
     autoMigrations = [
         AutoMigration(from = 1, to = 2),
         AutoMigration(from = 2, to = 3, spec = FlashCardDatabase.Migration2To3::class),
+        AutoMigration(from = 3, to = 4, spec = FlashCardDatabase.Migration3To4::class)
     ]
 )
 abstract class FlashCardDatabase : RoomDatabase() {
@@ -54,6 +56,10 @@ abstract class FlashCardDatabase : RoomDatabase() {
 
     @RenameColumn(tableName = "Deck", fromColumnName = "deck_first_language", toColumnName = "card_content_default_language")
     @RenameColumn(tableName = "Deck", fromColumnName = "deck_second_language", toColumnName = "card_definition_default_language")
+    @DeleteColumn(tableName = "Deck", columnName = "card_sum")
     class Migration2To3: AutoMigrationSpec
+
+    @DeleteColumn(tableName = "Deck", columnName = "card_sum")
+    class Migration3To4: AutoMigrationSpec
 
 }

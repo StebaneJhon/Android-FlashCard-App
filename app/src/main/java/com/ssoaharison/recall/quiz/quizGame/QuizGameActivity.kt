@@ -57,6 +57,7 @@ class QuizGameActivity :
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
+    private var appTheme: String? = null
 
     private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var quizGameAdapter: QuizGameAdapter
@@ -81,7 +82,7 @@ class QuizGameActivity :
             Context.MODE_PRIVATE
         )
         miniGamePrefEditor = miniGamePref?.edit()
-        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
+        appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
             setTheme(themRef)
@@ -178,6 +179,7 @@ class QuizGameActivity :
             this,
             data,
             viewModel.getDeckColorCode(),
+            appTheme ?: "WHITE THEM",
             viewModel.deck!!,
             { userAnswer ->
                 viewModel.submitUserAnswer(userAnswer)
@@ -328,11 +330,6 @@ class QuizGameActivity :
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
-            tvScoreTitleScoreLayout.text =
-                getString(
-                    R.string.flashcard_score_title_text,
-                    getString(R.string.start_quiz_button_text)
-                )
             tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
             tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
             tvKnownCardsSumScoreLayout.text = knownCardsSum.toString()

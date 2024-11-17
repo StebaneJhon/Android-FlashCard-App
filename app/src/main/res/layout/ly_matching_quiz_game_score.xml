@@ -7,15 +7,15 @@
     android:background="?colorSurfaceContainerLowest">
 
     <TextView
-        android:id="@+id/tv_score_title_score_layout"
+        android:id="@+id/tv_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_sm"
-        android:layout_marginTop="@dimen/space_xxl"
+        android:layout_marginTop="@dimen/space_sm"
         android:layout_marginEnd="@dimen/space_sm"
         android:fontFamily="@font/open_sans_bold"
-        android:text="@string/flashcard_score_title_text"
-        android:textAlignment="center"
+        android:text="@string/text_result"
+        android:textAlignment="textStart"
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_base"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,17 +26,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="@dimen/space_xs"
-        android:layout_marginTop="@dimen/space_xxl"
         android:layout_marginEnd="@dimen/space_xs"
-        android:layout_marginBottom="@dimen/space_xxl"
         android:columnCount="2"
         android:orientation="horizontal"
         android:rowCount="2"
-        app:layout_constraintBottom_toTopOf="@+id/bt_continue"
+        app:layout_constraintBottom_toTopOf="@+id/tv_Actions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_min="300dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_score_title_score_layout">
+        app:layout_constraintTop_toBottomOf="@+id/tv_result">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_container_known_cards"
@@ -198,6 +196,22 @@
 
     </GridLayout>
 
+    <TextView
+        android:id="@+id/tv_Actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_sm"
+        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_sm"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/text_actions"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_base"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bt_continue"  />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_continue"
         android:layout_width="match_parent"
@@ -212,7 +226,6 @@
         app:cornerRadius="@dimen/bt_radius"
         app:layout_constraintBottom_toTopOf="@+id/bt_restart"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.button.MaterialButton

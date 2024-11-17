@@ -7,23 +7,21 @@
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest">
 
-
     <TextView
-        android:id="@+id/tv_score_title_score_layout"
+        android:id="@+id/tv_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_sm"
+        android:layout_marginTop="@dimen/space_sm"
+        android:layout_marginEnd="@dimen/space_sm"
         android:fontFamily="@font/open_sans_bold"
-        android:text="@string/flashcard_score_title_text"
+        android:text="@string/text_result"
+        android:textAlignment="textStart"
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_base"
-        android:textAlignment="center"
-        android:layout_marginTop="@dimen/space_xxl"
-        android:layout_marginStart="@dimen/space_sm"
-        android:layout_marginEnd="@dimen/space_sm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <GridLayout
         android:layout_width="match_parent"
@@ -31,15 +29,13 @@
         app:layout_constraintHeight_min="200dp"
         android:layout_marginStart="@dimen/space_xs"
         android:layout_marginEnd="@dimen/space_xs"
-        android:layout_marginTop="@dimen/space_xxl"
-        android:layout_marginBottom="@dimen/space_xxl"
         android:columnCount="2"
         android:orientation="horizontal"
         android:rowCount="2"
-        app:layout_constraintBottom_toTopOf="@+id/bt_revise_missed_card_score_layout"
+        app:layout_constraintBottom_toTopOf="@+id/tv_Actions"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_score_title_score_layout">
+        app:layout_constraintTop_toBottomOf="@+id/tv_result">
 
 
         <com.google.android.material.card.MaterialCardView
@@ -207,6 +203,22 @@
         </com.google.android.material.card.MaterialCardView>
 
     </GridLayout>
+
+    <TextView
+        android:id="@+id/tv_Actions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_sm"
+        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_sm"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/text_actions"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_base"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bt_revise_missed_card_score_layout"  />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_revise_missed_card_score_layout"

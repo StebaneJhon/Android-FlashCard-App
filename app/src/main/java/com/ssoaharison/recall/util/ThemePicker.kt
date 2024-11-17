@@ -47,7 +47,7 @@ class ThemePicker {
         ThemeConst.FUCHSIA_THEME to R.color.fuchsia600,
         ThemeConst.PINK_THEME to R.color.pink600,
         ThemeConst.ROSE_THEME to R.color.rose600,
-        ThemeConst.BROWN_THEME to R.color.brown700,
+        ThemeConst.BROWN_THEME to R.color.stone700,
     )
 
     fun getThemeBaseColor(themeName: String): Int? {

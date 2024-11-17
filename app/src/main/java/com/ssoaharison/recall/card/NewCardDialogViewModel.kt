@@ -36,7 +36,6 @@ class NewCardDialogViewModel(
     private var _addedCards =
         MutableStateFlow<ArrayList<ImmutableCard>>(arrayListOf<ImmutableCard>())
     val addedCards: StateFlow<ArrayList<ImmutableCard>> = _addedCards.asStateFlow()
-    private var fetchJob: Job? = null
 
     fun areThereUnSavedAddedCards() = _addedCards.value.size != 0
 
@@ -86,22 +85,6 @@ class NewCardDialogViewModel(
             }
         }
     }
-
-//    fun insertOpenTriviaQuestions(deckId: String, cards: List<OpenTriviaQuestion>) {
-//        fetchOpenTriviaJob?.cancel()
-//        fetchOpenTriviaJob = viewModelScope.launch {
-////            val newDeck = generateDeck(deckName, deckDescription)
-////            delay(200)
-////            repository.insertDeck(newDeck)
-////            delay(200)
-//            val newCards = resultsToImmutableCards(deckId, cards)
-//            newCards.forEach { card ->
-////                delay(200)
-//                addCard(card)
-//            }
-//
-//        }
-//    }
 
     suspend fun resultsToImmutableCards(
         deckId: String,

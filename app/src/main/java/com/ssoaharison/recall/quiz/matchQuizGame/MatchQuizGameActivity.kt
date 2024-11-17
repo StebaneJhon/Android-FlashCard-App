@@ -268,8 +268,6 @@ class MatchQuizGameActivity : AppCompatActivity() {
         binding.gameScoreContainer.visibility = View.VISIBLE
         binding.rvMatchingGame.visibility = View.GONE
         binding.lyGameScore.apply {
-            tvScoreTitleScoreLayout.text =
-                getString(R.string.flashcard_score_title_text, "Matching Quiz")
             tvMoveNumberSumLayout.text = viewModel.getNumMove().toString()
             tvMissedMoveSumLayout.text = viewModel.getNumMiss().toString()
             tvTotalCardSumScoreLayout.text = viewModel.getOnBoardCardSum(getBoardSize()).toString()

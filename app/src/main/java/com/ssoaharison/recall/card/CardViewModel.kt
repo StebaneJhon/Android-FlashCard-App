@@ -10,7 +10,6 @@ import com.ssoaharison.recall.backend.Model.ImmutableCard
 import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.backend.Model.toLocal
 import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
@@ -58,13 +57,12 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateCard(card)
     }
 
-    fun deleteCard(card: ImmutableCard?, localDeck: ImmutableDeck) = viewModelScope.launch {
-        val externalDeck = localDeck.toLocal()
-        repository.deleteCard(card, externalDeck)
+    fun deleteCard(card: ImmutableCard?) = viewModelScope.launch {
+        repository.deleteCard(card)
     }
 
-    suspend fun searchCard(searchQuery: String): LiveData<List<ImmutableCard?>> {
-        return repository.searchCard(searchQuery).asLiveData()
+    suspend fun searchCard(searchQuery: String, deckId: String): LiveData<List<ImmutableCard?>> {
+        return repository.searchCard(searchQuery, deckId).asLiveData()
     }
 
 }

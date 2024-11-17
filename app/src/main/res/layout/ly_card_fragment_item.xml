@@ -217,8 +217,8 @@
 
         <TextView
             android:id="@+id/tv_card_status"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_alignParentEnd="true"
             android:layout_marginTop="@dimen/space_xs"
             android:background="@drawable/rounded_background"

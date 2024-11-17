@@ -15,11 +15,13 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.TextWithLanguageModel
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 class MultiChoiceQuizGameAdapter(
     val context: Context,
     val cardList: List<MultiChoiceGameCardModel>,
     val deckColorCode: String,
+    val appTheme: String,
     private val userChoiceModel: (MultiChoiceCardDefinitionModel) -> Unit,
     private val onSpeak: (SpeakModel) -> Unit,
 ): RecyclerView.Adapter<MultiChoiceQuizGameAdapter.MultiChoiceQuizGameAdapterViewHolder>() {
@@ -42,6 +44,7 @@ class MultiChoiceQuizGameAdapter(
             cardList.size,
             userChoiceModel,
             deckColorCode,
+            appTheme,
             onSpeak
         )
     }
@@ -65,6 +68,7 @@ class MultiChoiceQuizGameAdapter(
             cardSum: Int,
             userChoiceModel: (MultiChoiceCardDefinitionModel) -> Unit,
             deckColorCode: String,
+            appTheme: String,
             onSpeak: (SpeakModel) -> Unit
         ) {
 
@@ -81,7 +85,7 @@ class MultiChoiceQuizGameAdapter(
                 button.text = actualDefinition.definition.text
 
                 if (actualDefinition.isSelected) {
-                    onButtonClicked(button, actualDefinition.isCorrect)
+                    onButtonClicked(button, actualDefinition.isCorrect, appTheme)
                 } else {
                     onButtonUnClicked(button, context)
                 }
@@ -126,16 +130,31 @@ class MultiChoiceQuizGameAdapter(
 
     private fun onButtonClicked(
         button: MaterialButton,
-        isAnswerCorrect: Boolean
+        isAnswerCorrect: Boolean,
+        appTheme: String
     ) {
-        if (isAnswerCorrect) {
-            button.background.setTint(ContextCompat.getColor(context, R.color.green50))
-            button.setStrokeColorResource(R.color.green500)
-            button.setIconTintResource(R.color.green500)
+        if (appTheme != DARK_THEME) {
+            if (isAnswerCorrect) {
+                button.background.setTint(ContextCompat.getColor(context, R.color.green50))
+                button.setStrokeColorResource(R.color.green500)
+                button.setIconTintResource(R.color.green500)
+            } else {
+                button.background.setTint(ContextCompat.getColor(context, R.color.red50))
+                button.setStrokeColorResource(R.color.red500)
+                button.setIconTintResource(R.color.red500)
+            }
         } else {
-            button.background.setTint(ContextCompat.getColor(context, R.color.red50))
-            button.setStrokeColorResource(R.color.red500)
-            button.setIconTintResource(R.color.red500)
+            if (isAnswerCorrect) {
+                button.background.setTint(ContextCompat.getColor(context, R.color.green800))
+                button.setStrokeColorResource(R.color.green50)
+                button.setIconTintResource(R.color.green50)
+                button.setTextColor(ContextCompat.getColor(context, R.color.green50))
+            } else {
+                button.background.setTint(ContextCompat.getColor(context, R.color.red800))
+                button.setStrokeColorResource(R.color.red50)
+                button.setIconTintResource(R.color.red50)
+                button.setTextColor(ContextCompat.getColor(context, R.color.red50))
+            }
         }
     }
 

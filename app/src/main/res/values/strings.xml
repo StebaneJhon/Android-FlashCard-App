@@ -226,4 +226,10 @@
     <string name="text_on_boarding_screen_progression">%1$s/4</string>
     <string name="error_message_not_enough_cards">Not enough card</string>
     <string name="text_finish">Finish</string>
+    <string name="text_content_language">Content language</string>
+    <string name="text_content">Content</string>
+    <string name="text_definition">Definition</string>
+    <string name="text_definition_language">Definition language</string>
+    <string name="text_new_definition">New definition</string>
+    <string name="text_actions">Actions</string>
 </resources>

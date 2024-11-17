@@ -328,7 +328,6 @@ class WritingQuizGameActivity :
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
-            tvScoreTitleScoreLayout.text = getString(R.string.flashcard_score_title_text, "Writing Quiz")
             tvTotalCardsSumScoreLayout.text = onBoardItems.size.toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum(onBoardItems.size).toString()

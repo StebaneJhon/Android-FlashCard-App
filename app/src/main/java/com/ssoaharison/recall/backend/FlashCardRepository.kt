@@ -97,15 +97,8 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     @WorkerThread
     suspend fun insertCard(
         card: ImmutableCard,
-        deck: ImmutableDeck,
-        incrementDeckCardSumByOne: Boolean
     ) {
 
-        val localDeck = deck.toLocal()
-        if (incrementDeckCardSumByOne) {
-            localDeck.cardSum = localDeck.cardSum?.plus(1)
-            flashCardDao.updateDeck(localDeck)
-        }
         val localCard = card.toLocal()
         flashCardDao.insertCard(localCard)
         val cardContent = card.cardContent
@@ -118,18 +111,14 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun insertCards(cards: List<ImmutableCard>, deck: ImmutableDeck) {
-        val localDeck = deck.toLocal()
-        localDeck.cardSum = localDeck.cardSum?.plus(cards.size)
-        flashCardDao.updateDeck(localDeck)
         cards.forEach { card ->
-//            delay(300)
-            insertCard(card, deck, false)
+            insertCard(card)
         }
     }
 
     @WorkerThread
-    fun searchCard(searchQuery: String): Flow<List<ImmutableCard>> {
-        return flashCardDao.searchCard(searchQuery).map { cardList ->
+    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
+        return flashCardDao.searchCard(searchQuery, deckId).map { cardList ->
             cardList.map { card ->
                 val cardContent = flashCardDao.getCardAndContent(card.cardId).cardContent
                 val cardDefinitions = flashCardDao.getCardWithDefinition(card.cardId).definition
@@ -197,7 +186,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun deleteCard(card: ImmutableCard?, deck: Deck) {
+    suspend fun deleteCard(card: ImmutableCard?) {
         card?.let { actualCard ->
             actualCard.cardContent?.let { it1 ->
                 flashCardDao.deleteCardContent(it1)
@@ -206,8 +195,6 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                 flashCardDao.deleteCardDefinition(it)
             }
             flashCardDao.deleteCard(card.toLocal())
-            deck.cardSum = deck.cardSum?.minus(1)
-            flashCardDao.updateDeck(deck)
         }
     }
 
@@ -217,7 +204,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         val cards = getCards(localDeck.deckId)
         cards.forEach { card ->
             delay(300)
-            deleteCard(card, localDeck)
+            deleteCard(card)
         }
     }
 

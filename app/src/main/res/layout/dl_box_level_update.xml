@@ -12,7 +12,8 @@
         android:textColorHint="?colorOnSurface"
         android:layout_margin="10dp"
         app:endIconMode="custom"
-        app:endIconDrawable="@drawable/icon_help">
+        app:endIconDrawable="@drawable/icon_help"
+        app:endIconTint="?colorOnSurface">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ti_level_repeat_day"
             android:layout_width="match_parent"

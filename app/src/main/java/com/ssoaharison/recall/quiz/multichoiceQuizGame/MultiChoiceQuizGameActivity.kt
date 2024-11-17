@@ -67,6 +67,8 @@ class MultiChoiceQuizGameActivity :
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
+    private var appTheme: String? = null
+
     private var tts: TextToSpeech? = null
     private var multiChoiceQuizJob: Job? = null
     private lateinit var multiChoiceGameAdapter: MultiChoiceQuizGameAdapter
@@ -87,7 +89,7 @@ class MultiChoiceQuizGameActivity :
         )
         miniGamePrefEditor = miniGamePref?.edit()
         editor = sharedPref?.edit()
-        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
+        appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
         if (themRef != null) {
             setTheme(themRef)
@@ -211,7 +213,12 @@ class MultiChoiceQuizGameActivity :
 
     private fun launchMultiChoiceQuizGame(data: List<MultiChoiceGameCardModel>) {
         multiChoiceGameAdapter =
-            MultiChoiceQuizGameAdapter(this, data, viewModel.deck.deckColorCode!!, {
+            MultiChoiceQuizGameAdapter(
+                this,
+                data,
+                viewModel.deck.deckColorCode!!,
+                appTheme ?: "WHITE THEM",
+                {
                 if (viewModel.isUserChoiceCorrect(it)) {
                     areOptionsEnabled(true)
                 }
@@ -451,25 +458,6 @@ class MultiChoiceQuizGameActivity :
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 
-//    private fun onWrongAnswer(
-//        card: MaterialCardView,
-//        onWrongCard: MaterialCardView,
-//        animFadeIn: Animation,
-//        animFadeOut: Animation
-//    ) {
-//        card.startAnimation(animFadeOut)
-//        card.visibility = View.GONE
-//        onWrongCard.visibility = View.VISIBLE
-//        onWrongCard.startAnimation(animFadeIn)
-//        lifecycleScope.launch {
-//            delay(500)
-//            onWrongCard.startAnimation(animFadeOut)
-//            onWrongCard.visibility = View.GONE
-//            card.visibility = View.VISIBLE
-//            card.startAnimation(animFadeIn)
-//        }
-//    }
-
     private fun onQuizComplete(
         cardsLeft: Int,
         cardCount: Int,
@@ -478,8 +466,6 @@ class MultiChoiceQuizGameActivity :
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
-            tvScoreTitleScoreLayout.text =
-                getString(R.string.flashcard_score_title_text, "Multi Choice Quiz")
             tvTotalCardsSumScoreLayout.text = cardCount.toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum(cardCount).toString()

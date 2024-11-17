@@ -191,55 +191,6 @@ class CardsRecyclerViewAdapter(
                 }
             }
 
-//            cardDescription1.apply {
-//                setOnClickListener { it as TextView
-//                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
-//                }
-//                setOnLongClickListener { v: View ->
-//                    showMenu(
-//                        context,
-//                        v,
-//                        R.menu.card_popup_menu,
-//                        editCardClickListener,
-//                        deleteCardClickListener,
-//                        card
-//                    )
-//                    true
-//                }
-//            }
-//            cardDescription2.apply {
-//                setOnClickListener { it as TextView
-//                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
-//                }
-//                setOnLongClickListener { v: View ->
-//                    showMenu(
-//                        context,
-//                        v,
-//                        R.menu.card_popup_menu,
-//                        editCardClickListener,
-//                        deleteCardClickListener,
-//                        card
-//                    )
-//                    true
-//                }
-//            }
-//            cardDescription3.apply {
-//                setOnClickListener { it as TextView
-//                    onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
-//                }
-//                setOnLongClickListener { v: View ->
-//                    showMenu(
-//                        context,
-//                        v,
-//                        R.menu.card_popup_menu,
-//                        editCardClickListener,
-//                        deleteCardClickListener,
-//                        card
-//                    )
-//                    true
-//                }
-//            }
-
         }
 
         private fun onDarkTheme(
@@ -334,17 +285,7 @@ class CardsRecyclerViewAdapter(
                         )
                             .toInt()
                     if (item.icon != null) {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                            item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
-                        } else {
-                            item.icon =
-                                object :
-                                    InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0) {
-                                    override fun getIntrinsicWidth(): Int {
-                                        return intrinsicHeight + iconMarginPx + iconMarginPx
-                                    }
-                                }
-                        }
+                        item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
                     }
                 }
             }
@@ -366,9 +307,7 @@ class CardsRecyclerViewAdapter(
             }
 
             popup.setOnDismissListener {
-                // Respond to popup being dismissed.
             }
-            // Show the popup menu.
             popup.show()
 
         }

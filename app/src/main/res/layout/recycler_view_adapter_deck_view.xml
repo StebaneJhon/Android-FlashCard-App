@@ -81,7 +81,7 @@
                 android:backgroundTint="@color/green700"
                 android:fontFamily="@font/open_sans_light"
                 android:gravity="center"
-                android:textColor="?colorSurfaceContainerLowest"
+                android:textColor="@color/grey50"
                 android:textSize="@dimen/text_xxs"
                 android:textAlignment="center"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_definition_language"
@@ -100,7 +100,7 @@
                 android:fontFamily="@font/open_sans_light"
                 android:gravity="center"
                 android:textAlignment="center"
-                android:textColor="?colorSurfaceContainerLowest"
+                android:textColor="@color/red50"
                 android:textSize="@dimen/text_xxs"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_definition_language"
                 app:layout_constraintEnd_toStartOf="@+id/cardsSum"
@@ -108,6 +108,7 @@
                 tools:text="50" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/cardsSum"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
@@ -123,7 +124,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/tv_definition_language"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_definition_language"
-                tools:text="50" />
+                android:text="0" />
 
             <Button
                 android:id="@+id/popup_menu_BT"

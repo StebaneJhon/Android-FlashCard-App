@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.quiz.test
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,12 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
 import com.google.android.material.card.MaterialCardView
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 class TestResultRecyclerViewAdapter(
     private val context: Context,
     private val cardList: List<TestCardModel>,
+    val appTheme: String,
 ): RecyclerView.Adapter<TestResultRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,7 +33,8 @@ class TestResultRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return holder.bind(
             context,
-            cardList[position]
+            cardList[position],
+            appTheme
         )
     }
 
@@ -61,6 +65,7 @@ class TestResultRecyclerViewAdapter(
         fun bind(
             context: Context,
             card: TestCardModel,
+            appTheme: String
         ) {
 
             tvAddedCardContent.text = card.cardContent.content
@@ -69,7 +74,7 @@ class TestResultRecyclerViewAdapter(
             tvCardDescriptions.forEachIndexed { index, textView ->
                 if (index < card.cardDefinition.size) {
                     textView.visibility = View.VISIBLE
-                    displayCardDefinition(context, card.cardDefinition[index], textView)
+                    displayCardDefinition(context, card.cardDefinition[index], textView, appTheme)
                 } else {
                     textView.visibility = View.GONE
                 }
@@ -79,23 +84,32 @@ class TestResultRecyclerViewAdapter(
         private fun displayCardDefinition(
             context: Context,
             definition: TestCardDefinitionModel,
-            v: TextView
+            v: TextView,
+            appTheme: String
         ) {
             v.visibility = View.VISIBLE
             v.text = definition.definition.text
             if (definition.isSelected) {
                 if (definition.isCorrect == 1 && definition.attachedCardId == definition.cardId) {
-                    onCorrectAnswer(context, v)
+                    onCorrectAnswer(context, v, appTheme)
                 } else {
-                    onWrongAnswer(context, v)
+                    onWrongAnswer(context, v, appTheme)
                 }
             } else {
                 onNeutralAnswer(context, v)
             }
         }
 
-        private fun onWrongAnswer(context: Context, v: TextView) {
-            val textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red100)
+        private fun onWrongAnswer(context: Context, v: TextView, appTheme: String) {
+            val textBackgroundColorStateList: ColorStateList?
+            val drawableBackgroundColorStateList: ColorStateList?
+            if (appTheme != DARK_THEME) {
+                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red100)
+                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red600)
+            } else {
+                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red800)
+                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red50)
+            }
             v.backgroundTintList = textBackgroundColorStateList
             v.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.icon_cancel,
@@ -104,10 +118,19 @@ class TestResultRecyclerViewAdapter(
                 0
             )
             v.setCompoundDrawablePadding(8)
+            v.setCompoundDrawableTintList(drawableBackgroundColorStateList)
         }
 
-        private fun onCorrectAnswer(context: Context, v: TextView) {
-            val textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green100)
+        private fun onCorrectAnswer(context: Context, v: TextView, appTheme: String) {
+            val textBackgroundColorStateList: ColorStateList?
+            val drawableBackgroundColorStateList: ColorStateList?
+            if (appTheme != DARK_THEME) {
+                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green100)
+                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green600)
+            } else {
+                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green800)
+                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green50)
+            }
             v.backgroundTintList = textBackgroundColorStateList
             v.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 R.drawable.icon_check_circle,
@@ -116,6 +139,7 @@ class TestResultRecyclerViewAdapter(
                 0
             )
             v.setCompoundDrawablePadding(8)
+            v.setCompoundDrawableTintList(drawableBackgroundColorStateList)
         }
 
         private fun onNeutralAnswer(context: Context, v: TextView) {

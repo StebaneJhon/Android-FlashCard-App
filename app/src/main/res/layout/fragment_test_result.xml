@@ -12,27 +12,11 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/tv_score_title_test_result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginTop="@dimen/space_md"
-            android:layout_marginEnd="@dimen/space_sm"
-            android:fontFamily="@font/open_sans_bold"
-            android:text="@string/flashcard_score_title_text"
-            android:textAlignment="center"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_base"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
             android:id="@+id/tv_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginTop="@dimen/space_sm"
             android:layout_marginEnd="@dimen/space_sm"
             android:fontFamily="@font/open_sans_bold"
             android:text="@string/text_result"
@@ -41,7 +25,7 @@
             android:textSize="@dimen/text_base"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_score_title_test_result" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <GridLayout
             android:id="@+id/gridLayout"
@@ -251,12 +235,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_cards" />
 
+        <TextView
+            android:id="@+id/tv_Actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:fontFamily="@font/open_sans_bold"
+            android:text="@string/text_actions"
+            android:textAlignment="textStart"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_base"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_test_result" />
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_retake_test_test_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginTop="@dimen/space_md"
             android:layout_marginEnd="@dimen/space_sm"
             android:layout_marginBottom="@dimen/space_xs"
             android:backgroundTint="?colorPrimary"
@@ -267,7 +267,7 @@
             app:cornerRadius="@dimen/bt_radius"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_test_result" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_Actions" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_back_to_deck_test_result"

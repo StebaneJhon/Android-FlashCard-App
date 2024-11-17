@@ -15,7 +15,6 @@ data class Deck (
     @ColumnInfo(name = "card_content_default_language") val cardContentDefaultLanguage: String?,
     @ColumnInfo(name = "card_definition_default_language") val cardDefinitionDefaultLanguage: String?,
     @ColumnInfo(name = "deck_color_code") val deckColorCode: String?,
-    @ColumnInfo(name = "card_sum") var cardSum: Int?,
     @ColumnInfo(name = "deck_category") val deckCategory: String?,
     @ColumnInfo(name = "is_favorite") val isFavorite: Int?,
 ): Parcelable

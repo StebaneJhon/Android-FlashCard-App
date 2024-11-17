@@ -359,7 +359,7 @@ class CardFragment :
                     onEditCard(selectedCard!!)
                 },
                 { selectedCard ->
-                    cardViewModel.deleteCard(selectedCard, deck)
+                    cardViewModel.deleteCard(selectedCard)
                 },
                 { text ->
                     if (tts?.isSpeaking == true) {
@@ -573,7 +573,7 @@ class CardFragment :
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 binding.cardsActivityProgressBar.visibility = View.VISIBLE
                 if (p0 != null) {
-                    searchCard(p0)
+                    searchCard(p0, deck?.deckId!!)
                     binding.cardsActivityProgressBar.visibility = View.GONE
                 }
                 return true
@@ -581,7 +581,7 @@ class CardFragment :
 
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 != null) {
-                    searchCard(p0)
+                    searchCard(p0, deck?.deckId!!)
                     binding.cardsActivityProgressBar.visibility = View.GONE
                 }
                 return true
@@ -589,11 +589,11 @@ class CardFragment :
         })
     }
 
-    private fun searchCard(query: String) {
+    private fun searchCard(query: String, deckId: String) {
         val searchQuery = "%$query%"
         lifecycleScope.launch {
             deck?.let { cardDeck ->
-                cardViewModel.searchCard(searchQuery)
+                cardViewModel.searchCard(searchQuery, deckId)
                     .observe(this@CardFragment) { cardList ->
                         cardList?.let { displayCards(it, cardDeck) }
                     }

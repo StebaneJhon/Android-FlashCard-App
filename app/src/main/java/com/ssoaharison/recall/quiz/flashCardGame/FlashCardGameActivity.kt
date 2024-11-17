@@ -304,8 +304,6 @@ class FlashCardGameActivity :
         isFlashCardGameScreenHidden(true)
         binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
-            tvScoreTitleScoreLayout.text =
-                getString(R.string.flashcard_score_title_text, "Flash Card")
             tvTotalCardsSumScoreLayout.text = viewModel.getTotalCards().toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
             tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()

@@ -2,6 +2,7 @@ package com.ssoaharison.recall.card
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +18,13 @@ import com.ssoaharison.recall.backend.Model.ImmutableCard
 import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.google.android.material.card.MaterialCardView
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 class AddedCardRecyclerViewAdapter(
     private val context: Context,
     private val cardList: List<ImmutableCard?>,
     private val deck: ImmutableDeck,
+    private val appTheme: String,
     private val editCardClickListener: (ModelCardWithPositionOnLocalEdit) -> Unit,
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
 ) : RecyclerView.Adapter<AddedCardRecyclerViewAdapter.ViewHolder>() {
@@ -39,10 +42,9 @@ class AddedCardRecyclerViewAdapter(
             context,
             cardList[position],
             position,
-            cardList.size,
-            deck,
             editCardClickListener,
             deleteCardClickListener,
+            appTheme,
         )
     }
 
@@ -74,10 +76,9 @@ class AddedCardRecyclerViewAdapter(
             context: Context,
             card: ImmutableCard?,
             cardPosition: Int,
-            cardSum: Int,
-            deck: ImmutableDeck,
             editCardClickListener: (ModelCardWithPositionOnLocalEdit) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
+            appTheme: String,
         ) {
 
             tvAddedCardContent.text = card?.cardContent?.content
@@ -86,7 +87,7 @@ class AddedCardRecyclerViewAdapter(
                 if (index < card!!.cardDefinition!!.size) {
                     tvAddedCardDescriptionError.visibility = View.GONE
                     tv.visibility = View.VISIBLE
-                    displayCardDefinition(context, tv, card.cardDefinition?.get(index))
+                    displayCardDefinition(context, tv, card.cardDefinition?.get(index), appTheme)
                 } else {
                     tv.visibility = View.GONE
                 }
@@ -104,11 +105,20 @@ class AddedCardRecyclerViewAdapter(
         }
 
         @SuppressLint("ResourceType")
-        fun displayCardDefinition(context: Context, view: TextView, definition: CardDefinition?) {
+        fun displayCardDefinition(
+            context: Context,
+            view: TextView,
+            definition: CardDefinition?,
+            appTheme: String,
+        ) {
             definition?.let {
                 view.visibility = View.VISIBLE
+                val textBackgroundColorStateList: ColorStateList? = if (appTheme != DARK_THEME) {
+                    ContextCompat.getColorStateList(context, R.color.green100)
+                } else {
+                    ContextCompat.getColorStateList(context, R.color.green800)
+                }
                 if (it.isCorrectDefinition == 1) {
-                    val textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green100)
                     view.backgroundTintList = textBackgroundColorStateList
                     view.text = it.definition
                 } else {

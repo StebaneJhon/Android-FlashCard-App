@@ -131,23 +131,15 @@ class DeckFragment :
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
 
-        binding.bottomAppBarDeck.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.bt_sort_deck -> {
-                    val item: View = binding.bottomAppBarDeck.findViewById(R.id.bt_sort_deck)
-                    showMenu(item, R.menu.menu_filter_deck)
-                    true
-                }
-
-                else -> false
-            }
+        binding.deckTopAppBar.setNavigationOnClickListener {
+            showMenu(it, R.menu.menu_filter_deck)
         }
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getAllDecks()
                 deckViewModel.allDecks
-                    .collect { it ->
+                    .collect {
                         when (it) {
                             is UiState.Loading -> {
                                 binding.mainActivityProgressBar.isVisible = true
@@ -234,6 +226,8 @@ class DeckFragment :
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
+        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         val sortedListOfDeck =
             sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
         if (appContext != null) {

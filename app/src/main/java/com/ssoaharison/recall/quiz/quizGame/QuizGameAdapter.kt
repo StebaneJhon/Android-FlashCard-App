@@ -22,11 +22,13 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.TextWithLanguageModel
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 class QuizGameAdapter(
     val context: Context,
     val cardList: List<QuizGameCardModel>,
     private val deckColor: String,
+    val appTheme: String,
     val deck: ImmutableDeck,
     private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit,
@@ -50,6 +52,7 @@ class QuizGameAdapter(
             position,
             cardList.size,
             deckColor,
+            appTheme,
             cardOnClick,
         )
     }
@@ -95,6 +98,7 @@ class QuizGameAdapter(
             cardPosition: Int,
             cardSum: Int,
             deckColorCode: String,
+            appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
 
@@ -114,7 +118,7 @@ class QuizGameAdapter(
                         materialButton.visibility = View.VISIBLE
                         if (card.cardDefinition[index].isSelected) {
                             val answerStatus = card.cardDefinition[index].isCorrect != 0
-                            onButtonClicked(materialButton, card.cardType!!, context, answerStatus)
+                            onButtonClicked(materialButton, card.cardType!!, context, answerStatus, appTheme)
                         } else {
                             onButtonUnClicked(materialButton, card.cardType!!, context)
                         }
@@ -142,27 +146,53 @@ class QuizGameAdapter(
             button: MaterialButton,
             cardType: String,
             context: Context,
-            isCorrectlyAnswered: Boolean
+            isCorrectlyAnswered: Boolean,
+            appTheme: String
         ) {
-            if (isCorrectlyAnswered) {
-                if (cardType == MULTIPLE_ANSWER_CARD) {
-                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+            if (appTheme != DARK_THEME) {
+                if (isCorrectlyAnswered) {
+                    if (cardType == MULTIPLE_ANSWER_CARD) {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                    } else {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+                    }
+                    button.background.setTint(ContextCompat.getColor(context, R.color.green50))
+                    button.setStrokeColorResource(R.color.green500)
+                    button.setIconTintResource(R.color.green500)
                 } else {
-                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+                    if (cardType == MULTIPLE_ANSWER_CARD) {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                    } else {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                    }
+                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
+                    button.setStrokeColorResource(R.color.red500)
+                    button.setIconTintResource(R.color.red500)
                 }
-                button.background.setTint(ContextCompat.getColor(context, R.color.green50))
-                button.setStrokeColorResource(R.color.green500)
-                button.setIconTintResource(R.color.green500)
             } else {
-                if (cardType == MULTIPLE_ANSWER_CARD) {
-                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                if (isCorrectlyAnswered) {
+                    if (cardType == MULTIPLE_ANSWER_CARD) {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                    } else {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+                    }
+                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
+                    button.setStrokeColorResource(R.color.green50)
+                    button.setIconTintResource(R.color.green50)
+                    button.setTextColor(ContextCompat.getColor(context, R.color.green50))
                 } else {
-                    button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                    if (cardType == MULTIPLE_ANSWER_CARD) {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                    } else {
+                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                    }
+                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
+                    button.setStrokeColorResource(R.color.red50)
+                    button.setIconTintResource(R.color.red50)
+                    button.setTextColor(ContextCompat.getColor(context, R.color.red50))
                 }
-                button.background.setTint(ContextCompat.getColor(context, R.color.red50))
-                button.setStrokeColorResource(R.color.red500)
-                button.setIconTintResource(R.color.red500)
             }
+
 
         }
 

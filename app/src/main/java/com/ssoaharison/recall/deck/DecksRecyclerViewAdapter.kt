@@ -3,7 +3,6 @@ package com.ssoaharison.recall.deck
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.InsetDrawable
-import android.os.Build
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -15,11 +14,13 @@ import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.card.MaterialCardView
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 class DecksRecyclerViewAdapter(
     private val listOfDecks: List<ImmutableDeck>,
@@ -76,7 +77,8 @@ class DecksRecyclerViewAdapter(
             deckDescriptionTV?.text = deck.deckDescription
             deckContendLanguages?.text = deck.cardContentDefaultLanguage
             deckDefinitionLanguages?.text = deck.cardDefinitionDefaultLanguage
-            cardSum?.text = deck.cardSum.toString()
+
+            cardSum?.isVisible = deck.cardSum == 0
             if (deck.knownCardCount!! > 0) {
                 tvKnownCardSum?.visibility = View.VISIBLE
                 tvKnownCardSum?.text = deck.knownCardCount.toString()
@@ -151,17 +153,7 @@ class DecksRecyclerViewAdapter(
                         )
                             .toInt()
                     if (item.icon != null) {
-                        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                            item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
-                        } else {
-                            item.icon =
-                                object :
-                                    InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0) {
-                                    override fun getIntrinsicWidth(): Int {
-                                        return intrinsicHeight + iconMarginPx + iconMarginPx
-                                    }
-                                }
-                        }
+                        item.icon = InsetDrawable(item.icon, iconMarginPx, 0, iconMarginPx, 0)
                     }
                 }
             }
@@ -186,9 +178,7 @@ class DecksRecyclerViewAdapter(
 
             }
             popup.setOnDismissListener {
-                // Respond to popup being dismissed.
             }
-            // Show the popup menu.
             popup.show()
         }
 
