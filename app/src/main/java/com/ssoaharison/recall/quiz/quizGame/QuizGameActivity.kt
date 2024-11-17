@@ -278,6 +278,7 @@ class QuizGameActivity :
         }
         binding.btNext.setOnClickListener {
             areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
