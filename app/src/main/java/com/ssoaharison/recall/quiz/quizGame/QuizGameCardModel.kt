@@ -13,5 +13,7 @@ data class QuizGameCardModel(
     val cardDefinitionLanguage: String?,
     val cardType: String?,
     val cardStatus: String?,
-    var isFlipped: Boolean = false
+    var isFlipped: Boolean = false,
+    var attemptTime: Int = 0,
+    var isCorrectlyAnswered: Boolean = false,
 ): Parcelable

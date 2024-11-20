@@ -17,9 +17,8 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
+import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.Model.ImmutableCard
@@ -183,14 +182,15 @@ class QuizGameActivity :
             viewModel.deck!!,
             { userAnswer ->
                 viewModel.submitUserAnswer(userAnswer)
-                if (userAnswer.cardType != SINGLE_ANSWER_CARD && viewModel.getAttemptTime() == 0) {
-                    viewModel.updateCardOnKnownOrKnownNot(userAnswer, null)
+                val actualCard = viewModel.getCardByPosition(binding.vpCardHolder.currentItem)
+                if (userAnswer.cardType != SINGLE_ANSWER_CARD && actualCard.attemptTime <= 1) {
+                    viewModel.updateMultipleAnswerAndChoiceCardOnAnswered(userAnswer)
                 }
                 quizGameAdapter.notifyDataSetChanged()
                 if (viewModel.isAllAnswerSelected(userAnswer)) {
-                    optionsState(userAnswer)
+                    optionsState(userAnswer, actualCard)
                 }
-                viewModel.increaseAttemptTime()
+//                viewModel.increaseAttemptTime()
             },
             { dataToRead ->
                 if (tts?.isSpeaking == true) {
@@ -203,14 +203,144 @@ class QuizGameActivity :
                 }
 
             })
-        binding.vpCardHolder.adapter = quizGameAdapter
+
+        binding.vpCardHolder.apply {
+            adapter = quizGameAdapter
+            registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                }
+
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+
+                    binding.btNext.apply {
+                        if (position == data.size.minus(1)) {
+                            text = getString(R.string.text_finish)
+                            iconPadding =
+                                resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                    .toInt()
+                        } else {
+                            text = null
+                            iconPadding =
+                                resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                    .toInt()
+                        }
+                    }
+                    binding.btRewind.apply {
+                        if (position > 0) {
+                            isActivated = true
+                            isClickable = true
+                            backgroundTintList = MaterialColors
+                                .getColorStateList(
+                                    this@QuizGameActivity,
+                                    com.google.android.material.R.attr.colorPrimary,
+                                    ContextCompat.getColorStateList(
+                                        this@QuizGameActivity, R.color.neutral700
+                                    )!!
+                                )
+                            iconTint = MaterialColors
+                                .getColorStateList(
+                                    this@QuizGameActivity,
+                                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                    ContextCompat.getColorStateList(
+                                        this@QuizGameActivity, R.color.neutral50
+                                    )!!
+                                )
+                            setTextColor(
+                                MaterialColors
+                                    .getColorStateList(
+                                        this@QuizGameActivity,
+                                        com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                        ContextCompat.getColorStateList(
+                                            this@QuizGameActivity, R.color.neutral50
+                                        )!!
+                                    )
+                            )
+                        } else {
+                            isActivated = false
+                            isClickable = false
+                            backgroundTintList = MaterialColors
+                                .getColorStateList(
+                                    this@QuizGameActivity,
+                                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                    ContextCompat.getColorStateList(
+                                        this@QuizGameActivity, R.color.neutral50
+                                    )!!
+                                )
+                            iconTint = MaterialColors
+                                .getColorStateList(
+                                    this@QuizGameActivity,
+                                    com.google.android.material.R.attr.colorPrimary,
+                                    ContextCompat.getColorStateList(
+                                        this@QuizGameActivity, R.color.neutral700
+                                    )!!
+                                )
+
+                            setTextColor(
+                                MaterialColors
+                                    .getColorStateList(
+                                        this@QuizGameActivity,
+                                        com.google.android.material.R.attr.colorPrimary,
+                                        ContextCompat.getColorStateList(
+                                            this@QuizGameActivity, R.color.neutral700
+                                        )!!
+                                    )
+                            )
+                        }
+                    }
+
+                    val actualCard = viewModel.getCardByPosition(position)
+                    if (actualCard.cardType == SINGLE_ANSWER_CARD) {
+                        when {
+                            actualCard.attemptTime > 0 && actualCard.isCorrectlyAnswered -> {
+                                areNextAndBackButtonsVisible(true)
+                                areKnownAndKnownNotButtonsVisible(false)
+                            }
+
+                            actualCard.attemptTime > 0 && !actualCard.isCorrectlyAnswered -> {
+                                areNextAndBackButtonsVisible(true)
+                                specifyKnownAndKnownNotActions(actualCard)
+                                areKnownAndKnownNotButtonsVisible(true)
+                            }
+
+                            else -> {
+                                areNextAndBackButtonsVisible(false)
+                                areKnownAndKnownNotButtonsVisible(false)
+                            }
+                        }
+                    } else {
+                        if (actualCard.isCorrectlyAnswered) {
+                            areNextAndBackButtonsVisible(true)
+//                            if (actualCard.cardType == SINGLE_ANSWER_CARD) {
+//                                specifyKnownAndKnownNotActions(actualCard)
+//                                areKnownAndKnownNotButtonsVisible(true)
+//                            } else {
+//                                areKnownAndKnownNotButtonsVisible(false)
+//                            }
+                            areKnownAndKnownNotButtonsVisible(false)
+                        } else {
+                            areNextAndBackButtonsVisible(false)
+                            areKnownAndKnownNotButtonsVisible(false)
+                        }
+                    }
+
+
+                }
+            })
+        }
     }
 
-    private fun specifyKnownAndKnownNotActions(userResponseModel: QuizGameCardDefinitionModel) {
+    private fun specifyKnownAndKnownNotActions(card: QuizGameCardModel) {
         binding.btKnown.setOnClickListener {
-            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-            viewModel.updateCardOnKnownOrKnownNot(userResponseModel, true)
+//            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+//            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, true)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -229,12 +359,12 @@ class QuizGameActivity :
                     )
                 }
             }
-            viewModel.initAttemptTime()
+//            viewModel.initAttemptTime()
         }
         binding.btKnownNot.setOnClickListener {
-            viewModel.updateCardOnKnownOrKnownNot(userResponseModel, false)
-            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, false)
+//            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+//            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -253,7 +383,7 @@ class QuizGameActivity :
                     )
                 }
             }
-            viewModel.initAttemptTime()
+//            viewModel.initAttemptTime()
         }
     }
 
@@ -261,24 +391,29 @@ class QuizGameActivity :
         if (binding.vpCardHolder.currentItem > 0) {
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
-                areNextAndBackButtonsVisible(true)
+//                areNextAndBackButtonsVisible(true)
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
-                    binding.vpCardHolder.apply {
-                        beginFakeDrag()
-                        fakeDragBy(10f)
-                        endFakeDrag()
-                    }
+//                    binding.vpCardHolder.apply {
+//                        beginFakeDrag()
+//                        fakeDragBy(10f)
+//                        endFakeDrag()
+//                    }
+                    val itemPosition = binding.vpCardHolder.currentItem
+                    binding.vpCardHolder.setCurrentItem(
+                        itemPosition.minus(1),
+                        true
+                    )
                 }
             }
-            viewModel.initAttemptTime()
+//            viewModel.initAttemptTime()
         } else {
             isRewindButtonActive(false)
         }
         binding.btNext.setOnClickListener {
-            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+//            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+//            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -297,20 +432,30 @@ class QuizGameActivity :
                     )
                 }
             }
-            viewModel.initAttemptTime()
+//            viewModel.initAttemptTime()
         }
     }
 
-    private fun optionsState(userResponseModel: QuizGameCardDefinitionModel) {
+    private fun optionsState(
+        userResponseModel: QuizGameCardDefinitionModel,
+        card: QuizGameCardModel
+    ) {
         lifecycleScope.launch {
             delay(TIME_BEFORE_SHOWING_ACTIONS)
             when (userResponseModel.cardType) {
                 SINGLE_ANSWER_CARD -> {
-                    specifyKnownAndKnownNotActions(userResponseModel)
                     specifyNextAndBackActions()
-                    areKnownAndKnownNotButtonsVisible(true)
+                        if (!card.isCorrectlyAnswered) {
+                            specifyKnownAndKnownNotActions(card)
+                            areKnownAndKnownNotButtonsVisible(true)
+                        } else {
+                            areKnownAndKnownNotButtonsVisible(false)
+                        }
                     areNextAndBackButtonsVisible(true)
+//                    specifyKnownAndKnownNotActions(card)
+//                    areKnownAndKnownNotButtonsVisible(true)
                 }
+
                 else -> {
                     specifyNextAndBackActions()
                     areNextAndBackButtonsVisible(true)
@@ -326,7 +471,9 @@ class QuizGameActivity :
         totalCardsSum: Int,
         cardsLeft: Int,
     ) {
-        viewModel.initAttemptTime()
+//        viewModel.initAttemptTime()
+        areKnownAndKnownNotButtonsVisible(false)
+        areNextAndBackButtonsVisible(false)
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
@@ -451,11 +598,12 @@ class QuizGameActivity :
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateActualCards(getCardCount())
-        viewModel.initAttemptTime()
+//        viewModel.initAttemptTime()
         binding.vpCardHolder.setCurrentItem(0, true)
     }
 
     private fun restartQuiz() {
+        viewModel.initMissedCards()
         viewModel.initQuizGame()
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE

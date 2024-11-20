@@ -154,11 +154,23 @@
                 app:autoSizeMinTextSize="@dimen/text_base"
                 app:autoSizeStepGranularity="2sp"
                 app:autoSizeTextType="uniform"
-                app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
+                app:layout_constraintBottom_toTopOf="@+id/tv_hint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_front_progression"
                 tools:text="1. What is the capital of Madagascar?" />
+
+            <TextView
+                android:id="@+id/tv_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/open_sans"
+                android:textColor="?colorOnSurface"
+                android:textSize="@dimen/text_sm"
+                app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/text_not_answered" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_alternative1"

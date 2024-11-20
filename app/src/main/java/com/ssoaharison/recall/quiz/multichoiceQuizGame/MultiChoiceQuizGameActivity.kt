@@ -256,6 +256,9 @@ class MultiChoiceQuizGameActivity :
                     if (position == data.size.minus(1)) {
                         text = getString(R.string.text_finish)
                         iconPadding = resources.getDimension(R.dimen.icon_padding_next_question_button).toInt()
+                    } else {
+                        text = null
+                        iconPadding = resources.getDimension(R.dimen.icon_padding_next_question_button).toInt()
                     }
                 }
                 binding.btPreviousQuestion.apply {

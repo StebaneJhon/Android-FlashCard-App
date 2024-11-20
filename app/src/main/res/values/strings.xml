@@ -16,8 +16,8 @@
     <string name="start_quiz_button_text">Quiz</string>
     <string name="deck_languages">%1$s &amp; %2$s</string>
     <string name="cards_sum">%1$s Cards</string>
-    <string name="on_no_deck_text_hint">To add a deck, press the + button located at the bottom right of your screen. To upload trivia quizzes, press the second icon at the bottom left of your screen.</string>
-    <string name="on_no_card_text_hint">To add cards, press the + button located at the bottom right of your screen. To start revising, press one of the buttons at the bottom left of your screen.</string>
+    <string name="on_no_deck_text_hint">To add a deck, press the + button located at the bottom right of your screen.</string>
+    <string name="on_no_card_text_hint">To add cards, press the + button located at the bottom right of your screen and to start revising your cards, press one of the buttons at the bottom left of your screen.</string>
     <string name="card_image_bg_hint">card image background</string>
     <string name="settings_hint">Settings</string>
     <string name="themes_head_text">Theme</string>
@@ -62,7 +62,7 @@
     <string name="tx_flash_card_game_progression">%1$s/%2$s</string>
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
     <string name="text_back">Back</string>
-    <string name="hint_flash_card_game_flip">Tap to flip</string>
+    <string name="text_tap_to_flip">Tap to flip</string>
     <string name="bt_flash_card_game_start">Flash card</string>
     <string name="text_move">Move Sum:</string>
     <string name="text_missed_move_sum">Missed move:</string>
@@ -125,7 +125,7 @@
     <string name="tv_quiz_mode_title">How do you want to review your cards?</string>
     <string name="bt_save">SAVE</string>
     <string name="content_description_save">Save the all created cards</string>
-    <string name="content_welcome_to_recall">📣 Welcome to Recall! \nAn that app lets you create your own quizzes and interact with them in multiple ways. Whether you\'re looking to quickly revise your courses 📚, test your knowledge 🎓, or simply take notes 🗒️, Recall has you covered.</string>
+    <string name="content_welcome_to_recall">📣 Welcome to Recall! \nAn app that lets you create your own quizzes and interact with them in multiple ways. Whether you\'re looking to quickly revise your courses 📚, test your knowledge 🎓, or simply take notes 🗒️, Recall has you covered.</string>
     <string name="content_cards">In Recall, questions are represented as cards 🃏 stored in decks. Each question can have one or multiple answers, which can be correct ✅ or incorrect ❎.</string>
     <string name="next">Next</string>
     <string name="content_quiz">Recall offers a variety of question types to help trigger your memory in different ways 🛣️. These include FlashCards, Multiple-choice, Writing, Matching, Quiz, and Test.</string>
@@ -232,4 +232,9 @@
     <string name="text_definition_language">Definition language</string>
     <string name="text_new_definition">New definition</string>
     <string name="text_actions">Actions</string>
+    <string name="error_message_empty_deck">Empty deck</string>
+    <string name="text_not_answered">Select an answer.</string>
+    <string name="text_correct_answer">Correct!</string>
+    <string name="text_correct_answer_more">Correct! Keep selecting.</string>
+    <string name="text_wrong_answer">Keep selection until you get it correctly.</string>
 </resources>

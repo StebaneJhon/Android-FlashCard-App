@@ -67,6 +67,8 @@ import com.ssoaharison.recall.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAG
 import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -78,6 +80,7 @@ class DeckFragment :
     private var _binding: FragmentDeckBinding? = null
     private val binding get() = _binding!!
     private var appContext: Context? = null
+    private var startQuizJob: Job? = null
 
     private val deckViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -126,7 +129,8 @@ class DeckFragment :
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
 
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
@@ -226,17 +230,15 @@ class DeckFragment :
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
-        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         val sortedListOfDeck =
             sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
         if (appContext != null) {
-            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!,{
+            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, {
                 onEditDeck(it)
             }, { deck ->
                 onDeleteDeck(deck)
             }, { deck ->
-                onStartQuiz(deck.deckId)
+                onStartQuiz(deck)
             }) {
                 navigateTo(it, TAG)
             }
@@ -244,13 +246,24 @@ class DeckFragment :
             recyclerView.apply {
                 adapter = recyclerViewAdapter
                 setHasFixedSize(true)
-                layoutManager = if (this@DeckFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
-                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
-                    staggeredGridLayoutManager
-                } else {
-                    item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
-                    linearLayoutManager
-                }
+                layoutManager =
+                    if (this@DeckFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+                        item?.setIcon(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.icon_grid_view
+                            )
+                        )
+                        staggeredGridLayoutManager
+                    } else {
+                        item?.setIcon(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.icon_view_agenda
+                            )
+                        )
+                        linearLayoutManager
+                    }
             }
         }
     }
@@ -284,9 +297,17 @@ class DeckFragment :
                     .setTitle(getString(R.string.dialog_title_delete_deck))
                     .setMessage(
                         if (deck.cardSum > 1) {
-                            getString(R.string.dialog_message_delete_deck, deck.cardSum.toString(), "s")
+                            getString(
+                                R.string.dialog_message_delete_deck,
+                                deck.cardSum.toString(),
+                                "s"
+                            )
                         } else {
-                            getString(R.string.dialog_message_delete_deck, deck.cardSum.toString(), "")
+                            getString(
+                                R.string.dialog_message_delete_deck,
+                                deck.cardSum.toString(),
+                                ""
+                            )
                         }
                     )
                     .setNegativeButton(getString(R.string.bt_text_cancel)) { dialog, _ ->
@@ -339,7 +360,7 @@ class DeckFragment :
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun onStartQuiz(deckId: String) {
+    private fun onStartQuiz(deck: ImmutableDeck) {
         val quizMode = QuizModeBottomSheet()
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
@@ -348,17 +369,18 @@ class DeckFragment :
         ) { _, bundle ->
             val result = bundle.getString(QuizModeBottomSheet.START_QUIZ_BUNDLE_KEY)
             result?.let { qm ->
-                startQuiz(deckId) { deckWithCards ->
+                startQuiz(deck) { deckWithCards ->
                     lunchQuiz(deckWithCards, qm)
                 }
             }
         }
     }
 
-    private fun startQuiz(deckId: String, start: (ImmutableDeckWithCards) -> Unit) {
-        lifecycleScope.launch {
+    private fun startQuiz(deck: ImmutableDeck, start: (ImmutableDeckWithCards) -> Unit) {
+        startQuizJob?.cancel()
+        startQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deckId)
+                deckViewModel.getDeckWithCards(deck.deckId)
                 deckViewModel.deckWithAllCards.collect { state ->
                     when (state) {
                         is UiState.Loading -> {
@@ -367,9 +389,13 @@ class DeckFragment :
 
                         is UiState.Error -> {
                             binding.mainActivityProgressBar.visibility = View.GONE
+                            onStartingQuizError(getString(R.string.error_message_empty_deck), deck)
+                            this@launch.cancel()
+                            this.cancel()
                         }
 
                         is UiState.Success -> {
+                            binding.mainActivityProgressBar.visibility = View.GONE
                             start(state.data)
                             this@launch.cancel()
                             this.cancel()
@@ -389,7 +415,7 @@ class DeckFragment :
             }
 
             MULTIPLE_CHOICE_QUIZ -> {
-                if (deckWithCards.cards?.size!! > MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
+                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
                     val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
                     intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, deckWithCards)
                     startActivity(intent)
@@ -431,9 +457,20 @@ class DeckFragment :
             }
 
             TEST -> {
-                val intent = Intent(appContext, TestActivity::class.java)
-                intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
+                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_TEST) {
+                    val intent = Intent(appContext, TestActivity::class.java)
+                    intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
+                    startActivity(intent)
+                } else {
+                    onStartingQuizError(
+                        getString(
+                            R.string.error_message_starting_quiz,
+                            "$MIN_CARD_FOR_TEST"
+                        ),
+                        deckWithCards.deck!!
+                    )
+                }
+
             }
 
         }
@@ -516,38 +553,57 @@ class DeckFragment :
 
     @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when(menuItem.itemId) {
+        return when (menuItem.itemId) {
             R.id.settings_deck_menu -> {
                 findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
                 true
             }
+
             R.id.view_deck_menu -> {
                 if (item == null) {
-                    Toast.makeText(requireContext(), getString(R.string.error_message_change_view_deck), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_message_change_view_deck),
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     if (binding.deckRecycleView.layoutManager == staggeredGridLayoutManager) {
                         changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
                         binding.deckRecycleView.layoutManager = linearLayoutManager
-                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                        item?.setIcon(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.icon_view_agenda
+                            )
+                        )
                     } else {
                         changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
                         binding.deckRecycleView.layoutManager = staggeredGridLayoutManager
-                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                        item?.setIcon(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.icon_grid_view
+                            )
+                        )
                     }
                 }
                 true
             }
+
             else -> true
         }
     }
 
     private fun getLayoutManager(): String {
-        val sharedPreferences = requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
-        return sharedPreferences.getString(LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER) ?: LINEAR_LAYOUT_MANAGER
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER)
+            ?: LINEAR_LAYOUT_MANAGER
     }
 
     private fun changeCardLayoutManager(which: String) {
-        val sharedPreferences = requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString(LAYOUT_MANAGER, which)
         editor.apply()

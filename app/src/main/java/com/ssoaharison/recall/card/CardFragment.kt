@@ -71,6 +71,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -86,6 +87,7 @@ class CardFragment :
     private var appContext: Context? = null
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
     private var tts: TextToSpeech? = null
+    private var startingQuizJob: Job? = null
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -244,7 +246,8 @@ class CardFragment :
     }
 
     private fun onStartQuiz(start: (ImmutableDeckWithCards) -> Unit) {
-        lifecycleScope.launch {
+        startingQuizJob?.cancel()
+        startingQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckWithCards(deck?.deckId!!)
                 cardViewModel.deckWithAllCards.collect { state ->
@@ -255,7 +258,9 @@ class CardFragment :
 
                         is UiState.Error -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            onStartingQuizError(state.errorMessage)
+                            onStartingQuizError(getString(R.string.error_message_empty_deck))
+                            this@launch.cancel()
+                            this.cancel()
                         }
 
                         is UiState.Success -> {
@@ -280,7 +285,7 @@ class CardFragment :
             }
 
             MULTIPLE_CHOICE_QUIZ -> {
-                if (deckWithCards.cards?.size!! > MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
+                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
                     val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
                     intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, deckWithCards)
                     startActivity(intent)

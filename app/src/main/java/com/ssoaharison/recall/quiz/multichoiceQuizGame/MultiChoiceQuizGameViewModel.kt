@@ -185,6 +185,8 @@ class MultiChoiceQuizGameViewModel(
         progress = 0
         currentCardPosition = 0
         localMultiChoiceCards.forEach {
+            it.attemptTime = 0
+            it.isCorrectlyAnswered = false
             it.alternatives.forEach { a ->
                 a.isSelected = false
             }
@@ -208,6 +210,8 @@ class MultiChoiceQuizGameViewModel(
                 it.alternatives.forEach { c ->
                     if (c.definition.text == userChoice.definition.text) {
                         c.isSelected = userChoice.isSelected
+                        it.attemptTime++
+                        it.isCorrectlyAnswered = userChoice.isCorrect
                         updateCardOnKnownOrKnownNot(userChoice)
                         if (attemptTime < 1) {
                             onUserAnswered(userChoice.isSelected && userChoice.isCorrect, it.cardId)

@@ -72,6 +72,7 @@ class QuizGameAdapter(
         private val btSpeakBack: Button = view.findViewById(R.id.bt_speak_back)
         private val tvContent: TextView = view.findViewById(R.id.tv_content)
         private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
+        private val tvHint: TextView = view.findViewById(R.id.tv_hint)
         private val btAlternative1: MaterialButton = view.findViewById(R.id.bt_alternative1)
         private val btAlternative2: MaterialButton = view.findViewById(R.id.bt_alternative2)
         private val btAlternative3: MaterialButton = view.findViewById(R.id.bt_alternative3)
@@ -108,7 +109,36 @@ class QuizGameAdapter(
             val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
+            when {
+                card.cardType == SINGLE_ANSWER_CARD -> {
+                    tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    tvHint.text = ContextCompat.getString(context, R.string.text_tap_to_flip)
+                    tvHint.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurface))
+                }
+                card.attemptTime == 0 -> {
+                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
+                    tvHint.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurface))
+                }
+                card.attemptTime > 0 && card.isCorrectlyAnswered -> {
+                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer)
+                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                }
+                card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered  -> {
+                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
+                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                }
+                card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
+                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    tvHint.text = ContextCompat.getString(context, R.string.text_wrong_answer)
+                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.red500))
+                }
+            }
+
             if (card.cardType == SINGLE_ANSWER_CARD) {
+
             } else {
                 cvCardContainer.alpha = 1f
                 cvCardContainer.rotationY = 0f
@@ -127,9 +157,16 @@ class QuizGameAdapter(
                     }
                 }
             }
-
             bindAnswerAlternatives(card, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+        }
 
+        private fun hasCardCorrectAnswer(card: QuizGameCardModel): Boolean {
+            card.cardDefinition.forEach { d ->
+                if (d.isSelected && d.isCorrect == 1) {
+                    return true
+                }
+            }
+            return false
         }
 
         private fun MaterialButton.onAlternativeClicked(

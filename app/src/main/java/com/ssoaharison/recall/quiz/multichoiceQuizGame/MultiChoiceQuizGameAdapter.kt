@@ -59,6 +59,7 @@ class MultiChoiceQuizGameAdapter(
         private val btAlternative3: MaterialButton = view.findViewById(R.id.bt_alternative3)
         private val btAlternative4: MaterialButton = view.findViewById(R.id.bt_alternative4)
         private val btSpeakFront: Button = view.findViewById(R.id.bt_card_front_speak)
+        private val tvHint: TextView = view.findViewById(R.id.tv_hint)
         private val btAlternativesList = listOf(btAlternative1, btAlternative2, btAlternative3, btAlternative4)
 
         fun bind(
@@ -79,6 +80,21 @@ class MultiChoiceQuizGameAdapter(
 
             val views: ArrayList<View> = arrayListOf(tvOnCardWord)
             val texts: ArrayList<TextWithLanguageModel> = arrayListOf(card.onCardWord)
+
+            when {
+                card.attemptTime == 0 -> {
+                    tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
+                    tvHint.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurface))
+                }
+                card.attemptTime > 0 && card.isCorrectlyAnswered -> {
+                    tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer)
+                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                }
+                card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
+                    tvHint.text = ContextCompat.getString(context, R.string.text_wrong_answer)
+                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.red500))
+                }
+            }
 
             btAlternativesList.forEachIndexed { index, button ->
                 val actualDefinition = card.alternatives[index]

@@ -103,7 +103,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:text="@string/hint_flash_card_game_flip" />
+                android:text="@string/text_tap_to_flip" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -350,7 +350,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/open_sans_light"
-                    android:text="@string/hint_flash_card_game_flip"
+                    android:text="@string/text_tap_to_flip"
                     android:textAlignment="center"
                     android:textColor="?colorOnSurface"
                     android:textSize="@dimen/text_sm"
@@ -436,7 +436,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:text="@string/hint_flash_card_game_flip" />
+                    android:text="@string/text_tap_to_flip" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

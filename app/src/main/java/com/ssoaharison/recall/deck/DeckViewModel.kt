@@ -74,8 +74,12 @@ class DeckViewModel(
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getImmutableDeckWithCards(deckId).collect {
-                    _deckWithAllCards.value = UiState.Success(it)
+                repository.getImmutableDeckWithCards(deckId).collect { deckWithCards ->
+                    if (deckWithCards.cards?.isEmpty() == true) {
+                        _deckWithAllCards.value = UiState.Error("Empty deck")
+                    } else {
+                        _deckWithAllCards.value = UiState.Success(deckWithCards)
+                    }
                 }
             } catch (e: IOException) {
                 _deckWithAllCards.value = UiState.Error(e.toString())
