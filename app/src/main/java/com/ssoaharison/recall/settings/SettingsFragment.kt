@@ -28,6 +28,7 @@ import com.ssoaharison.recall.util.ContactActions.HELP
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.SettingsFragmentEditBoxLevelDialogListener {
@@ -72,7 +73,7 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
             activity?.setTheme(themRef)
         }
 
-        gridLayoutManager = GridLayoutManager(requireContext(), 5, GridLayoutManager.VERTICAL, false)
+        gridLayoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         binding.settingsTopAppBar.setNavigationOnClickListener {
@@ -111,6 +112,7 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         }
 
         lifecycleScope.launch {
+            delay(50)
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 settingsFragmentViewModel.initThemeSelection(ThemePicker().getThemes(), appTheme ?: WHITE_THEME)
                 settingsFragmentViewModel.themSelectionList.collect {listOfTheme ->

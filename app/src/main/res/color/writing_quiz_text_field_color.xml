@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:alpha="@dimen/m3_comp_filled_text_field_disabled_active_indicator_opacity" android:color="@macro/m3_comp_outlined_text_field_disabled_outline_color" android:state_enabled="false" tools:ignore="PrivateResource" />
+    <item android:color="@macro/m3_comp_outlined_text_field_focus_outline_color" android:state_focused="true"/>
+    <item android:color="@macro/m3_comp_outlined_text_field_hover_outline_color" android:state_hovered="true"/>
+    <item android:color="@macro/m3_comp_outlined_text_field_outline_color"/>
+</selector>

@@ -65,6 +65,7 @@ class TestAdapter(
         private val tvFrontProgression: TextView = view.findViewById(R.id.tv_front_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
+        private val tvHint: TextView = view.findViewById(R.id.tv_hint)
 
         private val btAlternatives = listOf(
             btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
@@ -88,6 +89,11 @@ class TestAdapter(
             )
             tvContent.text = card.cardContent.content
             tvCardType.text = card.cardType
+            if (card.cardType == MULTIPLE_ANSWER_CARD) {
+                tvHint.text = ContextCompat.getString(context, R.string.text_not_answered_2)
+            } else {
+                tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
+            }
             val deckColor =
                 DeckColorCategorySelector().selectColor(deck.deckColorCode!!) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)

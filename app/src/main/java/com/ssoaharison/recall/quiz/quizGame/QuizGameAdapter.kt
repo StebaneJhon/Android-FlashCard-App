@@ -122,7 +122,7 @@ class QuizGameAdapter(
                 }
                 card.attemptTime > 0 && card.isCorrectlyAnswered -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer)
+                    tvHint.text = ContextCompat.getString(context, R.string.text_correct)
                     tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
                 }
                 card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered  -> {

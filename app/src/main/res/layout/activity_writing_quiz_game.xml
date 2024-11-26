@@ -47,7 +47,7 @@
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:id="@+id/onNoDeckTextError"
+                android:id="@+id/onNoCardTextError"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
@@ -110,7 +110,7 @@
         android:id="@+id/vp_card_holder"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ly_container_options"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topToolBar"/>
@@ -144,5 +144,45 @@
             android:id="@+id/ly_no_card_error"
             layout="@layout/ly_no_card_error" />
     </LinearLayout>
+
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/ly_container_options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="@dimen/space_sm">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_previous_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:padding="@dimen/space_md"
+            android:backgroundTint="?colorSurfaceContainerLowest"
+            app:icon="@drawable/icon_arrow_left"
+            app:iconTint="?colorOnSurface"
+            android:contentDescription="@string/bt_text_previous_question"
+            android:textColor="?colorSurfaceContainerLowest" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_next_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:padding="@dimen/space_md"
+            android:backgroundTint="?colorPrimary"
+            app:icon="@drawable/icon_arrow_right"
+            app:iconTint="?colorSurfaceContainerLowest"
+            android:textColor="?colorSurfaceContainerLowest"
+            android:fontFamily="@font/open_sans"
+            app:iconGravity="end"
+            android:contentDescription="@string/bt_text_next_question" />
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

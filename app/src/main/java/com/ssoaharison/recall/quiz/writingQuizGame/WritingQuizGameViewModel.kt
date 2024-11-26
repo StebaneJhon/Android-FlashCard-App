@@ -13,10 +13,15 @@ import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class WritingQuizGameViewModel(
     private val repository: FlashCardRepository
@@ -27,8 +32,8 @@ class WritingQuizGameViewModel(
     var progress: Int = 0
     var attemptTime: Int = 0
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
-    private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
-    val actualCard: StateFlow<UiState<List<WritingQuizGameModel>>> = _actualCard.asStateFlow()
+//    private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
+//    val actualCard: StateFlow<UiState<List<WritingQuizGameModel>>> = _actualCard.asStateFlow()
     private lateinit var cardList: MutableList<ImmutableCard?>
     lateinit var deck: ImmutableDeck
     private var originalCardList: List<ImmutableCard?>? = null
@@ -114,6 +119,10 @@ class WritingQuizGameViewModel(
         missedCards.clear()
         progress = 0
         currentCardPosition = 0
+        localWritingCards.forEach {
+            it.attemptTime = 0
+            it.isCorrectlyAnswered = false
+        }
     }
 
     fun increaseAttemptTime() {
@@ -137,6 +146,33 @@ class WritingQuizGameViewModel(
         correctAnswers: List<TextWithLanguageModel>,
         cardId: String
     ): Boolean {
+        //var isCorrect = false
+        localWritingCards.forEach { wc ->
+            if (wc.cardId == cardId) {
+                wc.attemptTime++
+                wc.answer.forEach { a ->
+                    when {
+                        a.text.trim().lowercase() == userAnswer.trim().lowercase() && wc.attemptTime <= 1 -> {
+                            wc.isCorrectlyAnswered  = true
+                            wc.userAnswer = userAnswer
+                            onUserAnswered(true, cardId)
+                            return true
+                        }
+                        a.text.trim().lowercase() == userAnswer.trim().lowercase() -> {
+                            wc.isCorrectlyAnswered = true
+                            wc.userAnswer = userAnswer
+                            return true
+                        }
+                        a.text.trim().lowercase() != userAnswer.trim().lowercase() && wc.attemptTime <= 1 -> {
+                            onUserAnswered(false, cardId)
+                        }
+                    }
+                }
+                wc.userAnswer = userAnswer
+                wc.isCorrectlyAnswered = false
+            }
+        }
+        /*
         var isCorrect = false
         correctAnswers.forEach { answer ->
             if (answer.text.trim().lowercase() == userAnswer) {
@@ -150,7 +186,10 @@ class WritingQuizGameViewModel(
         if (attemptTime == 0 && isCorrect) {
             onUserAnswered(isCorrect, cardId)
         }
-        return isCorrect
+
+         */
+        onCardMissed(cardId)
+        return false
     }
 
     fun sortCardsByLevel() {
@@ -222,49 +261,85 @@ class WritingQuizGameViewModel(
     fun isCorrect(index: Int?) = index == 1
     fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
-    fun updateOnscreenCard(cardOrientation: String, cardCount: Int) {
-        when {
-            passedCards == cardList.size -> {
-                _actualCard.value = UiState.Error("Quiz Complete")
-            }
+//    fun updateOnscreenCard(cardOrientation: String, cardCount: Int) {
+//        when {
+//            passedCards == cardList.size -> {
+//                _actualCard.value = UiState.Error("Quiz Complete")
+//            }
+//
+//            cardList.size == 0 -> {
+//                _actualCard.value = UiState.Error("No Cards To Revise")
+//            }
+//
+//            else -> {
+//                fetchJob?.cancel()
+//                fetchJob = viewModelScope.launch {
+//                    val cards = getCardsAmount(cardList, cardCount)
+//                    if (cards.isNullOrEmpty()) {
+//                        _actualCard.value = UiState.Error("Too Few Cards")
+//                    } else {
+//                        _actualCard.value = UiState.Success(
+//                            cardToWritingQuizGameItem(cards, cardOrientation)
+//                        )
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-            cardList.size == 0 -> {
-                _actualCard.value = UiState.Error("No Cards To Revise")
-            }
+//    fun updateCardOnReviseMissedCards(cardOrientation: String) {
+//        when {
+//            cardList.size == 0 -> {
+//                _actualCard.value = UiState.Error("No Cards To Revise")
+//            }
+//
+//            else -> {
+//                fetchJob?.cancel()
+//                fetchJob = viewModelScope.launch {
+//                    _actualCard.value = UiState.Success(
+//                        cardToWritingQuizGameItem(missedCards, cardOrientation)
+//                    )
+//                    missedCards.clear()
+//                }
+//            }
+//        }
+//    }
 
-            else -> {
-                fetchJob?.cancel()
-                fetchJob = viewModelScope.launch {
-                    val cards = getCardsAmount(cardList, cardCount)
-                    if (cards.isNullOrEmpty()) {
-                        _actualCard.value = UiState.Error("Too Few Cards")
+    private lateinit var localWritingCards: MutableList<WritingQuizGameModel>
+    private var flowOfLocalWritingCards: Flow<List<WritingQuizGameModel>> = flow {
+        emit(localWritingCards)
+    }
+    private var _externalWritingCards = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
+    val externalWritingCards: StateFlow<UiState<List<WritingQuizGameModel>>> = _externalWritingCards.asStateFlow()
+    fun getWritingCards() {
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            try {
+                flowOfLocalWritingCards.collect {
+                    if (it.isEmpty()) {
+                        _externalWritingCards.value = UiState.Error("No Cards To Revise")
                     } else {
-                        _actualCard.value = UiState.Success(
-                            cardToWritingQuizGameItem(cards, cardOrientation)
-                        )
+                        _externalWritingCards.value = UiState.Success(it)
                     }
                 }
+            } catch (e: IOException) {
+                _externalWritingCards.value = UiState.Error(e.message.toString())
             }
         }
     }
 
-    fun updateCardOnReviseMissedCards(cardOrientation: String) {
-        when {
-            cardList.size == 0 -> {
-                _actualCard.value = UiState.Error("No Cards To Revise")
-            }
-
-            else -> {
-                fetchJob?.cancel()
-                fetchJob = viewModelScope.launch {
-                    _actualCard.value = UiState.Success(
-                        cardToWritingQuizGameItem(missedCards, cardOrientation)
-                    )
-                    missedCards.clear()
-                }
-            }
-        }
+    fun updateActualCards(amount: Int, cardOrientation: String) {
+        val cards = getCardsAmount(cardList, amount)
+        localWritingCards = cardToWritingQuizGameItem(cards!!, cardOrientation).toMutableList()
     }
+
+    fun updateActualCardsWithMissedCards(cardOrientation: String) {
+        val cards = missedCards
+        localWritingCards = cardToWritingQuizGameItem(cards, cardOrientation).toMutableList()
+    }
+
+    fun getCardByPosition(position: Int) = localWritingCards[position]
+
 
     private fun getCardsAmount(
         quizCardList: List<ImmutableCard?>,

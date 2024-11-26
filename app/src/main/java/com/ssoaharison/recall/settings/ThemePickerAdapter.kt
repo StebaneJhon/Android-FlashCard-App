@@ -19,11 +19,24 @@ class ThemePickerAdapter(
     private val listOfThemes: List<ThemeModel>,
     private val onThemeSelected: (ThemeModel) -> Unit
 ): RecyclerView.Adapter<ThemePickerAdapter.ViewHolder>() {
+
+    companion object {
+        private const val MARGIN = 5
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): ThemePickerAdapter.ViewHolder {
-        return ViewHolder.create(parent)
+
+        val pickerItemWidth = parent.width / 6 - ( 2 * MARGIN)
+        val view = LayoutInflater.from(context).inflate(R.layout.ly_item_theme_picker, parent, false)
+        val layoutParams = view.findViewById<MaterialCardView>(R.id.cv_item_theme_picker).layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.height = pickerItemWidth
+        layoutParams.width = pickerItemWidth
+        layoutParams.setMargins(MARGIN, MARGIN, MARGIN, MARGIN)
+
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ThemePickerAdapter.ViewHolder, position: Int) {
@@ -57,13 +70,6 @@ class ThemePickerAdapter(
                 icon.imageTintList = MaterialColors.getColorStateList(context, com.google.android.material.R.attr.colorOnSurface, context.getColorStateList(R.color.black))
             } else {
                 icon.imageTintList = MaterialColors.getColorStateList(context, com.google.android.material.R.attr.colorSurfaceContainerLowest, context.getColorStateList(R.color.white))
-            }
-        }
-
-        companion object {
-            fun create(parent: ViewGroup): ViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.ly_item_theme_picker, parent, false)
-                return ViewHolder(view)
             }
         }
     }

@@ -28,7 +28,6 @@ class MatchQuizGameAdapter(
     ): ViewHolder {
         val cardWidth = parent.width / boardSize.getWidth() - (2 * MARGIN_SIZE)
         val cardHeight = parent.height / boardSize.getHeight() - (2 * MARGIN_SIZE)
-        //val cardSideLength = cardWidth.coerceAtMost(cardHeight)
         val view = LayoutInflater.from(context).inflate(R.layout.ly_matching_quiz_game_item, parent, false)
         val layoutParams = view.findViewById<MaterialCardView>(R.id.cv_item_root).layoutParams as ViewGroup.MarginLayoutParams
         layoutParams.height = cardHeight

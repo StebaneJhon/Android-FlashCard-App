@@ -1,189 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/root_card"
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_card_front"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/space_md"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    app:cardBackgroundColor="?colorPrimaryContainer"
+    app:cardCornerRadius="@dimen/card_radius"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_card_on_wrong_answer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardBackgroundColor="@color/red500"
-        app:cardCornerRadius="@dimen/card_radius"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/space_xl"
+        android:background="@drawable/bg_card_flash_card"
+        android:backgroundTint="?colorSurfaceContainer"
+        android:padding="@dimen/space_sm">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/tv_writing_quiz_front_progression"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:textColor="?colorOnSurface"
+            android:textSize="@dimen/text_sm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1/20" />
+
+        <Button
+            android:id="@+id/bt_card_front_speak"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="@dimen/icon_card_top_width"
+            android:layout_height="@dimen/icon_card_top_height"
+            android:contentDescription="@string/bt_description_button_speak"
+            app:icon="@drawable/icon_speak"
+            app:iconSize="@dimen/icon_base"
+            app:iconTint="?colorOnSurface"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_writing_quiz_front_progression"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_writing_quiz_front_progression"
+            app:rippleColor="@color/transparent" />
+
+        <TextView
+            android:id="@+id/tv_top_on_card_word"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm"
+            android:fontFamily="@font/montserrat_bold"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:textColor="?colorOnSurface"
+            app:autoSizeMaxTextSize="@dimen/text_xl3"
+            app:autoSizeMinTextSize="@dimen/text_base"
+            app:autoSizeStepGranularity="2sp"
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_front_progression"
+            tools:text="1. What is the capital of Madagascar?" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilTopCardContent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/space_xl"
-            android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="@color/red50"
-            android:padding="@dimen/space_lg">
+            android:layout_height="wrap_content"
+            android:hint="@string/et_user_answer_hint"
+            android:textColorHint="?colorOnSurface"
+            app:boxBackgroundColor="?colorSurfaceContainerLowest"
+            app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+            app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+            app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+            app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:layout_constraintBottom_toTopOf="@+id/bt_show_answer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/tv_writing_quiz_progression_on_wrong_answer"
-                tools:text="1/20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <Button
-                android:id="@+id/bt_card_front_speak_on_wrong_answer"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="@dimen/icon_card_top_width"
-                android:layout_height="@dimen/icon_card_top_height"
-                android:contentDescription="@string/bt_description_button_speak"
-                app:icon="@drawable/icon_speak"
-                app:iconSize="@dimen/icon_base"
-                app:rippleColor="@color/transparent"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_writing_quiz_progression_on_wrong_answer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_writing_quiz_progression_on_wrong_answer" />
-
-            <TextView
-                android:id="@+id/tv_on_card_word_on_wrong_answer"
-                tools:text="1. What is the capital of Madagascar?"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                app:autoSizeMaxTextSize="@dimen/text_xl3"
-                app:autoSizeMinTextSize="@dimen/text_base"
-                app:autoSizeStepGranularity="2sp"
-                app:autoSizeTextType="uniform"
-                app:layout_constraintBottom_toTopOf="@+id/til_card_content_on_wrong_answer"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_progression_on_wrong_answer" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_card_content_on_wrong_answer"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/ti_top_card_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/et_user_answer_hint"
-                android:textColorHint="?colorOnSurface"
-                app:boxBackgroundColor="?colorSurfaceContainerLowest"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ti_card_content_on_wrong_answer"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="none"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_card_front"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardBackgroundColor="?colorPrimaryContainer"
-        app:cardCornerRadius="@dimen/card_radius"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:layout_marginTop="@dimen/space_xl"
-            android:padding="@dimen/space_sm">
-
-            <TextView
-                android:id="@+id/tv_writing_quiz_front_progression"
-                tools:text="1/20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/bt_card_front_speak"
-                style="?attr/materialIconButtonStyle"
-                android:layout_width="@dimen/icon_card_top_width"
-                android:layout_height="@dimen/icon_card_top_height"
-                android:contentDescription="@string/bt_description_button_speak"
-                app:icon="@drawable/icon_speak"
-                app:iconSize="@dimen/icon_base"
-                app:rippleColor="@color/transparent"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_writing_quiz_front_progression"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_writing_quiz_front_progression" />
+        <com.google.android.material.button.MaterialButton
+            android:visibility="gone"
+            android:id="@+id/bt_show_answer"
+            style="@style/Widget.Material3.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            android:padding="0dp"
+            android:text="@string/text_show_answer"
+            android:textAlignment="textStart"
+            android:textColor="@color/red500"
+            android:textSize="@dimen/text_sm"
+            app:icon="@drawable/icon_expand_more"
+            app:iconTint="@color/red500"
+            app:iconGravity="textEnd"
+            app:layout_constraintBottom_toTopOf="@+id/tv_answer"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/tv_top_on_card_word"
-                tools:text="1. What is the capital of Madagascar?"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                app:autoSizeMaxTextSize="@dimen/text_xl3"
-                app:autoSizeMinTextSize="@dimen/text_base"
-                app:autoSizeStepGranularity="2sp"
-                app:autoSizeTextType="uniform"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginBottom="@dimen/space_sm"
-                app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_front_progression" />
+        <TextView
+            android:id="@+id/tv_answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/open_sans"
+            tools:text="Correct answer: "
+            android:textAlignment="textStart"
+            android:textColor="@color/red500"
+            android:textSize="@dimen/text_base"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilTopCardContent"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/et_user_answer_hint"
-                android:textColorHint="?colorOnSurface"
-                app:boxBackgroundColor="?colorSurfaceContainerLowest"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ti_top_card_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

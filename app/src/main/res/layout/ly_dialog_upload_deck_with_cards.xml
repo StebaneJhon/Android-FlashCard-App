@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:fontFamily="@font/open_sans_bold"
-            android:text="@string/title_dialog_upload_deck_with_cards"
+            android:text="@string/title_dialog_upload_cards"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_base"

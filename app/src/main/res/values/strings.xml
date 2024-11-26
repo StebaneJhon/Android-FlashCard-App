@@ -161,8 +161,8 @@
     <string name="error_message_starting_quiz">At least %1$s cards to play start this quiz mode</string>
     <string name="error_title_starting_quiz">Unable to start</string>
     <string name="bt_text_sort_deck">Sort deck</string>
-    <string name="bt_text_upload_deck_with_cards">Upload deck with cards</string>
-    <string name="title_dialog_upload_deck_with_cards">Upload deck with cards from the Open Trivia database.</string>
+    <string name="bt_text_upload_cards">Upload cards</string>
+    <string name="title_dialog_upload_cards">Upload cards from the Open Trivia database.</string>
     <string name="settings_title_text">Settings</string>
     <string name="category_field_hint">Category</string>
     <string name="difficulty_text_hint">Difficulty</string>
@@ -234,7 +234,13 @@
     <string name="text_actions">Actions</string>
     <string name="error_message_empty_deck">Empty deck</string>
     <string name="text_not_answered">Select an answer.</string>
-    <string name="text_correct_answer">Correct!</string>
+    <string name="text_not_answered_2">Select one or multiple answers.</string>
+    <string name="text_correct">Correct!</string>
+    <string name="text_try_again">Try again</string>
+    <string name="text_correct_answer">Correct answer: %1$s</string>
     <string name="text_correct_answer_more">Correct! Keep selecting.</string>
     <string name="text_wrong_answer">Keep selection until you get it correctly.</string>
+    <string name="text_show_answer">Show answer</string>
+    <string name="error_message_no_card_found">Card not found</string>
+    <string name="error_message_deck_not_found">Deck not found</string>
 </resources>

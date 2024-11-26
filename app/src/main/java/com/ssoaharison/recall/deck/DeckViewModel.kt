@@ -45,7 +45,7 @@ class DeckViewModel(
         }
     }
 
-    fun searchDeck(searchQuery: String): LiveData<List<ImmutableDeck>> {
+    fun searchDeck(searchQuery: String): LiveData<Set<ImmutableDeck>> {
         return repository.searchDeck(searchQuery).asLiveData()
     }
 

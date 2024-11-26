@@ -21,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.Model.ImmutableCard
@@ -45,9 +46,8 @@ import java.util.Locale
 
 class WritingQuizGameActivity :
     AppCompatActivity(),
-    MiniGameSettingsSheet.SettingsApplication ,
-    TextToSpeech.OnInitListener
-{
+    MiniGameSettingsSheet.SettingsApplication,
+    TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityWritingQuizGameBinding
 
@@ -59,11 +59,13 @@ class WritingQuizGameActivity :
     }
     private var deckWithCards: ImmutableDeckWithCards? = null
 
-    private var animFadeIn: Animation? = null
-    private var animFadeOut: Animation? = null
+//    private var animFadeIn: Animation? = null
+//    private var animFadeOut: Animation? = null
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
+
+    private lateinit var writingQuizGameAdapter: WritingQuizGameAdapter
 
     private var tts: TextToSpeech? = null
     private var writingQuizJob: Job? = null
@@ -77,20 +79,25 @@ class WritingQuizGameActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        miniGamePref = getSharedPreferences(FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF, Context.MODE_PRIVATE)
+        miniGamePref = getSharedPreferences(
+            FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
+            Context.MODE_PRIVATE
+        )
         editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) { setTheme(themRef) }
+        if (themRef != null) {
+            setTheme(themRef)
+        }
         tts = TextToSpeech(this, this)
         binding = ActivityWritingQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.vpCardHolder.isUserInputEnabled = false
 
-        animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-        animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
+//        animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
+//        animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
@@ -203,22 +210,20 @@ class WritingQuizGameActivity :
     ) ?: CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun launchWritingQuizGame(cards: List<WritingQuizGameModel>) {
-        val writingQuizGameAdapter = WritingQuizGameAdapter(
+        writingQuizGameAdapter = WritingQuizGameAdapter(
             this,
             cards,
             viewModel.deck.deckColorCode!!,
             {
                 if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer, it.cardId)) {
-                    if (viewModel.swipe(cards.size)) {
-                        binding.vpCardHolder.setCurrentItem(viewModel.getCurrentCardPosition(), true)
-                    } else {
-                        onQuizComplete(viewModel.cardLeft(), cards)
-                    }
-                } else {
-                    onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
+                    areOptionsShownAndActive(true, cards)
                 }
+                writingQuizGameAdapter.notifyDataSetChanged()
+//                else {
+//                    //onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
+//                }
             },
-            {dataToRead ->
+            { dataToRead ->
                 if (tts?.isSpeaking == true) {
                     stopReading(dataToRead.views, dataToRead.speakButton)
                 } else {
@@ -230,16 +235,154 @@ class WritingQuizGameActivity :
                     )
                 }
             })
-        binding.vpCardHolder.adapter = writingQuizGameAdapter
+        binding.vpCardHolder.apply {
+            adapter = writingQuizGameAdapter
+            registerOnPageChangeCallback(object :
+                ViewPager2.OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    binding.btNextQuestion.apply {
+                        if (position == cards.size.minus(1)) {
+                            text = getString(R.string.text_finish)
+                            iconPadding =
+                                resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                    .toInt()
+                        } else {
+                            text = null
+                            iconPadding =
+                                resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                    .toInt()
+                        }
+                    }
+                    binding.btPreviousQuestion.apply {
+                        if (position > 0) {
+                            isActivated = true
+                            isClickable = true
+                            backgroundTintList = MaterialColors
+                                .getColorStateList(
+                                    this@WritingQuizGameActivity,
+                                    com.google.android.material.R.attr.colorPrimary,
+                                    ContextCompat.getColorStateList(
+                                        this@WritingQuizGameActivity, R.color.neutral700
+                                    )!!
+                                )
+                            iconTint = MaterialColors
+                                .getColorStateList(
+                                    this@WritingQuizGameActivity,
+                                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                    ContextCompat.getColorStateList(
+                                        this@WritingQuizGameActivity, R.color.neutral50
+                                    )!!
+                                )
+                            setTextColor(
+                                MaterialColors
+                                    .getColorStateList(
+                                        this@WritingQuizGameActivity,
+                                        com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                        ContextCompat.getColorStateList(
+                                            this@WritingQuizGameActivity, R.color.neutral50
+                                        )!!
+                                    )
+                            )
+                        } else {
+                            isActivated = false
+                            isClickable = false
+                            backgroundTintList = MaterialColors
+                                .getColorStateList(
+                                    this@WritingQuizGameActivity,
+                                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                    ContextCompat.getColorStateList(
+                                        this@WritingQuizGameActivity, R.color.neutral50
+                                    )!!
+                                )
+                            iconTint = MaterialColors
+                                .getColorStateList(
+                                    this@WritingQuizGameActivity,
+                                    com.google.android.material.R.attr.colorPrimary,
+                                    ContextCompat.getColorStateList(
+                                        this@WritingQuizGameActivity, R.color.neutral700
+                                    )!!
+                                )
+
+                            setTextColor(
+                                MaterialColors
+                                    .getColorStateList(
+                                        this@WritingQuizGameActivity,
+                                        com.google.android.material.R.attr.colorPrimary,
+                                        ContextCompat.getColorStateList(
+                                            this@WritingQuizGameActivity, R.color.neutral700
+                                        )!!
+                                    )
+                            )
+                        }
+                    }
+                    val actualCard = viewModel.getCardByPosition(position)
+                    if (actualCard.attemptTime > 0 && actualCard.isCorrectlyAnswered) {
+                        areOptionsShownAndActive(true, cards)
+                    } else {
+                        areOptionsShownAndActive(false, cards)
+                    }
+                }
+            }
+            )
+        }
     }
 
-    private fun stopReading (
+    private fun areOptionsShownAndActive(
+        areSownAndActive: Boolean,
+        cards: List<WritingQuizGameModel>
+    ) {
+        if (areSownAndActive) {
+            binding.lyContainerOptions.visibility = View.VISIBLE
+            binding.btNextQuestion.apply {
+
+                setOnClickListener {
+
+                    if (viewModel.swipe(cards.size)) {
+                        binding.vpCardHolder.setCurrentItem(
+                            binding.vpCardHolder.currentItem.plus(1),
+                            true
+                        )
+                    } else {
+                        onQuizComplete(viewModel.cardLeft(), cards)
+                    }
+
+//                    binding.vpCardHolder.setCurrentItem(
+//                        binding.vpCardHolder.currentItem.plus(1),
+//                        true
+//                    )
+                }
+                isClickable = true
+            }
+            binding.btPreviousQuestion.apply {
+                setOnClickListener {
+                    binding.vpCardHolder.setCurrentItem(
+                        binding.vpCardHolder.currentItem.minus(1),
+                        true
+                    )
+                }
+                isClickable = true
+            }
+        } else {
+            binding.lyContainerOptions.visibility = View.GONE
+            binding.btNextQuestion.isClickable = false
+            binding.btPreviousQuestion.isClickable = false
+        }
+    }
+
+    private fun stopReading(
         v: View,
         speakButton: Button
     ) {
         speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         tts?.stop()
-        (v as TextView).setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+        (v as TextView).setTextColor(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorOnSurface,
+                Color.BLACK
+            )
+        )
     }
 
     private fun readText(
@@ -247,8 +390,13 @@ class WritingQuizGameActivity :
         view: View,
         speakButton: Button,
     ) {
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
-        val onStopColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
+        val onReadColor =
+            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onStopColor = MaterialColors.getColor(
+            this,
+            com.google.android.material.R.attr.colorOnSurface,
+            Color.BLACK
+        )
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
@@ -261,7 +409,11 @@ class WritingQuizGameActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(this@WritingQuizGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@WritingQuizGameActivity,
+                    getString(R.string.error_read),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -301,36 +453,38 @@ class WritingQuizGameActivity :
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 
-    private fun onWrongAnswer(
-        card: MaterialCardView,
-        onWrongCard: MaterialCardView,
-        animFadeIn: Animation,
-        animFadeOut: Animation
-    ) {
-        card.startAnimation(animFadeOut)
-        card.visibility = View.GONE
-        onWrongCard.visibility = View.VISIBLE
-        onWrongCard.startAnimation(animFadeIn)
-        lifecycleScope.launch {
-            delay(500)
-            onWrongCard.startAnimation(animFadeOut)
-            onWrongCard.visibility = View.GONE
-            card.visibility = View.VISIBLE
-            card.startAnimation(animFadeIn)
-        }
-    }
+//    private fun onWrongAnswer(
+//        card: MaterialCardView,
+//        onWrongCard: MaterialCardView,
+//        animFadeIn: Animation,
+//        animFadeOut: Animation
+//    ) {
+//        card.startAnimation(animFadeOut)
+//        card.visibility = View.GONE
+//        onWrongCard.visibility = View.VISIBLE
+//        onWrongCard.startAnimation(animFadeIn)
+//        lifecycleScope.launch {
+//            delay(500)
+//            onWrongCard.startAnimation(animFadeOut)
+//            onWrongCard.visibility = View.GONE
+//            card.visibility = View.VISIBLE
+//            card.startAnimation(animFadeIn)
+//        }
+//    }
 
     private fun onQuizComplete(
         cardsLeft: Int,
         onBoardItems: List<WritingQuizGameModel>
     ) {
+        areOptionsShownAndActive(false, onBoardItems)
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
             tvTotalCardsSumScoreLayout.text = onBoardItems.size.toString()
             tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
-            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum(onBoardItems.size).toString()
+            tvKnownCardsSumScoreLayout.text =
+                viewModel.getKnownCardSum(onBoardItems.size).toString()
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
                 viewModel.getKnownCardSum(onBoardItems.size).toFloat() / viewModel.cardSum(),
@@ -379,14 +533,20 @@ class WritingQuizGameActivity :
                 btReviseMissedCardScoreLayout.isActivated = true
                 btReviseMissedCardScoreLayout.isVisible = true
                 btReviseMissedCardScoreLayout.setOnClickListener {
+                    viewModel.updateActualCardsWithMissedCards(getCardOrientation())
                     writingQuizJob?.cancel()
                     writingQuizJob = lifecycleScope.launch {
-                        viewModel.updateCardOnReviseMissedCards(getCardOrientation())
-                        viewModel.actualCard.collect { state ->
+                        viewModel.getWritingCards()
+                        viewModel.externalWritingCards.collect { state ->
                             when (state) {
                                 is UiState.Error -> {
-                                    Toast.makeText(this@WritingQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(
+                                        this@WritingQuizGameActivity,
+                                        state.errorMessage,
+                                        Toast.LENGTH_LONG
+                                    ).show()
                                 }
+
                                 is UiState.Loading -> {}
                                 is UiState.Success -> {
                                     binding.gameReviewContainerMQ.visibility = View.GONE
@@ -410,14 +570,20 @@ class WritingQuizGameActivity :
                     visibility = View.VISIBLE
                     text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
                     setOnClickListener {
+                        viewModel.updateActualCards(getCardCount(), getCardOrientation())
                         writingQuizJob?.cancel()
                         writingQuizJob = lifecycleScope.launch {
-                            viewModel.updateOnscreenCard(getCardOrientation(), getCardCount())
-                            viewModel.actualCard.collect { state ->
+                            viewModel.getWritingCards()
+                            viewModel.externalWritingCards.collect { state ->
                                 when (state) {
                                     is UiState.Error -> {
-                                        Toast.makeText(this@WritingQuizGameActivity, state.errorMessage, Toast.LENGTH_LONG).show()
+                                        Toast.makeText(
+                                            this@WritingQuizGameActivity,
+                                            state.errorMessage,
+                                            Toast.LENGTH_LONG
+                                        ).show()
                                     }
+
                                     is UiState.Loading -> {}
                                     is UiState.Success -> {
                                         restartWritingQuiz()
@@ -446,13 +612,16 @@ class WritingQuizGameActivity :
         binding.vpCardHolder.setCurrentItem(0, true)
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
+        viewModel.updateActualCards(getCardCount(), getCardOrientation())
     }
 
     private fun completelyRestartWritingQuiz() {
         restartWritingQuiz()
         viewModel.onRestartQuiz()
+        viewModel.updateActualCards(getCardCount(), getCardOrientation())
         writingQuizJob?.cancel()
         writingQuizJob = lifecycleScope.launch {
+            /*
             viewModel.updateOnscreenCard(getCardOrientation(), getCardCount())
             viewModel
                 .actualCard
@@ -472,6 +641,27 @@ class WritingQuizGameActivity :
                         }
                     }
                 }
+
+             */
+            viewModel.getWritingCards()
+            viewModel.externalWritingCards.collect { state ->
+                when (state) {
+                    is UiState.Loading -> {
+                        binding.pbCardLoadingLy.visibility = View.VISIBLE
+                        binding.cvCardErrorLy.visibility = View.GONE
+                    }
+
+                    is UiState.Error -> {
+                        onNoCardToRevise()
+                    }
+
+                    is UiState.Success -> {
+                        binding.cvCardErrorLy.visibility = View.GONE
+                        binding.pbCardLoadingLy.visibility = View.GONE
+                        launchWritingQuizGame(state.data)
+                    }
+                }
+            }
         }
     }
 
@@ -483,10 +673,11 @@ class WritingQuizGameActivity :
     }
 
     override fun onInit(status: Int) {
-        when(status) {
+        when (status) {
             TextToSpeech.SUCCESS -> {
                 tts?.setSpeechRate(1.0f)
             }
+
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }

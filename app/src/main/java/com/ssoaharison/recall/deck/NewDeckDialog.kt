@@ -24,6 +24,7 @@ import com.ssoaharison.recall.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_A
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -139,6 +140,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         }
 
         lifecycleScope.launch {
+            delay(50)
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors(), deckCategoryColor)
                 newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
@@ -211,20 +213,18 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
     fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
 
     private fun displayColorPicker(listOfColors: List<ColorModel>) {
-        deckColorPickerAdapter = context?.let { ctx ->
-            DeckColorPickerAdapter(
-                ctx,
+        deckColorPickerAdapter = DeckColorPickerAdapter(
+                requireContext(),
                 listOfColors
             ) { selectedColor ->
                 newDeckDialogViewModel.selectColor(selectedColor.id)
                 deckCategoryColor = selectedColor.id
                 deckColorPickerAdapter.notifyDataSetChanged()
             }
-        }!!
         binding.rvDeckColorPicker.apply {
             adapter = deckColorPickerAdapter
-            setHasFixedSize(true)
             layoutManager = linearLayoutManager
+            setHasFixedSize(true)
         }
     }
 

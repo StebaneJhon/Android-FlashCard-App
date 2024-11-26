@@ -7,6 +7,4 @@ data class WritingQuizGameUserResponseModel(
     val cardId: String,
     val userAnswer: String,
     val correctAnswer: List<TextWithLanguageModel>,
-    val cvCardFront: MaterialCardView,
-    val cvCardOnWrongAnswer: MaterialCardView,
 )

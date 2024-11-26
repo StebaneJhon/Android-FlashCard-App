@@ -53,14 +53,14 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     suspend fun getKnownCardCount() = flashCardDao.getKnownCardCount()
 
     @WorkerThread
-    fun searchDeck(searchQuery: String): Flow<List<ImmutableDeck>> {
+    fun searchDeck(searchQuery: String): Flow<Set<ImmutableDeck>> {
         return flashCardDao.searchDeck(searchQuery).map { decks ->
             decks.map { deck ->
                 val cardCount = flashCardDao.countCardsInDeck(deck.deckId)
                 val knownCardCount = flashCardDao.countKnownCardsInDeck(deck.deckId)
                 val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(deck.deckId)
                 deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
-            }
+            }.toSet()
         }
     }
 
@@ -117,13 +117,13 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    fun searchCard(searchQuery: String, deckId: String): Flow<List<ImmutableCard>> {
+    fun searchCard(searchQuery: String, deckId: String): Flow<Set<ImmutableCard>> {
         return flashCardDao.searchCard(searchQuery, deckId).map { cardList ->
             cardList.map { card ->
                 val cardContent = flashCardDao.getCardAndContent(card.cardId).cardContent
                 val cardDefinitions = flashCardDao.getCardWithDefinition(card.cardId).definition
                 card.toExternal(cardContent, cardDefinitions)
-            }
+            }.toSet()
         }
     }
 

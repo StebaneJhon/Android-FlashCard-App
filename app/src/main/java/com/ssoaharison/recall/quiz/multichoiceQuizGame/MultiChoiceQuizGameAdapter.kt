@@ -87,7 +87,7 @@ class MultiChoiceQuizGameAdapter(
                     tvHint.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurface))
                 }
                 card.attemptTime > 0 && card.isCorrectlyAnswered -> {
-                    tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer)
+                    tvHint.text = ContextCompat.getString(context, R.string.text_correct)
                     tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
                 }
                 card.attemptTime > 0 && !card.isCorrectlyAnswered -> {

@@ -88,6 +88,7 @@ class CardFragment :
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
     private var tts: TextToSpeech? = null
     private var startingQuizJob: Job? = null
+    private var displayingCardsJob: Job? = null
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -98,8 +99,8 @@ class CardFragment :
     private var item: ActionMenuItemView? = null
 
     val args: CardFragmentArgs by navArgs()
-    private var deck: ImmutableDeck? = null
-    private var opener: String? = null
+    private lateinit var deck: ImmutableDeck
+    private lateinit var opener: String
 
     private lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
     private lateinit var linearLayoutManager: LinearLayoutManager
@@ -130,82 +131,65 @@ class CardFragment :
         deck = args.selectedDeck
         opener = args.opener
 
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
 
-        deck?.let { _deck ->
-            view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
-                title = _deck.deckName
+        view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
+            title = deck.deckName
+            setNavigationOnClickListener {
+                findNavController().navigate(
+                    R.id.deckFragment,
+                    null,
+                    NavOptions.Builder()
+                        .setPopUpTo(R.id.cardFragment, true)
+                        .build()
+                )
+            }
+
+            binding.bottomAppBar.apply {
                 setNavigationOnClickListener {
-                    findNavController().navigate(
-                        R.id.deckFragment,
-                        null,
-                        NavOptions.Builder()
-                            .setPopUpTo(R.id.cardFragment, true)
-                            .build()
-                    )
+                    onChooseQuizMode()
                 }
-
-                binding.bottomAppBar.apply {
-                    setNavigationOnClickListener {
-                        onChooseQuizMode(_deck.deckId)
-                    }
-                    setOnMenuItemClickListener { menuItem ->
-                        when (menuItem.itemId) {
-                            R.id.bt_flash_card_game -> {
-                                onStartQuiz { deckWithCards ->
-                                    lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
-                                }
-                                true
+                setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.bt_flash_card_game -> {
+                            onStartQuiz { deckWithCards ->
+                                lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
                             }
-                            R.id.bt_quiz -> {
-                                onStartQuiz { deckWithCards ->
-                                    lunchQuiz(deckWithCards, QUIZ)
-                                }
-                                true
-                            }
-                            R.id.bt_test -> {
-                                onStartQuiz { deckWithCards ->
-                                    lunchQuiz(deckWithCards, TEST)
-                                }
-                                true
-                            }
-                            else -> false
+                            true
                         }
-                    }
-                }
-            }
-            lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    cardViewModel.getDeckWithCards(_deck.deckId)
-                    cardViewModel.deckWithAllCards.collect { state ->
-                        when (state) {
-                            is UiState.Loading -> {
-                                binding.cardsActivityProgressBar.isVisible = true
-                            }
 
-                            is UiState.Error -> {
-                                onDeckEmpty()
+                        R.id.bt_quiz -> {
+                            onStartQuiz { deckWithCards ->
+                                lunchQuiz(deckWithCards, QUIZ)
                             }
-
-                            is UiState.Success -> {
-                                displayCards(state.data.cards!!, state.data.deck!!)
-                            }
+                            true
                         }
+
+                        R.id.bt_test -> {
+                            onStartQuiz { deckWithCards ->
+                                lunchQuiz(deckWithCards, TEST)
+                            }
+                            true
+                        }
+
+                        else -> false
                     }
                 }
             }
-
-            binding.fabAddCard.setOnClickListener {
-                onAddNewCard()
-            }
-
-            if (opener == NewDeckDialog.TAG) {
-                onAddNewCard()
-            }
-
-
         }
+        displayAllCards()
+
+        binding.fabAddCard.setOnClickListener {
+            onAddNewCard()
+        }
+
+        if (opener == NewDeckDialog.TAG) {
+            onAddNewCard()
+        }
+
+
 
         requireActivity()
             .onBackPressedDispatcher
@@ -223,13 +207,39 @@ class CardFragment :
 
     }
 
+    private fun displayAllCards() {
+        displayingCardsJob?.cancel()
+        displayingCardsJob = lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cardViewModel.getDeckWithCards(deck.deckId)
+                cardViewModel.deckWithAllCards.collect { state ->
+                    when (state) {
+                        is UiState.Loading -> {
+                            binding.tvNoCardFound.visibility = View.GONE
+                            binding.cardsActivityProgressBar.isVisible = true
+                        }
+
+                        is UiState.Error -> {
+                            onDeckEmpty()
+                        }
+
+                        is UiState.Success -> {
+                            populateRecyclerView(state.data.cards!!, state.data.deck!!)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun onDeckEmpty() {
         binding.cardsActivityProgressBar.isVisible = false
         binding.cardRecyclerView.isVisible = false
-        binding.onNoDeckTextError.isVisible = true
+        binding.tvNoCardFound.isVisible = false
+        binding.onNoCardTextError.isVisible = true
     }
 
-    private fun onChooseQuizMode(deckId: String) {
+    private fun onChooseQuizMode() {
         val quizMode = QuizModeBottomSheet()
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
@@ -249,7 +259,7 @@ class CardFragment :
         startingQuizJob?.cancel()
         startingQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getDeckWithCards(deck?.deckId!!)
+                cardViewModel.getDeckWithCards(deck.deckId)
                 cardViewModel.deckWithAllCards.collect { state ->
                     when (state) {
                         is UiState.Loading -> {
@@ -346,12 +356,13 @@ class CardFragment :
     }
 
     @SuppressLint("RestrictedApi")
-    private fun displayCards(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
+    private fun populateRecyclerView(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
         item = binding.cardsTopAppBar.findViewById(R.id.view_deck_menu)
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         binding.cardsActivityProgressBar.isVisible = false
-        binding.onNoDeckTextError.isVisible = false
+        binding.onNoCardTextError.isVisible = false
+        binding.tvNoCardFound.isVisible = false
         binding.cardRecyclerView.isVisible = true
         recyclerViewAdapter = appContext?.let { it ->
             CardsRecyclerViewAdapter(
@@ -390,13 +401,24 @@ class CardFragment :
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
-            layoutManager = if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
-                item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
-                staggeredGridLayoutManager
-            } else {
-                item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
-                linearLayoutManager
-            }
+            layoutManager =
+                if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+                    item?.setIcon(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.icon_grid_view
+                        )
+                    )
+                    staggeredGridLayoutManager
+                } else {
+                    item?.setIcon(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            R.drawable.icon_view_agenda
+                        )
+                    )
+                    linearLayoutManager
+                }
         }
 
     }
@@ -455,7 +477,7 @@ class CardFragment :
         val view = textAndView.view
         val textColor = MaterialColors.getColor(
             appContext!!,
-            com.google.android.material.R.attr.colorOnSurfaceVariant,
+            com.google.android.material.R.attr.colorOnSurface,
             Color.GRAY
         )
         view.setTextColor(textColor)
@@ -497,7 +519,7 @@ class CardFragment :
 
     private fun onAddNewCard() {
 
-        val newCardDialog = NewCardDialog(null, deck!!, Constant.ADD)
+        val newCardDialog = NewCardDialog(null, deck, Constant.ADD)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
@@ -505,13 +527,13 @@ class CardFragment :
         ) { requestKey, bundle ->
             val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
             result?.let {
-                cardViewModel.insertCards(it, deck!!)
+                cardViewModel.insertCards(it, deck)
             }
         }
     }
 
     private fun onEditCard(card: ImmutableCard) {
-        val newCardDialog = NewCardDialog(card, deck!!, Constant.UPDATE)
+        val newCardDialog = NewCardDialog(card, deck, Constant.UPDATE)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
@@ -578,7 +600,7 @@ class CardFragment :
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 binding.cardsActivityProgressBar.visibility = View.VISIBLE
                 if (p0 != null) {
-                    searchCard(p0, deck?.deckId!!)
+                    searchCard(p0, deck.deckId)
                     binding.cardsActivityProgressBar.visibility = View.GONE
                 }
                 return true
@@ -586,60 +608,99 @@ class CardFragment :
 
             override fun onQueryTextChange(p0: String?): Boolean {
                 if (p0 != null) {
-                    searchCard(p0, deck?.deckId!!)
+                    searchCard(p0, deck.deckId)
                     binding.cardsActivityProgressBar.visibility = View.GONE
                 }
                 return true
             }
+
+
         })
+        searchView.setOnCloseListener{
+            displayAllCards()
+            true
+        }
     }
 
     private fun searchCard(query: String, deckId: String) {
         val searchQuery = "%$query%"
-        lifecycleScope.launch {
-            deck?.let { cardDeck ->
+        if (searchQuery.isBlank() || searchQuery.isEmpty()) {
+            displayAllCards()
+        } else {
+            displayingCardsJob?.cancel()
+            displayingCardsJob = lifecycleScope.launch {
                 cardViewModel.searchCard(searchQuery, deckId)
                     .observe(this@CardFragment) { cardList ->
-                        cardList?.let { displayCards(it, cardDeck) }
+                        if (cardList.isNullOrEmpty()) {
+                            onCardNotFound()
+                        } else {
+                            populateRecyclerView(cardList.toList(), deck)
+                        }
                     }
             }
         }
     }
 
+    private fun onCardNotFound() {
+        binding.cardsActivityProgressBar.isVisible = false
+        binding.cardRecyclerView.isVisible = false
+        binding.onNoCardTextError.isVisible = false
+        binding.tvNoCardFound.isVisible = true
+    }
+
     @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when(menuItem.itemId) {
+        return when (menuItem.itemId) {
             R.id.settings_deck_menu -> {
                 findNavController().navigate(R.id.action_cardFragment_to_settingsFragment)
                 true
             }
+
             R.id.view_deck_menu -> {
                 if (item == null) {
-                    Toast.makeText(requireContext(), getString(R.string.error_message_change_view_card), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_message_change_view_card),
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
                         changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
                         binding.cardRecyclerView.layoutManager = linearLayoutManager
-                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_view_agenda))
+                        item?.setIcon(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.icon_view_agenda
+                            )
+                        )
                     } else {
                         changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
                         binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
-                        item?.setIcon(ContextCompat.getDrawable(requireContext(), R.drawable.icon_grid_view))
+                        item?.setIcon(
+                            ContextCompat.getDrawable(
+                                requireContext(),
+                                R.drawable.icon_grid_view
+                            )
+                        )
                     }
                 }
                 true
             }
+
             else -> true
         }
     }
 
     private fun getLayoutManager(): String {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
-        return sharedPreferences.getString(LAYOUT_MANAGER, STAGGERED_GRID_LAYOUT_MANAGER) ?: STAGGERED_GRID_LAYOUT_MANAGER
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(LAYOUT_MANAGER, STAGGERED_GRID_LAYOUT_MANAGER)
+            ?: STAGGERED_GRID_LAYOUT_MANAGER
     }
 
     private fun changeCardLayoutManager(which: String) {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString(LAYOUT_MANAGER, which)
         editor.apply()

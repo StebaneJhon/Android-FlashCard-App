@@ -139,6 +139,11 @@ class DeckFragment :
             showMenu(it, R.menu.menu_filter_deck)
         }
 
+        displayAllDecks()
+
+    }
+
+    private fun displayAllDecks() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckViewModel.getAllDecks()
@@ -154,14 +159,13 @@ class DeckFragment :
                             }
 
                             is UiState.Success -> {
-                                displayDecks(it.data)
+                                populateRecyclerView(it.data)
                             }
                         }
                     }
 
             }
         }
-
     }
 
     private fun showMenu(v: View, @MenuRes menuRes: Int) {
@@ -221,15 +225,17 @@ class DeckFragment :
     private fun onNoDeckError() {
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.GONE
+        binding.tvNoDeckFound.visibility = View.GONE
         binding.onNoDeckTextError.visibility = View.VISIBLE
     }
 
     @SuppressLint("RestrictedApi")
-    private fun displayDecks(listOfDecks: List<ImmutableDeck>) {
+    private fun populateRecyclerView(listOfDecks: List<ImmutableDeck>) {
         item = binding.deckTopAppBar.findViewById(R.id.view_deck_menu)
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
+        binding.tvNoDeckFound.visibility = View.GONE
         val sortedListOfDeck =
             sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
         if (appContext != null) {
@@ -354,9 +360,28 @@ class DeckFragment :
 
     private fun searchDeck(query: String) {
         val searchQuery = "%$query%"
-        deckViewModel.searchDeck(searchQuery).observe(this) { deckList ->
-            deckList?.let { displayDecks(it) }
+        if (searchQuery.isBlank() || searchQuery.isEmpty()) {
+            displayAllDecks()
+        } else {
+            displaySearchFoundDeck(searchQuery)
         }
+    }
+
+    private fun displaySearchFoundDeck(searchQuery: String) {
+        deckViewModel.searchDeck(searchQuery).observe(this) { deckList ->
+            if (deckList.isNullOrEmpty()) {
+                errorOnDeckNotFound()
+            } else {
+                populateRecyclerView(deckList.toList())
+            }
+        }
+    }
+
+    private fun errorOnDeckNotFound() {
+        binding.mainActivityProgressBar.visibility = View.GONE
+        binding.deckRecycleView.visibility = View.GONE
+        binding.onNoDeckTextError.visibility = View.GONE
+        binding.tvNoDeckFound.visibility = View.VISIBLE
     }
 
     @SuppressLint("MissingInflatedId")
@@ -549,6 +574,10 @@ class DeckFragment :
             }
 
         })
+        searchView.setOnCloseListener {
+            displayAllDecks()
+            true
+        }
     }
 
     @SuppressLint("RestrictedApi")

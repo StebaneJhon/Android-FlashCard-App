@@ -18,11 +18,24 @@ class DeckColorPickerAdapter(
     private val listOfColors: List<ColorModel>,
     private val onColorClicked: (ColorModel) -> Unit
 ): RecyclerView.Adapter<DeckColorPickerAdapter.ViewHolder>() {
+
+    companion object {
+        private const val MARGIN = 5
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): DeckColorPickerAdapter.ViewHolder {
-        return ViewHolder.create(parent)
+
+        val pickerItemWidth = parent.width / 6 - ( 2 * MARGIN)
+        val view = LayoutInflater.from(context).inflate(R.layout.ly_item_color_picker, parent, false)
+        val layoutParams = view.findViewById<MaterialCardView>(R.id.cv_item_color_picker).layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.height = pickerItemWidth
+        layoutParams.width = pickerItemWidth
+        layoutParams.setMargins(MARGIN, MARGIN, MARGIN, MARGIN)
+
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: DeckColorPickerAdapter.ViewHolder, position: Int) {
@@ -60,14 +73,6 @@ class DeckColorPickerAdapter(
                 icon.imageTintList = MaterialColors.getColorStateList(context, com.google.android.material.R.attr.colorSurfaceContainerLowest, context.getColorStateList(R.color.white))
             }
         }
-
-        companion object {
-            fun create(parent: ViewGroup): ViewHolder {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.ly_item_color_picker, parent, false)
-                return ViewHolder(view)
-            }
-        }
-
     }
 
 }

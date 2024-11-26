@@ -1,7 +1,6 @@
 package com.ssoaharison.recall.quiz.writingQuizGame
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +9,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class WritingQuizGameAdapter(
     val context: Context,
@@ -51,14 +54,17 @@ class WritingQuizGameAdapter(
         private var imm: InputMethodManager? = null
 
         private val tvOnCardWord: TextView = itemView.findViewById(R.id.tv_top_on_card_word)
-        private val tvOnCardWordOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_on_card_word_on_wrong_answer)
-        private val tiTopCard: TextInputEditText = itemView.findViewById(R.id.ti_top_card_content)
-        private val tiOnWrongAnswer: TextInputEditText = itemView.findViewById(R.id.ti_card_content_on_wrong_answer)
+        //private val tvOnCardWordOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_on_card_word_on_wrong_answer)
+        private val tieTopCard: TextInputEditText = itemView.findViewById(R.id.ti_top_card_content)
+        private val tilTopCard: TextInputLayout = itemView.findViewById(R.id.tilTopCardContent)
+        //private val tiOnWrongAnswer: TextInputEditText = itemView.findViewById(R.id.ti_card_content_on_wrong_answer)
         private val cvCardFront: MaterialCardView = itemView.findViewById(R.id.cv_card_front)
-        private val cvCardOnWrongAnswer: MaterialCardView = itemView.findViewById(R.id.cv_card_on_wrong_answer)
+        //private val cvCardOnWrongAnswer: MaterialCardView = itemView.findViewById(R.id.cv_card_on_wrong_answer)
         private val tvProgressionFrontCard: TextView = itemView.findViewById(R.id.tv_writing_quiz_front_progression)
-        private val tvProgressionOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_writing_quiz_progression_on_wrong_answer)
+        //private val tvProgressionOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_writing_quiz_progression_on_wrong_answer)
         private val btSpeak: Button = itemView.findViewById(R.id.bt_card_front_speak)
+        private val btShowAnswer: MaterialButton = itemView.findViewById(R.id.bt_show_answer)
+        private val tvAnswer: TextView = itemView.findViewById(R.id.tv_answer)
 
         fun bind(
             context: Context,
@@ -69,20 +75,32 @@ class WritingQuizGameAdapter(
             deckColorCode: String,
             onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
-            Log.e("WritingQuizGameActivity", card.answer.first().text)
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            tiTopCard.text?.clear()
-            tiOnWrongAnswer.text?.clear()
+//            tieTopCard.text?.clear()
+            //tiOnWrongAnswer.text?.clear()
             tvOnCardWord.text = card.onCardWord.text
-            tvOnCardWordOnWrongAnswer.text = card.onCardWord.text
+            //tvOnCardWordOnWrongAnswer.text = card.onCardWord.text
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            tvProgressionOnWrongAnswer.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+            //tvProgressionOnWrongAnswer.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
             cvCardFront.backgroundTintList =  ContextCompat.getColorStateList(context, deckColor)
+            tvAnswer.text = context.getString(R.string.text_correct_answer, card.answer.first().text)
 
-            tiTopCard.setOnEditorActionListener { v, actionId, _ ->
+            when {
+                card.attemptTime == 0 -> {
+                    fieldStateOnNoAnswer(context)
+                }
+                card.attemptTime > 0 && card.isCorrectlyAnswered -> {
+                    fieldStateOnWrightAnswer(context, card)
+                }
+                card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
+                    fieldStateOnWrongAnswer(context)
+                }
+            }
+
+            tieTopCard.setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE){
-                    tiOnWrongAnswer.setText(v.text)
+                    //tiOnWrongAnswer.setText(v.text)
                     val userInput = v.text?.trim().toString().lowercase()
                     val correctAnswer = card.answer
                     userAnswer(
@@ -90,8 +108,6 @@ class WritingQuizGameAdapter(
                             card.cardId,
                             userInput,
                             correctAnswer,
-                            cvCardFront,
-                            cvCardOnWrongAnswer
                         )
                     )
                     true
@@ -110,6 +126,85 @@ class WritingQuizGameAdapter(
                 )
             }
 
+        }
+
+        private fun fieldStateOnNoAnswer(context: Context) {
+            tilTopCard.setBoxStrokeColorStateList(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.writing_quiz_text_field_color
+                )!!
+            )
+            tieTopCard.setTextColor(
+                MaterialColors.getColor(
+                    itemView,
+                    com.google.android.material.R.attr.colorOnSurface
+                )
+            )
+            tilTopCard.setDefaultHintTextColor(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.neutral400
+                )
+            )
+            tilTopCard.hint = ContextCompat.getString(context, R.string.et_user_answer_hint)
+            tieTopCard.text?.clear()
+            btShowAnswer.visibility = View.GONE
+            tvAnswer.visibility = View.GONE
+        }
+
+        private fun fieldStateOnWrightAnswer(
+            context: Context,
+            card: WritingQuizGameModel
+        ) {
+            tilTopCard.setBoxStrokeColorStateList(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.writing_quiz_text_field_color_on_right
+                )!!
+            )
+            tieTopCard.setTextColor(ContextCompat.getColor(context, R.color.green950))
+            tilTopCard.setDefaultHintTextColor(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.green500
+                )
+            )
+            tilTopCard.hint = ContextCompat.getString(context, R.string.text_correct)
+            tieTopCard.setText(card.userAnswer)
+            btShowAnswer.visibility = View.GONE
+            tvAnswer.visibility = View.GONE
+        }
+
+        private fun fieldStateOnWrongAnswer(context: Context) {
+            tilTopCard.setBoxStrokeColorStateList(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.writing_quiz_text_field_color_on_wrong
+                )!!
+            )
+            tieTopCard.setTextColor(ContextCompat.getColor(context, R.color.red950))
+            tilTopCard.setDefaultHintTextColor(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.red500
+                )
+            )
+            tilTopCard.hint = ContextCompat.getString(context, R.string.text_try_again)
+            btShowAnswer.apply {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    if (tvAnswer.isVisible) {
+                        tvAnswer.visibility = View.GONE
+                        btShowAnswer.icon =
+                            ContextCompat.getDrawable(context, R.drawable.icon_expand_more)
+                    } else {
+                        tvAnswer.visibility = View.VISIBLE
+                        btShowAnswer.icon =
+                            ContextCompat.getDrawable(context, R.drawable.icon_expand_less)
+                    }
+                }
+            }
         }
     }
 
