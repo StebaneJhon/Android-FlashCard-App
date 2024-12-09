@@ -10,7 +10,7 @@ import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job

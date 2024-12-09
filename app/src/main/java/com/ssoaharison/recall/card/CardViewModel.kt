@@ -10,7 +10,7 @@ import com.ssoaharison.recall.backend.Model.ImmutableCard
 import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

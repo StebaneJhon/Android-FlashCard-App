@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow

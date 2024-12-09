@@ -143,3 +143,10 @@ object BoardSizes {
     const val BOARD_SIZE_2 = "4 : 3"
     const val BOARD_SIZE_3 = "6 : 3"
 }
+
+object InternetStatus {
+    const val INTERNET_VIA_CELLULAR = "Cellular"
+    const val INTERNET_VIA_WIFI = "Wifi"
+    const val INTERNET_VIA_ETHERNET = "Ethernet"
+    const val NO_INTERNET = "No internet"
+}

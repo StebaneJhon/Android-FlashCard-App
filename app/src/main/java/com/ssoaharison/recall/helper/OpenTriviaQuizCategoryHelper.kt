@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.util
+package com.ssoaharison.recall.helper
 
 class OpenTriviaQuizCategoryHelper {
     private val categories = mapOf(

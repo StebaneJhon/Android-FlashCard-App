@@ -9,7 +9,7 @@ import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
@@ -17,9 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import java.io.IOException
 

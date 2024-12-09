@@ -3,7 +3,6 @@ package com.ssoaharison.recall.card
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.InsetDrawable
-import android.os.Build
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -21,7 +20,7 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.Model.ImmutableCard
 import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.CardDefinition
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.backend.Model.ImmutableDeck

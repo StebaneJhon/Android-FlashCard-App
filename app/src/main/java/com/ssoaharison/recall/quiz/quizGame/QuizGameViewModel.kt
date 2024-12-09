@@ -9,7 +9,7 @@ import com.ssoaharison.recall.backend.Model.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow

@@ -10,7 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.LyDialogUploadDeckWithCardsBinding
-import com.ssoaharison.recall.util.OpenTriviaQuizCategoryHelper
+import com.ssoaharison.recall.helper.OpenTriviaQuizCategoryHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class UploadOpenTriviaQuizDialog : DialogFragment() {

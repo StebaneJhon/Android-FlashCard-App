@@ -13,7 +13,7 @@ import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardLevel.L7
-import com.ssoaharison.recall.util.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout

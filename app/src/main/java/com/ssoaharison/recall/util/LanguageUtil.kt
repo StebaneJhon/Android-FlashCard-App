@@ -88,7 +88,7 @@ class LanguageUtil {
         "Chinese (Taiwan)" to mapOf("langCodeTranslation" to TranslateLanguage.CHINESE, "langCodeSpeechAndText" to "zh-TW"),
     )
 
-    fun getLanguageCodeForTranslation(language: String) =
+    fun getLanguageCodeForTranslation(language: String?) =
         if (language in languages.keys) {
             languages[language]?.get("langCodeTranslation")
         } else {
