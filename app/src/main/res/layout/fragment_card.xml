@@ -116,7 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:menu="@menu/menu_bottom_appbar_cards"
-            app:navigationIcon="@drawable/icon_category"
+            app:navigationIcon="@drawable/icon_more"
             app:navigationIconTint="?colorOnSurface"
             android:backgroundTint="?colorSurfaceContainerLow"
             app:hideOnScroll="true"/>

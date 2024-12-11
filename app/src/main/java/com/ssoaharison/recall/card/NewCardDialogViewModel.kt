@@ -1,5 +1,7 @@
 package com.ssoaharison.recall.card
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -86,6 +88,7 @@ class NewCardDialogViewModel(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun resultsToImmutableCards(
         deckId: String,
         results: List<OpenTriviaQuestion>?
@@ -197,11 +200,13 @@ private fun setCategory(category: Int): String {
     return ""
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun now(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
     return LocalDateTime.now().format(formatter)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 private fun today(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     return formatter.format(LocalDate.now())

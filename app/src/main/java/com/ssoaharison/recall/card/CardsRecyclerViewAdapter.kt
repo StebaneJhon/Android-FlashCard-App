@@ -128,7 +128,6 @@ class CardsRecyclerViewAdapter(
                     tv.setOnClickListener { it as TextView
                         val text = it.text.toString().lowercase()
                         val language = if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage!!
-//                        onReadDefinition(TextClickedModel(it.text.toString().lowercase(), it))
                         onReadDefinition(
                             TextClickedModel(
                                 TextWithLanguageModel(text, language),
@@ -169,7 +168,6 @@ class CardsRecyclerViewAdapter(
 
                     val text = it.text.toString().lowercase()
                     val language = if (card?.cardContentLanguage != null) card.cardContentLanguage else deck.cardContentDefaultLanguage!!
-//                    onReadContent(TextClickedModel(it.text.toString().lowercase(), it))
                     onReadContent(
                         TextClickedModel(
                             TextWithLanguageModel(text, language),

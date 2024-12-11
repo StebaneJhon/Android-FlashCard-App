@@ -195,6 +195,7 @@ class TestQuizGameViewModel(
                 card.cardDefinition.first().isSelected = answer.isSelected
                 card.isFlipped = !card.isFlipped
                 card.attemptTime++
+                card.flipCount++
             }
         }
     }
@@ -324,6 +325,14 @@ class TestQuizGameViewModel(
         }
     }
 
+    fun initCardFlipCount(cardPosition: Int) {
+        localQuizGameCards[cardPosition].flipCount = 0
+    }
+
+    fun increaseCardFlipCount(cardPosition: Int) {
+        localQuizGameCards[cardPosition].flipCount++
+    }
+
     fun updateMultipleAnswerAndChoiceCardOnAnswered(
         answer: QuizGameCardDefinitionModel,
     ) {
@@ -341,7 +350,8 @@ class TestQuizGameViewModel(
 
     fun updateSingleAnsweredCardOnKnownOrKnownNot(
         card: QuizGameCardModel,
-        knownOrNot: Boolean
+        knownOrNot: Boolean,
+        cardPosition: Int,
     ) {
         originalCardList?.forEach {
             if (it?.cardId == card.cardId) {
@@ -358,6 +368,7 @@ class TestQuizGameViewModel(
                 }
             }
         }
+        initCardFlipCount(cardPosition)
     }
 
     private fun getCardsAmount(

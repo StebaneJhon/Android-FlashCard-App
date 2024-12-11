@@ -16,4 +16,5 @@ data class QuizGameCardModel(
     var isFlipped: Boolean = false,
     var attemptTime: Int = 0,
     var isCorrectlyAnswered: Boolean = false,
+    var flipCount: Int = 0,
 ): Parcelable

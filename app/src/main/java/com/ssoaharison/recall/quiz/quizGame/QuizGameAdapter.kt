@@ -138,7 +138,30 @@ class QuizGameAdapter(
             }
 
             if (card.cardType == SINGLE_ANSWER_CARD) {
+//                if(!card.isFlipped) {
+//                    cvCardContainer.alpha = 1f
+//                    cvCardContainer.rotationY = 0f
+//                    cvCardContainerBack.alpha = 1f
+//                } else {
+//                    cvCardContainer.alpha = 0f
+//                    cvCardContainer.rotationY = 0f
+//                    cvCardContainerBack.alpha = 1f
+//                }
 
+                if (card.flipCount == 0) {
+                    if (!card.isFlipped) {
+                        cvCardContainer.alpha = 1f
+                        cvCardContainer.rotationY = 0f
+                        cvCardContainerBack.alpha = 0f
+                    } else {
+                        cvCardContainer.alpha = 0f
+                        cvCardContainer.rotationY = 0f
+                        cvCardContainerBack.rotationY = 0f
+                        cvCardContainerBack.alpha = 1f
+                    }
+                } else {
+                    flipCard(card.isFlipped)
+                }
             } else {
                 cvCardContainer.alpha = 1f
                 cvCardContainer.rotationY = 0f
@@ -282,7 +305,7 @@ class QuizGameAdapter(
                     cardOnClick(
                         card.cardDefinition.first()
                     )
-                    flipCard(card.isFlipped)
+//                    flipCard(card.isFlipped)
                 }
                 btSpeakBack.setOnClickListener {
                     onSpeak(

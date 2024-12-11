@@ -340,7 +340,7 @@ class QuizGameActivity :
         binding.btKnown.setOnClickListener {
 //            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
 //            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, true)
+            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, true, binding.vpCardHolder.currentItem )
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -362,7 +362,7 @@ class QuizGameActivity :
 //            viewModel.initAttemptTime()
         }
         binding.btKnownNot.setOnClickListener {
-            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, false)
+            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, false, binding.vpCardHolder.currentItem)
 //            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
 //            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
@@ -392,6 +392,7 @@ class QuizGameActivity :
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
 //                areNextAndBackButtonsVisible(true)
+                viewModel.initCardFlipCount(binding.vpCardHolder.currentItem)
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -414,6 +415,7 @@ class QuizGameActivity :
         binding.btNext.setOnClickListener {
 //            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
 //            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
+            viewModel.initCardFlipCount(binding.vpCardHolder.currentItem)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
