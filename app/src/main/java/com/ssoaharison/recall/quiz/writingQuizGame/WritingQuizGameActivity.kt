@@ -12,8 +12,6 @@ import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
-import android.view.animation.Animation
-import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -24,9 +22,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.databinding.ActivityWritingQuizGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity
 import com.ssoaharison.recall.settings.MiniGameSettingsSheet
@@ -35,12 +33,10 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 

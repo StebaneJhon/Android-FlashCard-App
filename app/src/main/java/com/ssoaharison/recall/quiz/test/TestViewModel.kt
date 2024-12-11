@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD

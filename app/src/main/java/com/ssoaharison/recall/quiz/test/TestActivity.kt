@@ -24,8 +24,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.databinding.ActivityTestBinding
 import com.ssoaharison.recall.quiz.quizGame.QuizGameActivity
 import com.ssoaharison.recall.util.LanguageUtil

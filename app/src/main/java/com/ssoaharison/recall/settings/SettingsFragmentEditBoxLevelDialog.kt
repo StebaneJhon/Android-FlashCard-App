@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardLevel.L7

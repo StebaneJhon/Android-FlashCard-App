@@ -15,10 +15,10 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.Model.MatchQuizGameItemModel
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
+import com.ssoaharison.recall.backend.models.MatchQuizGameItemModel
 import com.ssoaharison.recall.databinding.ActivityMatchQuizGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity
 import com.ssoaharison.recall.util.MatchQuizGameClickStatus

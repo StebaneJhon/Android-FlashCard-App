@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.databinding.FragmentSettingsBinding
 import com.ssoaharison.recall.util.ContactActions.CONTACT

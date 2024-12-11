@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.Model.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job

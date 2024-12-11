@@ -2,9 +2,9 @@ package com.ssoaharison.recall.quiz.matchQuizGame
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.MatchQuizGameItemModel
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.MatchQuizGameItemModel
 import com.ssoaharison.recall.util.MatchQuizGameClickStatus
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job

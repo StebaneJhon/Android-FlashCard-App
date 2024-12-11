@@ -14,8 +14,8 @@ import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME

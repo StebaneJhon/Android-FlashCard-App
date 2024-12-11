@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
@@ -27,7 +27,7 @@ class FlashCardGameViewModel(
     private var originalCardList: List<ImmutableCard?>? = null
     private lateinit var cardList: MutableList<ImmutableCard?>
     var deck: ImmutableDeck? = null
-    var progress: Int = 0
+    private var progress: Int = 0
     private var cardToRevise: MutableList<ImmutableCard?>? = null
     private var passedCards = 0
     private var restCards = 0
@@ -76,8 +76,6 @@ class FlashCardGameViewModel(
         missedCards.clear()
     }
 
-    fun getCardToRevise() = cardToRevise
-
     private val topCard
         get() = cardToRevise?.get(currentCardPosition)
     private val bottomCard
@@ -86,8 +84,6 @@ class FlashCardGameViewModel(
     fun sortCardsByLevel() {
         cardList.sortBy { it?.cardStatus }
     }
-
-    fun getOriginalCardList() = originalCardList
 
     fun shuffleCards() {
         cardList.shuffle()

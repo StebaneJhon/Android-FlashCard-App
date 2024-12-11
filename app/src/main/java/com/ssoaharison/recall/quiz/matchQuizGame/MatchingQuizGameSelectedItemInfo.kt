@@ -1,7 +1,7 @@
 package com.ssoaharison.recall.quiz.matchQuizGame
 
 import android.widget.LinearLayout
-import com.ssoaharison.recall.backend.Model.MatchQuizGameItemModel
+import com.ssoaharison.recall.backend.models.MatchQuizGameItemModel
 import com.google.android.material.card.MaterialCardView
 
 data class MatchingQuizGameSelectedItemInfo (

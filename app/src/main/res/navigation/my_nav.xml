@@ -15,7 +15,7 @@
             app:destination="@id/deckFragment" />
         <argument
             android:name="selectedDeck"
-            app:argType="com.ssoaharison.recall.backend.Model.ImmutableDeck" />
+            app:argType="com.ssoaharison.recall.backend.models.ImmutableDeck" />
         <action
             android:id="@+id/action_cardFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />

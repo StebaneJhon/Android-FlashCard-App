@@ -111,7 +111,7 @@
     <string name="bt_text_cancel">Cancel</string>
     <string name="til_error_card_content">Card content required</string>
     <string name="til_error_card_definition">Card definition required</string>
-    <string name="cp_error_correct_definition">At least one definition must be correct</string>
+    <string name="cp_error_correct_definition">At least one definition must be correct. Check the box to the right of this field to mark it as correct, and uncheck it to mark it as incorrect.</string>
     <string name="tv_title_data_review">Data</string>
     <string name="this_week_profile_title">This week</string>
     <string name="tv_add_new_deck">Add new deck</string>

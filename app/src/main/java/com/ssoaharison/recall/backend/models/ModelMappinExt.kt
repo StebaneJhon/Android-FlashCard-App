@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.backend.Model
+package com.ssoaharison.recall.backend.models
 
 import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.entities.CardContent
@@ -7,10 +7,7 @@ import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.User
 import com.ssoaharison.recall.backend.entities.relations.DeckWithCards
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-// External to local
 fun ImmutableDeck.toLocal() = Deck(
     deckId = deckId,
     deckName = deckName,
@@ -18,14 +15,12 @@ fun ImmutableDeck.toLocal() = Deck(
     cardContentDefaultLanguage = cardContentDefaultLanguage,
     cardDefinitionDefaultLanguage = cardDefinitionDefaultLanguage,
     deckColorCode = deckColorCode,
-//    cardSum = cardSum,
     deckCategory = deckCategory,
     isFavorite = isCorrectRevers(isFavorite),
 )
 
 fun List<ImmutableDeck>.toLocal() = map(ImmutableDeck::toLocal)
 
-// Local to External
 fun Deck.toExternal(cardCount: Int, knownCardCount: Int, unKnownCardCount: Int) = ImmutableDeck(
     deckId = deckId,
     deckName = deckName,
@@ -43,7 +38,6 @@ fun Deck.toExternal(cardCount: Int, knownCardCount: Int, unKnownCardCount: Int) 
 @JvmName("localToExternal")
 fun List<Deck>.toExternal(cardCount: Int, knownCardCount: Int, unKnownCardCount: Int) = map { deck -> deck.toExternal(cardCount, knownCardCount, unKnownCardCount)}
 
-// Cards Ex
 fun ImmutableCard.toLocal() = Card(
     cardId = cardId,
     deckId = deckId,
@@ -63,7 +57,6 @@ fun ImmutableCard.toLocal() = Card(
 @JvmName("cardExternalToLocal")
 fun List<ImmutableCard>.toLocal() = map(ImmutableCard::toLocal)
 
-// Local to External
 fun Card.toExternal(cardContent: CardContent, cardDefinitions: List<CardDefinition>) =
     ImmutableCard(
         cardId = cardId,
@@ -90,7 +83,6 @@ fun List<Card>.toExternal(cardContent: CardContent, cardDefinitions: List<CardDe
 @JvmName("userExternalToLocal")
 fun List<ImmutableUser>.toLocal() = map(ImmutableUser::toLocal)
 
-// User Ex
 fun ImmutableUser.toLocal() = User(
     userId = userId,
     name = name,
@@ -102,7 +94,6 @@ fun ImmutableUser.toLocal() = User(
 @JvmName("userLocalToExternal")
 fun List<User>.toExternal() = map(User::toExternal)
 
-// User Loc
 fun User.toExternal() = ImmutableUser(
     userId = userId,
     name = name,
@@ -114,7 +105,6 @@ fun User.toExternal() = ImmutableUser(
 @JvmName("spaceRepetitionBoxExternalToLocal")
 fun List<ImmutableSpaceRepetitionBox>.toLocal() = map(ImmutableSpaceRepetitionBox::toLocal)
 
-// SpaceRepetitionBox Ex
 fun ImmutableSpaceRepetitionBox.toLocal() = SpaceRepetitionBox(
     levelId = levelId,
     levelName = levelName,
@@ -126,7 +116,6 @@ fun ImmutableSpaceRepetitionBox.toLocal() = SpaceRepetitionBox(
 @JvmName("spaceRepetitionBoxLocalToExternal")
 fun List<SpaceRepetitionBox>.toExternal() = map(SpaceRepetitionBox::toExternal)
 
-// SpaceRepetitionBox Local
 fun SpaceRepetitionBox.toExternal() = ImmutableSpaceRepetitionBox(
     levelId = levelId,
     levelName = levelName,
@@ -144,9 +133,4 @@ fun DeckWithCards.toExternal(deck: ImmutableDeck, cards: List<ImmutableCard?>) =
 
 fun isCorrect(index: Int?) = index == 1
 fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
-
-private fun now(): String {
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
-    return LocalDateTime.now().format(formatter)
-}
 

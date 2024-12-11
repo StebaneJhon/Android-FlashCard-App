@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 
 class SettingsFragmentSpaceRepetitionViewAdapter(
     private val context: Context,

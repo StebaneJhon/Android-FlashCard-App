@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.backend.Model
+package com.ssoaharison.recall.backend.models
 
 data class MatchQuizGameItemModel (
     val text: String,

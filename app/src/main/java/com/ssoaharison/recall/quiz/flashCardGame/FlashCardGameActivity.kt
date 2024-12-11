@@ -30,9 +30,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.ActivityFlashCardGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity

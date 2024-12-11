@@ -1,12 +1,12 @@
 package com.ssoaharison.recall.backend
 
 import androidx.annotation.WorkerThread
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.backend.Model.toExternal
-import com.ssoaharison.recall.backend.Model.toLocal
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
+import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.backend.models.toExternal
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import kotlinx.coroutines.delay

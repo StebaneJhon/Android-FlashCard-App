@@ -16,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.databinding.AddDeckLayoutDialogBinding
 import com.ssoaharison.recall.util.DeckAdditionAction.ADD

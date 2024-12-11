@@ -38,9 +38,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
-import com.ssoaharison.recall.backend.Model.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.Model.toExternal
+import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
+import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.databinding.FragmentDeckBinding
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity

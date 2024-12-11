@@ -2,9 +2,9 @@ package com.ssoaharison.recall.helper
 
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.backend.Model.toExternal
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardLevel.L2

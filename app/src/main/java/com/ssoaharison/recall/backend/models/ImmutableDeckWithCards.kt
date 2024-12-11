@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.backend.Model
+package com.ssoaharison.recall.backend.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

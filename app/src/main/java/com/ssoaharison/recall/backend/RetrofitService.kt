@@ -1,6 +1,6 @@
 package com.ssoaharison.recall.backend
 
-import com.ssoaharison.recall.backend.Model.QuizQuestions
+import com.ssoaharison.recall.backend.models.QuizQuestions
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

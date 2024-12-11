@@ -42,8 +42,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.Model.ImmutableCard
-import com.ssoaharison.recall.backend.Model.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.AddCardLayoutDialogBinding
@@ -1136,12 +1136,10 @@ class NewCardDialog(
     }
 
     private fun checkPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf<String>(Manifest.permission.RECORD_AUDIO),
-                RecordAudioRequestCode
-            )
-        }
+        ActivityCompat.requestPermissions(
+            requireActivity(), arrayOf<String>(Manifest.permission.RECORD_AUDIO),
+            RecordAudioRequestCode
+        )
     }
 
     private fun onTranslateText(
