@@ -15,6 +15,7 @@ import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
+import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -86,7 +87,6 @@ class NewCardDialogViewModel(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     suspend fun resultsToImmutableCards(
         deckId: String,
         results: List<OpenTriviaQuestion>?
@@ -198,13 +198,11 @@ private fun setCategory(category: Int): String {
     return ""
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun now(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
     return LocalDateTime.now().format(formatter)
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 private fun today(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     return formatter.format(LocalDate.now())

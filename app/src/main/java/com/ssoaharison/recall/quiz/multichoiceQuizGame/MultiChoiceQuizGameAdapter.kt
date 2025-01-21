@@ -119,7 +119,8 @@ class MultiChoiceQuizGameAdapter(
                         text = texts,
                         views = views,
                         v as Button,
-                    ))
+                    )
+                )
             }
 
         }

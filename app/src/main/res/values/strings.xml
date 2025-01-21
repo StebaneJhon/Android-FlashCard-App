@@ -251,4 +251,7 @@
     <string name="text_show_answer">Show answer</string>
     <string name="error_message_no_card_found">Card not found</string>
     <string name="error_message_deck_not_found">Deck not found</string>
+    <string name="bt_text_add_details">Add details</string>
+    <string name="error_message_can_not_identify_language">Can not identify language. Please add a default language to your deck.</string>
+    <string name="error_message_error_while_detecting_language">Error while identifying language. Please add a default language to your deck.</string>
 </resources>

@@ -136,9 +136,9 @@ class TestQuizGameViewModel(
             QuizGameCardModel(
                 card.cardId,
                 card.cardContent,
-                card.cardContentLanguage ?: deck?.cardContentDefaultLanguage!!,
+                card.cardContentLanguage ?: deck?.cardContentDefaultLanguage,
                 externalDefinitions,
-                card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!,
+                card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
                 card.cardType,
                 card.cardStatus
             )
@@ -433,6 +433,14 @@ class TestQuizGameViewModel(
 
     fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
+    }
+
+    fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardContentLanguage(cardId, language)
+    }
+
+    fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardDefinitionLanguage(cardId, language)
     }
 
 }

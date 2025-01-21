@@ -5,6 +5,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class TextWithLanguageModel (
+    val cardId: String,
     val text: String,
-    val language: String,
+    val textType: String,
+    val language: String?,
 ): Parcelable

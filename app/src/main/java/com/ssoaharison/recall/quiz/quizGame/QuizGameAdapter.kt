@@ -21,6 +21,8 @@ import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
@@ -32,7 +34,7 @@ class QuizGameAdapter(
     val deck: ImmutableDeck,
     private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit,
-): RecyclerView.Adapter<QuizGameAdapter.TestQuizGameAdapterViewHolder>() {
+) : RecyclerView.Adapter<QuizGameAdapter.TestQuizGameAdapterViewHolder>() {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -59,11 +61,12 @@ class QuizGameAdapter(
 
     inner class TestQuizGameAdapterViewHolder(
         view: View
-    ): RecyclerView.ViewHolder(view) {
+    ) : RecyclerView.ViewHolder(view) {
 
         private val flCardRoot: FrameLayout = view.findViewById(R.id.fl_card_root)
         private val cvCardContainer: MaterialCardView = view.findViewById(R.id.cv_card_container)
-        private val cvCardContainerBack: MaterialCardView = view.findViewById(R.id.cv_card_container_back)
+        private val cvCardContainerBack: MaterialCardView =
+            view.findViewById(R.id.cv_card_container_back)
         private val tvFrontProgression: TextView = view.findViewById(R.id.tv_front_progression)
         private val tvBackProgression: TextView = view.findViewById(R.id.tv_back_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
@@ -103,7 +106,11 @@ class QuizGameAdapter(
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
 
-            tvFrontProgression.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+            tvFrontProgression.text = context.getString(
+                R.string.tx_flash_card_game_progression,
+                "$cardNumber",
+                "$cardSum"
+            )
             tvContent.text = card.cardContent?.content
             tvCardType.text = card.cardType
             val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
@@ -113,23 +120,38 @@ class QuizGameAdapter(
                 card.cardType == SINGLE_ANSWER_CARD -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
                     tvHint.text = ContextCompat.getString(context, R.string.text_tap_to_flip)
-                    tvHint.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurface))
+                    tvHint.setTextColor(
+                        MaterialColors.getColor(
+                            itemView,
+                            com.google.android.material.R.attr.colorOnSurface
+                        )
+                    )
                 }
+
                 card.attemptTime == 0 -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                     tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
-                    tvHint.setTextColor(MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOnSurface))
+                    tvHint.setTextColor(
+                        MaterialColors.getColor(
+                            itemView,
+                            com.google.android.material.R.attr.colorOnSurface
+                        )
+                    )
                 }
+
                 card.attemptTime > 0 && card.isCorrectlyAnswered -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                     tvHint.text = ContextCompat.getString(context, R.string.text_correct)
                     tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
                 }
-                card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered  -> {
+
+                card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
+                    tvHint.text =
+                        ContextCompat.getString(context, R.string.text_correct_answer_more)
                     tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
                 }
+
                 card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                     tvHint.text = ContextCompat.getString(context, R.string.text_wrong_answer)
@@ -171,7 +193,13 @@ class QuizGameAdapter(
                         materialButton.visibility = View.VISIBLE
                         if (card.cardDefinition[index].isSelected) {
                             val answerStatus = card.cardDefinition[index].isCorrect != 0
-                            onButtonClicked(materialButton, card.cardType!!, context, answerStatus, appTheme)
+                            onButtonClicked(
+                                materialButton,
+                                card.cardType!!,
+                                context,
+                                answerStatus,
+                                appTheme
+                            )
                         } else {
                             onButtonUnClicked(materialButton, card.cardType!!, context)
                         }
@@ -180,7 +208,14 @@ class QuizGameAdapter(
                     }
                 }
             }
-            bindAnswerAlternatives(card, deckColorCode, cardNumber, cardPosition, cardSum, cardOnClick)
+            bindAnswerAlternatives(
+                card,
+                deckColorCode,
+                cardNumber,
+                cardPosition,
+                cardSum,
+                cardOnClick
+            )
         }
 
         private fun hasCardCorrectAnswer(card: QuizGameCardModel): Boolean {
@@ -212,18 +247,24 @@ class QuizGameAdapter(
             if (appTheme != DARK_THEME) {
                 if (isCorrectlyAnswered) {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                        button.icon =
+                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
                     } else {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+                        button.icon = AppCompatResources.getDrawable(
+                            context,
+                            R.drawable.icon_radio_button_checked
+                        )
                     }
                     button.background.setTint(ContextCompat.getColor(context, R.color.green50))
                     button.setStrokeColorResource(R.color.green500)
                     button.setIconTintResource(R.color.green500)
                 } else {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                        button.icon =
+                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
                     } else {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                        button.icon =
+                            AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                     }
                     button.background.setTint(ContextCompat.getColor(context, R.color.red50))
                     button.setStrokeColorResource(R.color.red500)
@@ -232,9 +273,13 @@ class QuizGameAdapter(
             } else {
                 if (isCorrectlyAnswered) {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                        button.icon =
+                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
                     } else {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+                        button.icon = AppCompatResources.getDrawable(
+                            context,
+                            R.drawable.icon_radio_button_checked
+                        )
                     }
                     button.background.setTint(ContextCompat.getColor(context, R.color.green800))
                     button.setStrokeColorResource(R.color.green50)
@@ -242,9 +287,11 @@ class QuizGameAdapter(
                     button.setTextColor(ContextCompat.getColor(context, R.color.green50))
                 } else {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                        button.icon =
+                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
                     } else {
-                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                        button.icon =
+                            AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                     }
                     button.background.setTint(ContextCompat.getColor(context, R.color.red800))
                     button.setStrokeColorResource(R.color.red50)
@@ -258,11 +305,19 @@ class QuizGameAdapter(
 
         private fun onButtonUnClicked(button: MaterialButton, cardType: String, context: Context) {
             if (cardType == MULTIPLE_ANSWER_CARD) {
-                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
+                button.icon =
+                    AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
             } else {
-                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
+                button.icon =
+                    AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
             }
-            button.background.setTint(MaterialColors.getColor(context, com.google.android.material.R.attr.colorSurfaceContainerLowest, Color.GRAY))
+            button.background.setTint(
+                MaterialColors.getColor(
+                    context,
+                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                    Color.GRAY
+                )
+            )
             button.iconTint = MaterialColors.getColorStateList(
                 context,
                 com.google.android.material.R.attr.colorOnSurface,
@@ -310,7 +365,14 @@ class QuizGameAdapter(
                 btSpeakBack.setOnClickListener {
                     onSpeak(
                         QuizSpeakModel(
-                            text = listOf(TextWithLanguageModel(card.cardDefinition.first().definition, card.cardDefinitionLanguage!!)),
+                            text = listOf(
+                                TextWithLanguageModel(
+                                    card.cardId,
+                                    card.cardDefinition.first().definition,
+                                    DEFINITION,
+                                    card.cardDefinitionLanguage
+                                )
+                            ),
                             views = listOf(tvDefinition),
                         )
                     )
@@ -318,12 +380,26 @@ class QuizGameAdapter(
                 btSpeak.setOnClickListener {
                     frontSpeak(
                         listOf(tvContent),
-                        listOf(TextWithLanguageModel(card.cardContent?.content!!, card.cardContentLanguage!!)),
+                        listOf(
+                            TextWithLanguageModel(
+                                card.cardId,
+                                card.cardContent?.content!!,
+                                CONTENT,
+                                card.cardContentLanguage
+                            )
+                        ),
                     )
                 }
             } else {
                 flCardRoot.isClickable = false
-                val texts = arrayListOf(TextWithLanguageModel(card.cardContent?.content!!, card.cardContentLanguage!!))
+                val texts = arrayListOf(
+                    TextWithLanguageModel(
+                        card.cardId,
+                        card.cardContent?.content!!,
+                        CONTENT,
+                        card.cardContentLanguage!!
+                    )
+                )
                 val views = arrayListOf(tvContent)
                 btAlternatives.forEachIndexed { index, materialButton ->
                     if (index < card.cardDefinition.size) {
@@ -332,7 +408,14 @@ class QuizGameAdapter(
                             text = card.cardDefinition[index].definition
                             onAlternativeClicked(card.cardDefinition[index], cardOnClick)
                         }
-                        texts.add(TextWithLanguageModel(card.cardDefinition[index].definition, card.cardDefinitionLanguage!!))
+                        texts.add(
+                            TextWithLanguageModel(
+                                card.cardDefinition[index].cardId,
+                                card.cardDefinition[index].definition,
+                                DEFINITION,
+                                card.cardDefinitionLanguage!!
+                            )
+                        )
                         views.add(materialButton)
                     } else {
                         materialButton.visibility = View.GONE

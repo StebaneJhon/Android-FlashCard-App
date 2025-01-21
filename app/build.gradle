@@ -24,7 +24,7 @@ android {
         versionName "1.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        
+
         ndk {
             debugSymbolLevel 'FULL'
         }
@@ -93,6 +93,9 @@ dependencies {
 
     // Translation
     implementation 'com.google.mlkit:translate:17.0.3'
+
+    // Language detection
+    implementation 'com.google.mlkit:language-id:17.0.6'
 
     implementation 'com.github.yuyakaido:CardStackView:v2.3.4'
     implementation("androidx.viewpager2:viewpager2:1.0.0")

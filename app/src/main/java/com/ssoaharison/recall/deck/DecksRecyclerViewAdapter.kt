@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -52,10 +53,11 @@ class DecksRecyclerViewAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val deckNameTV: TextView? = view.findViewById(R.id.deckNameTV)
-        private val deckDescriptionTV: TextView? = view.findViewById(R.id.deckDescriptionTV)
-        private val deckRoot: MaterialCardView? = view.findViewById(R.id.deckRoot)
-        private val deckContendLanguages: TextView? = view.findViewById(R.id.tv_content_language)
-        private val deckDefinitionLanguages: TextView? = view.findViewById(R.id.tv_definition_language)
+//        private val deckDescriptionTV: TextView? = view.findViewById(R.id.deckDescriptionTV)
+        private val deckRoot: ConstraintLayout? = view.findViewById(R.id.deckRoot)
+//        private val deckContendLanguages: TextView? = view.findViewById(R.id.tv_content_language)
+//        private val deckDefinitionLanguages: TextView? = view.findViewById(R.id.tv_definition_language)
+        private val categoryColor: View? = view.findViewById(R.id.v_category_color)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
         private val tvKnownCardSum: TextView? = view.findViewById(R.id.tv_known_cards_Sum)
         private val tvUnKnownCardSum: TextView? = view.findViewById(R.id.tv_un_known_cards_Sum)
@@ -73,9 +75,9 @@ class DecksRecyclerViewAdapter(
             deckClickListener: (ImmutableDeck) -> Unit
         ) {
             deckNameTV?.text = deck.deckName
-            deckDescriptionTV?.text = deck.deckDescription
-            deckContendLanguages?.text = deck.cardContentDefaultLanguage
-            deckDefinitionLanguages?.text = deck.cardDefinitionDefaultLanguage
+//            deckDescriptionTV?.text = deck.deckDescription
+//            deckContendLanguages?.text = deck.cardContentDefaultLanguage
+//            deckDefinitionLanguages?.text = deck.cardDefinitionDefaultLanguage
 
             cardSum?.isVisible = deck.cardSum == 0
             if (deck.knownCardCount!! > 0) {
@@ -97,8 +99,9 @@ class DecksRecyclerViewAdapter(
                 )
             } ?: R.color.red700
 
+            categoryColor?.setBackgroundColor(ContextCompat.getColor(context, deckColorCode))
             deckRoot?.apply {
-                setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+//                setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,

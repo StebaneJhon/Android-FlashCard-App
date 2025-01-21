@@ -248,6 +248,14 @@ class FlashCardGameViewModel(
         repository.updateCard(card)
     }
 
+    fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardContentLanguage(cardId, language)
+    }
+
+    fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardDefinitionLanguage(cardId, language)
+    }
+
 }
 
 class FlashCardGameViewModelFactory(private val repository: FlashCardRepository): ViewModelProvider.Factory {

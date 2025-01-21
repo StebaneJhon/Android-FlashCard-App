@@ -1,6 +1,11 @@
 package com.ssoaharison.recall.util
 
+import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.translate.TranslateLanguage
+import com.ssoaharison.recall.R
+import com.ssoaharison.recall.util.Constant.ERROR
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 
 class LanguageUtil {
     private val languages = mapOf(
@@ -115,4 +120,41 @@ class LanguageUtil {
         }
 
     fun isLanguageSupported(language: String) = language in getSupportedLang()
+
+    fun getLanguageByCode(code: String): String? {
+        languages.forEach { (t, u) ->
+            if (u["langCodeTranslation"] == code) {
+                return t
+            }
+        }
+        return null
+    }
+
+    fun detectLanguage(
+        text: String,
+        onError: () -> Unit,
+        onLanguageUnIdentified: () -> Unit,
+        onLanguageNotSupported: () -> Unit,
+        onSuccess: (String) -> Unit
+    ) {
+        val languageIdentifier = LanguageIdentification.getClient()
+        languageIdentifier.identifyLanguage(text)
+            .addOnSuccessListener { languageCode ->
+                if (languageCode == "und") {
+                    onLanguageUnIdentified()
+                } else {
+                    val language = getLanguageByCode(languageCode)
+                    if (language.isNullOrBlank()) {
+                        onLanguageNotSupported()
+                    } else {
+                        onSuccess(language)
+                    }
+                }
+//                code(languageCode)
+            }
+            .addOnFailureListener {
+//                code(ERROR)
+                onError()
+            }
+    }
 }

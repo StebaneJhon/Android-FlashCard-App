@@ -11,6 +11,9 @@ import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
@@ -37,6 +40,24 @@ class MultiChoiceQuizGameViewModel(
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
     private var passedCards: Int = 0
     private var restCard = 0
+
+    fun detectDefaultContentLanguages(): String? {
+        var contentLanguage: String? = null
+        if (deck.cardContentDefaultLanguage.isNullOrBlank()) {
+            LanguageUtil().detectLanguage(
+                text = cardList.first()?.cardContent?.content!!,
+                onError = { contentLanguage = null },
+                onLanguageUnIdentified = { contentLanguage = null },
+                onLanguageNotSupported = { contentLanguage = null },
+                onSuccess = { contentLanguage = it }
+            )
+        } else {
+            contentLanguage =  deck.cardContentDefaultLanguage
+        }
+        return contentLanguage
+    }
+
+
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
@@ -92,7 +113,7 @@ class MultiChoiceQuizGameViewModel(
             if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
                 randomDefinition = randomCard?.cardDefinition?.random()
                 selectedDefinitionLanguage =
-                    randomCard?.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!
+                    randomCard?.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
             } else {
                 randomDefinition = randomCard?.cardContent
                 selectedDefinitionLanguage =
@@ -104,7 +125,9 @@ class MultiChoiceQuizGameViewModel(
                         MultiChoiceCardDefinitionModel(
                             actualCardId,
                             TextWithLanguageModel(
+                                randomDefinition.cardId,
                                 randomDefinition.definition,
+                                DEFINITION,
                                 selectedDefinitionLanguage
                             ),
                             false,
@@ -119,7 +142,9 @@ class MultiChoiceQuizGameViewModel(
                         MultiChoiceCardDefinitionModel(
                             actualCardId,
                             TextWithLanguageModel(
+                                randomDefinition.cardId,
                                 randomDefinition.content,
+                                CONTENT,
                                 selectedDefinitionLanguage
                             ),
                             false,
@@ -298,19 +323,22 @@ class MultiChoiceQuizGameViewModel(
                 val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
                     card?.cardId!!,
                     TextWithLanguageModel(
+                        card.cardId,
                         correctAlternative,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!
+                        DEFINITION,
+                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                     ),
                     true,
                     false,
                 )
-                val definitions =
-                    getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
+                val definitions = getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
                 MultiChoiceGameCardModel(
                     card.cardId,
                     TextWithLanguageModel(
+                        card.cardId,
                         card.cardContent?.content!!,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage!!
+                        CONTENT,
+                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     ),
                     definitions,
                 )
@@ -318,8 +346,10 @@ class MultiChoiceQuizGameViewModel(
                 val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
                     card?.cardId!!,
                     TextWithLanguageModel(
+                        card.cardId,
                         card.cardContent?.content!!,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage!!
+                        CONTENT,
+                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     ),
                     true,
                     false,
@@ -329,8 +359,10 @@ class MultiChoiceQuizGameViewModel(
                 MultiChoiceGameCardModel(
                     card.cardId,
                     TextWithLanguageModel(
+                        card.cardId,
                         correctAlternative,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!
+                        DEFINITION,
+                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                     ),
                     definitions,
                 )
@@ -346,8 +378,10 @@ class MultiChoiceQuizGameViewModel(
                 val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
                     card?.cardId!!,
                     TextWithLanguageModel(
+                        card.cardId,
                         correctAlternative,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!
+                        DEFINITION,
+                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                     ),
                     true,
                     false,
@@ -357,8 +391,10 @@ class MultiChoiceQuizGameViewModel(
                 MultiChoiceGameCardModel(
                     card.cardId,
                     TextWithLanguageModel(
+                        card.cardId,
                         card.cardContent?.content!!,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage!!
+                        CONTENT,
+                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     ),
                     definitions,
                 )
@@ -366,8 +402,10 @@ class MultiChoiceQuizGameViewModel(
                 val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
                     card?.cardId!!,
                     TextWithLanguageModel(
+                        card.cardId,
                         card.cardContent?.content!!,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage!!
+                        CONTENT,
+                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     ),
                     true,
                     false,
@@ -377,8 +415,10 @@ class MultiChoiceQuizGameViewModel(
                 MultiChoiceGameCardModel(
                     card.cardId,
                     TextWithLanguageModel(
+                        card.cardId,
                         correctAlternative,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage!!
+                        DEFINITION,
+                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                     ),
                     definitions,
                 )
@@ -456,6 +496,14 @@ class MultiChoiceQuizGameViewModel(
 
     fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
+    }
+
+    fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardContentLanguage(cardId, language)
+    }
+
+    fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardDefinitionLanguage(cardId, language)
     }
 
 }

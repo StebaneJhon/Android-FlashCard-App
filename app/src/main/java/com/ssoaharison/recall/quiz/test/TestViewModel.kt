@@ -10,6 +10,7 @@ import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
@@ -61,14 +62,14 @@ class TestViewModel(
     fun initLocalCards(cards: List<ImmutableCard?>) {
         localCards = cards.map { card ->
             val cardDefinitions = if (card?.cardType == SINGLE_ANSWER_CARD) {
-                getCardDefinitions(card.cardType, card.cardDefinition!!, card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!, 4, card.cardId)
+                getCardDefinitions(card.cardType, card.cardDefinition!!, card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage, 4, card.cardId)
             } else {
-                getCardDefinitions(card?.cardType!!, card.cardDefinition!!, card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!, card.cardDefinition.size, card.cardId)
+                getCardDefinitions(card?.cardType!!, card.cardDefinition!!, card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage, card.cardDefinition.size, card.cardId)
             }
             TestCardModel(
                 cardId = card.cardId,
                 cardContent = card.cardContent!!,
-                cardContentLanguage = card.cardContentLanguage ?: deck?.cardContentDefaultLanguage!!,
+                cardContentLanguage = card.cardContentLanguage ?: deck?.cardContentDefaultLanguage,
                 cardType = card.cardType,
                 cardDefinition = cardDefinitions,
                 cardDefinitionLanguage = card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
@@ -129,7 +130,7 @@ class TestViewModel(
     private fun getCardDefinitions(
         cardType: String,
         definitions: List<CardDefinition>,
-        cardDefinitionLanguage: String,
+        cardDefinitionLanguage: String?,
         requiredAlternativeSum: Int,
         cardId: String,
     ): List<TestCardDefinitionModel> {
@@ -141,7 +142,7 @@ class TestViewModel(
                 definitionId = it.definitionId,
                 attachedCardId = cardId,
                 cardId = it.cardId,
-                definition = TextWithLanguageModel(it.definition, cardDefinitionLanguage),
+                definition = TextWithLanguageModel(it.cardId, it.definition, DEFINITION, cardDefinitionLanguage),
                 cardType = cardType,
                 isCorrect = it.isCorrectDefinition,
                 isSelected = false
@@ -155,13 +156,13 @@ class TestViewModel(
             val randomDefinition = randomCard?.cardDefinition?.random()
             if (randomDefinition !in temporaryDefinitionList) {
                 if (randomDefinition != null) {
-                    val randomCardDefinitionLanguage = randomCard.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!
+                    val randomCardDefinitionLanguage = randomCard.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage
                     temporaryTestCardDefinitionModel.add(
                         TestCardDefinitionModel(
                             definitionId = randomDefinition.definitionId,
                             attachedCardId = cardId,
                             cardId = randomCard.cardId,
-                            definition = TextWithLanguageModel(randomDefinition.definition, randomCardDefinitionLanguage),
+                            definition = TextWithLanguageModel(randomDefinition.cardId, randomDefinition.definition, DEFINITION, randomCardDefinitionLanguage),
                             cardType = cardType,
                             isCorrect = randomDefinition.isCorrectDefinition,
                             isSelected = false
@@ -260,6 +261,14 @@ class TestViewModel(
 
     fun updateCard(card: ImmutableCard) = viewModelScope.launch {
         repository.updateCard(card)
+    }
+
+    fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardContentLanguage(cardId, language)
+    }
+
+    fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardDefinitionLanguage(cardId, language)
     }
 
 }

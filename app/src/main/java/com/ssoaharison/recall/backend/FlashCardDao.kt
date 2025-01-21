@@ -91,8 +91,20 @@ interface FlashCardDao {
     @Update()
     suspend fun updateDeck(deck: Deck)
 
+    @Query("UPDATE deck SET card_content_default_language = :language WHERE deckId = :deckId")
+    suspend fun updateDefaultCardContentLanguage(deckId: String, language: String)
+
+    @Query("UPDATE deck SET card_definition_default_language = :language WHERE deckId = :deckId")
+    suspend fun updateDefaultCardDefinitionLanguage(deckId: String, language: String)
+
     @Update()
     suspend fun updateCard(card: Card)
+
+    @Query("UPDATE card SET card_content_language = :language WHERE cardId = :cardId")
+    suspend fun updateCardContentLanguage(cardId: String, language: String)
+
+    @Query("UPDATE card SET card_definition_language = :language WHERE cardId = :cardId")
+    suspend fun updateCardDefinitionLanguage(cardId: String, language: String)
 
     @Update
     suspend fun updateBoxLevel(boxLevel: SpaceRepetitionBox)

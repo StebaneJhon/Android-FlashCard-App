@@ -20,6 +20,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.SearchView
@@ -70,7 +71,12 @@ import com.ssoaharison.recall.util.UiState
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
+import com.google.mlkit.nl.languageid.LanguageIdentification
+import com.ssoaharison.recall.util.Constant.ERROR
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -381,13 +387,13 @@ class CardFragment :
                     if (tts?.isSpeaking == true) {
                         stopReading(text)
                     } else {
-                        readText(text, text.text.language)
+                        onStartReadingText(text, text.text.language, text.type)
                     }
                 }) { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
                 } else {
-                    readText(text, text.text.language)
+                    onStartReadingText(text, text.text.language, text.type)
                 }
             }
         }!!
@@ -437,8 +443,64 @@ class CardFragment :
             .show()
     }
 
-    private fun readText(textAndView: TextClickedModel, language: String) {
+    private fun onStartReadingText(
+        textAndView: TextClickedModel,
+        language: String?,
+        type: String
+    ) {
+        if (language.isNullOrBlank()) {
+            val languageUtil = LanguageUtil()
+            languageUtil.detectLanguage(
+                text = textAndView.text.toString(),
+                onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
+                onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
+                onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                onSuccess = { detectedLanguage ->
+                    when (type) {
+                        CONTENT -> cardViewModel.updateCardContentLanguage(deck.deckId, detectedLanguage)
+                        DEFINITION -> cardViewModel.updateCardDefinitionLanguage(deck.deckId, detectedLanguage)
+                    }
+                    readeText(textAndView, detectedLanguage)
+                }
+            )
+//            { languageCode ->
+//                when (languageCode) {
+//                    "und" -> showSnackBar(R.string.error_message_can_not_identify_language)
+//                    ERROR -> showSnackBar(R.string.error_message_error_while_detecting_language)
+//                    else -> {
+//                        val detectedLanguage = languageUtil.getLanguageByCode(languageCode)
+//                        if (detectedLanguage.isNullOrBlank()) {
+//                            showSnackBar(R.string.error_message_language_not_supported)
+//                        } else {
+//                            when (type) {
+//                                CONTENT -> cardViewModel.updateCardContentDefaultLanguage(deck.deckId, detectedLanguage)
+//                                DEFINITION -> cardViewModel.updateCardDefinitionDefaultLanguage(deck.deckId, detectedLanguage)
+//                            }
+//                            readeText(textAndView, detectedLanguage)
+//                        }
+//                    }
+//                }
+//            }
+        } else {
+            readeText(textAndView, language)
+        }
 
+    }
+
+    private fun showSnackBar(
+        @StringRes messageRes: Int
+    ) {
+        Snackbar.make(
+            binding.cardsActivityRoot,
+            getString(messageRes),
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    private fun readeText(
+        textAndView: TextClickedModel,
+        language: String
+    ) {
         val text = textAndView.text.text
         val view = textAndView.view
         val textColor = view.textColors
@@ -470,7 +532,6 @@ class CardFragment :
         tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
 
         tts?.setOnUtteranceProgressListener(speechListener)
-
     }
 
     private fun stopReading(textAndView: TextClickedModel) {

@@ -3,6 +3,7 @@ package com.ssoaharison.recall.util
 object Constant {
     const val ADD = "add"
     const val UPDATE = "update"
+    const val ERROR = "error"
     const val MIN_CARD_FOR_MULTI_CHOICE_QUIZ = 4
     const val MIN_CARD_FOR_MATCHING_QUIZ = 4
     const val MIN_CARD_FOR_TEST = 4
@@ -149,4 +150,9 @@ object InternetStatus {
     const val INTERNET_VIA_WIFI = "Wifi"
     const val INTERNET_VIA_ETHERNET = "Ethernet"
     const val NO_INTERNET = "No internet"
+}
+
+object TextType {
+    const val CONTENT = "content"
+    const val DEFINITION = "definition"
 }

@@ -17,6 +17,7 @@ import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextWithLanguageModel
 
 class TestAdapter(
@@ -120,7 +121,14 @@ class TestAdapter(
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
-            val texts = arrayListOf(TextWithLanguageModel(card.cardContent.content, card.cardContentLanguage!!))
+            val texts = arrayListOf(
+                TextWithLanguageModel(
+                    card.cardId,
+                    card.cardContent.content,
+                    CONTENT,
+                    card.cardContentLanguage
+                )
+            )
             val views = arrayListOf(tvContent)
             btAlternatives.forEachIndexed { index, materialButton ->
                 if (index < card.cardDefinition.size) {

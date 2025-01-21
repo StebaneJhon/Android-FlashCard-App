@@ -24,6 +24,8 @@ import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 
 
@@ -126,12 +128,18 @@ class CardsRecyclerViewAdapter(
                     cardDescriptionError.visibility = View.GONE
                     tv.text = definitionTexts[index]
                     tv.setOnClickListener { it as TextView
-                        val text = it.text.toString().lowercase()
-                        val language = if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage!!
+                        val text = it.text.toString()
+                        val language = if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage
                         onReadDefinition(
                             TextClickedModel(
-                                TextWithLanguageModel(text, language),
-                                it
+                                TextWithLanguageModel(
+                                    card?.cardId!!,
+                                    text,
+                                    DEFINITION,
+                                    language
+                                ),
+                                it,
+                                DEFINITION
                             )
                         )
                     }
@@ -165,13 +173,18 @@ class CardsRecyclerViewAdapter(
 
             onCardText.apply {
                 setOnClickListener {it as TextView
-
-                    val text = it.text.toString().lowercase()
-                    val language = if (card?.cardContentLanguage != null) card.cardContentLanguage else deck.cardContentDefaultLanguage!!
+                    val text = it.text.toString()
+                    val language = if (card?.cardContentLanguage != null) card.cardContentLanguage else deck.cardContentDefaultLanguage
                     onReadContent(
                         TextClickedModel(
-                            TextWithLanguageModel(text, language),
-                            it
+                            TextWithLanguageModel(
+                                card?.cardId!!,
+                                text,
+                                CONTENT,
+                                language
+                            ),
+                            it,
+                            CONTENT
                         )
                     )
                 }

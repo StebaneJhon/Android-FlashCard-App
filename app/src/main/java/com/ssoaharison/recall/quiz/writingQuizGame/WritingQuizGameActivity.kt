@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
@@ -34,7 +35,10 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_A
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -413,8 +417,34 @@ class WritingQuizGameActivity :
             }
         }
 
-        speak(text.language, params, text.text, speechListener)
+        if (text.language.isNullOrBlank()) {
+            LanguageUtil().detectLanguage(
+                text = text.text,
+                onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
+                onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
+                onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                onSuccess = { detectedLanguage ->
+                    when (text.textType) {
+                        CONTENT -> viewModel.updateCardContentLanguage(text.cardId, detectedLanguage)
+                        DEFINITION -> viewModel.updateCardDefinitionLanguage(text.cardId, detectedLanguage)
+                    }
+                    speak(detectedLanguage, params, text.text, speechListener)
+                }
+            )
+        } else {
+            speak(text.language, params, text.text, speechListener)
+        }
 
+    }
+
+    private fun showSnackBar(
+        @StringRes messageRes: Int
+    ) {
+        Snackbar.make(
+            binding.lyWritingQuizGameRoot,
+            getString(messageRes),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun onReading(

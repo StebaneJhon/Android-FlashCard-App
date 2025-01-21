@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -35,6 +36,9 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -350,7 +354,7 @@ class TestActivity :
                 onReadingStop(position, view, onStopColor)
                 position += 1
                 if (position < textSum) {
-                    speak(params, text, position, this)
+                    onSpeak(params, text, position, this)
                 } else {
                     position = 0
                     return
@@ -363,7 +367,7 @@ class TestActivity :
             }
         }
 
-        speak(params, text, position, speechListener)
+        onSpeak(params, text, position, speechListener)
 
     }
 
@@ -394,18 +398,54 @@ class TestActivity :
         }
     }
 
-    private fun speak(
+    private fun onSpeak(
         params: Bundle,
         text: List<TextWithLanguageModel>,
         position: Int,
         speechListener: UtteranceProgressListener
     ) {
+        val actualText = text[position]
+        if (actualText.language.isNullOrBlank()) {
+            LanguageUtil().detectLanguage(
+                text = actualText.text,
+                onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
+                onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
+                onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                onSuccess = { detectedLanguage ->
+                    when (actualText.textType) {
+                        CONTENT -> testViewModel.updateCardContentLanguage(actualText.cardId, detectedLanguage)
+                        DEFINITION -> testViewModel.updateCardDefinitionLanguage(actualText.cardId, detectedLanguage)
+                    }
+                    speak(actualText.text, detectedLanguage, params, speechListener)
+                }
+            )
+        } else {
+            speak(actualText.text, actualText.language, params, speechListener)
+        }
+    }
+
+    private fun speak(
+        text: String,
+        language: String,
+        params: Bundle,
+        speechListener: UtteranceProgressListener
+    ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
-        tts?.speak(text[position].text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
+        tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts?.setOnUtteranceProgressListener(speechListener)
+    }
+
+    private fun showSnackBar(
+        @StringRes messageRes: Int
+    ) {
+        Snackbar.make(
+            binding.main,
+            getString(messageRes),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun onReading(

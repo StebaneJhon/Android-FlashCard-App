@@ -23,6 +23,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -52,7 +53,11 @@ import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.util.Constant.ERROR
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import com.ssoaharison.recall.util.TextType.CONTENT
+import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -776,13 +781,30 @@ class FlashCardGameActivity :
             if (tts?.isSpeaking == true) {
                 stopReading(listOf(binding.tvQuizFront), v as Button)
             } else {
-                val language = onScreenCards.top.cardContentLanguage ?: viewModel.deck?.cardContentDefaultLanguage!!
-                val textToRead = TextWithLanguageModel(onScreenCards.top.cardContent?.content!!, language)
-                readText(
-                    listOf(textToRead),
-                    listOf(binding.tvQuizFront),
-                    v as Button
-                )
+                val language = onScreenCards.top.cardContentLanguage ?: viewModel.deck?.cardContentDefaultLanguage
+                if (language.isNullOrBlank()) {
+                    LanguageUtil().detectLanguage(
+                        text = onScreenCards.top.cardContent?.content!!,
+                        onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
+                        onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
+                        onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                        onSuccess = { detectedLanguage ->
+                            viewModel.updateCardContentLanguage(onScreenCards.top.cardId, detectedLanguage)
+                            readText(
+                                listOf(TextWithLanguageModel(onScreenCards.top.cardId, onScreenCards.top.cardContent.content, CONTENT, detectedLanguage)),
+                                listOf(binding.tvQuizFront),
+                                v as Button
+                            )
+                        }
+                    )
+                } else {
+                    readText(
+                        listOf(TextWithLanguageModel(onScreenCards.top.cardId, onScreenCards.top.cardContent?.content!!, CONTENT, language)),
+                        listOf(binding.tvQuizFront),
+                        v as Button
+                    )
+                }
+
             }
         }
         binding.btCardBackSpeak.setOnClickListener { v ->
@@ -790,17 +812,54 @@ class FlashCardGameActivity :
                 stopReading(views, v as Button)
             } else {
                 val definitions = cardDefinitionsToStrings(correctDefinitions)
-                val textsToRead = definitions.map { d ->
-                    val language = onScreenCards.top.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage!!
-                    TextWithLanguageModel(d, language)
+                val language = onScreenCards.top.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage
+                if (language.isNullOrBlank()) {
+                    LanguageUtil().detectLanguage(
+                        text = definitions.first(),
+                        onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
+                        onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
+                        onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                        onSuccess = { detectedLanguage ->
+                            viewModel.updateCardDefinitionLanguage(onScreenCards.top.cardId, detectedLanguage)
+                            val textsToRead = definitions.map { d ->
+                                TextWithLanguageModel(onScreenCards.top.cardId, d, DEFINITION, detectedLanguage)
+                            }
+                            readText(
+                                textsToRead,
+                                views,
+                                v as Button
+                            )
+                        }
+                    )
+                } else {
+                    val textsToRead = definitions.map { d ->
+                        TextWithLanguageModel(onScreenCards.top.cardId, d, DEFINITION, language)
+                    }
+                    readText(
+                        textsToRead,
+                        views,
+                        v as Button
+                    )
                 }
-                readText(
-                    textsToRead,
-                    views,
-                    v as Button
-                )
             }
         }
+    }
+
+//    private fun onStartReading(
+//        textWithLanguage: List<TextWithLanguageModel>,
+//        type: String
+//    ) {
+//        if ()
+//    }
+
+    private fun showSnackBar(
+        @StringRes messageRes: Int
+    ) {
+        Snackbar.make(
+            binding.clFlashCardRootView,
+            getString(messageRes),
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 
     private fun stopReading(views: List<TextView>, button: Button) {
@@ -863,7 +922,7 @@ class FlashCardGameActivity :
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(text[position].language!!)!!
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts?.speak(text[position].text, TextToSpeech.QUEUE_ADD, params, "UniqueID")

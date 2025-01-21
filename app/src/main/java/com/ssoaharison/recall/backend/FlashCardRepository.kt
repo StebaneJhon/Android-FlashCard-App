@@ -158,6 +158,22 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         flashCardDao.updateDeck(deck)
     }
 
+    suspend fun updateDefaultCardContentLanguage(deckId: String, language: String) {
+        flashCardDao.updateDefaultCardContentLanguage(deckId, language)
+    }
+
+    suspend fun updateDefaultCardDefinitionLanguage(deckId: String, language: String) {
+        flashCardDao.updateDefaultCardDefinitionLanguage(deckId, language)
+    }
+
+    suspend fun updateCardContentLanguage(cardId: String, language: String) {
+        flashCardDao.updateCardContentLanguage(cardId, language)
+    }
+
+    suspend fun updateCardDefinitionLanguage(cardId: String, language: String) {
+        flashCardDao.updateCardDefinitionLanguage(cardId, language)
+    }
+
     @WorkerThread
     suspend fun updateCard(card: ImmutableCard) {
         flashCardDao.updateCardContent(card.cardContent!!)

@@ -871,4 +871,9 @@
         <item name="colorControlActivated">?colorOnSurface</item>
     </style>
 
+    <!-- Divider -->
+    <style name="Widget.App.MaterialDivider" parent="Widget.Material3.MaterialDivider">
+        <item name="dividerColor">?colorSurfaceContainer</item>
+    </style>
+
 </resources>

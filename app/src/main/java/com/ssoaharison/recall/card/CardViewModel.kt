@@ -65,6 +65,22 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         return repository.searchCard(searchQuery, deckId).asLiveData()
     }
 
+    fun updateCardContentDefaultLanguage(deckId: String, language: String) = viewModelScope.launch {
+        repository.updateDefaultCardContentLanguage(deckId, language)
+    }
+
+    fun updateCardDefinitionDefaultLanguage(deckId: String, language: String) = viewModelScope.launch {
+        repository.updateDefaultCardDefinitionLanguage(deckId, language)
+    }
+
+    fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardContentLanguage(cardId, language)
+    }
+
+    fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
+        repository.updateCardDefinitionLanguage(cardId, language)
+    }
+
 }
 
 class CardViewModelFactory(private val repository: FlashCardRepository) : ViewModelProvider.Factory {

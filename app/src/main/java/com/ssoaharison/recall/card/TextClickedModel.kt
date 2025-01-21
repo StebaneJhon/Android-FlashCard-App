@@ -5,5 +5,6 @@ import com.ssoaharison.recall.util.TextWithLanguageModel
 
 data class TextClickedModel(
     val text: TextWithLanguageModel,
-    val view: TextView
+    val view: TextView,
+    val type: String
 )
