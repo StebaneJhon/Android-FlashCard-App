@@ -97,8 +97,8 @@ class NewCardDialogViewModel(
             val newCardId = now()
             delay(10)
             val contentId = now()
-            val newCardContent =
-                generateCardContent(result.question, newCardId, contentId, deckId)
+            val formatedQuestion = reformatText(result.question)
+            val newCardContent = generateCardContent(formatedQuestion, newCardId, contentId, deckId)
             val newCardDefinitions = generateCardDefinitions(
                 result.correctAnswer,
                 result.incorrectAnswers,
@@ -141,9 +141,10 @@ class NewCardDialogViewModel(
         val newCardDefinitions = arrayListOf<CardDefinition>()
         newCardDefinitions.add(createDefinition(correctAnswer, true, cardId, contentId, deckId))
         incorrectAnswers.forEach { incorrectAnswer ->
+            val reformatedText = reformatText(incorrectAnswer)
             newCardDefinitions.add(
                 createDefinition(
-                    incorrectAnswer,
+                    reformatedText,
                     false,
                     cardId,
                     contentId,
@@ -154,36 +155,34 @@ class NewCardDialogViewModel(
         return newCardDefinitions
     }
 
-    private fun createDefinition(
+    fun createDefinition(
         text: String,
         isCorrect: Boolean,
         cardId: String,
         contentId: String,
         deckId: String
     ): CardDefinition {
-        val reformatedText = reformatText(text)
         return CardDefinition(
             null,
             cardId,
             deckId,
             contentId,
-            reformatedText,
+            text,
             isCorrectRevers(isCorrect)
         )
     }
 
-    private fun generateCardContent(
+    fun generateCardContent(
         text: String,
         cardId: String,
         contentId: String,
         deckId: String
     ): CardContent {
-        val formatedText = reformatText(text)
         return CardContent(
             contentId,
             cardId,
             deckId,
-            formatedText
+            text
         )
     }
 
@@ -198,12 +197,12 @@ private fun setCategory(category: Int): String {
     return ""
 }
 
-private fun now(): String {
+fun now(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss:SSS")
     return LocalDateTime.now().format(formatter)
 }
 
-private fun today(): String {
+fun today(): String {
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     return formatter.format(LocalDate.now())
 }
