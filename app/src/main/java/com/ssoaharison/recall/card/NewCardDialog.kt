@@ -9,10 +9,8 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.os.Parcelable
 import android.speech.RecognizerIntent
 import android.util.TypedValue
 import android.view.ActionMode
@@ -36,7 +34,6 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -62,7 +59,6 @@ import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.translate.TranslateRemoteModel
 import com.google.mlkit.nl.translate.Translation
-import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -77,9 +73,8 @@ import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.deck.UploadOpenTriviaQuizDialog
 import com.ssoaharison.recall.helper.InternetChecker
-import com.ssoaharison.recall.util.InternetStatus.INTERNET_VIA_CELLULAR
-import com.ssoaharison.recall.util.InternetStatus.NO_INTERNET
 import com.ssoaharison.recall.util.UiState
+import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
@@ -105,7 +100,7 @@ class NewCardDialog(
     private var selectedField: EditText? = null
     private var selectedFieldLy: TextInputLayout? = null
     private var actualFieldLanguage: String? = null
-    var cardUploadingJob: Job? = null
+    private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
 
     private val newCardViewModel by lazy {
@@ -116,6 +111,7 @@ class NewCardDialog(
             NewCardDialogViewModelFactory(openTriviaRepository)
         )[NewCardDialogViewModel::class.java]
     }
+
     private var actionMode: ActionMode? = null
     private var uri: Uri? = null
     private var revealedDefinitionFields: Int = 1
@@ -203,6 +199,19 @@ class NewCardDialog(
             val width = ViewGroup.LayoutParams.MATCH_PARENT
             val height = ViewGroup.LayoutParams.MATCH_PARENT
             dialog.window!!.setLayout(width, height)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (newCardViewModel.areThereUnSavedAddedCards()) {
+            if (newCardViewModel.areThereUnSavedAddedCards()) {
+                sendCardsOnSave(
+                    REQUEST_CODE_CARD,
+                    SAVE_CARDS_BUNDLE_KEY,
+                    newCardViewModel.addedCards.value
+                )
+            }
         }
     }
 
@@ -416,7 +425,6 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     binding.tilContentMultiAnswerCard,
                     v,
-//                    deck.cardContentDefaultLanguage,
                     getContentLanguage(),
                     hasFocus,
                     callback,
@@ -433,7 +441,6 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     definitionField.fieldLy,
                     v,
-//                    deck.cardDefinitionDefaultLanguage,
                     getDefinitionLanguage(),
                     hasFocus,
                     callback,
@@ -999,8 +1006,6 @@ class NewCardDialog(
             return addedContentLanguage.toString()
         }
     }
-//        if (binding.tieContentLanguage.text.isNullOrBlank()) null
-//        else binding.tieContentLanguage.text.toString()
 
     private fun getDefinitionLanguage(): String? {
         val addedDefinitionLanguage = binding.tieDefinitionLanguage.text
@@ -1016,9 +1021,6 @@ class NewCardDialog(
         }
 
     }
-//    =
-//        if (binding.tieDefinitionLanguage.text.isNullOrBlank()) null
-//        else binding.tieDefinitionLanguage.text.toString()
 
     private fun getCardType(definitions: List<CardDefinition>): String {
         val definitionSum = definitions.size
@@ -1188,58 +1190,26 @@ class NewCardDialog(
         ly?.error = null
         animProgressBar(ly)
         actualField?.setText(getString(R.string.message_translation_in_progress))
-        val languageUtil = LanguageUtil()
         val definitionLanguage = getDefinitionLanguage()
         val contentLanguage = getContentLanguage()
-        val tl = if (definitionLanguage.isNullOrBlank()) null else languageUtil.getLanguageCodeForTranslation(definitionLanguage)
 
-        if (contentLanguage.isNullOrBlank()) {
-            languageUtil.detectLanguage(
-                text,
-                onError = { localLanguage ->
-                    prepareTranslation(
-                        languageUtil.getLanguageCodeForTranslation(localLanguage),
-                        tl,
-                        actualField,
-                        ly,
-                        text
-                    )
-                    showSnackBar(R.string.error_message_error_while_detecting_language)
-                },
-                onLanguageUnIdentified = { localLanguage ->
-                    prepareTranslation(
-                        languageUtil.getLanguageCodeForTranslation(localLanguage),
-                        tl,
-                        actualField,
-                        ly,
-                        text
-                    )
-                    showSnackBar(R.string.error_message_can_not_identify_language)
-                },
-                onLanguageNotSupported = {
-                    showSnackBar(R.string.error_message_language_not_supported)
-                },
-                onSuccess = { detectedLanguage ->
-                    prepareTranslation(
-                        languageUtil.getLanguageCodeForTranslation(detectedLanguage),
-                        tl,
-                        actualField,
-                        ly,
-                        text)
-                },
-            )
-//            Locale.getDefault().language
-        } else {
-            prepareTranslation(
-                languageUtil.getLanguageCodeForTranslation(contentLanguage),
-                tl,
-                actualField,
-                ly,
-                text
-            )
-
-        }
-//        prepareTranslation(fl, tl, actualField, ly, text)
+        LanguageUtil().startTranslation(
+            text = text,
+            definitionLanguage = definitionLanguage,
+            contentLanguage = contentLanguage,
+            onStartTranslation = { translationLanguages ->
+                translate(
+                    fl = translationLanguages.fl,
+                    tl = translationLanguages.tl,
+                    actualField = actualField,
+                    ly = ly,
+                    text = text,
+                )
+            },
+            onLanguageDetectionLanguageNotSupported = {
+                showSnackBar(R.string.error_message_language_not_supported)
+            },
+        )
     }
 
     private fun showSnackBar(
@@ -1252,102 +1222,88 @@ class NewCardDialog(
         ).show()
     }
 
-    private fun prepareTranslation(
+    private fun translate (
         fl: String?,
         tl: String?,
         actualField: EditText?,
         ly: TextInputLayout?,
         text: String
     ) {
-        if (fl != null && tl != null) {
-            val options = TranslatorOptions.Builder()
-                .setSourceLanguage(fl)
-                .setTargetLanguage(tl)
-                .build()
-            val appTranslator = Translation.getClient(options)
-
-            var conditions: DownloadConditions
-
-            val modelManager = RemoteModelManager.getInstance()
-            modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
-                .addOnSuccessListener { models ->
-                    val modelsLanguages = models.map { it.language }
-                    if (fl !in modelsLanguages || tl !in modelsLanguages) {
-                        actualField?.setText(getString(R.string.message_translation_downloading_language_model))
-                        when (InternetChecker().isOnline(requireContext())) {
-                            NO_INTERNET -> {
-                                setEditTextEndIconOnClick(ly)
-                                ly?.error = getString(R.string.error_translation_no_internet)
-                            }
-
-                            INTERNET_VIA_CELLULAR -> {
-                                MaterialAlertDialogBuilder(
-                                    requireContext(),
-                                    R.style.ThemeOverlay_App_MaterialAlertDialog
-                                )
-                                    .setTitle(getString(R.string.title_no_wifi))
-                                    .setMessage(getString(R.string.message_no_wifi))
-                                    .setNegativeButton(getString(R.string.option2_no_wifi)) { dialog, _ ->
-                                        setEditTextEndIconOnClick(ly)
-                                        actualField?.text?.clear()
-                                        dialog.dismiss()
-                                    }
-                                    .setPositiveButton(getString(R.string.option1_no_wifi)) { dialog, _ ->
-                                        conditions = DownloadConditions.Builder()
-                                            .build()
-                                        translate(appTranslator, conditions, text, actualField, ly)
-                                        dialog.dismiss()
-                                    }
-                                    .show()
-                            }
-
-                            else -> {
-                                conditions = DownloadConditions.Builder()
-                                    .requireWifi()
-                                    .build()
-                                translate(appTranslator, conditions, text, actualField, ly)
-                            }
-                        }
-                    } else {
-                        conditions = DownloadConditions.Builder()
-                            .requireWifi()
-                            .build()
-                        translate(appTranslator, conditions, text, actualField, ly)
-                    }
-                }
-                .addOnFailureListener {
-                    ly?.error = getString(R.string.error_translation_unknown)
-                }
-        } else {
-            setEditTextEndIconOnClick(ly)
-            ly?.error = appContext?.getString(R.string.error_message_no_card_definition_language)
-            showSnackBar(R.string.error_message_no_card_definition_language)
-        }
-    }
-
-    private fun translate(
-        appTranslator: Translator,
-        conditions: DownloadConditions,
-        text: String,
-        actualField: EditText?,
-        ly: TextInputLayout?
-    ) {
-        appTranslator.downloadModelIfNeeded(conditions)
-            .addOnSuccessListener {
-                appTranslator.translate(text)
-                    .addOnSuccessListener { translatedText ->
-                        actualField?.setText(translatedText)
+        val languageUtil = LanguageUtil()
+        languageUtil.prepareTranslation(
+            context = requireContext(),
+            fl = fl,
+            tl = tl,
+            onDownloadingLanguageMode = {
+                actualField?.setText(getString(R.string.message_translation_downloading_language_model))
+            },
+            onMissingCardDefinitionLanguage = {
+                setEditTextEndIconOnClick(ly)
+                ly?.error =
+                    appContext?.getString(R.string.error_message_no_card_definition_language)
+                showSnackBar(R.string.error_message_no_card_definition_language)
+            },
+            onModelDownloadingFailure = {
+                ly?.error = getString(R.string.error_translation_unknown)
+            },
+            onSuccess = { translatorModel ->
+                languageUtil.translate(
+                    appTranslator = translatorModel.appTranslator,
+                    conditions = translatorModel.condition,
+                    text = text,
+                    onSuccess = { translation ->
+                        actualField?.setText(translation)
                         setEditTextEndIconOnClick(ly)
-                    }
-                    .addOnFailureListener { exception ->
+                    },
+                    onTranslationFailure = { exception ->
                         ly?.error = exception.toString()
                         setEditTextEndIconOnClick(ly)
-                    }
-            }
-            .addOnFailureListener {
+                    },
+                    onModelDownloadingFailure = {
+                        setEditTextEndIconOnClick(ly)
+                        ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                    },
+                )
+            },
+            onNoInternet = {
                 setEditTextEndIconOnClick(ly)
-                ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
-            }
+                ly?.error = getString(R.string.error_translation_no_internet)
+            },
+            onInternetViaCellular = { translatorModel ->
+                MaterialAlertDialogBuilder(
+                    requireContext(),
+                    R.style.ThemeOverlay_App_MaterialAlertDialog
+                )
+                    .setTitle(getString(R.string.title_no_wifi))
+                    .setMessage(getString(R.string.message_no_wifi))
+                    .setNegativeButton(getString(R.string.option2_no_wifi)) { dialog, _ ->
+                        setEditTextEndIconOnClick(ly)
+                        actualField?.text?.clear()
+                        dialog.dismiss()
+                    }
+                    .setPositiveButton(getString(R.string.option1_no_wifi)) { dialog, _ ->
+                        languageUtil.translate(
+                            appTranslator = translatorModel.appTranslator,
+                            conditions = translatorModel.condition,
+                            text = text,
+                            onSuccess = { translation ->
+                                actualField?.setText(translation)
+                                setEditTextEndIconOnClick(ly)
+                            },
+                            onTranslationFailure = { exception ->
+                                ly?.error = exception.toString()
+                                setEditTextEndIconOnClick(ly)
+                            },
+                            onModelDownloadingFailure = {
+                                setEditTextEndIconOnClick(ly)
+                                ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                            },
+                        )
+                        dialog.dismiss()
+                    }
+                    .show()
+            },
+        )
     }
 
     private fun animProgressBar(ly: TextInputLayout?) {
@@ -1405,21 +1361,7 @@ class NewCardDialog(
         newCardViewModel.removeAllCards()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (newCardViewModel.areThereUnSavedAddedCards()) {
-            if (newCardViewModel.areThereUnSavedAddedCards()) {
-                sendCardsOnSave(
-                    REQUEST_CODE_CARD,
-                    SAVE_CARDS_BUNDLE_KEY,
-                    newCardViewModel.addedCards.value
-                )
-            }
-        }
-    }
-
     private fun onAddMoreDefinition() {
-
         if (revealedDefinitionFields < definitionFields.size) {
             definitionFields[revealedDefinitionFields].apply {
                 fieldLy.isVisible = true
@@ -1433,12 +1375,10 @@ class NewCardDialog(
     }
 
     private fun deleteDefinitionField(field: TextInputEditText) {
-
         if (field == binding.tieDefinition10MultiAnswerCard) {
             clearField(definitionFields.last())
             return
         }
-
         var index = 0
         while (true) {
             val actualField = definitionFields[index]
@@ -1488,10 +1428,4 @@ class NewCardDialog(
         }
         revealedDefinitionFields--
     }
-
-    private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= 33 -> getParcelable(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getParcelable<T>(key)
-    }
-
 }

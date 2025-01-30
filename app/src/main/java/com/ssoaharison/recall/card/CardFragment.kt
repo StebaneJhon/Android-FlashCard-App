@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.LayoutInflater
@@ -72,11 +70,10 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.mlkit.nl.languageid.LanguageIdentification
-import com.ssoaharison.recall.util.Constant.ERROR
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
+import com.ssoaharison.recall.util.parcelableArrayList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -586,7 +583,7 @@ class CardFragment :
             REQUEST_CODE_CARD,
             this
         ) { requestKey, bundle ->
-            val result = bundle.parcelable<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
+            val result = bundle.parcelableArrayList<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
             result?.let {
                 cardViewModel.insertCards(it, deck)
             }
@@ -600,7 +597,7 @@ class CardFragment :
             REQUEST_CODE_CARD,
             this
         ) { _, bundle ->
-            val result = bundle.parcelable<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
+            val result = bundle.parcelableArrayList<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let {
                 cardViewModel.updateCard(it.first())
             }
@@ -766,12 +763,6 @@ class CardFragment :
         editor.putString(LAYOUT_MANAGER, which)
         editor.apply()
     }
-
-    private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): ArrayList<T>? =
-        when {
-            Build.VERSION.SDK_INT >= 33 -> getParcelableArrayList(key, T::class.java)
-            else -> @Suppress("DEPRECATION") getParcelableArrayList<T>(key)
-        }
 
     override fun onInit(status: Int) {
         when (status) {

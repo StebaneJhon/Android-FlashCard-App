@@ -1,7 +1,15 @@
 package com.ssoaharison.recall.util
 
+import android.content.Context
+import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.translate.TranslateLanguage
+import com.google.mlkit.nl.translate.TranslateRemoteModel
+import com.google.mlkit.nl.translate.Translation
+import com.google.mlkit.nl.translate.Translator
+import com.google.mlkit.nl.translate.TranslatorOptions
+import com.ssoaharison.recall.helper.InternetChecker
 import java.util.Locale
 
 class LanguageUtil {
@@ -161,4 +169,147 @@ class LanguageUtil {
                 onError(getLocalLanguage())
             }
     }
+
+    fun startTranslation(
+        text: String,
+        definitionLanguage: String?,
+        contentLanguage: String?,
+        onStartTranslation: (TranslationLanguagesMode) -> Unit,
+        onLanguageDetectionLanguageNotSupported: () -> Unit,
+    ) {
+        val tl = if (definitionLanguage.isNullOrBlank()) null else getLanguageCodeForTranslation(definitionLanguage)
+        if (contentLanguage.isNullOrBlank()) {
+            detectLanguage(
+                text = text,
+                onError = { localLanguage ->
+                    onStartTranslation(
+                        TranslationLanguagesMode(
+                            getLanguageCodeForTranslation(localLanguage),
+                            tl
+                        )
+                    )
+                },
+                onLanguageUnIdentified = { localLanguage ->
+                    onStartTranslation(
+                        TranslationLanguagesMode(
+                            getLanguageCodeForTranslation(localLanguage),
+                            tl
+                        )
+                    )
+                },
+                onLanguageNotSupported = {
+                    onLanguageDetectionLanguageNotSupported()
+                },
+                onSuccess = { detectedLanguage ->
+                    onStartTranslation(
+                        TranslationLanguagesMode(
+                            getLanguageCodeForTranslation(detectedLanguage),
+                            tl
+                        )
+                    )
+                },
+            )
+        } else {
+            onStartTranslation(
+                TranslationLanguagesMode(
+                    getLanguageCodeForTranslation(contentLanguage),
+                    tl
+                )
+            )
+        }
+    }
+
+    fun prepareTranslation(
+        context: Context,
+        fl: String?,
+        tl: String?,
+        onDownloadingLanguageMode: () -> Unit,
+        onMissingCardDefinitionLanguage: () -> Unit,
+        onModelDownloadingFailure: () -> Unit,
+        onSuccess: (TranslatorModel) -> Unit,
+        onNoInternet: () -> Unit,
+        onInternetViaCellular: (TranslatorModel) -> Unit
+    ) {
+        if (fl != null && tl != null) {
+            val options = TranslatorOptions.Builder()
+                .setSourceLanguage(fl)
+                .setTargetLanguage(tl)
+                .build()
+            val appTranslator = Translation.getClient(options)
+            var conditions: DownloadConditions
+            val modelManager = RemoteModelManager.getInstance()
+            modelManager.getDownloadedModels(TranslateRemoteModel::class.java)
+                .addOnSuccessListener { models ->
+                    val modelsLanguages = models.map { it.language }
+                    if (fl !in modelsLanguages || tl !in modelsLanguages) {
+                        onDownloadingLanguageMode()
+                        InternetChecker().isOnline(
+                            context,
+                            onNoInternet = { onNoInternet() },
+                            onInternetViaEthernet = {
+                                conditions = DownloadConditions.Builder()
+                                    .requireWifi()
+                                    .build()
+                                onSuccess(TranslatorModel(conditions, appTranslator))
+                            },
+                            onInternetViaWifi = {
+                                conditions = DownloadConditions.Builder()
+                                    .requireWifi()
+                                    .build()
+                                onSuccess(TranslatorModel(conditions, appTranslator))
+                            },
+                            onInternetViaCellular = {
+                                conditions = DownloadConditions.Builder()
+                                    .build()
+                                onInternetViaCellular(TranslatorModel(conditions, appTranslator) )
+                            }
+                        )
+                    } else {
+                        conditions = DownloadConditions.Builder()
+                            .requireWifi()
+                            .build()
+                        onSuccess(TranslatorModel(conditions, appTranslator))
+                    }
+                }
+                .addOnFailureListener {
+                    onModelDownloadingFailure()
+                }
+        } else {
+            onMissingCardDefinitionLanguage()
+        }
+    }
+
+    fun translate(
+        appTranslator: Translator,
+        conditions: DownloadConditions,
+        text: String,
+        onSuccess: (String) -> Unit,
+        onTranslationFailure: (Exception) -> Unit,
+        onModelDownloadingFailure: () -> Unit
+    ) {
+        appTranslator.downloadModelIfNeeded(conditions)
+            .addOnSuccessListener {
+                appTranslator.translate(text)
+                    .addOnSuccessListener { translation ->
+                        onSuccess(translation)
+                    }
+                    .addOnFailureListener { exception ->
+                        onTranslationFailure(exception)
+                    }
+            }
+            .addOnFailureListener {
+                onModelDownloadingFailure()
+            }
+    }
+
 }
+
+data class TranslationLanguagesMode(
+    val fl: String?,
+    val tl: String?
+)
+
+data class TranslatorModel(
+    val condition: DownloadConditions,
+    val appTranslator: Translator
+)

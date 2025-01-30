@@ -5,9 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.PorterDuff
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -68,6 +66,7 @@ import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -336,9 +335,8 @@ class DeckFragment :
         val newDeckDialog = NewDeckDialog(null)
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
-            val result =
-                bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
-            result?.let { it ->
+            val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
+            result?.let {
                 deckViewModel.insertDeck(it.deck)
                 if (it.action == ADD_DECK_FORWARD_TO_CARD_ADDITION) {
                     navigateTo(it.deck.toExternal(0, 0, 0), NewDeckDialog.TAG)
@@ -352,7 +350,7 @@ class DeckFragment :
         newDeckDialog.show(childFragmentManager, "Edit Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
             val result = bundle.parcelable<Deck>(NewDeckDialog.EDIT_DECK_BUNDLE_KEY)
-            result?.let { it ->
+            result?.let {
                 deckViewModel.updateDeck(it)
             }
         }
@@ -636,11 +634,6 @@ class DeckFragment :
         val editor = sharedPreferences.edit()
         editor.putString(LAYOUT_MANAGER, which)
         editor.apply()
-    }
-
-    private inline fun <reified T : Parcelable> Bundle.parcelable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= 33 -> getParcelable(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getParcelable<T>(key)
     }
 
 }

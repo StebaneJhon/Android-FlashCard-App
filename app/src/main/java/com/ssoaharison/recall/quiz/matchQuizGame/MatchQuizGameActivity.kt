@@ -4,10 +4,8 @@ import android.animation.ArgbEvaluator
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -28,6 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
+import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -352,11 +351,6 @@ class MatchQuizGameActivity : AppCompatActivity() {
     private fun startMatchQuizGame(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
-    }
-
-    private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
 
 }

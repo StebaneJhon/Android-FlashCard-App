@@ -3,32 +3,33 @@ package com.ssoaharison.recall.helper
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import com.ssoaharison.recall.util.InternetStatus.INTERNET_VIA_CELLULAR
-import com.ssoaharison.recall.util.InternetStatus.INTERNET_VIA_ETHERNET
-import com.ssoaharison.recall.util.InternetStatus.INTERNET_VIA_WIFI
-import com.ssoaharison.recall.util.InternetStatus.NO_INTERNET
 
 class InternetChecker {
-    fun isOnline(context: Context): String {
+    fun isOnline(
+        context: Context,
+        onNoInternet: () -> Unit,
+        onInternetViaEthernet: () -> Unit,
+        onInternetViaWifi: () -> Unit,
+        onInternetViaCellular: () -> Unit,
+    ) {
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
         if (capabilities != null) {
-            return when {
+            when {
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
-                    INTERNET_VIA_ETHERNET
+                    onInternetViaEthernet()
                 }
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
-                    INTERNET_VIA_WIFI
+                    onInternetViaWifi()
                 }
                 capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
-                    INTERNET_VIA_CELLULAR
+                    onInternetViaCellular()
                 }
                 else -> {
-                    NO_INTERNET
+                    onNoInternet()
                 }
             }
         }
-        return NO_INTERNET
     }
 
 }

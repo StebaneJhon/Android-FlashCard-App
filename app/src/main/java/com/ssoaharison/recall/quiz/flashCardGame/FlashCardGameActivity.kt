@@ -12,9 +12,7 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Resources
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
@@ -59,6 +57,7 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
+import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -998,11 +997,6 @@ class FlashCardGameActivity :
         binding.cvCardBack.rotationY = 0f
         isFront = false
         binding.cvCardFront.alpha = 0f
-    }
-
-    private inline fun <reified T : Parcelable> Intent.parcelable(key: String): T? = when {
-        Build.VERSION.SDK_INT >= 33 -> getParcelableExtra(key, T::class.java)
-        else -> @Suppress("DEPRECATION") getParcelableExtra(key) as? T
     }
 
     override fun onInit(status: Int) {
