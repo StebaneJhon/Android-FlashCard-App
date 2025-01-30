@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
@@ -54,6 +55,7 @@ import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
 import com.ssoaharison.recall.util.Constant
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.common.model.DownloadConditions
@@ -82,6 +84,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
+import java.lang.IndexOutOfBoundsException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -124,7 +127,7 @@ class NewCardDialog(
                 val image: InputImage
                 try {
                     image = InputImage.fromFilePath(requireContext(), uri!!)
-                    detectTextWithMLKit(image)
+                    detectTextFromAnImageWithMLKit(image)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -137,7 +140,7 @@ class NewCardDialog(
                 val image: InputImage
                 try {
                     image = InputImage.fromFilePath(requireContext(), imageUri)
-                    detectTextWithMLKit(image)
+                    detectTextFromAnImageWithMLKit(image)
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -190,7 +193,7 @@ class NewCardDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.QuizeoFullscreenDialogTheme)
+        setStyle(STYLE_NORMAL, R.style.QuizeoFullscreenDialogTheme)
     }
 
     override fun onStart() {
@@ -413,7 +416,8 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     binding.tilContentMultiAnswerCard,
                     v,
-                    deck.cardContentDefaultLanguage,
+//                    deck.cardContentDefaultLanguage,
+                    getContentLanguage(),
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
@@ -429,7 +433,8 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     definitionField.fieldLy,
                     v,
-                    deck.cardDefinitionDefaultLanguage,
+//                    deck.cardDefinitionDefaultLanguage,
+                    getDefinitionLanguage(),
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
@@ -611,7 +616,7 @@ class NewCardDialog(
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
-                android.Manifest.permission.CAMERA
+                Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             startCameraPermissionRequest()
@@ -675,8 +680,15 @@ class NewCardDialog(
         }
     }
 
-    private fun detectTextWithMLKit(image: InputImage, language: String? = actualFieldLanguage) {
-        val recognizer = getRecognizer(language)
+    private fun detectTextFromAnImageWithMLKit(
+        image: InputImage,
+        language: String? = actualFieldLanguage
+    ) {
+        val recognizer = if (language.isNullOrBlank()) {
+            getRecognizer(LanguageUtil().getLanguageByCode(Locale.getDefault().language))
+        } else {
+            getRecognizer(language)
+        }
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
                 if (visionText.text.isBlank()) {
@@ -867,7 +879,7 @@ class NewCardDialog(
         for (i in 0..card?.cardDefinition?.size?.minus(1)!!) {
             val definition = try {
                 definitions[i]
-            } catch (e: java.lang.IndexOutOfBoundsException) {
+            } catch (e: IndexOutOfBoundsException) {
                 createDefinition(
                     "",
                     false,
@@ -974,13 +986,39 @@ class NewCardDialog(
         )
     }
 
-    private fun getContentLanguage() =
-        if (binding.tieContentLanguage.text.isNullOrBlank()) null
-        else binding.tieContentLanguage.text.toString()
+    private fun getContentLanguage(): String? {
+        val addedContentLanguage = binding.tieContentLanguage.text
+        if (addedContentLanguage.isNullOrBlank()) {
+            val defaultContentLanguage = deck.cardContentDefaultLanguage
+            return if (defaultContentLanguage.isNullOrBlank()) {
+                null
+            } else {
+                defaultContentLanguage
+            }
+        } else {
+            return addedContentLanguage.toString()
+        }
+    }
+//        if (binding.tieContentLanguage.text.isNullOrBlank()) null
+//        else binding.tieContentLanguage.text.toString()
 
-    private fun getDefinitionLanguage() =
-        if (binding.tieDefinitionLanguage.text.isNullOrBlank()) null
-        else binding.tieDefinitionLanguage.text.toString()
+    private fun getDefinitionLanguage(): String? {
+        val addedDefinitionLanguage = binding.tieDefinitionLanguage.text
+        if (addedDefinitionLanguage.isNullOrBlank()) {
+            val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
+            return if (defaultDefinitionLanguage.isNullOrBlank()) {
+                null
+            } else {
+                defaultDefinitionLanguage
+            }
+        } else {
+            return addedDefinitionLanguage.toString()
+        }
+
+    }
+//    =
+//        if (binding.tieDefinitionLanguage.text.isNullOrBlank()) null
+//        else binding.tieDefinitionLanguage.text.toString()
 
     private fun getCardType(definitions: List<CardDefinition>): String {
         val definitionSum = definitions.size
@@ -1150,8 +1188,77 @@ class NewCardDialog(
         ly?.error = null
         animProgressBar(ly)
         actualField?.setText(getString(R.string.message_translation_in_progress))
-        val fl = LanguageUtil().getLanguageCodeForTranslation(deck.cardContentDefaultLanguage)
-        val tl = LanguageUtil().getLanguageCodeForTranslation(deck.cardDefinitionDefaultLanguage)
+        val languageUtil = LanguageUtil()
+        val definitionLanguage = getDefinitionLanguage()
+        val contentLanguage = getContentLanguage()
+        val tl = if (definitionLanguage.isNullOrBlank()) null else languageUtil.getLanguageCodeForTranslation(definitionLanguage)
+
+        if (contentLanguage.isNullOrBlank()) {
+            languageUtil.detectLanguage(
+                text,
+                onError = { localLanguage ->
+                    prepareTranslation(
+                        languageUtil.getLanguageCodeForTranslation(localLanguage),
+                        tl,
+                        actualField,
+                        ly,
+                        text
+                    )
+                    showSnackBar(R.string.error_message_error_while_detecting_language)
+                },
+                onLanguageUnIdentified = { localLanguage ->
+                    prepareTranslation(
+                        languageUtil.getLanguageCodeForTranslation(localLanguage),
+                        tl,
+                        actualField,
+                        ly,
+                        text
+                    )
+                    showSnackBar(R.string.error_message_can_not_identify_language)
+                },
+                onLanguageNotSupported = {
+                    showSnackBar(R.string.error_message_language_not_supported)
+                },
+                onSuccess = { detectedLanguage ->
+                    prepareTranslation(
+                        languageUtil.getLanguageCodeForTranslation(detectedLanguage),
+                        tl,
+                        actualField,
+                        ly,
+                        text)
+                },
+            )
+//            Locale.getDefault().language
+        } else {
+            prepareTranslation(
+                languageUtil.getLanguageCodeForTranslation(contentLanguage),
+                tl,
+                actualField,
+                ly,
+                text
+            )
+
+        }
+//        prepareTranslation(fl, tl, actualField, ly, text)
+    }
+
+    private fun showSnackBar(
+        @StringRes messageRes: Int
+    ) {
+        Snackbar.make(
+            binding.clAddCardRoot,
+            getString(messageRes),
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
+
+    private fun prepareTranslation(
+        fl: String?,
+        tl: String?,
+        actualField: EditText?,
+        ly: TextInputLayout?,
+        text: String
+    ) {
         if (fl != null && tl != null) {
             val options = TranslatorOptions.Builder()
                 .setSourceLanguage(fl)
@@ -1193,6 +1300,7 @@ class NewCardDialog(
                                     }
                                     .show()
                             }
+
                             else -> {
                                 conditions = DownloadConditions.Builder()
                                     .requireWifi()
@@ -1210,6 +1318,10 @@ class NewCardDialog(
                 .addOnFailureListener {
                     ly?.error = getString(R.string.error_translation_unknown)
                 }
+        } else {
+            setEditTextEndIconOnClick(ly)
+            ly?.error = appContext?.getString(R.string.error_message_no_card_definition_language)
+            showSnackBar(R.string.error_message_no_card_definition_language)
         }
     }
 

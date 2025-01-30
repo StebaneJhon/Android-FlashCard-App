@@ -254,4 +254,5 @@
     <string name="bt_text_add_details">Add details</string>
     <string name="error_message_can_not_identify_language">Can not identify language. Please add a default language to your deck.</string>
     <string name="error_message_error_while_detecting_language">Error while identifying language. Please add a default language to your deck.</string>
+    <string name="error_message_no_card_definition_language">Please set a card definition language.</string>
 </resources>

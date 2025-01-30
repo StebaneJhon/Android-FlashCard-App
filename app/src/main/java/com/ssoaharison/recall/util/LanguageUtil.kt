@@ -2,10 +2,7 @@ package com.ssoaharison.recall.util
 
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.translate.TranslateLanguage
-import com.ssoaharison.recall.R
-import com.ssoaharison.recall.util.Constant.ERROR
-import com.ssoaharison.recall.util.TextType.CONTENT
-import com.ssoaharison.recall.util.TextType.DEFINITION
+import java.util.Locale
 
 class LanguageUtil {
     private val languages = mapOf(
@@ -130,10 +127,19 @@ class LanguageUtil {
         return null
     }
 
+    fun getLocalLanguage(): String? {
+        languages.forEach { (t, u) ->
+            if (u["langCodeTranslation"] == Locale.getDefault().language) {
+                return t
+            }
+        }
+        return null
+    }
+
     fun detectLanguage(
         text: String,
-        onError: () -> Unit,
-        onLanguageUnIdentified: () -> Unit,
+        onError: (String?) -> Unit,
+        onLanguageUnIdentified: (String?) -> Unit,
         onLanguageNotSupported: () -> Unit,
         onSuccess: (String) -> Unit
     ) {
@@ -141,7 +147,7 @@ class LanguageUtil {
         languageIdentifier.identifyLanguage(text)
             .addOnSuccessListener { languageCode ->
                 if (languageCode == "und") {
-                    onLanguageUnIdentified()
+                    onLanguageUnIdentified(getLocalLanguage())
                 } else {
                     val language = getLanguageByCode(languageCode)
                     if (language.isNullOrBlank()) {
@@ -150,11 +156,9 @@ class LanguageUtil {
                         onSuccess(language)
                     }
                 }
-//                code(languageCode)
             }
             .addOnFailureListener {
-//                code(ERROR)
-                onError()
+                onError(getLocalLanguage())
             }
     }
 }
