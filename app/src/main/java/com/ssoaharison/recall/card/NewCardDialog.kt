@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.ListPopupWindow
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -40,6 +41,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
@@ -85,7 +87,7 @@ class NewCardDialog(
 
     private var _binding: AddCardLayoutDialogBinding? = null
     private val binding get() = _binding!!
-    private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
+//    private lateinit var rvAddedCardRecyclerViewAdapter: AddedCardRecyclerViewAdapter
     private var appContext: Context? = null
     private var definitionList = mutableSetOf<CardDefinition>()
     private var selectedField: EditText? = null
@@ -95,11 +97,11 @@ class NewCardDialog(
     private val supportedLanguages = LanguageUtil().getSupportedLang()
 
     private val newCardViewModel by lazy {
-        val openTriviaRepository =
-            (requireActivity().application as FlashCardApplication).openTriviaRepository
+        val openTriviaRepository = (requireActivity().application as FlashCardApplication).openTriviaRepository
+        val repository = (requireActivity().application as FlashCardApplication).repository
         ViewModelProvider(
             this,
-            NewCardDialogViewModelFactory(openTriviaRepository)
+            NewCardDialogViewModelFactory(openTriviaRepository, repository)
         )[NewCardDialogViewModel::class.java]
     }
 
@@ -195,11 +197,11 @@ class NewCardDialog(
 
     override fun onDestroy() {
         super.onDestroy()
-        if (newCardViewModel.areThereUnSavedAddedCards()) {
-            if (newCardViewModel.areThereUnSavedAddedCards()) {
-                sendCardsOnSave(newCardViewModel.addedCards.value)
-            }
-        }
+//        if (newCardViewModel.areThereUnSavedAddedCards()) {
+//            if (newCardViewModel.areThereUnSavedAddedCards()) {
+//                sendCardsOnSave(newCardViewModel.addedCards.value)
+//            }
+//        }
     }
 
     override fun onCreateView(
@@ -214,7 +216,6 @@ class NewCardDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         definitionFields = listOf(
             DefinitionFieldModel(
                 binding.tilDefinition1MultiAnswerCard,
@@ -280,15 +281,47 @@ class NewCardDialog(
 
         val arrayAdapterSupportedLanguages =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val listPopupWindow = ListPopupWindow(appContext!!, null)
+        listPopupWindow.setBackgroundDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.filter_spinner_dropdown_background,
+                requireActivity().theme
+            )
+        )
+
+        binding.btContentLanguage.setOnClickListener { button ->
+            listPopupWindow.apply {
+                anchorView = button
+                setAdapter(arrayAdapterSupportedLanguages)
+                setOnItemClickListener { parent, view, position, id ->
+                    (button as MaterialButton).text = supportedLanguages[position]
+                    dismiss()
+                }
+                show()
+            }
+        }
+
+        binding.btDefinitionLanguage.setOnClickListener { button ->
+            listPopupWindow.apply {
+                anchorView = button
+                setAdapter(arrayAdapterSupportedLanguages)
+                setOnItemClickListener { parent, view, position, id ->
+                    (button as MaterialButton).text = supportedLanguages[position]
+                    dismiss()
+                }
+                show()
+            }
+        }
 
         if (card != null) {
-            binding.tvTitleAddedCards.isVisible = false
-            binding.rvAddedCard.isVisible = false
+//            binding.tvTitleAddedCards.isVisible = false
+//            binding.rvAddedCard.isVisible = false
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
             onUpdateCard(card!!)
         } else {
-            binding.tvTitleAddedCards.isVisible = true
-            binding.rvAddedCard.isVisible = true
+//            binding.tvTitleAddedCards.isVisible = true
+//            binding.rvAddedCard.isVisible = true
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
 
             binding.btAdd.apply {
@@ -306,13 +339,15 @@ class NewCardDialog(
         binding.tabAddNewUpdateCard.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
                 R.id.save -> {
-                    if (card != null && action == Constant.UPDATE) {
-                        sendCardsOnEdit(newCardViewModel.addedCards.value)
-                        dismiss()
-                    } else {
-                        sendCardsOnSave(newCardViewModel.addedCards.value)
-                        dismiss()
-                    }
+//                    if (card != null && action == Constant.UPDATE) {
+//                        sendCardsOnEdit(newCardViewModel.addedCards.value)
+//                        dismiss()
+//                    } else {
+//                        sendCardsOnSave(newCardViewModel.addedCards.value)
+//                        dismiss()
+//                    }
+                    val action = if (card == null) Constant.ADD else Constant.UPDATE
+                    onPositiveAction(action)
                     true
                 }
 
@@ -325,13 +360,13 @@ class NewCardDialog(
             }
         }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                newCardViewModel.addedCards.collect { cards ->
-                    displayAddedCard(cards, deck)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                newCardViewModel.addedCards.collect { cards ->
+//                    displayAddedCard(cards, deck)
+//                }
+//            }
+//        }
 
         val callback = object : ActionMode.Callback {
             override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
@@ -341,19 +376,23 @@ class NewCardDialog(
                 )
                 return true
             }
+
             override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
                 return false
             }
+
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.bt_scan_image -> {
                         showImageSelectedDialog()
                         true
                     }
+
                     R.id.bt_mic -> {
                         listen(actualFieldLanguage)
                         true
                     }
+
                     R.id.bt_translate -> {
                         onTranslateText(
                             binding.tieContentMultiAnswerCard.text.toString(),
@@ -362,19 +401,26 @@ class NewCardDialog(
                         )
                         true
                     }
+
                     R.id.save -> {
-                        if (card != null && action == Constant.UPDATE) {
-                            sendCardsOnEdit(newCardViewModel.addedCards.value)
-                            dismiss()
-                        } else {
-                            sendCardsOnSave(newCardViewModel.addedCards.value)
-                            dismiss()
-                        }
+                        val action = if (card == null) Constant.ADD else Constant.UPDATE
+                        onPositiveAction(action)
+//                        if (card != null && action == Constant.UPDATE) {
+//
+//                            sendCardsOnEdit(newCardViewModel.addedCards.value)
+//
+//                            dismiss()
+//                        } else {
+//                            sendCardsOnSave(newCardViewModel.addedCards.value)
+//                            dismiss()
+//                        }
                         true
                     }
+
                     else -> false
                 }
             }
+
             override fun onDestroyActionMode(mode: ActionMode?) {
             }
         }
@@ -424,54 +470,54 @@ class NewCardDialog(
             onAddMoreDefinition()
         }
 
-        binding.btShowContentLanguageField.setOnClickListener {
-            isContentLanguageFieldShown(!binding.tilContentLanguage.isVisible)
-        }
+//        binding.btShowContentLanguageField.setOnClickListener {
+//            isContentLanguageFieldShown(!binding.tilContentLanguage.isVisible)
+//        }
 
-        binding.btShowDefinitionLanguageField.setOnClickListener {
-            isDefinitionLanguageFieldShown(!binding.tilDefinitionLanguage.isVisible)
-        }
+//        binding.btShowDefinitionLanguageField.setOnClickListener {
+//            isDefinitionLanguageFieldShown(!binding.tilDefinitionLanguage.isVisible)
+//        }
 
-        binding.tieContentLanguage.apply {
-            setAdapter(arrayAdapterSupportedLanguages)
-            setDropDownBackgroundDrawable(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.filter_spinner_dropdown_background,
-                    requireActivity().theme
-                )
-            )
-        }
+//        binding.tieContentLanguage.apply {
+//            setAdapter(arrayAdapterSupportedLanguages)
+//            setDropDownBackgroundDrawable(
+//                ResourcesCompat.getDrawable(
+//                    resources,
+//                    R.drawable.filter_spinner_dropdown_background,
+//                    requireActivity().theme
+//                )
+//            )
+//        }
 
-        binding.tieDefinitionLanguage.apply {
-            setAdapter(arrayAdapterSupportedLanguages)
-            setDropDownBackgroundDrawable(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    R.drawable.filter_spinner_dropdown_background,
-                    requireActivity().theme
-                )
-            )
-        }
+//        binding.tieDefinitionLanguage.apply {
+//            setAdapter(arrayAdapterSupportedLanguages)
+//            setDropDownBackgroundDrawable(
+//                ResourcesCompat.getDrawable(
+//                    resources,
+//                    R.drawable.filter_spinner_dropdown_background,
+//                    requireActivity().theme
+//                )
+//            )
+//        }
 
     }
 
     private fun isContentLanguageFieldShown(isShown: Boolean) {
         binding.tilContentLanguage.isVisible = isShown
-        if (isShown) {
-            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_less)
-        } else {
-            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_more)
-        }
+//        if (isShown) {
+//            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_less)
+//        } else {
+//            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_more)
+//        }
     }
 
     private fun isDefinitionLanguageFieldShown(isShown: Boolean) {
         binding.tilDefinitionLanguage.isVisible = isShown
-        if (isShown) {
-            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_less)
-        } else {
-            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_more)
-        }
+//        if (isShown) {
+//            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_less)
+//        } else {
+//            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_more)
+//        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -522,12 +568,13 @@ class NewCardDialog(
                                 deck.deckId,
                                 response.data.results
                             )
-                            newCards.forEach { card ->
-                                newCardViewModel.addCard(card)
-                                rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
-                                initCardAdditionPanel()
-                            }
+                            newCardViewModel.insertCards(newCards)
                             binding.llAddCardProgressBar.visibility = View.GONE
+                            Toast.makeText(
+                                appContext,
+                                getString(R.string.message_cards_added, "${newCards.size}"),
+                                Toast.LENGTH_LONG
+                            ).show()
                         }
                     }
                 }
@@ -677,33 +724,33 @@ class NewCardDialog(
             }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun displayAddedCard(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
-        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
-        rvAddedCardRecyclerViewAdapter = appContext?.let {
-            AddedCardRecyclerViewAdapter(
-                it,
-                cardList,
-                deck,
-                appTheme,
-                { cardWithPosition ->
-                    card = cardWithPosition.cardToEdit
-                    onUpdateCard(card!!, cardWithPosition.position)
-                },
-                { cardToRemove ->
-                    initCardAdditionPanel()
-                    newCardViewModel.removeCard(cardToRemove)
-                    rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
-                },
-            )
-        }!!
-        binding.rvAddedCard.apply {
-            adapter = rvAddedCardRecyclerViewAdapter
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(appContext)
-        }
-    }
+//    @SuppressLint("NotifyDataSetChanged")
+//    private fun displayAddedCard(cardList: List<ImmutableCard?>, deck: ImmutableDeck) {
+//        val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
+//        rvAddedCardRecyclerViewAdapter = appContext?.let {
+//            AddedCardRecyclerViewAdapter(
+//                it,
+//                cardList,
+//                deck,
+//                appTheme,
+//                { cardWithPosition ->
+//                    card = cardWithPosition.cardToEdit
+//                    onUpdateCard(card!!, cardWithPosition.position)
+//                },
+//                { cardToRemove ->
+//                    initCardAdditionPanel()
+//                    newCardViewModel.removeCard(cardToRemove)
+//                    rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
+//                },
+//            )
+//        }!!
+//        binding.rvAddedCard.apply {
+//            adapter = rvAddedCardRecyclerViewAdapter
+//            setHasFixedSize(true)
+//            layoutManager = LinearLayoutManager(appContext)
+//        }
+//    }
 
     private fun initCardAdditionPanel() {
         binding.tieContentMultiAnswerCard.text?.clear()
@@ -728,7 +775,8 @@ class NewCardDialog(
     }
 
     private fun onCloseDialog() {
-        if (newCardViewModel.addedCards.value.isEmpty()) {
+        if (!areThereAnOngoingCardCreation()) {
+            sendCardsOnSave(newCardViewModel.getAddedCardSum())
             dismiss()
         } else {
             MaterialAlertDialogBuilder(
@@ -737,46 +785,59 @@ class NewCardDialog(
             )
                 .setTitle(getString(R.string.title_unsaved_cards))
                 .setMessage(getString(R.string.message_unsaved_cards))
-                .setPositiveButton("Yes") { _, _ ->
-                    sendCardsOnSave(newCardViewModel.addedCards.value)
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.message_card_registered),
-                        Toast.LENGTH_LONG
-                    ).show()
+                .setPositiveButton(getString(R.string.button_keep_add)) { dialog, _ ->
+//                    sendCardsOnSave(newCardViewModel.addedCards.value)
+//                    Toast.makeText(
+//                        appContext,
+//                        getString(R.string.message_card_registered),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+                    dialog?.dismiss()
+//                    if (card == null) {
+//                        sendCardsOnSave(generateCardOnAdd())
+//                    } else {
+//                        generateCardOnUpdate(card!!)
+//                    }
+//                    onPositiveAction(action)
+//                    sendCardsOnSave()
+//                    dismiss()
+                }
+                .setNegativeButton(getString(R.string.bt_description_exit)) { _, _ ->
+//                    Toast.makeText(
+//                        appContext,
+//                        getString(R.string.message_card_not_registered),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    newCardViewModel.clearAddedCards()
+                    sendCardsOnSave(newCardViewModel.getAddedCardSum())
                     dismiss()
                 }
-                .setNegativeButton("No") { _, _ ->
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.message_card_not_registered),
-                        Toast.LENGTH_LONG
-                    ).show()
-                    newCardViewModel.clearAddedCards()
-                    dismiss()
-                }
-                .setNeutralButton("Keep adding") { dialog, _ ->
-                    dialog.dismiss()
-                }
+//                .setNeutralButton("Keep adding") { dialog, _ ->
+//                    dialog.dismiss()
+//                }
                 .show()
         }
 
     }
 
-    private fun onUpdateCard(card: ImmutableCard, indexCard: Int? = null) {
+    private fun onUpdateCard(card: ImmutableCard) {
         binding.tieContentMultiAnswerCard.setText(card.cardContent?.content)
         binding.btAdd.apply {
             text = getString(R.string.bt_text_update)
             setOnClickListener {
-                if (indexCard == null) {
-
-                    if (onPositiveAction(Constant.UPDATE)) {
-                        sendCardsOnEdit(newCardViewModel.addedCards.value)
-                        dismiss()
-                    }
-                } else {
-                    onPositiveAction(Constant.UPDATE, indexCard)
-                }
+//                if (indexCard == null) {
+//
+//                    if (onPositiveAction(Constant.UPDATE)) {
+//                        sendCardsOnEdit(newCardViewModel.addedCards.value)
+//                        dismiss()
+//                    }
+//                } else {
+//                    onPositiveAction(Constant.UPDATE, indexCard)
+//                }
+//                newCardViewModel.updateCard(card)
+                onPositiveAction(Constant.UPDATE)
+//                Toast.makeText(appContext, getString(R.string.message_card_updated), Toast.LENGTH_LONG).show()
+//                dismiss()
             }
         }
 
@@ -813,21 +874,43 @@ class NewCardDialog(
     fun isCorrect(index: Int?) = index == 1
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun onPositiveAction(action: String, indexCardOnUpdate: Int? = null): Boolean {
+    private fun onPositiveAction(action: String): Boolean {
         val newCard = if (action == Constant.ADD) {
             generateCardOnAdd() ?: return false
         } else {
             generateCardOnUpdate(card = card!!) ?: return false
         }
 
-        if (action == Constant.UPDATE && indexCardOnUpdate != null) {
-            newCardViewModel.updateCard(newCard, indexCardOnUpdate)
+        if (action == Constant.UPDATE) {
+//            newCardViewModel.updateCard(newCard)
+//            Toast.makeText(appContext, getString(R.string.message_card_updated), Toast.LENGTH_LONG).show()
+            sendCardsOnEdit(newCard)
+            dismiss()
         } else {
-            newCardViewModel.addCard(newCard)
+            newCardViewModel.insertCard(newCard)
+            Toast.makeText(appContext, getString(R.string.message_card_added), Toast.LENGTH_LONG).show()
         }
-        rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
+//        rvAddedCardRecyclerViewAdapter.notifyDataSetChanged()
         initCardAdditionPanel()
         return true
+    }
+
+    private fun areThereAnOngoingCardCreation(): Boolean {
+        when {
+            !binding.tieContentMultiAnswerCard.text.isNullOrBlank() -> return true
+            !binding.tieContentMultiAnswerCard.text.isNullOrEmpty() -> return true
+            else -> {
+                definitionFields.forEach {
+                    if (it.chip.isChecked) {
+                        return true
+                    }
+                    if (!it.fieldEd.text.isNullOrBlank() || !it.fieldEd.text.isNullOrEmpty()) {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
     }
 
 
@@ -951,8 +1034,8 @@ class NewCardDialog(
     }
 
     private fun getContentLanguage(): String? {
-        val addedContentLanguage = binding.tieContentLanguage.text
-        if (addedContentLanguage.isNullOrBlank()) {
+        val addedContentLanguage = binding.btContentLanguage.text
+        if (addedContentLanguage.toString() !in supportedLanguages) {
             val defaultContentLanguage = deck.cardContentDefaultLanguage
             return if (defaultContentLanguage.isNullOrBlank()) {
                 null
@@ -965,8 +1048,8 @@ class NewCardDialog(
     }
 
     private fun getDefinitionLanguage(): String? {
-        val addedDefinitionLanguage = binding.tieDefinitionLanguage.text
-        if (addedDefinitionLanguage.isNullOrBlank()) {
+        val addedDefinitionLanguage = binding.btDefinitionLanguage.text
+        if (addedDefinitionLanguage.toString() !in supportedLanguages) {
             val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
             return if (defaultDefinitionLanguage.isNullOrBlank()) {
                 null
@@ -986,11 +1069,9 @@ class NewCardDialog(
             correctDefinitions == 1 && definitionSum == 1 -> {
                 SINGLE_ANSWER_CARD
             }
-
             correctDefinitions == 1 && definitionSum > 1 -> {
                 MULTIPLE_CHOICE_CARD
             }
-
             else -> {
                 MULTIPLE_ANSWER_CARD
             }
@@ -1160,7 +1241,7 @@ class NewCardDialog(
         ).show()
     }
 
-    private fun translate (
+    private fun translate(
         fl: String?,
         tl: String?,
         actualField: EditText?,
@@ -1199,7 +1280,8 @@ class NewCardDialog(
                     },
                     onModelDownloadingFailure = {
                         setEditTextEndIconOnClick(ly)
-                        ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                        ly?.error =
+                            getString(R.string.error_translation_language_model_not_downloaded)
                     },
                 )
             },
@@ -1234,7 +1316,8 @@ class NewCardDialog(
                             },
                             onModelDownloadingFailure = {
                                 setEditTextEndIconOnClick(ly)
-                                ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                                ly?.error =
+                                    getString(R.string.error_translation_language_model_not_downloaded)
                             },
                         )
                         dialog.dismiss()
@@ -1282,17 +1365,23 @@ class NewCardDialog(
     }
 
     private fun sendCardsOnSave(
-        cards: List<ImmutableCard>
+        cardCount: Int
     ) {
-        parentFragmentManager.setFragmentResult(REQUEST_CODE_CARD, bundleOf(SAVE_CARDS_BUNDLE_KEY to cards))
-        newCardViewModel.removeAllCards()
+        parentFragmentManager.setFragmentResult(
+            REQUEST_CODE_CARD,
+            bundleOf(SAVE_CARDS_BUNDLE_KEY to cardCount)
+        )
+//        newCardViewModel.removeAllCards()
     }
 
     private fun sendCardsOnEdit(
-        cards: List<ImmutableCard>
+        card: ImmutableCard
     ) {
-        parentFragmentManager.setFragmentResult(REQUEST_CODE_CARD, bundleOf(EDIT_CARD_BUNDLE_KEY to cards))
-        newCardViewModel.removeAllCards()
+        parentFragmentManager.setFragmentResult(
+            REQUEST_CODE_CARD,
+            bundleOf(EDIT_CARD_BUNDLE_KEY to card)
+        )
+//        newCardViewModel.removeAllCards()
     }
 
     private fun onAddMoreDefinition() {

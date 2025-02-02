@@ -1,11 +1,10 @@
 package com.ssoaharison.recall.card
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.OpenTriviaQuestion
 import com.ssoaharison.recall.backend.models.QuizQuestions
@@ -13,9 +12,9 @@ import com.ssoaharison.recall.backend.models.isCorrect
 import com.ssoaharison.recall.backend.OpenTriviaRepository
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
+import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
-import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -28,37 +27,39 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class NewCardDialogViewModel(
-    private val openTriviaRepository: OpenTriviaRepository
+    private val openTriviaRepository: OpenTriviaRepository,
+    private val repository: FlashCardRepository,
 ) : ViewModel() {
 
     private var fetchOpenTriviaJob: Job? = null
     private var fetchDeckDeletionJob: Job? = null
 
-    private var _addedCards =
-        MutableStateFlow<ArrayList<ImmutableCard>>(arrayListOf<ImmutableCard>())
-    val addedCards: StateFlow<ArrayList<ImmutableCard>> = _addedCards.asStateFlow()
+    private var addedCardSum = 0
 
-    fun areThereUnSavedAddedCards() = _addedCards.value.size != 0
+//    private var _addedCards = MutableStateFlow<ArrayList<ImmutableCard>>(arrayListOf())
+//    val addedCards: StateFlow<ArrayList<ImmutableCard>> = _addedCards.asStateFlow()
 
-    fun clearAddedCards() {
-        _addedCards.value.clear()
-    }
+//    fun areThereUnSavedAddedCards() = _addedCards.value.size != 0
+//
+//    fun clearAddedCards() {
+//        _addedCards.value.clear()
+//    }
 
-    fun addCard(card: ImmutableCard) {
-        _addedCards.value.add(0, card)
-    }
+//    fun addCard(card: ImmutableCard) {
+//        _addedCards.value.add(0, card)
+//    }
 
-    fun removeCard(cardToBeRemoved: ImmutableCard?) {
-        _addedCards.value.remove(cardToBeRemoved)
-    }
+//    fun removeCard(cardToBeRemoved: ImmutableCard?) {
+//        _addedCards.value.remove(cardToBeRemoved)
+//    }
 
-    fun updateCard(updatedCard: ImmutableCard, indexCardToUpdate: Int) {
-        _addedCards.value[indexCardToUpdate] = updatedCard
-    }
+//    fun updateCard(updatedCard: ImmutableCard, indexCardToUpdate: Int) {
+//        _addedCards.value[indexCardToUpdate] = updatedCard
+//    }
 
-    fun removeAllCards() {
-        _addedCards.value.clear()
-    }
+//    fun removeAllCards() {
+//        _addedCards.value.clear()
+//    }
 
     private var _openTriviaResponse = MutableStateFlow<UiState<QuizQuestions>>(UiState.Loading)
     val openTriviaResponse: StateFlow<UiState<QuizQuestions>> =
@@ -186,6 +187,23 @@ class NewCardDialogViewModel(
         )
     }
 
+    fun insertCards(cards: List<ImmutableCard>) = viewModelScope.launch {
+        val cardsToAdd = cards.reversed()
+        repository.insertCards(cardsToAdd)
+        addedCardSum += cardsToAdd.size
+    }
+
+    fun insertCard(card: ImmutableCard) = viewModelScope.launch {
+        repository.insertCard(card)
+        addedCardSum++
+    }
+
+    fun getAddedCardSum() = addedCardSum
+
+//    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
+//        repository.updateCard(card)
+//    }
+
 }
 
 fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0
@@ -211,12 +229,13 @@ private fun reformatText(text: String) =
     HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
 
 class NewCardDialogViewModelFactory(
-    private val openTriviaRepository: OpenTriviaRepository
+    private val openTriviaRepository: OpenTriviaRepository,
+    private val repository: FlashCardRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewCardDialogViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return NewCardDialogViewModel(openTriviaRepository) as T
+            return NewCardDialogViewModel(openTriviaRepository, repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

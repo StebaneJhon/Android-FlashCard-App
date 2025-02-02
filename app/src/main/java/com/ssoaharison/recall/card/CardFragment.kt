@@ -73,6 +73,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
+import com.ssoaharison.recall.util.parcelable
 import com.ssoaharison.recall.util.parcelableArrayList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -449,13 +450,20 @@ class CardFragment :
             val languageUtil = LanguageUtil()
             languageUtil.detectLanguage(
                 text = textAndView.text.toString(),
-                onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
-                onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
-                onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
+                onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
+                onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
                 onSuccess = { detectedLanguage ->
                     when (type) {
-                        CONTENT -> cardViewModel.updateCardContentLanguage(deck.deckId, detectedLanguage)
-                        DEFINITION -> cardViewModel.updateCardDefinitionLanguage(deck.deckId, detectedLanguage)
+                        CONTENT -> cardViewModel.updateCardContentLanguage(
+                            deck.deckId,
+                            detectedLanguage
+                        )
+
+                        DEFINITION -> cardViewModel.updateCardDefinitionLanguage(
+                            deck.deckId,
+                            detectedLanguage
+                        )
                     }
                     readeText(textAndView, detectedLanguage)
                 }
@@ -576,16 +584,39 @@ class CardFragment :
     }
 
     private fun onAddNewCard() {
-
         val newCardDialog = NewCardDialog(null, deck, Constant.ADD)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
             this
         ) { requestKey, bundle ->
-            val result = bundle.parcelableArrayList<ImmutableCard>(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
-            result?.let {
-                cardViewModel.insertCards(it, deck)
+            val result = bundle.getInt(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
+//            if (result == null) {
+//                Toast.makeText(appContext, getString(R.string.error_message_card_addition_failed), Toast.LENGTH_LONG).show()
+//            } else {
+//                cardViewModel.insertCard(result)
+//                Toast.makeText(
+//                    appContext,
+//                    getString(R.string.message_card_added),
+//                    Toast.LENGTH_LONG
+//                ).show()
+//            }
+
+            when {
+                result > 1 -> {
+                    Toast.makeText(
+                        appContext,
+                        getString(R.string.message_new_cards_added, "$result"),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                result == 1 -> {
+                    Toast.makeText(
+                        appContext,
+                        getString(R.string.message_new_card_added),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
             }
         }
     }
@@ -597,9 +628,14 @@ class CardFragment :
             REQUEST_CODE_CARD,
             this
         ) { _, bundle ->
-            val result = bundle.parcelableArrayList<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
+            val result = bundle.parcelable<ImmutableCard>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let {
-                cardViewModel.updateCard(it.first())
+                cardViewModel.updateCard(it)
+                Toast.makeText(
+                    appContext,
+                    getString(R.string.message_card_updated),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -674,7 +710,7 @@ class CardFragment :
 
 
         })
-        searchView.setOnCloseListener{
+        searchView.setOnCloseListener {
             displayAllCards()
             true
         }

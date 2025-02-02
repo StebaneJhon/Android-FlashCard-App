@@ -110,7 +110,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun insertCards(cards: List<ImmutableCard>, deck: ImmutableDeck) {
+    suspend fun insertCards(cards: List<ImmutableCard>) {
         cards.forEach { card ->
             insertCard(card)
         }

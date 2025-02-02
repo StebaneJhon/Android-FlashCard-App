@@ -131,8 +131,8 @@
     <string name="content_quiz">Recall offers a variety of question types to help trigger your memory in different ways 🛣️. These include FlashCards, Multiple-choice, Writing, Matching, Quiz, and Test.</string>
     <string name="content_space_repetition">Additionally, Recall classifies your cards by memorization level 🧮. This helps you understand how well you know a specific card and how frequent it will appear during quizzes.</string>
     <string name="error_message_on_no_description_found">No description found</string>
-    <string name="title_unsaved_cards">Unsaved cards</string>
-    <string name="message_unsaved_cards">You have some unsaved cards do you want to save them?</string>
+    <string name="title_unsaved_cards">Unsaved card</string>
+    <string name="message_unsaved_cards">You have an ongoing card creation.</string>
     <string name="message_card_registered">Your cards has been registered</string>
     <string name="message_card_not_registered">Your cards has not been registered</string>
     <string name="title_on_no_card_to_show">No card yet!</string>
@@ -255,4 +255,11 @@
     <string name="error_message_can_not_identify_language">Can not identify language. Please add a default language to your deck.</string>
     <string name="error_message_error_while_detecting_language">Error while identifying language. Please add a default language to your deck.</string>
     <string name="error_message_no_card_definition_language">Please set a card definition language.</string>
+    <string name="message_cards_added">%1$s cards added.</string>
+    <string name="message_new_cards_added">%1$s new cards added.</string>
+    <string name="message_card_added">Card added.</string>
+    <string name="message_new_card_added">New card added.</string>
+    <string name="message_card_updated">Card updated.</string>
+    <string name="error_message_card_addition_failed">Card addition failed.</string>
+    <string name="button_keep_add">Keep adding</string>
 </resources>
