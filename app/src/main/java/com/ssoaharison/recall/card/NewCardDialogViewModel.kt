@@ -36,31 +36,6 @@ class NewCardDialogViewModel(
 
     private var addedCardSum = 0
 
-//    private var _addedCards = MutableStateFlow<ArrayList<ImmutableCard>>(arrayListOf())
-//    val addedCards: StateFlow<ArrayList<ImmutableCard>> = _addedCards.asStateFlow()
-
-//    fun areThereUnSavedAddedCards() = _addedCards.value.size != 0
-//
-//    fun clearAddedCards() {
-//        _addedCards.value.clear()
-//    }
-
-//    fun addCard(card: ImmutableCard) {
-//        _addedCards.value.add(0, card)
-//    }
-
-//    fun removeCard(cardToBeRemoved: ImmutableCard?) {
-//        _addedCards.value.remove(cardToBeRemoved)
-//    }
-
-//    fun updateCard(updatedCard: ImmutableCard, indexCardToUpdate: Int) {
-//        _addedCards.value[indexCardToUpdate] = updatedCard
-//    }
-
-//    fun removeAllCards() {
-//        _addedCards.value.clear()
-//    }
-
     private var _openTriviaResponse = MutableStateFlow<UiState<QuizQuestions>>(UiState.Loading)
     val openTriviaResponse: StateFlow<UiState<QuizQuestions>> =
         _openTriviaResponse.asStateFlow()
@@ -199,11 +174,6 @@ class NewCardDialogViewModel(
     }
 
     fun getAddedCardSum() = addedCardSum
-
-//    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
-//        repository.updateCard(card)
-//    }
-
 }
 
 fun isCorrectRevers(isCorrect: Boolean?) = if (isCorrect == true) 1 else 0

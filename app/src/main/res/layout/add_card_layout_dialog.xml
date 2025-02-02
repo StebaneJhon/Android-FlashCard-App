@@ -15,7 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tab_add_new_update_card"
             style="@style/Widget.App.Toolbar.Add.Edit.Card"
@@ -26,7 +25,6 @@
             app:navigationContentDescription="@string/bt_description_exit"
             app:navigationIcon="@drawable/icon_exit"
             app:title="New card" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -56,7 +54,6 @@
                 android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
-
                 <TextView
                     android:id="@+id/tv_title_content_details"
                     android:layout_width="wrap_content"
@@ -66,7 +63,6 @@
                     android:textColor="?colorOnSurface"
                     android:textSize="@dimen/text_sm"
                     android:textStyle="bold" />
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_content_language"
                     style="@style/Widget.Material3.Button.TextButton.Icon"
@@ -81,7 +77,6 @@
                     app:icon="@drawable/icon_expand_more"
                     app:iconTint="?colorOnSurface"
                     app:iconGravity="end" />
-
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -98,7 +93,6 @@
                 app:endIconTint="?colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_content_multi_answer_card"
                     android:layout_width="match_parent"
@@ -110,23 +104,6 @@
                     android:textColorHint="@color/neutral400" />
             </com.google.android.material.textfield.TextInputLayout>
 
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/bt_show_content_language_field"-->
-<!--                style="@style/Widget.Material3.Button.TextButton.Icon"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/open_sans"-->
-<!--                android:padding="0dp"-->
-<!--                android:text="@string/text_content_language"-->
-<!--                android:textAlignment="textStart"-->
-<!--                android:textColor="?colorOnSurface"-->
-<!--                android:textSize="@dimen/text_xs"-->
-<!--                app:icon="@drawable/icon_expand_more"-->
-<!--                app:layout_constraintStart_toStartOf="@+id/til_content_multi_answer_card"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card" />-->
-
-
             <LinearLayout
                 android:id="@+id/ll_container_definition_details"
                 android:layout_width="wrap_content"
@@ -135,7 +112,6 @@
                 android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
-
                 <TextView
                     android:id="@+id/tv_title_definition_details"
                     android:layout_width="wrap_content"
@@ -145,7 +121,6 @@
                     android:textColor="?colorOnSurface"
                     android:textSize="@dimen/text_sm"
                     android:textStyle="bold" />
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_definition_language"
                     style="@style/Widget.Material3.Button.TextButton.Icon"
@@ -160,7 +135,6 @@
                     app:icon="@drawable/icon_expand_more"
                     app:iconTint="?colorOnSurface"
                     app:iconGravity="end" />
-
             </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -181,7 +155,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_container_definition_details">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_1_multi_answer_card"
                     android:layout_width="match_parent"
@@ -222,7 +195,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_2"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_2_multi_answer_card"
                     android:layout_width="match_parent"
@@ -275,7 +247,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_3"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_3_multi_answer_card"
                     android:layout_width="match_parent"
@@ -328,7 +299,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_4"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_4_multi_answer_card"
                     android:layout_width="match_parent"
@@ -381,7 +351,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_5_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_5"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_4_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_5_multi_answer_card"
                     android:layout_width="match_parent"
@@ -434,7 +403,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_6_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_6"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_5_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_6_multi_answer_card"
                     android:layout_width="match_parent"
@@ -487,7 +455,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_7_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_7"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_6_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_7_multi_answer_card"
                     android:layout_width="match_parent"
@@ -540,7 +507,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_8_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_8"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_7_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_8_multi_answer_card"
                     android:layout_width="match_parent"
@@ -593,7 +559,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_9_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_9"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_8_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_9_multi_answer_card"
                     android:layout_width="match_parent"
@@ -646,7 +611,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_10_is_true"
                 app:layout_constraintStart_toEndOf="@+id/bt_delete_field_10"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_9_multi_answer_card">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_10_multi_answer_card"
                     android:layout_width="match_parent"
@@ -689,117 +653,10 @@
                 android:text="@string/text_new_definition"
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_xs"
-                app:icon="@drawable/add_icon_button"
+                app:icon="@drawable/icon_add"
                 app:iconTint="?colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_definition_10_multi_answer_card" />
-
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/bt_show_definition_language_field"-->
-<!--                style="@style/Widget.Material3.Button.TextButton.Icon"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="@dimen/space_lg"-->
-<!--                android:layout_marginTop="@dimen/space_sm"-->
-<!--                android:fontFamily="@font/open_sans"-->
-<!--                android:padding="0dp"-->
-<!--                android:text="@string/text_definition_language"-->
-<!--                android:textColor="?colorOnSurface"-->
-<!--                android:textSize="@dimen/text_xs"-->
-<!--                app:icon="@drawable/icon_expand_more"-->
-<!--                app:iconTint="?colorOnSurface"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/til_definition_10_multi_answer_card" />-->
-
-<!--            <GridLayout-->
-<!--                android:id="@+id/gd_root_details"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:columnCount="2"-->
-<!--                android:rowCount="2"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/bt_show_definition_language_field">-->
-
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    android:id="@+id/bt_more_definition"-->
-<!--                    android:layout_gravity="fill"-->
-<!--                    android:layout_marginStart="@dimen/space_xxs"-->
-<!--                    android:layout_marginEnd="@dimen/space_xxs"-->
-<!--                    android:layout_marginBottom="@dimen/space_xxs"-->
-<!--                    android:backgroundTint="?colorPrimary"-->
-<!--                    android:fontFamily="@font/open_sans_bold"-->
-<!--                    android:text="@string/text_new_definition" />-->
-<!--            </GridLayout>-->
-
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/til_content_language"-->
-<!--                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/open_sans"-->
-<!--                android:hint="@string/text_content_language"-->
-<!--                android:textColor="?colorOnSurface"-->
-<!--                android:textColorHint="@color/neutral400"-->
-<!--                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"-->
-<!--                app:boxCornerRadiusBottomStart="@dimen/ed_radius"-->
-<!--                app:boxCornerRadiusTopEnd="@dimen/ed_radius"-->
-<!--                app:boxCornerRadiusTopStart="@dimen/ed_radius"-->
-<!--                app:endIconTint="?colorOnSurface"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/bt_more_definition">-->
-
-<!--                <AutoCompleteTextView-->
-<!--                    android:id="@+id/tie_content_language"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@null"-->
-<!--                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"-->
-<!--                    android:ellipsize="end"-->
-<!--                    android:fontFamily="@font/open_sans"-->
-<!--                    android:inputType="text"-->
-<!--                    android:maxLines="1"-->
-<!--                    android:singleLine="true"-->
-<!--                    android:textColor="?colorOnSurface"-->
-<!--                    android:textColorHint="@color/neutral400"-->
-<!--                    tools:ignore="LabelFor" />-->
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--            <com.google.android.material.textfield.TextInputLayout-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/til_definition_language"-->
-<!--                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:fontFamily="@font/open_sans"-->
-<!--                android:hint="@string/text_content_language"-->
-<!--                android:textColor="?colorOnSurface"-->
-<!--                android:textColorHint="@color/neutral400"-->
-<!--                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"-->
-<!--                app:boxCornerRadiusBottomStart="@dimen/ed_radius"-->
-<!--                app:boxCornerRadiusTopEnd="@dimen/ed_radius"-->
-<!--                app:boxCornerRadiusTopStart="@dimen/ed_radius"-->
-<!--                app:endIconTint="?colorOnSurface"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/til_content_language">-->
-
-<!--                <AutoCompleteTextView-->
-<!--                    android:id="@+id/tie_definition_language"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:background="@null"-->
-<!--                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"-->
-<!--                    android:ellipsize="end"-->
-<!--                    android:fontFamily="@font/open_sans"-->
-<!--                    android:inputType="text"-->
-<!--                    android:maxLines="1"-->
-<!--                    android:singleLine="true"-->
-<!--                    android:textColor="?colorOnSurface"-->
-<!--                    android:textColorHint="@color/neutral400"-->
-<!--                    tools:ignore="LabelFor" />-->
-<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_add"
@@ -829,37 +686,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/bt_more_definition"
                 app:layout_constraintEnd_toStartOf="@id/bt_add"
                 app:layout_constraintBottom_toBottomOf="parent" />
-
-<!--            <TextView-->
-<!--                android:id="@+id/tv_title_added_cards"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="@dimen/space_sm"-->
-<!--                android:layout_marginTop="@dimen/space_md"-->
-<!--                android:layout_marginEnd="@dimen/space_sm"-->
-<!--                android:fontFamily="@font/open_sans_bold"-->
-<!--                android:text="@string/title_added_cards"-->
-<!--                android:textColor="?colorOnSurface"-->
-<!--                android:textSize="@dimen/text_sm"-->
-<!--                android:textStyle="bold"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.5"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/til_definition_10_multi_answer_card" />-->
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/rv_added_card"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="@dimen/space_xs"-->
-<!--                android:nestedScrollingEnabled="true"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/tv_title_added_cards" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 
     <LinearLayout
@@ -867,7 +694,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
-
         <include
             android:id="@+id/ly_no_card_error"
             layout="@layout/ly_loading_screen" />

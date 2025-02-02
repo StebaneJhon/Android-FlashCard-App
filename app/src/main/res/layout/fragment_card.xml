@@ -128,7 +128,7 @@
             android:backgroundTint="?colorPrimary"
             android:contentDescription="@string/bt_description_add_new_card"
             app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/add_icon_button" />
+            app:srcCompat="@drawable/icon_add" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

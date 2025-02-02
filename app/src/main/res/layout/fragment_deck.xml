@@ -110,7 +110,7 @@
         android:contentDescription="@string/bt_description_add_new_deck"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/add_icon_button"
+        app:srcCompat="@drawable/icon_add"
         android:layout_marginEnd="@dimen/space_lg"
         android:layout_marginBottom="@dimen/space_md"/>
 
