@@ -36,11 +36,8 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableCard
@@ -195,14 +192,14 @@ class NewCardDialog(
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+//    override fun onDestroy() {
+//        super.onDestroy()
 //        if (newCardViewModel.areThereUnSavedAddedCards()) {
 //            if (newCardViewModel.areThereUnSavedAddedCards()) {
 //                sendCardsOnSave(newCardViewModel.addedCards.value)
 //            }
 //        }
-    }
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -292,7 +289,7 @@ class NewCardDialog(
 
         binding.btContentLanguage.setOnClickListener { button ->
             listPopupWindow.apply {
-                anchorView = button
+                anchorView = binding.llContainerContentDetails
                 setAdapter(arrayAdapterSupportedLanguages)
                 setOnItemClickListener { parent, view, position, id ->
                     (button as MaterialButton).text = supportedLanguages[position]
@@ -304,7 +301,7 @@ class NewCardDialog(
 
         binding.btDefinitionLanguage.setOnClickListener { button ->
             listPopupWindow.apply {
-                anchorView = button
+                anchorView = binding.llContainerDefinitionDetails
                 setAdapter(arrayAdapterSupportedLanguages)
                 setOnItemClickListener { parent, view, position, id ->
                     (button as MaterialButton).text = supportedLanguages[position]
@@ -314,7 +311,7 @@ class NewCardDialog(
             }
         }
 
-        if (card != null) {
+        if (card != null && action == Constant.UPDATE) {
 //            binding.tvTitleAddedCards.isVisible = false
 //            binding.rvAddedCard.isVisible = false
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
@@ -323,11 +320,31 @@ class NewCardDialog(
 //            binding.tvTitleAddedCards.isVisible = true
 //            binding.rvAddedCard.isVisible = true
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
+            val contentLanguage = deck.cardContentDefaultLanguage
+            val definitionLanguage = deck.cardDefinitionDefaultLanguage
+
+            if (contentLanguage != null) {
+//            isContentLanguageFieldShown(true)
+//            binding.tieContentLanguage.setText(card.cardContentLanguage)
+                binding.btContentLanguage.text = contentLanguage
+            } else {
+//            isContentLanguageFieldShown(false)
+                binding.btContentLanguage.text = getString(R.string.text_content_language)
+            }
+
+            if (definitionLanguage != null) {
+//            isDefinitionLanguageFieldShown(true)
+//            binding.tieDefinitionLanguage.setText(card.cardDefinitionLanguage)
+                binding.btDefinitionLanguage.text = definitionLanguage
+            } else {
+//            isDefinitionLanguageFieldShown(false)
+                binding.btDefinitionLanguage.text = getString(R.string.text_definition_language)
+            }
 
             binding.btAdd.apply {
                 text = getString(R.string.bt_text_add)
                 setOnClickListener {
-                    onPositiveAction(Constant.ADD)
+                    onPositiveAction()
                 }
             }
         }
@@ -346,8 +363,9 @@ class NewCardDialog(
 //                        sendCardsOnSave(newCardViewModel.addedCards.value)
 //                        dismiss()
 //                    }
-                    val action = if (card == null) Constant.ADD else Constant.UPDATE
-                    onPositiveAction(action)
+//                    val action = if (card == null) Constant.ADD else Constant.UPDATE
+//                    if (card)
+                    onPositiveAction()
                     true
                 }
 
@@ -403,8 +421,8 @@ class NewCardDialog(
                     }
 
                     R.id.save -> {
-                        val action = if (card == null) Constant.ADD else Constant.UPDATE
-                        onPositiveAction(action)
+//                        val action = if (card == null) Constant.ADD else Constant.UPDATE
+                        onPositiveAction()
 //                        if (card != null && action == Constant.UPDATE) {
 //
 //                            sendCardsOnEdit(newCardViewModel.addedCards.value)
@@ -434,7 +452,7 @@ class NewCardDialog(
                 onActiveTopAppBarMode(
                     binding.tilContentMultiAnswerCard,
                     v,
-                    getContentLanguage(),
+                    getNewContentLanguage(),
                     hasFocus,
                     callback,
                     getString(R.string.til_card_content_hint)
@@ -442,24 +460,24 @@ class NewCardDialog(
             }
         }
 
-        binding.tilContentMultiAnswerCard.hint =
-            getString(R.string.card_content_hint, deck.cardContentDefaultLanguage)
+//        binding.tilContentMultiAnswerCard.hint =
+//            getString(R.string.card_content_hint, deck.cardContentDefaultLanguage)
 
         definitionFields.forEach { definitionField ->
             definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
                     definitionField.fieldLy,
                     v,
-                    getDefinitionLanguage(),
+                    getNewDefinitionLanguage(),
                     hasFocus,
                     callback,
                     getString(R.string.til_card_definition_hint)
                 )
             }
-            definitionField.fieldLy.hint = getString(
-                R.string.card_definition,
-                deck.cardDefinitionDefaultLanguage
-            )
+//            definitionField.fieldLy.hint = getString(
+//                R.string.card_definition,
+//                deck.cardDefinitionDefaultLanguage
+//            )
             definitionField.btDeleteField?.setOnClickListener {
                 deleteDefinitionField(definitionField.fieldEd)
             }
@@ -502,23 +520,23 @@ class NewCardDialog(
 
     }
 
-    private fun isContentLanguageFieldShown(isShown: Boolean) {
-        binding.tilContentLanguage.isVisible = isShown
+//    private fun isContentLanguageFieldShown(isShown: Boolean) {
+//        binding.tilContentLanguage.isVisible = isShown
 //        if (isShown) {
 //            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_less)
 //        } else {
 //            binding.btShowContentLanguageField.setIconResource(R.drawable.icon_expand_more)
 //        }
-    }
+//    }
 
-    private fun isDefinitionLanguageFieldShown(isShown: Boolean) {
-        binding.tilDefinitionLanguage.isVisible = isShown
+//    private fun isDefinitionLanguageFieldShown(isShown: Boolean) {
+//        binding.tilDefinitionLanguage.isVisible = isShown
 //        if (isShown) {
 //            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_less)
 //        } else {
 //            binding.btShowDefinitionLanguageField.setIconResource(R.drawable.icon_expand_more)
 //        }
-    }
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun showTriviaQuestionUploader() {
@@ -762,16 +780,16 @@ class NewCardDialog(
         }
         binding.btAdd.text = getString(R.string.bt_text_add)
         actionMode?.finish()
-        isContentLanguageFieldShown(false)
-        isDefinitionLanguageFieldShown(false)
-        binding.tieDefinitionLanguage.apply {
-            text?.clear()
-            error = null
-        }
-        binding.tieContentLanguage.apply {
-            text?.clear()
-            error = null
-        }
+//        isContentLanguageFieldShown(false)
+//        isDefinitionLanguageFieldShown(false)
+//        binding.tieDefinitionLanguage.apply {
+//            text?.clear()
+//            error = null
+//        }
+//        binding.tieContentLanguage.apply {
+//            text?.clear()
+//            error = null
+//        }
     }
 
     private fun onCloseDialog() {
@@ -835,7 +853,7 @@ class NewCardDialog(
 //                    onPositiveAction(Constant.UPDATE, indexCard)
 //                }
 //                newCardViewModel.updateCard(card)
-                onPositiveAction(Constant.UPDATE)
+                onPositiveAction()
 //                Toast.makeText(appContext, getString(R.string.message_card_updated), Toast.LENGTH_LONG).show()
 //                dismiss()
             }
@@ -855,26 +873,46 @@ class NewCardDialog(
             }
         }
 
-        if (!card.cardContentLanguage.isNullOrBlank()) {
-            isContentLanguageFieldShown(true)
-            binding.tieContentLanguage.setText(card.cardContentLanguage)
+        val contentLanguage = getContentLanguage(card)
+
+        val definitionLanguage = getDefinitionLanguage(card)
+
+        if (contentLanguage != null) {
+//            isContentLanguageFieldShown(true)
+//            binding.tieContentLanguage.setText(card.cardContentLanguage)
+            binding.btContentLanguage.text = contentLanguage
         } else {
-            isContentLanguageFieldShown(false)
+//            isContentLanguageFieldShown(false)
+            binding.btContentLanguage.text = getString(R.string.text_content_language)
         }
 
-        if (!card.cardDefinitionLanguage.isNullOrBlank()) {
-            isDefinitionLanguageFieldShown(true)
-            binding.tieDefinitionLanguage.setText(card.cardDefinitionLanguage)
+        if (definitionLanguage != null) {
+//            isDefinitionLanguageFieldShown(true)
+//            binding.tieDefinitionLanguage.setText(card.cardDefinitionLanguage)
+            binding.btDefinitionLanguage.text = definitionLanguage
         } else {
-            isDefinitionLanguageFieldShown(false)
+//            isDefinitionLanguageFieldShown(false)
+            binding.btDefinitionLanguage.text = getString(R.string.text_definition_language)
         }
 
+    }
+
+    private fun getDefinitionLanguage(card: ImmutableCard) = when {
+        !card.cardDefinitionLanguage.isNullOrBlank() -> card.cardDefinitionLanguage
+        !deck.cardDefinitionDefaultLanguage.isNullOrBlank() -> deck.cardDefinitionDefaultLanguage
+        else -> null
+    }
+
+    private fun getContentLanguage(card: ImmutableCard) = when {
+        !card.cardContentLanguage.isNullOrBlank() -> card.cardContentLanguage
+        !deck.cardContentDefaultLanguage.isNullOrBlank() -> deck.cardContentDefaultLanguage
+        else -> null
     }
 
     fun isCorrect(index: Int?) = index == 1
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun onPositiveAction(action: String): Boolean {
+    private fun onPositiveAction(): Boolean {
         val newCard = if (action == Constant.ADD) {
             generateCardOnAdd() ?: return false
         } else {
@@ -952,20 +990,20 @@ class NewCardDialog(
             }
         }
 
-        val contentLanguage = getContentLanguage()
-        val definitionLanguage = getDefinitionLanguage()
+        val contentLanguage = getNewContentLanguage()
+        val definitionLanguage = getNewDefinitionLanguage()
 
-        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
-            binding.tilContentLanguage.error =
-                getString(R.string.error_message_deck_language_not_supported)
-            return null
-        }
+//        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
+//            binding.tilContentLanguage.error =
+//                getString(R.string.error_message_deck_language_not_supported)
+//            return null
+//        }
 
-        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
-            binding.tilDefinitionLanguage.error =
-                getString(R.string.error_message_deck_language_not_supported)
-            return null
-        }
+//        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
+//            binding.tilDefinitionLanguage.error =
+//                getString(R.string.error_message_deck_language_not_supported)
+//            return null
+//        }
 
         return ImmutableCard(
             card.cardId,
@@ -992,20 +1030,20 @@ class NewCardDialog(
         val newCardContent = getContent(cardId, contentId, deck.deckId)
         val newCardDefinition = getDefinition(cardId, contentId, deck.deckId)
 
-        val contentLanguage = getContentLanguage()
-        val definitionLanguage = getDefinitionLanguage()
+        val contentLanguage = getNewContentLanguage()
+        val definitionLanguage = getNewDefinitionLanguage()
 
-        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
-            binding.tilContentLanguage.error =
-                getString(R.string.error_message_deck_language_not_supported)
-            return null
-        }
-
-        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
-            binding.tilDefinitionLanguage.error =
-                getString(R.string.error_message_deck_language_not_supported)
-            return null
-        }
+//        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
+//            binding.tilContentLanguage.error =
+//                getString(R.string.error_message_deck_language_not_supported)
+//            return null
+//        }
+//
+//        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
+//            binding.tilDefinitionLanguage.error =
+//                getString(R.string.error_message_deck_language_not_supported)
+//            return null
+//        }
 
         if (newCardContent == null) {
             return null
@@ -1033,7 +1071,7 @@ class NewCardDialog(
         )
     }
 
-    private fun getContentLanguage(): String? {
+    private fun getNewContentLanguage(): String? {
         val addedContentLanguage = binding.btContentLanguage.text
         if (addedContentLanguage.toString() !in supportedLanguages) {
             val defaultContentLanguage = deck.cardContentDefaultLanguage
@@ -1047,7 +1085,7 @@ class NewCardDialog(
         }
     }
 
-    private fun getDefinitionLanguage(): String? {
+    private fun getNewDefinitionLanguage(): String? {
         val addedDefinitionLanguage = binding.btDefinitionLanguage.text
         if (addedDefinitionLanguage.toString() !in supportedLanguages) {
             val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
@@ -1209,8 +1247,8 @@ class NewCardDialog(
         ly?.error = null
         animProgressBar(ly)
         actualField?.setText(getString(R.string.message_translation_in_progress))
-        val definitionLanguage = getDefinitionLanguage()
-        val contentLanguage = getContentLanguage()
+        val definitionLanguage = getNewDefinitionLanguage()
+        val contentLanguage = getNewContentLanguage()
 
         LanguageUtil().startTranslation(
             text = text,

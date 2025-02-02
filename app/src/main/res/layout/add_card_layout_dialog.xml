@@ -32,7 +32,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/space_sm"
+        android:layout_marginStart="@dimen/space_lg"
+        android:layout_marginEnd="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_lg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,42 +48,48 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tv_title_content_details"
+            <LinearLayout
+                android:id="@+id/ll_container_content_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="@string/text_content"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                android:textStyle="bold"
+                android:orientation="horizontal"
+                android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_content_language"
-                style="@style/Widget.Material3.Button.TextButton.Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:padding="0dp"
-                android:layout_marginStart="@dimen/space_sm"
-                android:text="@string/text_content_language"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs"
-                app:icon="@drawable/icon_expand_more"
-                app:iconTint="?colorOnSurface"
-                app:iconGravity="end"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_title_content_details"
-                app:layout_constraintStart_toEndOf="@+id/tv_title_content_details"
-                app:layout_constraintTop_toTopOf="@+id/tv_title_content_details" />
+                <TextView
+                    android:id="@+id/tv_title_content_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/text_content"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_sm"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_content_language"
+                    style="@style/Widget.Material3.Button.TextButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans"
+                    android:padding="0dp"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:text="@string/text_content_language"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_xs"
+                    app:icon="@drawable/icon_expand_more"
+                    app:iconTint="?colorOnSurface"
+                    app:iconGravity="end" />
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_content_multi_answer_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColorHint="@color/neutral400"
+                android:hint="@string/hint_text"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
@@ -89,7 +97,7 @@
                 app:endIconMode="clear_text"
                 app:endIconTint="?colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_content_details">
+                app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_content_multi_answer_card"
@@ -119,44 +127,49 @@
 <!--                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card" />-->
 
 
-            <TextView
-                android:id="@+id/tv_title_definition_details"
+            <LinearLayout
+                android:id="@+id/ll_container_definition_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_md"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="@string/text_definition"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                android:textStyle="bold"
+                android:orientation="horizontal"
+                android:gravity="start"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card" />
+                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_definition_language"
-                style="@style/Widget.Material3.Button.TextButton.Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:padding="0dp"
-                android:layout_marginStart="@dimen/space_sm"
-                android:text="@string/text_definition_language"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs"
-                app:icon="@drawable/icon_expand_more"
-                app:iconTint="?colorOnSurface"
-                app:iconGravity="end"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_title_definition_details"
-                app:layout_constraintStart_toEndOf="@+id/tv_title_definition_details"
-                app:layout_constraintTop_toTopOf="@+id/tv_title_definition_details" />
+                <TextView
+                    android:id="@+id/tv_title_definition_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans_bold"
+                    android:text="@string/text_definition"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_sm"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/bt_definition_language"
+                    style="@style/Widget.Material3.Button.TextButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/open_sans"
+                    android:padding="0dp"
+                    android:layout_marginStart="@dimen/space_sm"
+                    android:text="@string/text_definition_language"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="@dimen/text_xs"
+                    app:icon="@drawable/icon_expand_more"
+                    app:iconTint="?colorOnSurface"
+                    app:iconGravity="end" />
+
+            </LinearLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_definition_1_multi_answer_card"
                 style="@style/Widget.Design.TextInputLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -167,7 +180,7 @@
                 app:endIconTint="?colorOnSurface"
                 app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_title_definition_details">
+                app:layout_constraintTop_toBottomOf="@+id/ll_container_definition_details">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tie_definition_1_multi_answer_card"
@@ -197,6 +210,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -249,6 +263,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -301,6 +316,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -353,6 +369,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -405,6 +422,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -457,6 +475,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -509,6 +528,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -561,6 +581,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -613,6 +634,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_xs"
+                android:hint="@string/hint_text"
                 android:textColorHint="@color/neutral400"
                 android:theme="@style/App.Theme.Card_definition_field"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
@@ -662,7 +684,6 @@
                 style="@style/Widget.Material3.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
                 android:fontFamily="@font/open_sans"
                 android:padding="0dp"
                 android:text="@string/text_new_definition"
@@ -711,74 +732,74 @@
 <!--                    android:text="@string/text_new_definition" />-->
 <!--            </GridLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_content_language"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:hint="@string/text_content_language"
-                android:textColor="?colorOnSurface"
-                android:textColorHint="@color/neutral400"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bt_more_definition">
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:visibility="gone"-->
+<!--                android:id="@+id/til_content_language"-->
+<!--                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:hint="@string/text_content_language"-->
+<!--                android:textColor="?colorOnSurface"-->
+<!--                android:textColorHint="@color/neutral400"-->
+<!--                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"-->
+<!--                app:boxCornerRadiusBottomStart="@dimen/ed_radius"-->
+<!--                app:boxCornerRadiusTopEnd="@dimen/ed_radius"-->
+<!--                app:boxCornerRadiusTopStart="@dimen/ed_radius"-->
+<!--                app:endIconTint="?colorOnSurface"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/bt_more_definition">-->
 
-                <AutoCompleteTextView
-                    android:id="@+id/tie_content_language"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400"
-                    tools:ignore="LabelFor" />
-            </com.google.android.material.textfield.TextInputLayout>
+<!--                <AutoCompleteTextView-->
+<!--                    android:id="@+id/tie_content_language"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@null"-->
+<!--                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:fontFamily="@font/open_sans"-->
+<!--                    android:inputType="text"-->
+<!--                    android:maxLines="1"-->
+<!--                    android:singleLine="true"-->
+<!--                    android:textColor="?colorOnSurface"-->
+<!--                    android:textColorHint="@color/neutral400"-->
+<!--                    tools:ignore="LabelFor" />-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_language"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:hint="@string/text_content_language"
-                android:textColor="?colorOnSurface"
-                android:textColorHint="@color/neutral400"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_content_language">
+<!--            <com.google.android.material.textfield.TextInputLayout-->
+<!--                android:visibility="gone"-->
+<!--                android:id="@+id/til_definition_language"-->
+<!--                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:hint="@string/text_content_language"-->
+<!--                android:textColor="?colorOnSurface"-->
+<!--                android:textColorHint="@color/neutral400"-->
+<!--                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"-->
+<!--                app:boxCornerRadiusBottomStart="@dimen/ed_radius"-->
+<!--                app:boxCornerRadiusTopEnd="@dimen/ed_radius"-->
+<!--                app:boxCornerRadiusTopStart="@dimen/ed_radius"-->
+<!--                app:endIconTint="?colorOnSurface"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/til_content_language">-->
 
-                <AutoCompleteTextView
-                    android:id="@+id/tie_definition_language"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="text"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400"
-                    tools:ignore="LabelFor" />
-            </com.google.android.material.textfield.TextInputLayout>
+<!--                <AutoCompleteTextView-->
+<!--                    android:id="@+id/tie_definition_language"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@null"-->
+<!--                    android:dropDownSelector="@drawable/filter_spinner_dropdown_background"-->
+<!--                    android:ellipsize="end"-->
+<!--                    android:fontFamily="@font/open_sans"-->
+<!--                    android:inputType="text"-->
+<!--                    android:maxLines="1"-->
+<!--                    android:singleLine="true"-->
+<!--                    android:textColor="?colorOnSurface"-->
+<!--                    android:textColorHint="@color/neutral400"-->
+<!--                    tools:ignore="LabelFor" />-->
+<!--            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_add"
@@ -805,7 +826,7 @@
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_base"
                 android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_language"
+                app:layout_constraintTop_toBottomOf="@+id/bt_more_definition"
                 app:layout_constraintEnd_toStartOf="@id/bt_add"
                 app:layout_constraintBottom_toBottomOf="parent" />
 

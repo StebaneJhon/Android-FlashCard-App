@@ -7,9 +7,9 @@
     <string name="deck_second_language_hint">Deck definition language</string>
     <string name="deck_color">Deck Color</string>
     <string name="bt_description_add_new_card">Add New Card</string>
-    <string name="card_content_hint">%1$s word, sentence</string>
+<!--    <string name="card_content_hint">%1$s word, sentence</string>-->
     <string name="card_content_definition_hint">%1$s word or sentence Definition</string>
-    <string name="card_definition">%1$s word, sentence</string>
+    <string name="hint_text">Text</string>
     <string name="card_value_definition_hint">%1$s word or sentence Definition</string>
     <string name="deck_activity_title">Your Decks</string>
     <string name="search_deck_title">Search Deck</string>
@@ -261,5 +261,5 @@
     <string name="message_new_card_added">New card added.</string>
     <string name="message_card_updated">Card updated.</string>
     <string name="error_message_card_addition_failed">Card addition failed.</string>
-    <string name="button_keep_add">Keep adding</string>
+    <string name="button_keep_add">Keep creating</string>
 </resources>
