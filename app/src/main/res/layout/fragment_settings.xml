@@ -51,7 +51,7 @@
         <GridLayout
             android:id="@+id/ll_general_data_info"
             android:layout_width="match_parent"
-            android:layout_height="85dp"
+            android:layout_height="@dimen/card_info_height"
             android:layout_marginStart="@dimen/space_sm"
             android:layout_marginTop="@dimen/space_xs"
             android:layout_marginEnd="@dimen/space_xs"

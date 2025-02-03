@@ -23,6 +23,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     private var _deckWithAllCards = MutableStateFlow<UiState<ImmutableDeckWithCards>>(UiState.Loading)
     val deckWithAllCards: StateFlow<UiState<ImmutableDeckWithCards>> = _deckWithAllCards.asStateFlow()
+    private lateinit var actualDeck: ImmutableDeck
     private var fetchJob: Job? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
@@ -32,6 +33,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         fetchJob = viewModelScope.launch {
             try {
                 repository.getImmutableDeckWithCards(deckId).collect {
+                    actualDeck = it.deck!!
                     if (it.cards?.isEmpty()!!) {
                         _deckWithAllCards.value = UiState.Error("Empty deck")
                     } else {
@@ -47,6 +49,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     fun getBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
        return spaceRepetitionHelper.getActualBoxLevels()
     }
+
+    fun getActualDeck() = actualDeck
 
     fun insertCards(cards: List<ImmutableCard>, externalDeck: ImmutableDeck) = viewModelScope.launch {
         val cardsToAdd = cards.reversed()
@@ -75,6 +79,14 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
         repository.updateCardDefinitionLanguage(cardId, language)
+    }
+
+    fun updateDefaultCardContentLanguage(deckId: String, language: String) = viewModelScope.launch {
+        repository.updateDefaultCardContentLanguage(deckId, language)
+    }
+
+    fun updateDefaultCardDefinitionLanguage(deckId: String, language: String) = viewModelScope.launch {
+        repository.updateDefaultCardDefinitionLanguage(deckId, language)
     }
 
 }

@@ -266,8 +266,7 @@ class NewCardDialog(
             ),
         )
 
-        val arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
         listPopupWindow.setBackgroundDrawable(
             ResourcesCompat.getDrawable(

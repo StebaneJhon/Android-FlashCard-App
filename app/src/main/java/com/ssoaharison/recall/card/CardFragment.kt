@@ -14,16 +14,20 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.ListPopupWindow
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -93,6 +97,9 @@ class CardFragment :
     private var tts: TextToSpeech? = null
     private var startingQuizJob: Job? = null
     private var displayingCardsJob: Job? = null
+    private val supportedLanguages = LanguageUtil().getSupportedLang()
+    private lateinit var arrayAdapterSupportedLanguages: ArrayAdapter<String>
+    private lateinit var listPopupWindow: ListPopupWindow
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -138,6 +145,9 @@ class CardFragment :
         staggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
+        arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+
 
         view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
             title = deck.deckName
@@ -368,39 +378,75 @@ class CardFragment :
         binding.onNoCardTextError.isVisible = false
         binding.tvNoCardFound.isVisible = false
         binding.cardRecyclerView.isVisible = true
-        recyclerViewAdapter = appContext?.let { it ->
-            CardsRecyclerViewAdapter(
-                it,
-                appTheme,
-                deck,
-                cardList,
-                cardViewModel.getBoxLevels()!!,
-                { selectedCard ->
-                    onEditCard(selectedCard!!)
-                },
-                { selectedCard ->
-                    cardViewModel.deleteCard(selectedCard)
-                },
-                { text ->
-                    if (tts?.isSpeaking == true) {
-                        stopReading(text)
-                    } else {
-                        onStartReadingText(text, text.text.language, text.type)
-                    }
-                }) { text ->
+        recyclerViewAdapter = CardsRecyclerViewAdapter(
+            appContext!!,
+            getLayoutManager(),
+            appTheme,
+            deck,
+            cardList,
+            cardViewModel.getBoxLevels()!!,
+            { selectedCard ->
+                onEditCard(selectedCard!!)
+            },
+            { selectedCard ->
+                cardViewModel.deleteCard(selectedCard)
+            },
+            { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
                 } else {
                     onStartReadingText(text, text.text.language, text.type)
                 }
+            },
+            { text ->
+                if (tts?.isSpeaking == true) {
+                    stopReading(text)
+                } else {
+                    onStartReadingText(text, text.text.language, text.type)
+                }
+            },
+            { anchor ->
+                onDeckLanguageClicked(anchor, deck) { selectedLanguage ->
+                    cardViewModel.updateDefaultCardContentLanguage(
+                        deck.deckId,
+                        selectedLanguage
+                    )
+                }
+            }) { anchor ->
+            onDeckLanguageClicked(anchor, deck) { selectedLanguage ->
+                cardViewModel.updateDefaultCardDefinitionLanguage(
+                    deck.deckId,
+                    selectedLanguage
+                )
             }
-        }!!
-        val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
-        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return getSpanSize(cardList, position)
-            }
+//            listPopupWindow = ListPopupWindow(appContext!!, null)
+//            listPopupWindow.setBackgroundDrawable(
+//                ResourcesCompat.getDrawable(
+//                    resources,
+//                    R.drawable.filter_spinner_dropdown_background,
+//                    requireActivity().theme
+//                )
+//            )
+//            listPopupWindow.apply {
+//                anchorView = anchor
+//                setAdapter(arrayAdapterSupportedLanguages)
+//                setOnItemClickListener { _, _, position, _ ->
+//
+//                    dismiss()
+//                }
+//                show()
+//            }
         }
+//        val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
+//        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+//            override fun getSpanSize(position: Int): Int {
+//                if (position == 0) {
+//                    return 1
+//                } else {
+//                    return 2 // Fill the screen width
+//                }
+//            }
+//        }
 
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
@@ -425,6 +471,30 @@ class CardFragment :
                 }
         }
 
+    }
+
+    private fun onDeckLanguageClicked(
+        anchor: RelativeLayout,
+        deck: ImmutableDeck,
+        setLanguage: (String) -> Unit
+    ) {
+        listPopupWindow = ListPopupWindow(appContext!!, null)
+        listPopupWindow.setBackgroundDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.filter_spinner_dropdown_background,
+                requireActivity().theme
+            )
+        )
+        listPopupWindow.apply {
+            anchorView = anchor
+            setAdapter(arrayAdapterSupportedLanguages)
+            setOnItemClickListener { _, _, position, _ ->
+                setLanguage(supportedLanguages[position])
+                dismiss()
+            }
+            show()
+        }
     }
 
     private fun onStartingQuizError(errorText: String) {
@@ -584,7 +654,7 @@ class CardFragment :
     }
 
     private fun onAddNewCard() {
-        val newCardDialog = NewCardDialog(null, deck, Constant.ADD)
+        val newCardDialog = NewCardDialog(null, cardViewModel.getActualDeck(), Constant.ADD)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
@@ -610,6 +680,7 @@ class CardFragment :
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 result == 1 -> {
                     Toast.makeText(
                         appContext,

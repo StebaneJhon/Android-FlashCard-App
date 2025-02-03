@@ -262,4 +262,7 @@
     <string name="message_card_updated">Card updated.</string>
     <string name="error_message_card_addition_failed">Card addition failed.</string>
     <string name="button_keep_add">Keep creating</string>
+    <string name="text_unknown">Unknown</string>
+    <string name="text_known">Known</string>
+    <string name="text_total">Total</string>
 </resources>

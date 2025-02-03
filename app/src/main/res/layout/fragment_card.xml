@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/space_xxs"
+            android:layout_margin="@dimen/space_md"
             android:transitionGroup="true"
             android:visibility="gone" />
 
