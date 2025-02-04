@@ -72,10 +72,10 @@
                     android:padding="0dp"
                     android:layout_marginStart="@dimen/space_sm"
                     android:text="@string/text_content_language"
-                    android:textColor="?colorOnSurface"
+                    android:textColor="?colorPrimary"
                     android:textSize="@dimen/text_xs"
                     app:icon="@drawable/icon_expand_more"
-                    app:iconTint="?colorOnSurface"
+                    app:iconTint="?colorPrimary"
                     app:iconGravity="end" />
             </LinearLayout>
 
@@ -130,10 +130,10 @@
                     android:padding="0dp"
                     android:layout_marginStart="@dimen/space_sm"
                     android:text="@string/text_definition_language"
-                    android:textColor="?colorOnSurface"
+                    android:textColor="?colorPrimary"
                     android:textSize="@dimen/text_xs"
                     app:icon="@drawable/icon_expand_more"
-                    app:iconTint="?colorOnSurface"
+                    app:iconTint="?colorPrimary"
                     app:iconGravity="end" />
             </LinearLayout>
 
