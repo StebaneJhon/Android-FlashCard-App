@@ -61,7 +61,7 @@ class DecksRecyclerViewAdapter(
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
         private val tvKnownCardSum: TextView? = view.findViewById(R.id.tv_known_cards_Sum)
         private val tvUnKnownCardSum: TextView? = view.findViewById(R.id.tv_un_known_cards_Sum)
-        private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
+//        private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
         private val ICON_MARGIN = 5
 
 
@@ -82,13 +82,13 @@ class DecksRecyclerViewAdapter(
             cardSum?.isVisible = deck.cardSum == 0
             if (deck.knownCardCount!! > 0) {
                 tvKnownCardSum?.visibility = View.VISIBLE
-                tvKnownCardSum?.text = deck.knownCardCount.toString()
+                tvKnownCardSum?.text = "${deck.knownCardCount}"
             } else {
                 tvKnownCardSum?.visibility = View.GONE
             }
             if (deck.unKnownCardCount!! > 0) {
                 tvUnKnownCardSum?.visibility = View.VISIBLE
-                tvUnKnownCardSum?.text = deck.unKnownCardCount.toString()
+                tvUnKnownCardSum?.text = "${deck.unKnownCardCount}"
             } else {
                 tvUnKnownCardSum?.visibility = View.GONE
             }
@@ -117,17 +117,17 @@ class DecksRecyclerViewAdapter(
                 setOnClickListener { deckClickListener(deck) }
             }
 
-            popupMenuBT?.setOnClickListener { v: View ->
-                showMenu(
-                    context,
-                    v,
-                    R.menu.deck_popup_menu,
-                    editDeckClickListener,
-                    deleteDeckClickListener,
-                    startQuizListener,
-                    deck
-                )
-            }
+//            popupMenuBT?.setOnClickListener { v: View ->
+//                showMenu(
+//                    context,
+//                    v,
+//                    R.menu.deck_popup_menu,
+//                    editDeckClickListener,
+//                    deleteDeckClickListener,
+//                    startQuizListener,
+//                    deck
+//                )
+//            }
         }
 
         @SuppressLint("RestrictedApi")

@@ -5,7 +5,7 @@
     android:id="@+id/cl_add_card_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="?colorSurfaceContainerLowest">
+    android:background="?colorSurfaceContainerLowest">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/ly_tab_add_new_card"

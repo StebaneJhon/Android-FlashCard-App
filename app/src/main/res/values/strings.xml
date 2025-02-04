@@ -265,4 +265,5 @@
     <string name="text_unknown">Unknown</string>
     <string name="text_known">Known</string>
     <string name="text_total">Total</string>
+    <string name="content_description_icon_clickable_item">Icon clickable item</string>
 </resources>

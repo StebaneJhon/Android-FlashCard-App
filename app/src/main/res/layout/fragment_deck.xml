@@ -84,7 +84,6 @@
         android:id="@+id/deckRecycleView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="@dimen/space_xs"
         android:transitionGroup="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
