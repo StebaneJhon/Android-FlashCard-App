@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.util
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -108,6 +109,16 @@ class DeckColorCategorySelector {
         }
     }
 
+    fun selectDeckColorStateListSurfaceContainerLow(context: Context, color: String?): ColorStateList? {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColorStateList(context, this.deckColorSurfaceLow.getOrDefault(color, R.color.neutral100))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
+            ResourcesCompat.getColorStateList(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
     fun selectDeckColorSurfaceContainerLowEst(context: Context, color: String?): Int {
         return if (color in this.deckColorSurfaceLow.keys) {
             ContextCompat.getColor(context, this.deckColorSurfaceLowEst.getOrDefault(color, R.color.neutral50))
@@ -115,6 +126,16 @@ class DeckColorCategorySelector {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLowest, typedValue, true)
             ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
+    fun selectDeckColorStateListSurfaceContainerLowEst(context: Context, color: String?): ColorStateList? {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColorStateList(context, this.deckColorSurfaceLowEst.getOrDefault(color, R.color.neutral50))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLowest, typedValue, true)
+            ResourcesCompat.getColorStateList(context.resources, typedValue.resourceId, context.theme)
         }
     }
 
@@ -128,29 +149,15 @@ class DeckColorCategorySelector {
         }
     }
 
-//    fun getColorOnSurface(context: Context): Int {
-//        val typedValue = TypedValue()
-//        val theme = context.theme
-//        theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
-//        @ColorInt val color = typedValue.data
-//        return color
-//    }
-//
-//    fun getColorSurfaceContainerLow(context: Context): Int {
-//        val typedValue = TypedValue()
-//        val theme = context.theme
-//        theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
-//        @ColorInt val color = typedValue.data
-//        return color
-//    }
-//
-//    fun getColorSurfaceContainerLowEst(context: Context): Int {
-//        val typedValue = TypedValue()
-//        val theme = context.theme
-//        theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLowest, typedValue, true)
-//        @ColorInt val color = typedValue.data
-//        return color
-//    }
+    fun selectDeckOnSurfaceColorStateList(context: Context, color: String?): ColorStateList? {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColorStateList(context, this.deckColorOnSurface.getOrDefault(color, R.color.neutral950))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+            ResourcesCompat.getColorStateList(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
 
 }
 

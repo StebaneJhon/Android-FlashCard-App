@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
@@ -75,6 +76,7 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.parcelable
@@ -219,6 +221,52 @@ class CardFragment :
                 }
             })
 
+
+
+    }
+
+    fun bindDeckDetailsPanel(deck: ImmutableDeck) {
+        binding.tvCardSum.text = "${deck.cardSum}"
+        binding.tvUnknownCardSum.text = "${deck.unKnownCardCount}"
+        binding.tvKnownCardSum.text = "${deck.knownCardCount}"
+        binding.btContentLanguage.apply {
+            text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
+            setOnClickListener {
+                onDeckLanguageClicked(binding.rlContainerContentLanguage, deck) { selectedLanguage ->
+                    cardViewModel.updateDefaultCardContentLanguage(
+                        deck.deckId,
+                        selectedLanguage
+                    )
+                }
+            }
+        }
+        binding.rlContainerContentLanguage.setOnClickListener {
+            onDeckLanguageClicked(binding.rlContainerContentLanguage, deck) { selectedLanguage ->
+                cardViewModel.updateDefaultCardContentLanguage(
+                    deck.deckId,
+                    selectedLanguage
+                )
+            }
+        }
+        binding.btDefinitionLanguage.apply {
+            text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
+            setOnClickListener {
+                onDeckLanguageClicked(binding.rlContainerDefinitionLanguage, deck) { selectedLanguage ->
+                    cardViewModel.updateDefaultCardDefinitionLanguage(
+                        deck.deckId,
+                        selectedLanguage
+                    )
+                }
+            }
+        }
+        binding.rlContainerDefinitionLanguage.setOnClickListener {
+            onDeckLanguageClicked(binding.rlContainerDefinitionLanguage, deck) { selectedLanguage ->
+                cardViewModel.updateDefaultCardDefinitionLanguage(
+                    deck.deckId,
+                    selectedLanguage
+                )
+            }
+        }
     }
 
     private fun displayAllCards() {
@@ -239,11 +287,35 @@ class CardFragment :
 
                         is UiState.Success -> {
                             populateRecyclerView(state.data.cards!!, state.data.deck!!)
+                            bindDeckDetailsPanel(state.data.deck)
+                            setCardFragmentColors(state.data.deck)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun setCardFragmentColors(deck: ImmutableDeck) {
+        val deckColorHelper = DeckColorCategorySelector()
+        val deckColorSurfaceLow = deckColorHelper.selectDeckColorSurfaceContainerLow(appContext!!, deck.deckColorCode)
+        val deckColorStateListSurfaceLow = deckColorHelper.selectDeckColorStateListSurfaceContainerLow(appContext!!, deck.deckColorCode)
+        val deckColorSurfaceLowest = deckColorHelper.selectDeckColorStateListSurfaceContainerLowEst(appContext!!, deck.deckColorCode)
+        val deckColorOnSurfaceLow = deckColorHelper.selectDeckOnSurfaceColor(appContext!!, deck.deckColorCode)
+        binding.cardsActivityRoot.setBackgroundColor(deckColorSurfaceLow)
+        binding.appBarLayout.setBackgroundColor(deckColorSurfaceLow)
+        binding.clDeckOverviewRoot.setBackgroundColor(deckColorSurfaceLow)
+        binding.cardRecyclerView.backgroundTintList = deckColorSurfaceLowest
+        binding.cvContainerCardSum.backgroundTintList = deckColorSurfaceLowest
+        binding.cvContainerUnknownCardSum.backgroundTintList = deckColorSurfaceLowest
+        binding.cvContainerKnownCardSum.backgroundTintList = deckColorSurfaceLowest
+        binding.rlContainerContentLanguage.backgroundTintList = deckColorSurfaceLowest
+        binding.rlContainerDefinitionLanguage.backgroundTintList = deckColorSurfaceLowest
+        val window = activity?.window
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window?.statusBarColor = deckColorSurfaceLow
+        binding.bottomAppBar.backgroundTintList = deckColorStateListSurfaceLow
     }
 
     private fun onDeckEmpty() {

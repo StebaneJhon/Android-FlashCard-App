@@ -517,14 +517,8 @@ class FlashCardGameActivity :
                     if (currentX1 == view.x || currentY1 == view.y) {
                         flipCard()
                     } else {
-                        val deckColorCode = viewModel.deck?.deckColorCode?.let {
-                            DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(this@FlashCardGameActivity, it)
-                        } ?: R.color.black
-                        binding.cvCardFront.backgroundTintList =
-                            ContextCompat.getColorStateList(
-                                this@FlashCardGameActivity,
-                                deckColorCode
-                            )
+                        val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(this@FlashCardGameActivity, viewModel.deck?.deckColorCode)
+                        binding.cvCardFront.backgroundTintList =deckColorCode
                     }
                     currentX1 = 0f
                     currentY1 = 0f
@@ -659,13 +653,9 @@ class FlashCardGameActivity :
             }
 
             else -> {
-                val deckColorCode = viewModel.deck?.deckColorCode?.let {
-                    DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(this, it)
-                } ?: R.color.black
-                binding.cvCardFront.backgroundTintList =
-                    ContextCompat.getColorStateList(this@FlashCardGameActivity, deckColorCode)
-                binding.cvCardBack.backgroundTintList =
-                    ContextCompat.getColorStateList(this@FlashCardGameActivity, deckColorCode)
+                val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(this, viewModel.deck?.deckColorCode)
+                binding.cvCardFront.backgroundTintList = deckColorCode
+                binding.cvCardBack.backgroundTintList =deckColorCode
             }
         }
 
@@ -701,9 +691,7 @@ class FlashCardGameActivity :
     @SuppressLint("ResourceType")
     private fun bindCard(onScreenCards: FlashCardGameModel, cardOrientation: String) {
 
-        val deckColorCode = viewModel.deck?.deckColorCode?.let {
-            DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(this, it)
-        } ?: R.color.black
+        val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(this, viewModel.deck?.deckColorCode)
         val sumCardsInDeck = viewModel.getTotalCards()
         val currentCardNumber = viewModel.getCurrentCardNumber()
 
@@ -741,13 +729,12 @@ class FlashCardGameActivity :
     }
 
     private fun bindCardFrontAndBack(
-        deckColorCode: Int,
+        deckColorCode: ColorStateList?,
         onScreenCards: FlashCardGameModel,
         currentCardNumber: Int,
         sumCardsInDeck: Int
     ) {
-        binding.cvCardFront.backgroundTintList =
-            ContextCompat.getColorStateList(this, deckColorCode)
+        binding.cvCardFront.backgroundTintList = deckColorCode
 
         binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
 
@@ -763,7 +750,7 @@ class FlashCardGameActivity :
             }
         }
 
-        binding.cvCardBack.backgroundTintList = ContextCompat.getColorStateList(this, deckColorCode)
+        binding.cvCardBack.backgroundTintList = deckColorCode
         binding.tvFlashCardFrontProgression.text = getString(
             R.string.tx_flash_card_game_progression,
             "$currentCardNumber",
@@ -931,15 +918,14 @@ class FlashCardGameActivity :
     private fun bindCardBottom(
         onFlippedBackgroundColor: ColorStateList?,
         onScreenCards: FlashCardGameModel,
-        deckColorCode: Int,
+        deckColorCode: ColorStateList?,
         text: String?,
         currentCardNumber: Int,
         sumCardsInDeck: Int
     ) {
         binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
         if (onScreenCards.bottom != null) {
-            binding.cvCardBottom.backgroundTintList =
-                ContextCompat.getColorStateList(this, deckColorCode)
+            binding.cvCardBottom.backgroundTintList = deckColorCode
             binding.tvQuizBottom.text = text
             binding.tvFlashCardBottomProgression.text = getString(
                 R.string.tx_flash_card_game_progression,
@@ -947,8 +933,7 @@ class FlashCardGameActivity :
                 "$sumCardsInDeck"
             )
         } else {
-            binding.cvCardBottom.backgroundTintList =
-                ContextCompat.getColorStateList(this, deckColorCode)
+            binding.cvCardBottom.backgroundTintList =  deckColorCode
             binding.tvQuizBottom.text = "..."
         }
     }

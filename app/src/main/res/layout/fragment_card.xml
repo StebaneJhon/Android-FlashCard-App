@@ -5,7 +5,7 @@
     android:id="@+id/cardsActivityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorSurfaceContainerLowest"
+    android:background="?colorSurfaceContainerLow"
     tools:context=".card.CardFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -89,13 +89,287 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/cardRecyclerView"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:transitionGroup="true"
-            android:visibility="gone" />
+            android:fillViewport="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_deck_overview_root"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?colorSurfaceContainerLow"
+                    android:paddingStart="@dimen/space_lg"
+                    android:paddingEnd="@dimen/space_lg"
+                    android:paddingBottom="@dimen/space_lg"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <GridLayout
+                        android:id="@+id/gr_root_overview"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/card_info_height"
+                        android:orientation="horizontal"
+                        android:columnCount="3"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cv_container_card_sum"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="@dimen/space_sm"
+                            android:padding="@dimen/space_md"
+                            android:background="@drawable/bg_10_dp_radius"
+                            android:backgroundTint="?colorSurfaceContainerLowest"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_card_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:fontFamily="@font/open_sans"
+                                android:gravity="center"
+                                android:textAlignment="gravity"
+                                android:textColor="?colorOnSurface"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/text_xl3"
+                                app:autoSizeMinTextSize="@dimen/text_xl"
+                                app:autoSizeStepGranularity="2sp"
+                                app:autoSizeTextType="uniform"
+                                app:layout_constraintBottom_toTopOf="@+id/tv_text_card_sum"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:text="10" />
+
+                            <TextView
+                                android:id="@+id/tv_text_card_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/space_xs"
+                                android:fontFamily="@font/open_sans"
+                                android:text="@string/text_total"
+                                android:textAlignment="center"
+                                android:textColor="?colorPrimary"
+                                android:textSize="@dimen/text_sm"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cv_container_known_card_sum"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_marginEnd="@dimen/space_sm"
+                            android:padding="@dimen/space_md"
+                            android:background="@drawable/bg_10_dp_radius"
+                            android:backgroundTint="?colorSurfaceContainerLowest"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_known_card_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:fontFamily="@font/open_sans"
+                                android:gravity="center"
+                                android:textAlignment="gravity"
+                                android:textColor="?colorOnSurface"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/text_xl3"
+                                app:autoSizeMinTextSize="@dimen/text_xl"
+                                app:autoSizeStepGranularity="2sp"
+                                app:autoSizeTextType="uniform"
+                                app:layout_constraintBottom_toTopOf="@+id/tv_text_known_card_sum"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:text="5" />
+
+                            <TextView
+                                android:id="@+id/tv_text_known_card_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/space_xs"
+                                android:fontFamily="@font/open_sans"
+                                android:text="@string/text_known"
+                                android:textAlignment="center"
+                                android:textColor="?colorPrimary"
+                                android:textSize="@dimen/text_sm"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/cv_container_unknown_card_sum"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="@dimen/space_xxs"
+                            android:padding="@dimen/space_md"
+                            android:background="@drawable/bg_10_dp_radius"
+                            android:backgroundTint="?colorSurfaceContainerLowest"
+                            android:gravity="center"
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_unknown_card_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:fontFamily="@font/open_sans"
+                                android:gravity="center"
+                                android:textAlignment="gravity"
+                                android:textColor="?colorOnSurface"
+                                android:textStyle="bold"
+                                app:autoSizeMaxTextSize="@dimen/text_xl3"
+                                app:autoSizeMinTextSize="@dimen/text_xl"
+                                app:autoSizeStepGranularity="2sp"
+                                app:autoSizeTextType="uniform"
+                                app:layout_constraintBottom_toTopOf="@+id/tv_text_unknown_card_sum"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                android:text="5" />
+
+                            <TextView
+                                android:id="@+id/tv_text_unknown_card_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="@dimen/space_xs"
+                                android:fontFamily="@font/open_sans"
+                                android:text="@string/text_unknown"
+                                android:textAlignment="center"
+                                android:textColor="?colorPrimary"
+                                android:textSize="@dimen/text_sm"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </GridLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_container_content_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_10_pt_radius"
+                        android:backgroundTint="?colorSurfaceContainerLowest"
+                        android:paddingStart="@dimen/space_md"
+                        android:paddingEnd="@dimen/space_md"
+                        android:layout_marginTop="@dimen/space_sm"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/gr_root_overview">
+                        <TextView
+                            android:id="@+id/tv_content_language"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_content_language"
+                            android:textAlignment="textStart"
+                            android:fontFamily="@font/open_sans"
+                            android:textStyle="bold"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="@dimen/text_sm"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_content_language"
+                            style="@style/Widget.Material3.Button.TextButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="@dimen/space_lg"
+                            android:layout_toEndOf="@+id/tv_content_language"
+                            android:fontFamily="@font/open_sans"
+                            android:padding="0dp"
+                            android:text="@string/text_content_language"
+                            android:textColor="?colorPrimary"
+                            android:textSize="@dimen/text_xs"
+                            android:textAlignment="textEnd"
+                            app:icon="@drawable/icon_unfold_more"
+                            app:iconGravity="end"
+                            app:iconTint="?colorPrimary"
+                            app:rippleColor="?colorSurfaceContainerLow"/>
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/rl_container_definition_language"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_10_pt_radius"
+                        android:backgroundTint="?colorSurfaceContainerLowest"
+                        android:paddingStart="@dimen/space_md"
+                        android:paddingEnd="@dimen/space_md"
+                        android:layout_marginTop="@dimen/space_sm"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rl_container_content_language">
+                        <TextView
+                            android:id="@+id/tv_definition_language"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_definition_language"
+                            android:textAlignment="textStart"
+                            android:fontFamily="@font/open_sans"
+                            android:textStyle="bold"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="@dimen/text_sm"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerVertical="true"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_definition_language"
+                            style="@style/Widget.Material3.Button.TextButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="@dimen/space_lg"
+                            android:layout_toEndOf="@+id/tv_definition_language"
+                            android:fontFamily="@font/open_sans"
+                            android:padding="0dp"
+                            android:text="@string/text_definition_language"
+                            android:textColor="?colorPrimary"
+                            android:textSize="@dimen/text_xs"
+                            android:textAlignment="textEnd"
+                            app:icon="@drawable/icon_unfold_more"
+                            app:iconGravity="end"
+                            app:iconTint="?colorPrimary"
+                            app:rippleColor="?colorSurfaceContainerLow"/>
+                    </RelativeLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/cardRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:transitionGroup="true"
+                    android:background="@drawable/bg_card_recyclerview"
+                    android:backgroundTint="?colorSurfaceContainerLowest"
+                    android:padding="@dimen/space_md"
+                    app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
             android:id="@+id/cardsActivityProgressBar"

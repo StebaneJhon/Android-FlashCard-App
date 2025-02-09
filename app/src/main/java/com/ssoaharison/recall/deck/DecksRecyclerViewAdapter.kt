@@ -86,18 +86,18 @@ class DecksRecyclerViewAdapter(
 //            val color = MaterialColors.getColorStateList(context, com.google.android.material.R.attr.colorOnSurface)
 
 //            val textView: TextView = findViewById(R.id.textView)
-            val typedValue = TypedValue()
-            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
-            val color = typedValue.data
+//            val typedValue = TypedValue()
+//            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
+//            val color = typedValue.data
 //            textView.setTextColor(color)
 
 
             val deckColorHelper = DeckColorCategorySelector()
             val deckSurfaceColorCode = deckColorHelper
-                .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode) ?: color
+                .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
 
             val deckTextColorCode = deckColorHelper
-                .selectDeckOnSurfaceColor(context, deck.deckColorCode) ?: color
+                .selectDeckOnSurfaceColor(context, deck.deckColorCode)
 
             deckNameTV?.apply {
                 text = deck.deckName

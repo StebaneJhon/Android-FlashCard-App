@@ -48,41 +48,61 @@ class CardsRecyclerViewAdapter(
     private val onDefinitionLanguageClicked: (RelativeLayout) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = if (viewType == 0) {
-        DeckDetailsViewHolder.create(parent)
-    } else {
-        CardViewHolder.create(parent)
-    }
+//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = if (viewType == 0) {
+//        DeckDetailsViewHolder.create(parent)
+//    } else {
+//        CardViewHolder.create(parent)
+//    }
 
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        CardViewHolder.create(parent)
+
+
+//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
+//        if (position == 0) {
+//            (holder as DeckDetailsViewHolder).bind(
+//                context,
+//                deck,
+//                onContentLanguageClicked,
+//                onDefinitionLanguageClicked
+//            )
+//            if (layoutManager == STAGGERED_GRID_LAYOUT_MANAGER) {
+//                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+//                layoutParams.isFullSpan = true
+//            } else { }
+//        } else {
+//            (holder as CardViewHolder).bind(
+//                context,
+//                appTheme,
+//                deck,
+//                cardList[position.minus(1)],
+//                boxLevels,
+//                editCardClickListener,
+//                deleteCardClickListener,
+//                onReadContent,
+//                onReadDefinition,
+//            )
+//        }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        if (position == 0) {
-            (holder as DeckDetailsViewHolder).bind(
-                context,
-                deck,
-                onContentLanguageClicked,
-                onDefinitionLanguageClicked
-            )
-            if (layoutManager == STAGGERED_GRID_LAYOUT_MANAGER) {
-                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-                layoutParams.isFullSpan = true
-            } else { }
-        } else {
             (holder as CardViewHolder).bind(
                 context,
                 appTheme,
                 deck,
-                cardList[position.minus(1)],
+                cardList[position],
                 boxLevels,
                 editCardClickListener,
                 deleteCardClickListener,
                 onReadContent,
                 onReadDefinition,
             )
-        }
+
+//    override fun getItemCount(): Int {
+//        return cardList.size.plus(1)
+//    }
 
     override fun getItemCount(): Int {
-        return cardList.size.plus(1)
+        return cardList.size
     }
 
     override fun getItemViewType(position: Int): Int {
