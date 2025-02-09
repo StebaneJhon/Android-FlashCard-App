@@ -113,7 +113,7 @@ class QuizGameAdapter(
             )
             tvContent.text = card.cardContent?.content
             tvCardType.text = card.cardType
-            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+            val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
             when {
@@ -345,7 +345,7 @@ class QuizGameAdapter(
                     materialButton.visibility = View.GONE
                 }
                 val deckColor =
-                    DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+                    DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
                 cvCardContainerBack.backgroundTintList =
                     ContextCompat.getColorStateList(context, deckColor)
                 tvBackProgression.text = context.getString(

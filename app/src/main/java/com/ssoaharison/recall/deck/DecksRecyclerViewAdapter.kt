@@ -2,25 +2,28 @@ package com.ssoaharison.recall.deck
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getColor
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.DeckColorCategorySelector
-import com.google.android.material.card.MaterialCardView
+
 
 class DecksRecyclerViewAdapter(
     private val listOfDecks: List<ImmutableDeck>,
@@ -57,7 +60,7 @@ class DecksRecyclerViewAdapter(
         private val deckRoot: ConstraintLayout? = view.findViewById(R.id.deckRoot)
 //        private val deckContendLanguages: TextView? = view.findViewById(R.id.tv_content_language)
 //        private val deckDefinitionLanguages: TextView? = view.findViewById(R.id.tv_definition_language)
-        private val categoryColor: View? = view.findViewById(R.id.v_category_color)
+//        private val categoryColor: View? = view.findViewById(R.id.v_category_color)
         private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
         private val tvKnownCardSum: TextView? = view.findViewById(R.id.tv_known_cards_Sum)
         private val tvUnKnownCardSum: TextView? = view.findViewById(R.id.tv_un_known_cards_Sum)
@@ -74,7 +77,32 @@ class DecksRecyclerViewAdapter(
             startQuizListener: (ImmutableDeck) -> Unit,
             deckClickListener: (ImmutableDeck) -> Unit
         ) {
-            deckNameTV?.text = deck.deckName
+
+//            val typedValue = TypedValue()
+//            val theme = context.theme
+//            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+//            @ColorInt val color = typedValue.data
+
+//            val color = MaterialColors.getColorStateList(context, com.google.android.material.R.attr.colorOnSurface)
+
+//            val textView: TextView = findViewById(R.id.textView)
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
+            val color = typedValue.data
+//            textView.setTextColor(color)
+
+
+            val deckColorHelper = DeckColorCategorySelector()
+            val deckSurfaceColorCode = deckColorHelper
+                .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode) ?: color
+
+            val deckTextColorCode = deckColorHelper
+                .selectDeckOnSurfaceColor(context, deck.deckColorCode) ?: color
+
+            deckNameTV?.apply {
+                text = deck.deckName
+                setTextColor(deckTextColorCode)
+            }
 //            deckDescriptionTV?.text = deck.deckDescription
 //            deckContendLanguages?.text = deck.cardContentDefaultLanguage
 //            deckDefinitionLanguages?.text = deck.cardDefinitionDefaultLanguage
@@ -93,15 +121,10 @@ class DecksRecyclerViewAdapter(
                 tvUnKnownCardSum?.visibility = View.GONE
             }
 
-            val deckColorCode = deck.deckColorCode?.let {
-                DeckColorCategorySelector().selectColor(
-                    it
-                )
-            } ?: R.color.red700
+//            categoryColor?.setBackgroundColor(ContextCompat.getColor(context, deckColorCode))
 
-            categoryColor?.setBackgroundColor(ContextCompat.getColor(context, deckColorCode))
             deckRoot?.apply {
-//                setCardBackgroundColor(ContextCompat.getColor(context, deckColorCode))
+                setBackgroundColor(deckSurfaceColorCode)
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
@@ -129,6 +152,30 @@ class DecksRecyclerViewAdapter(
 //                )
 //            }
         }
+
+//        private fun getAppTextColor(context: Context): Int {
+//            val typedValue = TypedValue()
+//            val theme = context.theme
+//            theme.resolveAttribute(
+//                com.google.android.material.R.attr.colorOnSurface,
+//                typedValue,
+//                true
+//            )
+//            @ColorInt val defaultTextColor = typedValue.data
+//            return defaultTextColor
+//        }
+
+//        private fun getAppSurfaceColor(context: Context): Int {
+//            val typedValue = TypedValue()
+//            val theme = context.theme
+//            theme.resolveAttribute(
+//                com.google.android.material.R.attr.colorSurfaceContainerLow,
+//                typedValue,
+//                true
+//            )
+//            @ColorInt val defaultTextColor = typedValue.data
+//            return defaultTextColor
+//        }
 
         @SuppressLint("RestrictedApi")
         private fun showMenu(

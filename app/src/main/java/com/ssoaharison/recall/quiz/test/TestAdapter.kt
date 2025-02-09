@@ -96,7 +96,7 @@ class TestAdapter(
                 tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
             }
             val deckColor =
-                DeckColorCategorySelector().selectColor(deck.deckColorCode!!) ?: R.color.black
+                DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deck.deckColorCode!!) ?: R.color.black
             cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
             btAlternatives.forEachIndexed { index, materialButton ->

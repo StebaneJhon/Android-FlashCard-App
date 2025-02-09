@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/v_category_color"
-        android:layout_width="@dimen/space_lg"
-        android:layout_height="0dp"
-        android:background="@color/grey700"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+<!--    <View-->
+<!--        android:id="@+id/v_category_color"-->
+<!--        android:layout_width="@dimen/space_lg"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:background="@color/grey700"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        tools:ignore="MissingConstraints" />-->
 
     <TextView
         android:id="@+id/deckNameTV"
@@ -30,7 +29,7 @@
         android:textSize="@dimen/text_base"
         android:textStyle="bold"
         app:layout_constraintEnd_toStartOf="@+id/popup_menu_BT"
-        app:layout_constraintStart_toEndOf="@+id/v_category_color"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Init Deck" />
 
@@ -82,14 +81,14 @@
         android:layout_marginBottom="@dimen/space_lg"
         android:layout_marginEnd="@dimen/space_xxs"
         android:layout_marginStart="@dimen/space_lg"
-        app:layout_constraintStart_toEndOf="@+id/v_category_color"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/deckNameTV"
         app:layout_constraintBottom_toTopOf="@+id/materialDivider">
         <TextView
             android:id="@+id/tv_known_cards_Sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_10_dp_radius"
+            android:background="@drawable/bg_10_pt_radius"
             android:backgroundTint="@color/green700"
             android:fontFamily="@font/open_sans_light"
             android:gravity="center"
@@ -105,7 +104,7 @@
             android:id="@+id/tv_un_known_cards_Sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_10_dp_radius"
+            android:background="@drawable/bg_10_pt_radius"
             android:backgroundTint="@color/red700"
             android:fontFamily="@font/open_sans_light"
             android:gravity="center"
@@ -121,7 +120,7 @@
             android:id="@+id/cardsSum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_10_dp_radius"
+            android:background="@drawable/bg_10_pt_radius"
             android:backgroundTint="?colorSurfaceContainerHighest"
             android:fontFamily="@font/open_sans_light"
             android:gravity="center"
@@ -144,7 +143,7 @@
         android:src="@drawable/icon_arrow_right_2"
         app:tint="?colorOnSurface"
         android:padding="0dp"
-        android:layout_marginEnd="@dimen/space_lg"
+        android:layout_marginEnd="@dimen/space_sm"
         android:layout_marginTop="@dimen/space_lg"
         android:layout_marginBottom="@dimen/space_lg"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -156,7 +155,6 @@
         style="@style/Widget.App.MaterialDivider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_lg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/inner_deck_border"
         android:backgroundTint="?colorSurfaceContainer"
-        android:padding="@dimen/space_sm">
+        android:padding="@dimen/space_md">
 
         <TextView
             android:id="@+id/tv_card_content"

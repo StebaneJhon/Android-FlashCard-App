@@ -52,7 +52,6 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
-import com.ssoaharison.recall.util.Constant.ERROR
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
@@ -519,7 +518,7 @@ class FlashCardGameActivity :
                         flipCard()
                     } else {
                         val deckColorCode = viewModel.deck?.deckColorCode?.let {
-                            DeckColorCategorySelector().selectColor(it)
+                            DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(this@FlashCardGameActivity, it)
                         } ?: R.color.black
                         binding.cvCardFront.backgroundTintList =
                             ContextCompat.getColorStateList(
@@ -661,7 +660,7 @@ class FlashCardGameActivity :
 
             else -> {
                 val deckColorCode = viewModel.deck?.deckColorCode?.let {
-                    DeckColorCategorySelector().selectColor(it)
+                    DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(this, it)
                 } ?: R.color.black
                 binding.cvCardFront.backgroundTintList =
                     ContextCompat.getColorStateList(this@FlashCardGameActivity, deckColorCode)
@@ -703,7 +702,7 @@ class FlashCardGameActivity :
     private fun bindCard(onScreenCards: FlashCardGameModel, cardOrientation: String) {
 
         val deckColorCode = viewModel.deck?.deckColorCode?.let {
-            DeckColorCategorySelector().selectColor(it)
+            DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(this, it)
         } ?: R.color.black
         val sumCardsInDeck = viewModel.getTotalCards()
         val currentCardNumber = viewModel.getCurrentCardNumber()

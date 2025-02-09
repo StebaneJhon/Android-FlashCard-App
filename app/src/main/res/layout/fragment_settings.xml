@@ -10,7 +10,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:backgroundTint="?colorSurfaceContainerLowest"
+        android:paddingBottom="@dimen/space_md">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
@@ -36,9 +38,9 @@
             android:id="@+id/tv_title_data_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
             android:layout_marginTop="@dimen/space_md"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_md"
             android:fontFamily="@font/open_sans_bold"
             android:text="@string/tv_title_data_review"
             android:textColor="?colorOnSurface"
@@ -52,9 +54,9 @@
             android:id="@+id/ll_general_data_info"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_info_height"
-            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
             android:layout_marginTop="@dimen/space_xs"
-            android:layout_marginEnd="@dimen/space_xs"
+            android:layout_marginEnd="@dimen/space_md"
             android:columnCount="7"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -204,9 +206,9 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/open_sans_bold"
             android:paddingTop="@dimen/space_md"
-            android:paddingBottom="@dimen/space_sm"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:paddingBottom="@dimen/space_md"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             android:text="@string/themes_head_text"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_sm"
@@ -221,8 +223,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_xs"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_theme_section_title" />
@@ -236,8 +238,8 @@
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_sm"
             android:layout_marginTop="@dimen/space_md"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -248,8 +250,8 @@
             android:layout_width="match_parent"
             android:layout_height="67dp"
             android:scrollbars="horizontal"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_space_repetition_title" />
@@ -264,8 +266,8 @@
             android:textSize="@dimen/text_sm"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/space_md"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_space_repetition_section" />
@@ -278,75 +280,88 @@
             android:text="English"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_sm"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_language_section_title" />
 
-        <TextView
-            android:id="@+id/tv_others_repetition_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_xxs"
-            android:fontFamily="@font/open_sans_bold"
-            android:text="Rate"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_sm"
-            android:textStyle="bold"
-            android:layout_marginTop="@dimen/space_md"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_language"/>
+<!--        <TextView-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/tv_others_repetition_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="@dimen/space_xxs"-->
+<!--            android:fontFamily="@font/open_sans_bold"-->
+<!--            android:text="Rate"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:textSize="@dimen/text_sm"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginTop="@dimen/space_md"-->
+<!--            android:layout_marginStart="@dimen/space_md"-->
+<!--            android:layout_marginEnd="@dimen/space_md"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tv_language"/>-->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_rate_others_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?colorPrimary"
             android:text="@string/bt_rate_the_app_text"
+            android:textSize="@dimen/text_sm"
             android:textColor="?colorSurfaceContainerLowest"
-            android:textSize="@dimen/text_sm"
-            app:cornerRadius="@dimen/bt_radius"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_others_repetition_title"/>
-
-        <TextView
-            android:id="@+id/tv_About_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_xxs"
-            android:fontFamily="@font/open_sans_bold"
-            android:text="About"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_sm"
-            android:textStyle="bold"
+            android:backgroundTint="?colorPrimary"
+            android:textAlignment="textStart"
+            android:padding="@dimen/space_lg"
+            app:icon="@drawable/icon_star_rate"
+            app:iconSize="@dimen/icon_base"
+            app:iconTint="?colorSurfaceContainerLowest"
+            app:cornerRadius="@dimen/card_radius"
             android:layout_marginTop="@dimen/space_md"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bt_rate_others_section"/>
+            app:layout_constraintTop_toBottomOf="@+id/tv_language"/>
+
+<!--        <TextView-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/tv_About_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="@dimen/space_xxs"-->
+<!--            android:fontFamily="@font/open_sans_bold"-->
+<!--            android:text="About"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:textSize="@dimen/text_sm"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginTop="@dimen/space_md"-->
+<!--            android:layout_marginStart="@dimen/space_md"-->
+<!--            android:layout_marginEnd="@dimen/space_md"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/bt_rate_others_section"/>-->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_about_others_section"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="?colorPrimary"
             android:text="@string/bt_about_recall_text"
-            android:textColor="?colorSurfaceContainerLowest"
             android:textSize="@dimen/text_sm"
-            app:cornerRadius="@dimen/bt_radius"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:textColor="?colorSurfaceContainerLowest"
+            android:background="@drawable/bg_settings_bt_top"
+            android:textAlignment="textStart"
+            android:padding="@dimen/space_lg"
+            app:icon="@drawable/icon_auto_stories"
+            app:iconSize="@dimen/icon_base"
+            app:iconTint="?colorSurfaceContainerLowest"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_About_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/bt_rate_others_section"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_privacy_others_section"
@@ -357,28 +372,36 @@
             android:textColor="?colorSurfaceContainerLowest"
             android:textSize="@dimen/text_sm"
             app:cornerRadius="@dimen/bt_radius"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:background="@drawable/bg_settings_bt_bottom"
+            android:textAlignment="textStart"
+            android:padding="@dimen/space_lg"
+            app:icon="@drawable/icon_policy"
+            app:iconSize="@dimen/icon_base"
+            app:iconTint="?colorSurfaceContainerLowest"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
+            android:layout_marginTop="@dimen/space_xxs"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bt_about_others_section"/>
 
-        <TextView
-            android:id="@+id/tv_contact_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_xxs"
-            android:fontFamily="@font/open_sans_bold"
-            android:text="Get in tauch"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_sm"
-            android:textStyle="bold"
-            android:layout_marginTop="@dimen/space_md"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bt_privacy_others_section"/>
+<!--        <TextView-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/tv_contact_title"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="@dimen/space_xxs"-->
+<!--            android:fontFamily="@font/open_sans_bold"-->
+<!--            android:text="Get in tauch"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:textSize="@dimen/text_sm"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginTop="@dimen/space_md"-->
+<!--            android:layout_marginStart="@dimen/space_md"-->
+<!--            android:layout_marginEnd="@dimen/space_md"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/bt_privacy_others_section"/>-->
 
 
         <com.google.android.material.button.MaterialButton
@@ -387,14 +410,21 @@
             android:layout_height="wrap_content"
             android:backgroundTint="?colorPrimary"
             android:text="@string/bt_contact_text"
-            android:textColor="?colorSurfaceContainerLowest"
             android:textSize="@dimen/text_sm"
             app:cornerRadius="@dimen/bt_radius"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:textColor="?colorSurfaceContainerLowest"
+            android:background="@drawable/bg_settings_bt_top"
+            android:textAlignment="textStart"
+            android:padding="@dimen/space_lg"
+            app:icon="@drawable/icon_mail"
+            app:iconSize="@dimen/icon_base"
+            app:iconTint="?colorSurfaceContainerLowest"
+            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_contact_title"/>
+            app:layout_constraintTop_toBottomOf="@+id/bt_privacy_others_section"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_help_others_section"
@@ -405,8 +435,15 @@
             android:textColor="?colorSurfaceContainerLowest"
             android:textSize="@dimen/text_sm"
             app:cornerRadius="@dimen/bt_radius"
-            android:layout_marginStart="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
+            android:background="@drawable/bg_settings_bt_bottom"
+            android:textAlignment="textStart"
+            android:padding="@dimen/space_lg"
+            app:icon="@drawable/icon_help"
+            app:iconSize="@dimen/icon_base"
+            app:iconTint="?colorSurfaceContainerLowest"
+            android:layout_marginTop="@dimen/space_xxs"
+            android:layout_marginStart="@dimen/space_md"
+            android:layout_marginEnd="@dimen/space_md"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bt_contact_others_section"/>

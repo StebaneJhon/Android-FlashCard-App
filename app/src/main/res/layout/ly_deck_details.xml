@@ -2,20 +2,25 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?colorSurfaceContainerLow"
+    android:paddingStart="@dimen/space_lg"
+    android:paddingEnd="@dimen/space_lg"
+    android:paddingBottom="@dimen/space_lg">
 
-    <TextView
-        android:id="@+id/tv_insight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Overview"
-        android:textAlignment="textStart"
-        android:fontFamily="@font/open_sans_bold"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+<!--    <TextView-->
+<!--        android:visibility="gone"-->
+<!--        android:id="@+id/tv_insight"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Overview"-->
+<!--        android:textAlignment="textStart"-->
+<!--        android:fontFamily="@font/open_sans_bold"-->
+<!--        android:textColor="?colorSurfaceContainerHighest"-->
+<!--        android:textSize="@dimen/text_sm"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
     <GridLayout
         android:id="@+id/gr_root_overview"
@@ -26,7 +31,7 @@
         android:layout_marginTop="@dimen/space_xxs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_insight">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cv_container_card_sum"
@@ -35,7 +40,9 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_margin="@dimen/space_xxs"
-            android:background="@drawable/over_all_data_info_background"
+            android:padding="@dimen/space_md"
+            android:background="@drawable/bg_10_dp_radius"
+            android:backgroundTint="?colorSurfaceContainerLowest"
             android:gravity="center"
             android:orientation="vertical">
             <TextView
@@ -46,6 +53,7 @@
                 android:gravity="center"
                 android:textAlignment="gravity"
                 android:textColor="?colorOnSurface"
+                android:textStyle="bold"
                 app:autoSizeMaxTextSize="@dimen/text_xl3"
                 app:autoSizeMinTextSize="@dimen/text_xl"
                 app:autoSizeStepGranularity="2sp"
@@ -61,10 +69,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_xs"
-                android:fontFamily="@font/open_sans_light"
+                android:fontFamily="@font/open_sans"
                 android:text="@string/text_total"
                 android:textAlignment="center"
-                android:textColor="?colorOnSurface"
+                android:textColor="?colorPrimary"
                 android:textSize="@dimen/text_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -78,7 +86,9 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_margin="@dimen/space_xxs"
-            android:background="@drawable/over_all_data_info_background"
+            android:padding="@dimen/space_md"
+            android:background="@drawable/bg_10_dp_radius"
+            android:backgroundTint="?colorSurfaceContainerLowest"
             android:gravity="center"
             android:orientation="vertical">
             <TextView
@@ -89,6 +99,7 @@
                 android:gravity="center"
                 android:textAlignment="gravity"
                 android:textColor="?colorOnSurface"
+                android:textStyle="bold"
                 app:autoSizeMaxTextSize="@dimen/text_xl3"
                 app:autoSizeMinTextSize="@dimen/text_xl"
                 app:autoSizeStepGranularity="2sp"
@@ -104,10 +115,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_xs"
-                android:fontFamily="@font/open_sans_light"
+                android:fontFamily="@font/open_sans"
                 android:text="@string/text_known"
                 android:textAlignment="center"
-                android:textColor="?colorOnSurface"
+                android:textColor="?colorPrimary"
                 android:textSize="@dimen/text_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +132,9 @@
             android:layout_rowWeight="1"
             android:layout_columnWeight="1"
             android:layout_margin="@dimen/space_xxs"
-            android:background="@drawable/over_all_data_info_background"
+            android:padding="@dimen/space_md"
+            android:background="@drawable/bg_10_dp_radius"
+            android:backgroundTint="?colorSurfaceContainerLowest"
             android:gravity="center"
             android:orientation="vertical">
             <TextView
@@ -132,6 +145,7 @@
                 android:gravity="center"
                 android:textAlignment="gravity"
                 android:textColor="?colorOnSurface"
+                android:textStyle="bold"
                 app:autoSizeMaxTextSize="@dimen/text_xl3"
                 app:autoSizeMinTextSize="@dimen/text_xl"
                 app:autoSizeStepGranularity="2sp"
@@ -147,10 +161,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_xs"
-                android:fontFamily="@font/open_sans_light"
+                android:fontFamily="@font/open_sans"
                 android:text="@string/text_unknown"
                 android:textAlignment="center"
-                android:textColor="?colorOnSurface"
+                android:textColor="?colorPrimary"
                 android:textSize="@dimen/text_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -162,10 +176,10 @@
         android:id="@+id/rl_container_content_language"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_10_dp_radius"
-        android:backgroundTint="?colorSurfaceContainerLow"
-        android:paddingStart="@dimen/space_lg"
-        android:paddingEnd="@dimen/space_lg"
+        android:background="@drawable/bg_10_pt_radius"
+        android:backgroundTint="?colorSurfaceContainerLowest"
+        android:paddingStart="@dimen/space_md"
+        android:paddingEnd="@dimen/space_md"
         android:layout_marginTop="@dimen/space_xxs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -176,7 +190,8 @@
             android:layout_height="wrap_content"
             android:text="@string/text_content_language"
             android:textAlignment="textStart"
-            android:fontFamily="@font/open_sans_bold"
+            android:fontFamily="@font/open_sans"
+            android:textStyle="bold"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_sm"
             android:layout_alignParentStart="true"
@@ -199,7 +214,7 @@
             android:textAlignment="textEnd"
             app:icon="@drawable/icon_unfold_more"
             app:iconGravity="end"
-            app:iconTint="?colorOnSurface"
+            app:iconTint="?colorPrimary"
             app:rippleColor="?colorSurfaceContainerLow"/>
     </RelativeLayout>
 
@@ -207,10 +222,10 @@
         android:id="@+id/rl_container_definition_language"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_10_dp_radius"
-        android:backgroundTint="?colorSurfaceContainerLow"
-        android:paddingStart="@dimen/space_lg"
-        android:paddingEnd="@dimen/space_lg"
+        android:background="@drawable/bg_10_pt_radius"
+        android:backgroundTint="?colorSurfaceContainerLowest"
+        android:paddingStart="@dimen/space_md"
+        android:paddingEnd="@dimen/space_md"
         android:layout_marginTop="@dimen/space_xs"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -221,7 +236,8 @@
             android:layout_height="wrap_content"
             android:text="@string/text_definition_language"
             android:textAlignment="textStart"
-            android:fontFamily="@font/open_sans_bold"
+            android:fontFamily="@font/open_sans"
+            android:textStyle="bold"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_sm"
             android:layout_alignParentStart="true"
@@ -244,21 +260,22 @@
             android:textAlignment="textEnd"
             app:icon="@drawable/icon_unfold_more"
             app:iconGravity="end"
-            app:iconTint="?colorOnSurface"
+            app:iconTint="?colorPrimary"
             app:rippleColor="?colorSurfaceContainerLow"/>
     </RelativeLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_bold"
-        android:text="Cards"
-        android:layout_marginTop="@dimen/space_md"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rl_container_definition_language" />
+<!--    <TextView-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:fontFamily="@font/open_sans_bold"-->
+<!--        android:text="Cards"-->
+<!--        android:layout_marginTop="@dimen/space_md"-->
+<!--        android:textColor="?colorSurfaceContainerHighest"-->
+<!--        android:textSize="@dimen/text_sm"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/rl_container_definition_language" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

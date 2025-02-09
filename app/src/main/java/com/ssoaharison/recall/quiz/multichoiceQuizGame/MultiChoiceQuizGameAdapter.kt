@@ -75,7 +75,7 @@ class MultiChoiceQuizGameAdapter(
 
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvOnCardWord.text = card.onCardWord.text
-            val deckColor = DeckColorCategorySelector().selectColor(deckColorCode) ?: R.color.black
+            val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
             cvCardItem.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
             val views: ArrayList<View> = arrayListOf(tvOnCardWord)
