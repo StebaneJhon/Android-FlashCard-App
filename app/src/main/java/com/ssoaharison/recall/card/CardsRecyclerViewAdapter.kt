@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -31,6 +32,7 @@ import com.ssoaharison.recall.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAG
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
+import com.ssoaharison.recall.util.ThemePicker
 
 
 class CardsRecyclerViewAdapter(
@@ -168,11 +170,13 @@ class CardsRecyclerViewAdapter(
             cardRoot.setOnLongClickListener { v: View ->
                 showMenu(
                     context,
+                    appTheme,
                     v,
                     R.menu.card_popup_menu,
                     editCardClickListener,
                     deleteCardClickListener,
-                    card
+                    card,
+                    deck.deckColorCode
                 )
                 true
             }
@@ -189,12 +193,7 @@ class CardsRecyclerViewAdapter(
                             if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage
                         onReadDefinition(
                             TextClickedModel(
-                                TextWithLanguageModel(
-                                    card?.cardId!!,
-                                    text,
-                                    DEFINITION,
-                                    language
-                                ),
+                                TextWithLanguageModel(card?.cardId!!, text, DEFINITION, language),
                                 it,
                                 DEFINITION
                             )
@@ -203,11 +202,13 @@ class CardsRecyclerViewAdapter(
                     tv.setOnLongClickListener { v: View ->
                         showMenu(
                             context,
+                            appTheme,
                             v,
                             R.menu.card_popup_menu,
                             editCardClickListener,
                             deleteCardClickListener,
-                            card
+                            card,
+                            deck.deckColorCode
                         )
                         true
                     }
@@ -219,11 +220,13 @@ class CardsRecyclerViewAdapter(
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
                     context,
+                    appTheme,
                     v,
                     R.menu.card_popup_menu,
                     editCardClickListener,
                     deleteCardClickListener,
-                    card
+                    card,
+                    deck.deckColorCode
                 )
             }
 
@@ -236,12 +239,7 @@ class CardsRecyclerViewAdapter(
                         if (card?.cardContentLanguage != null) card.cardContentLanguage else deck.cardContentDefaultLanguage
                     onReadContent(
                         TextClickedModel(
-                            TextWithLanguageModel(
-                                card?.cardId!!,
-                                text,
-                                CONTENT,
-                                language
-                            ),
+                            TextWithLanguageModel(card?.cardId!!, text, CONTENT, language),
                             it,
                             CONTENT
                         )
@@ -250,11 +248,13 @@ class CardsRecyclerViewAdapter(
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
+                        appTheme,
                         v,
                         R.menu.card_popup_menu,
                         editCardClickListener,
                         deleteCardClickListener,
-                        card
+                        card,
+                        deck.deckColorCode
                     )
                     true
                 }
@@ -332,14 +332,28 @@ class CardsRecyclerViewAdapter(
         @SuppressLint("RestrictedApi")
         private fun showMenu(
             context: Context,
+            appTheme: String,
             v: View,
             @MenuRes menuRes: Int,
             editCardClickListener: (ImmutableCard?) -> Unit,
             deleteCardClickListener: (ImmutableCard?) -> Unit,
-            card: ImmutableCard?
+            card: ImmutableCard?,
+            deckThemeName: String?,
         ) {
+            val themePicker = ThemePicker()
+            val popup = if (deckThemeName.isNullOrBlank()) {
+                PopupMenu(context, v)
+            } else {
+                val defaultTheme = themePicker.selectTheme(appTheme) ?: themePicker.getDefaultTheme()
+                val deckTheme = if (appTheme == DARK_THEME) {
+                    ThemePicker().selectDarkThemeByDeckColorCode(deckThemeName, defaultTheme)
+                } else {
+                    ThemePicker().selectThemeByDeckColorCode(deckThemeName, defaultTheme)
+                }
+                val wrapper = ContextThemeWrapper(context, deckTheme)
+                PopupMenu(wrapper, v)
+            }
 
-            val popup = PopupMenu(context, v)
             popup.menuInflater.inflate(menuRes, popup.menu)
 
             if (popup.menu is MenuBuilder) {

@@ -52,10 +52,47 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.util.DeckCategoryColorConst.BLACK
+import com.ssoaharison.recall.util.DeckCategoryColorConst.BLUE
+import com.ssoaharison.recall.util.DeckCategoryColorConst.CYAN
+import com.ssoaharison.recall.util.DeckCategoryColorConst.EMERALD
+import com.ssoaharison.recall.util.DeckCategoryColorConst.FUCHSIA
+import com.ssoaharison.recall.util.DeckCategoryColorConst.GREEN
+import com.ssoaharison.recall.util.DeckCategoryColorConst.GREY
+import com.ssoaharison.recall.util.DeckCategoryColorConst.INDIGO
+import com.ssoaharison.recall.util.DeckCategoryColorConst.LIME
+import com.ssoaharison.recall.util.DeckCategoryColorConst.ORANGE
+import com.ssoaharison.recall.util.DeckCategoryColorConst.PINK
+import com.ssoaharison.recall.util.DeckCategoryColorConst.PURPLE
+import com.ssoaharison.recall.util.DeckCategoryColorConst.RED
+import com.ssoaharison.recall.util.DeckCategoryColorConst.ROSE
+import com.ssoaharison.recall.util.DeckCategoryColorConst.SKY
+import com.ssoaharison.recall.util.DeckCategoryColorConst.TEAL
+import com.ssoaharison.recall.util.DeckCategoryColorConst.VIOLET
+import com.ssoaharison.recall.util.DeckCategoryColorConst.WHITE
+import com.ssoaharison.recall.util.DeckCategoryColorConst.YELLOW
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
+import com.ssoaharison.recall.util.ThemeConst.BLUE_THEME
+import com.ssoaharison.recall.util.ThemeConst.CYAN_THEME
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
+import com.ssoaharison.recall.util.ThemeConst.EMERALD_THEME
+import com.ssoaharison.recall.util.ThemeConst.FUCHSIA_THEME
+import com.ssoaharison.recall.util.ThemeConst.GREEN_THEME
+import com.ssoaharison.recall.util.ThemeConst.INDIGO_THEME
+import com.ssoaharison.recall.util.ThemeConst.LIME_THEME
+import com.ssoaharison.recall.util.ThemeConst.ORANGE_THEME
+import com.ssoaharison.recall.util.ThemeConst.PINK_THEME
+import com.ssoaharison.recall.util.ThemeConst.PURPLE_THEME
+import com.ssoaharison.recall.util.ThemeConst.RED_THEME
+import com.ssoaharison.recall.util.ThemeConst.ROSE_THEME
+import com.ssoaharison.recall.util.ThemeConst.SKY_THEME
+import com.ssoaharison.recall.util.ThemeConst.TEAL_THEME
+import com.ssoaharison.recall.util.ThemeConst.VIOLET_THEME
+import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
+import com.ssoaharison.recall.util.ThemeConst.YELLOW_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -107,10 +144,26 @@ class FlashCardGameActivity :
         )
         editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
+        val themePicker = ThemePicker()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) {
+        val themRef = themePicker.selectTheme(appTheme)
+
+
+        deckWithCards = intent?.parcelable(DECK_ID_KEY)
+
+        val deckColorCode = deckWithCards?.deck?.deckColorCode
+
+        if (deckColorCode.isNullOrBlank() && themRef != null) {
             setTheme(themRef)
+        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+            val deckTheme = if (appTheme == DARK_THEME) {
+                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+            } else {
+                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+            }
+            setTheme(deckTheme)
+        } else {
+            setTheme(themePicker.getDefaultTheme())
         }
 
         tts = TextToSpeech(this, this)
@@ -119,8 +172,6 @@ class FlashCardGameActivity :
         val view = binding.root
 
         setContentView(view)
-
-        deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
             val cardList = it.cards?.toMutableList()
             val deck = it.deck

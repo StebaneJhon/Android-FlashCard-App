@@ -53,6 +53,27 @@ object ThemeConst {
     const val PINK_THEME = "PINK THEME"
     const val ROSE_THEME = "ROSE THEME"
     const val BROWN_THEME = "BROWN THEME"
+
+    const val DARK_WHITE_THEME = "DARK WHITE THEM"
+    const val DARK_DARK_THEME = "DARK DARK THEME"
+    const val DARK_RED_THEME = "DARK RED THEME"
+    const val DARK_ORANGE_THEME = "DARK ORANGE THEME"
+    const val DARK_AMBER_THEME = "DARK AMBER THEME"
+    const val DARK_YELLOW_THEME = "DARK YELLOW THEME"
+    const val DARK_LIME_THEME = "DARK LIME THEME"
+    const val DARK_GREEN_THEME = "DARK GREEN THEME"
+    const val DARK_EMERALD_THEME = "DARK EMERALD THEME"
+    const val DARK_TEAL_THEME = "DARK TEAL THEME"
+    const val DARK_CYAN_THEME = "DARK CYAN THEME"
+    const val DARK_SKY_THEME = "DARK SKY THEME"
+    const val DARK_BLUE_THEME = "DARK BLUE THEME"
+    const val DARK_INDIGO_THEME = "DARK INDIGO THEME"
+    const val DARK_VIOLET_THEME = "DARK VIOLET THEME"
+    const val DARK_PURPLE_THEME = "DARK PURPLE THEME"
+    const val DARK_FUCHSIA_THEME = "DARK FUCHSIA THEME"
+    const val DARK_PINK_THEME = "DARK PINK THEME"
+    const val DARK_ROSE_THEME = "DARK ROSE THEME"
+    const val DARK_BROWN_THEME = "DARK BROWN THEME"
 }
 
 object LevelColors {

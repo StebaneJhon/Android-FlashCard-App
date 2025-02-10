@@ -51,6 +51,28 @@ class DeckColorCategorySelector {
         ROSE to R.color.rose100,
     )
 
+    private val deckDarkColorSurfaceLow = mapOf(
+        WHITE to R.color.neutral900,
+        GREY to R.color.neutral900,
+        BLACK to R.color.neutral700,
+        RED to R.color.red900,
+        ORANGE to R.color.orange900,
+        YELLOW to R.color.yellow900,
+        LIME to R.color.lime900,
+        GREEN to R.color.green900,
+        EMERALD to R.color.emerald900,
+        TEAL to R.color.teal900,
+        CYAN to R.color.cyan900,
+        SKY to R.color.sky900,
+        BLUE to R.color.blue900,
+        INDIGO to R.color.indigo900,
+        VIOLET to R.color.violet900,
+        PURPLE to R.color.purple900,
+        FUCHSIA to R.color.fuchsia900,
+        PINK to R.color.pink900,
+        ROSE to R.color.rose900,
+    )
+
     private val deckColorOnSurface = mapOf(
         WHITE to R.color.neutral50,
         GREY to R.color.neutral950,
@@ -71,6 +93,28 @@ class DeckColorCategorySelector {
         FUCHSIA to R.color.fuchsia950,
         PINK to R.color.pink950,
         ROSE to R.color.rose950,
+    )
+
+    private val deckDarkColorOnSurface = mapOf(
+        WHITE to R.color.neutral950,
+        GREY to R.color.neutral50,
+        BLACK to R.color.neutral50,
+        RED to R.color.red50,
+        ORANGE to R.color.orange50,
+        YELLOW to R.color.yellow50,
+        LIME to R.color.lime50,
+        GREEN to R.color.green50,
+        EMERALD to R.color.emerald50,
+        TEAL to R.color.teal50,
+        CYAN to R.color.cyan50,
+        SKY to R.color.sky50,
+        BLUE to R.color.blue50,
+        INDIGO to R.color.indigo50,
+        VIOLET to R.color.violet50,
+        PURPLE to R.color.purple50,
+        FUCHSIA to R.color.fuchsia50,
+        PINK to R.color.pink50,
+        ROSE to R.color.rose50,
     )
 
     private val deckColorSurfaceLowEst = mapOf(
@@ -95,6 +139,28 @@ class DeckColorCategorySelector {
         ROSE to R.color.rose50,
     )
 
+    private val deckDarkColorSurfaceLowEst = mapOf(
+        WHITE to R.color.neutral950,
+        GREY to R.color.neutral950,
+        BLACK to R.color.neutral950,
+        RED to R.color.red950,
+        ORANGE to R.color.orange950,
+        YELLOW to R.color.yellow950,
+        LIME to R.color.lime950,
+        GREEN to R.color.green950,
+        EMERALD to R.color.emerald950,
+        TEAL to R.color.teal950,
+        CYAN to R.color.cyan950,
+        SKY to R.color.sky950,
+        BLUE to R.color.blue950,
+        INDIGO to R.color.indigo950,
+        VIOLET to R.color.violet950,
+        PURPLE to R.color.purple950,
+        FUCHSIA to R.color.fuchsia950,
+        PINK to R.color.pink950,
+        ROSE to R.color.rose950,
+    )
+
     fun getColors() = this.deckColorSurfaceLow
 
     fun getRandomColor() = this.deckColorSurfaceLow.keys.random()
@@ -102,6 +168,16 @@ class DeckColorCategorySelector {
     fun selectDeckColorSurfaceContainerLow(context: Context, color: String?): Int {
         return if (color in this.deckColorSurfaceLow.keys) {
             ContextCompat.getColor(context, this.deckColorSurfaceLow.getOrDefault(color, R.color.neutral100))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
+            ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
+    fun selectDeckDarkColorSurfaceContainerLow(context: Context, color: String?): Int {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColor(context, this.deckDarkColorSurfaceLow.getOrDefault(color, R.color.neutral100))
         } else {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
@@ -119,9 +195,29 @@ class DeckColorCategorySelector {
         }
     }
 
+    fun selectDeckDarkColorStateListSurfaceContainerLow(context: Context, color: String?): ColorStateList? {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColorStateList(context, this.deckDarkColorSurfaceLow.getOrDefault(color, R.color.neutral100))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
+            ResourcesCompat.getColorStateList(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
     fun selectDeckColorSurfaceContainerLowEst(context: Context, color: String?): Int {
         return if (color in this.deckColorSurfaceLow.keys) {
             ContextCompat.getColor(context, this.deckColorSurfaceLowEst.getOrDefault(color, R.color.neutral50))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLowest, typedValue, true)
+            ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
+    fun selectDeckDarkColorSurfaceContainerLowEst(context: Context, color: String?): Int {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColor(context, this.deckDarkColorSurfaceLowEst.getOrDefault(color, R.color.neutral50))
         } else {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLowest, typedValue, true)
@@ -139,6 +235,16 @@ class DeckColorCategorySelector {
         }
     }
 
+    fun selectDeckDarkColorStateListSurfaceContainerLowEst(context: Context, color: String?): ColorStateList? {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColorStateList(context, this.deckDarkColorSurfaceLowEst.getOrDefault(color, R.color.neutral50))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLowest, typedValue, true)
+            ResourcesCompat.getColorStateList(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
     fun selectDeckOnSurfaceColor(context: Context, color: String?): Int {
         return if (color in this.deckColorSurfaceLow.keys) {
             ContextCompat.getColor(context, this.deckColorOnSurface.getOrDefault(color, R.color.neutral950))
@@ -149,9 +255,29 @@ class DeckColorCategorySelector {
         }
     }
 
+    fun selectDeckOnSurfaceColorDark(context: Context, color: String?): Int {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColor(context, this.deckDarkColorOnSurface.getOrDefault(color, R.color.neutral950))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+            ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
     fun selectDeckOnSurfaceColorStateList(context: Context, color: String?): ColorStateList? {
         return if (color in this.deckColorSurfaceLow.keys) {
             ContextCompat.getColorStateList(context, this.deckColorOnSurface.getOrDefault(color, R.color.neutral950))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
+            ResourcesCompat.getColorStateList(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
+    fun selectDeckOnSurfaceColorDarkStateList(context: Context, color: String?): ColorStateList? {
+        return if (color in this.deckColorSurfaceLow.keys) {
+            ContextCompat.getColorStateList(context, this.deckDarkColorOnSurface.getOrDefault(color, R.color.neutral950))
         } else {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)

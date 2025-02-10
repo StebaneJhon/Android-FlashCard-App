@@ -13,13 +13,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/space_xl"
         android:background="@drawable/bg_card_flash_card"
         android:backgroundTint="?colorSurfaceContainer"
-        android:paddingStart="@dimen/space_sm"
-        android:paddingTop="@dimen/space_sm"
-        android:paddingEnd="@dimen/space_sm"
-        android:paddingBottom="@dimen/space_xs">
+        android:paddingTop="@dimen/space_lg"
+        android:paddingStart="@dimen/space_lg"
+        android:paddingEnd="@dimen/space_lg"
+        android:paddingBottom="@dimen/space_md">
 
         <TextView
             android:id="@+id/tv_multi_Choice_quiz_front_progression"

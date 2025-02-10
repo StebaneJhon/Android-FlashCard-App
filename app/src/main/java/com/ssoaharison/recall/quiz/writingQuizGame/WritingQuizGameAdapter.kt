@@ -82,8 +82,8 @@ class WritingQuizGameAdapter(
             //tvOnCardWordOnWrongAnswer.text = card.onCardWord.text
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             //tvProgressionOnWrongAnswer.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
-            cvCardFront.backgroundTintList =  ContextCompat.getColorStateList(context, deckColor)
+            //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
+            //cvCardFront.backgroundTintList =  ContextCompat.getColorStateList(context, deckColor)
             tvAnswer.text = context.getString(R.string.text_correct_answer, card.answer.first().text)
 
             when {

@@ -20,11 +20,10 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="?colorSurfaceContainerHigh"
-            android:layout_marginTop="@dimen/space_xl"
-            android:paddingTop="@dimen/space_sm"
-            android:paddingStart="@dimen/space_sm"
-            android:paddingEnd="@dimen/space_sm"
-            android:paddingBottom="@dimen/space_xs">
+            android:paddingTop="@dimen/space_lg"
+            android:paddingStart="@dimen/space_lg"
+            android:paddingEnd="@dimen/space_lg"
+            android:paddingBottom="@dimen/space_md">
 
             <TextView
                 android:id="@+id/tv_back_progression"
@@ -98,11 +97,10 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="?colorSurfaceContainerLow"
-            android:layout_marginTop="@dimen/space_xl"
-            android:paddingTop="@dimen/space_sm"
-            android:paddingStart="@dimen/space_sm"
-            android:paddingEnd="@dimen/space_sm"
-            android:paddingBottom="@dimen/space_xs">
+            android:paddingTop="@dimen/space_lg"
+            android:paddingStart="@dimen/space_lg"
+            android:paddingEnd="@dimen/space_lg"
+            android:paddingBottom="@dimen/space_md">
 
             <TextView
                 android:id="@+id/tv_front_progression"

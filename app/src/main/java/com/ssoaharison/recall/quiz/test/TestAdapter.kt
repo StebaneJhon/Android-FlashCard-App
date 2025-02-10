@@ -95,9 +95,8 @@ class TestAdapter(
             } else {
                 tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
             }
-            val deckColor =
-                DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deck.deckColorCode!!) ?: R.color.black
-            cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
+            //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deck.deckColorCode!!) ?: R.color.black
+            //cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
 
             btAlternatives.forEachIndexed { index, materialButton ->
                 if (index < card.cardDefinition.size) {

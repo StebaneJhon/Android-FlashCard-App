@@ -36,10 +36,13 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
+import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -84,13 +87,29 @@ class WritingQuizGameActivity :
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
             Context.MODE_PRIVATE
         )
+        val themePicker = ThemePicker()
         editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) {
+        val themRef = themePicker.selectTheme(appTheme)
+
+        deckWithCards = intent?.parcelable(FlashCardGameActivity.DECK_ID_KEY)
+
+        val deckColorCode = deckWithCards?.deck?.deckColorCode
+
+        if (deckColorCode.isNullOrBlank() && themRef != null) {
             setTheme(themRef)
+        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+            val deckTheme = if (appTheme == DARK_THEME) {
+                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+            } else {
+                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+            }
+            setTheme(deckTheme)
+        } else {
+            setTheme(themePicker.getDefaultTheme())
         }
+
         tts = TextToSpeech(this, this)
         binding = ActivityWritingQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)

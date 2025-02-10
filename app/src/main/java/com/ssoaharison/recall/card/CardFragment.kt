@@ -8,6 +8,7 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -79,6 +80,8 @@ import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
+import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.parcelable
 import com.ssoaharison.recall.util.parcelableArrayList
 import kotlinx.coroutines.Job
@@ -133,7 +136,44 @@ class CardFragment :
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         appContext = container?.context
         tts = TextToSpeech(appContext, this)
+//        activity?.setTheme(R.style.YellowTheme_Flashcard)
         return binding.root
+    }
+
+    override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
+        val inflater = super.onGetLayoutInflater(savedInstanceState)
+        var contextThemeWrapper: Context? = null
+        deck = args.selectedDeck
+        val themePicker = ThemePicker()
+        val window = activity?.window
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
+        val appTheme = themePicker.selectTheme(appThemeName)
+
+        if (!deck.deckColorCode.isNullOrBlank()) {
+            val deckTheme: Int
+            val deckColorSurfaceLow: Int
+            if (appThemeName == DARK_THEME){
+                deckTheme = themePicker.selectDarkThemeByDeckColorCode(
+                    deck.deckColorCode!!,
+                    themePicker.getDefaultTheme()
+                )
+                deckColorSurfaceLow = DeckColorCategorySelector().selectDeckDarkColorSurfaceContainerLow(requireContext(), deck.deckColorCode)
+            } else {
+                deckTheme = themePicker.selectThemeByDeckColorCode(
+                    deck.deckColorCode!!,
+                    themePicker.getDefaultTheme()
+                )
+                deckColorSurfaceLow = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(requireContext(), deck.deckColorCode)
+            }
+            contextThemeWrapper = ContextThemeWrapper(requireContext(), deckTheme)
+            window?.statusBarColor = deckColorSurfaceLow
+        } else {
+            contextThemeWrapper = ContextThemeWrapper(requireContext(), appTheme!!)
+        }
+        return inflater.cloneInContext(contextThemeWrapper)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -165,7 +205,7 @@ class CardFragment :
 
             binding.bottomAppBar.apply {
                 setNavigationOnClickListener {
-                    onChooseQuizMode()
+                    onChooseQuizMode(deck)
                 }
                 setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
@@ -288,7 +328,7 @@ class CardFragment :
                         is UiState.Success -> {
                             populateRecyclerView(state.data.cards!!, state.data.deck!!)
                             bindDeckDetailsPanel(state.data.deck)
-                            setCardFragmentColors(state.data.deck)
+//                            setCardFragmentColors(state.data.deck)
                         }
                     }
                 }
@@ -325,8 +365,8 @@ class CardFragment :
         binding.onNoCardTextError.isVisible = true
     }
 
-    private fun onChooseQuizMode() {
-        val quizMode = QuizModeBottomSheet()
+    private fun onChooseQuizMode(deck: ImmutableDeck) {
+        val quizMode = QuizModeBottomSheet(deck)
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_QUIZ_MODE,

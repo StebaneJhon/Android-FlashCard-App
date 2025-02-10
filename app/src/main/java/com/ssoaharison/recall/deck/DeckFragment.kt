@@ -12,6 +12,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
@@ -66,6 +67,7 @@ import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -120,6 +122,12 @@ class DeckFragment :
         super.onViewCreated(view, savedInstanceState)
         activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
         (activity as AppCompatActivity).setSupportActionBar(binding.deckTopAppBar)
+
+        val window = activity?.window
+        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        val deckColorSurfaceLow = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(requireContext(), null)
+        window?.statusBarColor = deckColorSurfaceLow
 
         deckSharedPref = activity?.getSharedPreferences("deckSharedpref", Context.MODE_PRIVATE)
         deckSharedPrefEditor = deckSharedPref?.edit()
@@ -237,8 +245,10 @@ class DeckFragment :
         binding.tvNoDeckFound.visibility = View.GONE
         val sortedListOfDeck =
             sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
+        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
         if (appContext != null) {
-            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, {
+            recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, appThemeName, {
                 onEditDeck(it)
             }, { deck ->
                 onDeleteDeck(deck)
@@ -384,7 +394,7 @@ class DeckFragment :
 
     @SuppressLint("MissingInflatedId")
     private fun onStartQuiz(deck: ImmutableDeck) {
-        val quizMode = QuizModeBottomSheet()
+        val quizMode = QuizModeBottomSheet(deck)
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_QUIZ_MODE,

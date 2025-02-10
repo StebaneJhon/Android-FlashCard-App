@@ -23,6 +23,8 @@ import com.ssoaharison.recall.util.MatchQuizGameClickStatus
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
+import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
@@ -64,11 +66,23 @@ class MatchQuizGameActivity : AppCompatActivity() {
         matchingQuizSettingsSharedPref =
             getSharedPreferences("matchingQuizSettingsPref", Context.MODE_PRIVATE)
         matchingQuizSettingsSharedPrefEditor = matchingQuizSettingsSharedPref?.edit()
+        val themePicker = ThemePicker()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) {
+        val themRef = ThemePicker().selectTheme(appTheme)
+
+        deckWithCards = intent?.parcelable(FlashCardGameActivity.DECK_ID_KEY)
+
+        val deckColorCode = deckWithCards?.deck?.deckColorCode
+
+        if (deckColorCode.isNullOrBlank() && themRef != null) {
             setTheme(themRef)
+        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+            val deckTheme = themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+            setTheme(deckTheme)
+        } else {
+            setTheme(themePicker.getDefaultTheme())
         }
+
         binding = ActivityMatchQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

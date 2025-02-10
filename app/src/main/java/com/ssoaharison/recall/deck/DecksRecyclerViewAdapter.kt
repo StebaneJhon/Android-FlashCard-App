@@ -23,11 +23,13 @@ import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 
 class DecksRecyclerViewAdapter(
     private val listOfDecks: List<ImmutableDeck>,
     private val context: Context,
+    private val appTheme: String?,
     private val editDeckClickListener: (ImmutableDeck) -> Unit,
     private val deleteDeckClickListener: (ImmutableDeck) -> Unit,
     private val startQuizListener: (ImmutableDeck) -> Unit,
@@ -46,6 +48,7 @@ class DecksRecyclerViewAdapter(
         return holder.bind(
             listOfDecks[position],
             context,
+            appTheme,
             editDeckClickListener,
             deleteDeckClickListener,
             startQuizListener,
@@ -72,6 +75,7 @@ class DecksRecyclerViewAdapter(
         fun bind(
             deck: ImmutableDeck,
             context: Context,
+            appTheme: String?,
             editDeckClickListener: (ImmutableDeck) -> Unit,
             deleteDeckClickListener: (ImmutableDeck) -> Unit,
             startQuizListener: (ImmutableDeck) -> Unit,
@@ -93,11 +97,21 @@ class DecksRecyclerViewAdapter(
 
 
             val deckColorHelper = DeckColorCategorySelector()
-            val deckSurfaceColorCode = deckColorHelper
-                .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
 
-            val deckTextColorCode = deckColorHelper
-                .selectDeckOnSurfaceColor(context, deck.deckColorCode)
+            val deckSurfaceColorCode: Int
+            val deckTextColorCode: Int
+
+            if (appTheme == DARK_THEME) {
+                deckSurfaceColorCode = deckColorHelper
+                    .selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckTextColorCode = deckColorHelper
+                    .selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+            } else {
+                deckSurfaceColorCode = deckColorHelper
+                    .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckTextColorCode = deckColorHelper
+                    .selectDeckOnSurfaceColor(context, deck.deckColorCode)
+            }
 
             deckNameTV?.apply {
                 text = deck.deckName
