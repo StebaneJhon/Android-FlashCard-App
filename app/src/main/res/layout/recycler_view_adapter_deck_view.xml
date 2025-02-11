@@ -6,15 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-<!--    <View-->
-<!--        android:id="@+id/v_category_color"-->
-<!--        android:layout_width="@dimen/space_lg"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:background="@color/grey700"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:ignore="MissingConstraints" />-->
 
     <TextView
         android:id="@+id/deckNameTV"
@@ -32,45 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Init Deck" />
-
-<!--    <TextView-->
-<!--        android:id="@+id/deckDescriptionTV"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/deckNameTV"-->
-<!--        android:fontFamily="@font/open_sans"-->
-<!--        android:textColor="?colorOnSurface"-->
-<!--        android:textSize="@dimen/text_sm"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/deckNameTV"-->
-<!--        tools:text="Test deck description" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/tv_content_language"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/deckDescriptionTV"-->
-<!--        android:layout_marginTop="@dimen/space_lg"-->
-<!--        android:fontFamily="@font/open_sans_light"-->
-<!--        android:textColor="?colorOnSurface"-->
-<!--        android:textSize="@dimen/text_xs"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/tv_known_cards_Sum"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/deckDescriptionTV" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/tv_definition_language"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/deckDescriptionTV"-->
-<!--        android:layout_marginTop="@dimen/space_xxs"-->
-<!--        android:fontFamily="@font/open_sans_light"-->
-<!--        android:textColor="?colorOnSurface"-->
-<!--        android:textSize="@dimen/text_xs"-->
-<!--        app:layout_constraintEnd_toStartOf="@+id/tv_known_cards_Sum"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tv_content_language" />-->
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -133,15 +85,15 @@
             tools:text="0" />
     </LinearLayout>
 
-    <ImageView
+    <Button
         android:id="@+id/popup_menu_BT"
         style="?attr/materialIconButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:contentDescription="@string/content_description_icon_clickable_item"
-        android:src="@drawable/icon_arrow_right_2"
-        app:tint="?colorOnSurface"
+        app:icon="@drawable/icon_more"
+        app:iconTint="?colorOnSurface"
         android:padding="0dp"
         android:layout_marginEnd="@dimen/space_sm"
         android:layout_marginTop="@dimen/space_lg"

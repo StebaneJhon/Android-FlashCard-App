@@ -134,7 +134,7 @@ class TestActivity :
                             is UiState.Success -> {
                                 binding.testActivityProgressBar.visibility = View.GONE
                                 binding.fragmentContainerView.visibility = View.GONE
-                                launchTest(state.data, deck!!)
+                                launchTest(state.data)
                                 startTimer()
                             }
                         }
@@ -157,14 +157,10 @@ class TestActivity :
         }
     }
 
-    private fun launchTest(
-        cards: List<TestCardModel>,
-        deck: ImmutableDeck
-    ) {
+    private fun launchTest(cards: List<TestCardModel>, ) {
         testAdapter = TestAdapter(
             this,
             cards,
-            deck,
             { userAnswer ->
                 testViewModel.noteSingleUserAnswer(userAnswer)
                 testAdapter.notifyDataSetChanged()
@@ -181,31 +177,8 @@ class TestActivity :
 
         }
 
-//        val sideItemVisibility = 75
-//        val horizontalItemMargin = 40
-//
-//        val itemDecoration = object : RecyclerView.ItemDecoration() {
-//            override fun getItemOffsets(
-//                outRect: Rect,
-//                view: View,
-//                parent: RecyclerView,
-//                state: RecyclerView.State
-//            ) {
-//                outRect.left = horizontalItemMargin
-//                outRect.right = horizontalItemMargin
-//            }
-//        }
-//
-//        val pageTranslationX = horizontalItemMargin + sideItemVisibility
-//        val pageTransformer = ViewPager2.PageTransformer { page: View, position: Float ->
-//            page.translationX = -pageTranslationX * position
-//        }
-
         binding.vpCardHolder.apply {
             adapter = testAdapter
-//            offscreenPageLimit = 1
-//            addItemDecoration(itemDecoration)
-//            setPageTransformer(pageTransformer)
         }
 
         binding.vpCardHolder.registerOnPageChangeCallback(object :
@@ -259,9 +232,6 @@ class TestActivity :
                                     this@TestActivity, R.color.neutral50
                                 )!!
                             )
-//                        setOnClickListener {
-//                            binding.vpCardHolder.currentItem -= 1
-//                        }
                     } else {
                         isActivated = false
                         isClickable = false

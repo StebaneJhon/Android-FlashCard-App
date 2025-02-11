@@ -28,6 +28,7 @@ import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -77,7 +78,11 @@ class MatchQuizGameActivity : AppCompatActivity() {
         if (deckColorCode.isNullOrBlank() && themRef != null) {
             setTheme(themRef)
         } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-            val deckTheme = themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+            val deckTheme = if (appTheme == DARK_THEME) {
+                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+            } else {
+                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+            }
             setTheme(deckTheme)
         } else {
             setTheme(themePicker.getDefaultTheme())

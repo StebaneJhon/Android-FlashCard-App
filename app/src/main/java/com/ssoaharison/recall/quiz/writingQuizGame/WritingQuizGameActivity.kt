@@ -63,8 +63,6 @@ class WritingQuizGameActivity :
     }
     private var deckWithCards: ImmutableDeckWithCards? = null
 
-//    private var animFadeIn: Animation? = null
-//    private var animFadeOut: Animation? = null
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
@@ -115,9 +113,6 @@ class WritingQuizGameActivity :
         setContentView(binding.root)
 
         binding.vpCardHolder.isUserInputEnabled = false
-
-//        animFadeIn = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_in)
-//        animFadeOut = AnimationUtils.loadAnimation(applicationContext, R.anim.fade_out)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
@@ -214,7 +209,6 @@ class WritingQuizGameActivity :
                 completelyRestartWritingQuiz()
             }
         }
-        //isFlashCardGameScreenHidden(true)
     }
 
     private fun unableShowUnKnownCardOnly() {
@@ -233,15 +227,11 @@ class WritingQuizGameActivity :
         writingQuizGameAdapter = WritingQuizGameAdapter(
             this,
             cards,
-            viewModel.deck.deckColorCode!!,
             {
                 if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer, it.cardId)) {
                     areOptionsShownAndActive(true, cards)
                 }
                 writingQuizGameAdapter.notifyDataSetChanged()
-//                else {
-//                    //onWrongAnswer(it.cvCardFront, it.cvCardOnWrongAnswer, animFadeIn!!, animFadeOut!!)
-//                }
             },
             { dataToRead ->
                 if (tts?.isSpeaking == true) {
@@ -250,7 +240,6 @@ class WritingQuizGameActivity :
                     readText(
                         dataToRead.text,
                         dataToRead.views,
-//                        viewModel.deck.cardContentDefaultLanguage!!,
                         dataToRead.speakButton
                     )
                 }
@@ -355,9 +344,7 @@ class WritingQuizGameActivity :
         if (areSownAndActive) {
             binding.lyContainerOptions.visibility = View.VISIBLE
             binding.btNextQuestion.apply {
-
                 setOnClickListener {
-
                     if (viewModel.swipe(cards.size)) {
                         binding.vpCardHolder.setCurrentItem(
                             binding.vpCardHolder.currentItem.plus(1),
@@ -366,11 +353,6 @@ class WritingQuizGameActivity :
                     } else {
                         onQuizComplete(viewModel.cardLeft(), cards)
                     }
-
-//                    binding.vpCardHolder.setCurrentItem(
-//                        binding.vpCardHolder.currentItem.plus(1),
-//                        true
-//                    )
                 }
                 isClickable = true
             }
@@ -498,25 +480,6 @@ class WritingQuizGameActivity :
         tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")
         tts?.setOnUtteranceProgressListener(speechListener)
     }
-
-//    private fun onWrongAnswer(
-//        card: MaterialCardView,
-//        onWrongCard: MaterialCardView,
-//        animFadeIn: Animation,
-//        animFadeOut: Animation
-//    ) {
-//        card.startAnimation(animFadeOut)
-//        card.visibility = View.GONE
-//        onWrongCard.visibility = View.VISIBLE
-//        onWrongCard.startAnimation(animFadeIn)
-//        lifecycleScope.launch {
-//            delay(500)
-//            onWrongCard.startAnimation(animFadeOut)
-//            onWrongCard.visibility = View.GONE
-//            card.visibility = View.VISIBLE
-//            card.startAnimation(animFadeIn)
-//        }
-//    }
 
     private fun onQuizComplete(
         cardsLeft: Int,
@@ -667,28 +630,6 @@ class WritingQuizGameActivity :
         viewModel.updateActualCards(getCardCount(), getCardOrientation())
         writingQuizJob?.cancel()
         writingQuizJob = lifecycleScope.launch {
-            /*
-            viewModel.updateOnscreenCard(getCardOrientation(), getCardCount())
-            viewModel
-                .actualCard
-                .collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.pbCardLoadingLy.visibility = View.VISIBLE
-                            binding.cvCardErrorLy.visibility = View.GONE
-                        }
-                        is UiState.Error -> {
-                            onNoCardToRevise()
-                        }
-                        is UiState.Success -> {
-                            binding.cvCardErrorLy.visibility = View.GONE
-                            binding.pbCardLoadingLy.visibility = View.GONE
-                            launchWritingQuizGame(state.data)
-                        }
-                    }
-                }
-
-             */
             viewModel.getWritingCards()
             viewModel.externalWritingCards.collect { state ->
                 when (state) {

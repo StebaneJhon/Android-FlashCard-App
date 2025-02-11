@@ -234,7 +234,6 @@ class MultiChoiceQuizGameActivity :
             MultiChoiceQuizGameAdapter(
                 this,
                 data,
-                viewModel.deck.deckColorCode!!,
                 appTheme ?: "WHITE THEM",
                 {
                 if (viewModel.isUserChoiceCorrect(it)) {

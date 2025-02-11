@@ -39,7 +39,7 @@ class MatchQuizGameAdapter(
     override fun getItemCount() = itemList.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        return holder.bind(context, itemList[position], flipCard)
+        return holder.bind(itemList[position], flipCard)
     }
 
     class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
@@ -53,7 +53,6 @@ class MatchQuizGameAdapter(
         private val cvItemContainer: MaterialCardView = view.findViewById(R.id.cv_item_root)
 
         fun bind(
-            context: Context,
             item: MatchQuizGameItemModel,
             flipCard: (MatchingQuizGameSelectedItemInfo) -> Unit,
         ) {

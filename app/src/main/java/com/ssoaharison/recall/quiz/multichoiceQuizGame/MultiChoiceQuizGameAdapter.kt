@@ -20,7 +20,6 @@ import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 class MultiChoiceQuizGameAdapter(
     val context: Context,
     val cardList: List<MultiChoiceGameCardModel>,
-    val deckColorCode: String,
     val appTheme: String,
     private val userChoiceModel: (MultiChoiceCardDefinitionModel) -> Unit,
     private val onSpeak: (SpeakModel) -> Unit,
@@ -43,7 +42,6 @@ class MultiChoiceQuizGameAdapter(
             position.plus(1),
             cardList.size,
             userChoiceModel,
-            deckColorCode,
             appTheme,
             onSpeak
         )
@@ -68,16 +66,11 @@ class MultiChoiceQuizGameAdapter(
             cardNumber: Int,
             cardSum: Int,
             userChoiceModel: (MultiChoiceCardDefinitionModel) -> Unit,
-            deckColorCode: String,
             appTheme: String,
             onSpeak: (SpeakModel) -> Unit
         ) {
-
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvOnCardWord.text = card.onCardWord.text
-            //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
-            //cvCardItem.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
-
             val views: ArrayList<View> = arrayListOf(tvOnCardWord)
             val texts: ArrayList<TextWithLanguageModel> = arrayListOf(card.onCardWord)
 

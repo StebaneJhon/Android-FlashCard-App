@@ -91,16 +91,10 @@ class DeckFragment :
         )[DeckViewModel::class.java]
     }
 
-    @SuppressLint("RestrictedApi")
-    private var item: ActionMenuItemView? = null
-
     private lateinit var recyclerViewAdapter: DecksRecyclerViewAdapter
 
     private var deckSharedPref: SharedPreferences? = null
     private var deckSharedPrefEditor: SharedPreferences.Editor? = null
-
-    private lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
-    private lateinit var linearLayoutManager: LinearLayoutManager
 
     companion object {
         const val TAG = "DeckFragment"
@@ -136,15 +130,7 @@ class DeckFragment :
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
-        staggeredGridLayoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        linearLayoutManager = LinearLayoutManager(appContext)
-
         binding.addNewDeckButton.setOnClickListener { onAddNewDeck() }
-
-        binding.deckTopAppBar.setNavigationOnClickListener {
-            showMenu(it, R.menu.menu_filter_deck)
-        }
 
         displayAllDecks()
 
@@ -238,7 +224,6 @@ class DeckFragment :
 
     @SuppressLint("RestrictedApi")
     private fun populateRecyclerView(listOfDecks: List<ImmutableDeck>) {
-        item = binding.deckTopAppBar.findViewById(R.id.view_deck_menu)
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
@@ -261,24 +246,7 @@ class DeckFragment :
             recyclerView.apply {
                 adapter = recyclerViewAdapter
                 setHasFixedSize(true)
-                layoutManager =
-                    if (this@DeckFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
-                        item?.setIcon(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.icon_grid_view
-                            )
-                        )
-                        staggeredGridLayoutManager
-                    } else {
-                        item?.setIcon(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.icon_view_agenda
-                            )
-                        )
-                        linearLayoutManager
-                    }
+                layoutManager = LinearLayoutManager(appContext)
             }
         }
     }
@@ -595,55 +563,13 @@ class DeckFragment :
                 findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
                 true
             }
-
-            R.id.view_deck_menu -> {
-                if (item == null) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_message_change_view_deck),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    if (binding.deckRecycleView.layoutManager == staggeredGridLayoutManager) {
-                        changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
-                        binding.deckRecycleView.layoutManager = linearLayoutManager
-                        item?.setIcon(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.icon_view_agenda
-                            )
-                        )
-                    } else {
-                        changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
-                        binding.deckRecycleView.layoutManager = staggeredGridLayoutManager
-                        item?.setIcon(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.icon_grid_view
-                            )
-                        )
-                    }
-                }
+            R.id.sort_deck_menu -> {
+                val sortButton: ActionMenuItemView = binding.deckTopAppBar.findViewById(R.id.sort_deck_menu)
+                showMenu(sortButton, R.menu.menu_filter_deck)
                 true
             }
-
             else -> true
         }
-    }
-
-    private fun getLayoutManager(): String {
-        val sharedPreferences =
-            requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
-        return sharedPreferences.getString(LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER)
-            ?: LINEAR_LAYOUT_MANAGER
-    }
-
-    private fun changeCardLayoutManager(which: String) {
-        val sharedPreferences =
-            requireActivity().getSharedPreferences("deckLayoutManager", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString(LAYOUT_MANAGER, which)
-        editor.apply()
     }
 
 }

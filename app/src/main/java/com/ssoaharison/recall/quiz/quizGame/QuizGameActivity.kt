@@ -199,7 +199,6 @@ class QuizGameActivity :
         quizGameAdapter = QuizGameAdapter(
             this,
             data,
-            viewModel.getDeckColorCode(),
             appTheme ?: "WHITE THEM",
             viewModel.deck!!,
             { userAnswer ->
@@ -212,7 +211,6 @@ class QuizGameActivity :
                 if (viewModel.isAllAnswerSelected(userAnswer)) {
                     optionsState(userAnswer, actualCard)
                 }
-//                viewModel.increaseAttemptTime()
             },
             { dataToRead ->
                 if (tts?.isSpeaking == true) {
@@ -339,12 +337,6 @@ class QuizGameActivity :
                     } else {
                         if (actualCard.isCorrectlyAnswered) {
                             areNextAndBackButtonsVisible(true)
-//                            if (actualCard.cardType == SINGLE_ANSWER_CARD) {
-//                                specifyKnownAndKnownNotActions(actualCard)
-//                                areKnownAndKnownNotButtonsVisible(true)
-//                            } else {
-//                                areKnownAndKnownNotButtonsVisible(false)
-//                            }
                             areKnownAndKnownNotButtonsVisible(false)
                         } else {
                             areNextAndBackButtonsVisible(false)
@@ -360,8 +352,6 @@ class QuizGameActivity :
 
     private fun specifyKnownAndKnownNotActions(card: QuizGameCardModel) {
         binding.btKnown.setOnClickListener {
-//            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-//            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, true, binding.vpCardHolder.currentItem )
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -381,12 +371,9 @@ class QuizGameActivity :
                     )
                 }
             }
-//            viewModel.initAttemptTime()
         }
         binding.btKnownNot.setOnClickListener {
             viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, false, binding.vpCardHolder.currentItem)
-//            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-//            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -405,7 +392,6 @@ class QuizGameActivity :
                     )
                 }
             }
-//            viewModel.initAttemptTime()
         }
     }
 
@@ -413,16 +399,10 @@ class QuizGameActivity :
         if (binding.vpCardHolder.currentItem > 0) {
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
-//                areNextAndBackButtonsVisible(true)
                 viewModel.initCardFlipCount(binding.vpCardHolder.currentItem)
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
-//                    binding.vpCardHolder.apply {
-//                        beginFakeDrag()
-//                        fakeDragBy(10f)
-//                        endFakeDrag()
-//                    }
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
                         itemPosition.minus(1),
@@ -430,13 +410,10 @@ class QuizGameActivity :
                     )
                 }
             }
-//            viewModel.initAttemptTime()
         } else {
             isRewindButtonActive(false)
         }
         binding.btNext.setOnClickListener {
-//            areNextAndBackButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
-//            areKnownAndKnownNotButtonsVisible(viewModel.isNextCardAnswered(binding.vpCardHolder.currentItem))
             viewModel.initCardFlipCount(binding.vpCardHolder.currentItem)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -456,7 +433,6 @@ class QuizGameActivity :
                     )
                 }
             }
-//            viewModel.initAttemptTime()
         }
     }
 
@@ -476,8 +452,6 @@ class QuizGameActivity :
                             areKnownAndKnownNotButtonsVisible(false)
                         }
                     areNextAndBackButtonsVisible(true)
-//                    specifyKnownAndKnownNotActions(card)
-//                    areKnownAndKnownNotButtonsVisible(true)
                 }
 
                 else -> {
@@ -495,7 +469,6 @@ class QuizGameActivity :
         totalCardsSum: Int,
         cardsLeft: Int,
     ) {
-//        viewModel.initAttemptTime()
         areKnownAndKnownNotButtonsVisible(false)
         areNextAndBackButtonsVisible(false)
         binding.vpCardHolder.visibility = View.GONE
@@ -622,7 +595,6 @@ class QuizGameActivity :
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateActualCards(getCardCount())
-//        viewModel.initAttemptTime()
         binding.vpCardHolder.setCurrentItem(0, true)
     }
 

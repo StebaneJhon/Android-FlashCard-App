@@ -37,7 +37,6 @@ import com.ssoaharison.recall.util.ThemePicker
 
 class CardsRecyclerViewAdapter(
     private val context: Context,
-    private val layoutManager: String,
     private val appTheme: String,
     private val deck: ImmutableDeck,
     private val cardList: List<ImmutableCard?>,
@@ -46,45 +45,10 @@ class CardsRecyclerViewAdapter(
     private val deleteCardClickListener: (ImmutableCard?) -> Unit,
     private val onReadContent: (TextClickedModel) -> Unit,
     private val onReadDefinition: (TextClickedModel) -> Unit,
-    private val onContentLanguageClicked: (RelativeLayout) -> Unit,
-    private val onDefinitionLanguageClicked: (RelativeLayout) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = if (viewType == 0) {
-//        DeckDetailsViewHolder.create(parent)
-//    } else {
-//        CardViewHolder.create(parent)
-//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         CardViewHolder.create(parent)
-
-
-//    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-//        if (position == 0) {
-//            (holder as DeckDetailsViewHolder).bind(
-//                context,
-//                deck,
-//                onContentLanguageClicked,
-//                onDefinitionLanguageClicked
-//            )
-//            if (layoutManager == STAGGERED_GRID_LAYOUT_MANAGER) {
-//                val layoutParams = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-//                layoutParams.isFullSpan = true
-//            } else { }
-//        } else {
-//            (holder as CardViewHolder).bind(
-//                context,
-//                appTheme,
-//                deck,
-//                cardList[position.minus(1)],
-//                boxLevels,
-//                editCardClickListener,
-//                deleteCardClickListener,
-//                onReadContent,
-//                onReadDefinition,
-//            )
-//        }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
             (holder as CardViewHolder).bind(
@@ -99,16 +63,8 @@ class CardsRecyclerViewAdapter(
                 onReadDefinition,
             )
 
-//    override fun getItemCount(): Int {
-//        return cardList.size.plus(1)
-//    }
-
     override fun getItemCount(): Int {
         return cardList.size
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return position
     }
 
     class CardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -402,55 +358,6 @@ class CardsRecyclerViewAdapter(
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.ly_card_fragment_item, parent, false)
                 return CardViewHolder(view)
-            }
-        }
-    }
-
-    class DeckDetailsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val cardSum: TextView = view.findViewById(R.id.tv_card_sum)
-        private val known: TextView = view.findViewById(R.id.tv_known_card_sum)
-        private val unknown: TextView = view.findViewById(R.id.tv_unknown_card_sum)
-        private val contentLanguage: TextView = view.findViewById(R.id.bt_content_language)
-        private val definitionLanguage: TextView = view.findViewById(R.id.bt_definition_language)
-        private val contentLanguageContainer: RelativeLayout =
-            view.findViewById(R.id.rl_container_content_language)
-        private val definitionLanguageContainer: RelativeLayout =
-            view.findViewById(R.id.rl_container_definition_language)
-
-        fun bind(
-            context: Context,
-            deck: ImmutableDeck,
-            onContentLanguageClicked: (RelativeLayout) -> Unit,
-            onDefinitionLanguageClicked: (RelativeLayout) -> Unit
-        ) {
-            cardSum.text = "${deck.cardSum}"
-            known.text = "${deck.knownCardCount}"
-            unknown.text = "${deck.unKnownCardCount}"
-            contentLanguage.apply {
-                text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
-                setOnClickListener {
-                    onContentLanguageClicked(contentLanguageContainer)
-                }
-            }
-            contentLanguageContainer.setOnClickListener {
-                onContentLanguageClicked(contentLanguageContainer)
-            }
-            definitionLanguage.apply {
-                text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
-                setOnClickListener {
-                    onDefinitionLanguageClicked(definitionLanguageContainer)
-                }
-            }
-            definitionLanguageContainer.setOnClickListener {
-                onDefinitionLanguageClicked(definitionLanguageContainer)
-            }
-        }
-
-        companion object {
-            fun create(parent: ViewGroup): DeckDetailsViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ly_deck_details, parent, false)
-                return DeckDetailsViewHolder(view)
             }
         }
     }

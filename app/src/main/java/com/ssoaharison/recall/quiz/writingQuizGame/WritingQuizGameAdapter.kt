@@ -22,7 +22,6 @@ import com.google.android.material.textfield.TextInputLayout
 class WritingQuizGameAdapter(
     val context: Context,
     val cardList: List<WritingQuizGameModel>,
-    val deckColorCode: String,
     private val userAnswerAndView: (WritingQuizGameUserResponseModel) -> Unit,
     private val onSpeak: (WritingQuizSpeakModel) -> Unit,
 ): RecyclerView.Adapter<WritingQuizGameAdapter.WritingQuizGameAdapterViewHolder>() {
@@ -44,7 +43,6 @@ class WritingQuizGameAdapter(
             position.plus(1),
             cardList.size,
             userAnswerAndView,
-            deckColorCode,
             onSpeak,
         )
     }
@@ -54,14 +52,9 @@ class WritingQuizGameAdapter(
         private var imm: InputMethodManager? = null
 
         private val tvOnCardWord: TextView = itemView.findViewById(R.id.tv_top_on_card_word)
-        //private val tvOnCardWordOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_on_card_word_on_wrong_answer)
         private val tieTopCard: TextInputEditText = itemView.findViewById(R.id.ti_top_card_content)
         private val tilTopCard: TextInputLayout = itemView.findViewById(R.id.tilTopCardContent)
-        //private val tiOnWrongAnswer: TextInputEditText = itemView.findViewById(R.id.ti_card_content_on_wrong_answer)
-        private val cvCardFront: MaterialCardView = itemView.findViewById(R.id.cv_card_front)
-        //private val cvCardOnWrongAnswer: MaterialCardView = itemView.findViewById(R.id.cv_card_on_wrong_answer)
         private val tvProgressionFrontCard: TextView = itemView.findViewById(R.id.tv_writing_quiz_front_progression)
-        //private val tvProgressionOnWrongAnswer: TextView = itemView.findViewById(R.id.tv_writing_quiz_progression_on_wrong_answer)
         private val btSpeak: Button = itemView.findViewById(R.id.bt_card_front_speak)
         private val btShowAnswer: MaterialButton = itemView.findViewById(R.id.bt_show_answer)
         private val tvAnswer: TextView = itemView.findViewById(R.id.tv_answer)
@@ -72,18 +65,11 @@ class WritingQuizGameAdapter(
             cardNumber: Int,
             cardSum: Int,
             userAnswer: (WritingQuizGameUserResponseModel) -> Unit,
-            deckColorCode: String,
             onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//            tieTopCard.text?.clear()
-            //tiOnWrongAnswer.text?.clear()
             tvOnCardWord.text = card.onCardWord.text
-            //tvOnCardWordOnWrongAnswer.text = card.onCardWord.text
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            //tvProgressionOnWrongAnswer.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
-            //cvCardFront.backgroundTintList =  ContextCompat.getColorStateList(context, deckColor)
             tvAnswer.text = context.getString(R.string.text_correct_answer, card.answer.first().text)
 
             when {
@@ -100,7 +86,6 @@ class WritingQuizGameAdapter(
 
             tieTopCard.setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE){
-                    //tiOnWrongAnswer.setText(v.text)
                     val userInput = v.text?.trim().toString().lowercase()
                     val correctAnswer = card.answer
                     userAnswer(

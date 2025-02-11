@@ -128,7 +128,7 @@ class FlashCardGameActivity :
     private val EXTRA_MARGIN = -2
 
     companion object {
-        private val MIN_SWIPE_DISTANCE = -275
+        const private val MIN_SWIPE_DISTANCE = -275
         private const val TAG = "FlashCardGameActivity"
         const val DECK_ID_KEY = "Deck_id_key"
     }
@@ -147,7 +147,6 @@ class FlashCardGameActivity :
         val themePicker = ThemePicker()
         val appTheme = sharedPref?.getString("themName", "WHITE THEM")
         val themRef = themePicker.selectTheme(appTheme)
-
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
 
@@ -829,7 +828,6 @@ class FlashCardGameActivity :
                             readText(
                                 listOf(TextWithLanguageModel(onScreenCards.top.cardId, onScreenCards.top.cardContent.content, CONTENT, detectedLanguage)),
                                 listOf(binding.tvQuizFront),
-                                v as Button
                             )
                         }
                     )
@@ -837,7 +835,6 @@ class FlashCardGameActivity :
                     readText(
                         listOf(TextWithLanguageModel(onScreenCards.top.cardId, onScreenCards.top.cardContent?.content!!, CONTENT, language)),
                         listOf(binding.tvQuizFront),
-                        v as Button
                     )
                 }
 
@@ -863,7 +860,6 @@ class FlashCardGameActivity :
                             readText(
                                 textsToRead,
                                 views,
-                                v as Button
                             )
                         }
                     )
@@ -874,19 +870,12 @@ class FlashCardGameActivity :
                     readText(
                         textsToRead,
                         views,
-                        v as Button
                     )
                 }
             }
         }
     }
 
-//    private fun onStartReading(
-//        textWithLanguage: List<TextWithLanguageModel>,
-//        type: String
-//    ) {
-//        if ()
-//    }
 
     private fun showSnackBar(
         @StringRes messageRes: Int
@@ -916,7 +905,6 @@ class FlashCardGameActivity :
     private fun readText(
         text: List<TextWithLanguageModel>,
         view: List<TextView>,
-        v: Button
     ) {
 
         var position = 0

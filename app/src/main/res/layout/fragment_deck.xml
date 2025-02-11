@@ -21,9 +21,7 @@
             android:id="@+id/deckTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name"
-            app:navigationIcon="@drawable/icon_sort"
-            app:navigationIconTint="?colorOnSurface">
+            app:title="@string/app_name">
 
         </com.google.android.material.appbar.MaterialToolbar>
 

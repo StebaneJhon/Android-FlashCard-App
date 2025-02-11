@@ -29,7 +29,6 @@ import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 class QuizGameAdapter(
     val context: Context,
     val cardList: List<QuizGameCardModel>,
-    private val deckColor: String,
     val appTheme: String,
     val deck: ImmutableDeck,
     private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
@@ -51,9 +50,7 @@ class QuizGameAdapter(
             context,
             cardList[position],
             position.plus(1),
-            position,
             cardList.size,
-            deckColor,
             appTheme,
             cardOnClick,
         )
@@ -99,9 +96,7 @@ class QuizGameAdapter(
             context: Context,
             card: QuizGameCardModel,
             cardNumber: Int,
-            cardPosition: Int,
             cardSum: Int,
-            deckColorCode: String,
             appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
@@ -113,9 +108,6 @@ class QuizGameAdapter(
             )
             tvContent.text = card.cardContent?.content
             tvCardType.text = card.cardType
-            //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
-            //cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
-
             when {
                 card.cardType == SINGLE_ANSWER_CARD -> {
                     tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
@@ -160,16 +152,6 @@ class QuizGameAdapter(
             }
 
             if (card.cardType == SINGLE_ANSWER_CARD) {
-//                if(!card.isFlipped) {
-//                    cvCardContainer.alpha = 1f
-//                    cvCardContainer.rotationY = 0f
-//                    cvCardContainerBack.alpha = 1f
-//                } else {
-//                    cvCardContainer.alpha = 0f
-//                    cvCardContainer.rotationY = 0f
-//                    cvCardContainerBack.alpha = 1f
-//                }
-
                 if (card.flipCount == 0) {
                     if (!card.isFlipped) {
                         cvCardContainer.alpha = 1f
@@ -210,9 +192,7 @@ class QuizGameAdapter(
             }
             bindAnswerAlternatives(
                 card,
-                deckColorCode,
                 cardNumber,
-                cardPosition,
                 cardSum,
                 cardOnClick
             )
@@ -330,11 +310,9 @@ class QuizGameAdapter(
             )
         }
 
-        fun bindAnswerAlternatives(
+        private fun bindAnswerAlternatives(
             card: QuizGameCardModel,
-            deckColorCode: String,
             cardNumber: Int,
-            cardPosition: Int,
             cardSum: Int,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit
         ) {
@@ -344,8 +322,6 @@ class QuizGameAdapter(
                 btAlternatives.forEach { materialButton ->
                     materialButton.visibility = View.GONE
                 }
-                //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deckColorCode) ?: R.color.black
-                //cvCardContainerBack.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
                 tvBackProgression.text = context.getString(
                     R.string.tx_flash_card_game_progression,
                     "$cardNumber",
@@ -358,7 +334,6 @@ class QuizGameAdapter(
                     cardOnClick(
                         card.cardDefinition.first()
                     )
-//                    flipCard(card.isFlipped)
                 }
                 btSpeakBack.setOnClickListener {
                     onSpeak(

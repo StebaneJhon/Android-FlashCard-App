@@ -23,7 +23,6 @@ import com.ssoaharison.recall.util.TextWithLanguageModel
 class TestAdapter(
     val context: Context,
     val cardList: List<TestCardModel>,
-    val deck: ImmutableDeck,
     private val onUserAnswered: (TestCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit
 ) : RecyclerView.Adapter<TestAdapter.ViewHolder>() {
@@ -40,7 +39,6 @@ class TestAdapter(
         return holder.bind(
             context,
             cardList[position],
-            deck,
             position,
             cardList.size,
             onUserAnswered,
@@ -50,8 +48,6 @@ class TestAdapter(
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val flCardRoot: FrameLayout = view.findViewById(R.id.fl_card_root)
-        private val cvCardContainer: MaterialCardView = view.findViewById(R.id.cv_card_container)
         private val tvContent: TextView = view.findViewById(R.id.tv_content)
         private val btAlternative1: MaterialButton = view.findViewById(R.id.bt_alternative1)
         private val btAlternative2: MaterialButton = view.findViewById(R.id.bt_alternative2)
@@ -77,7 +73,6 @@ class TestAdapter(
         fun bind(
             context: Context,
             card: TestCardModel,
-            deck: ImmutableDeck,
             cardPosition: Int,
             cardSum: Int,
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
@@ -95,9 +90,6 @@ class TestAdapter(
             } else {
                 tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
             }
-            //val deckColor = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(context, deck.deckColorCode!!) ?: R.color.black
-            //cvCardContainer.backgroundTintList = ContextCompat.getColorStateList(context, deckColor)
-
             btAlternatives.forEachIndexed { index, materialButton ->
                 if (index < card.cardDefinition.size) {
                     materialButton.visibility = View.VISIBLE

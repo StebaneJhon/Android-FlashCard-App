@@ -11,13 +11,12 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
     <item
-        android:id="@+id/sort_deck_menu"
-        android:icon="@drawable/icon_sort"
+        android:id="@+id/view_deck_menu"
+        android:icon="@drawable/icon_grid_view"
         android:iconTint="?colorOnSurface"
         android:title="@string/bt_change_view"
-        android:contentDescription="@string/bt_text_sort_deck"
-        app:showAsAction="ifRoom"
-        />
+        android:contentDescription="@string/bt_change_view"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/settings_deck_menu"

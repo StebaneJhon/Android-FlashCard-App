@@ -181,7 +181,7 @@ class ThemePicker {
         return when (deckColorCode) {
             WHITE -> darkThemes.getOrDefault(DARK_WHITE_THEME, defaultTheme)
             BLACK -> darkThemes.getOrDefault(DARK_DARK_THEME, defaultTheme)
-            GREY -> darkThemes.getOrDefault(DARK_WHITE_THEME, defaultTheme)
+            GREY -> darkThemes.getOrDefault(DARK_DARK_THEME, defaultTheme)
             RED -> darkThemes.getOrDefault(DARK_RED_THEME, defaultTheme)
             ORANGE -> darkThemes.getOrDefault(DARK_ORANGE_THEME, defaultTheme)
             YELLOW -> darkThemes.getOrDefault(DARK_YELLOW_THEME, defaultTheme)

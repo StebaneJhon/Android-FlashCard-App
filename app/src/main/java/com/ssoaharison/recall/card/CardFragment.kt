@@ -125,8 +125,6 @@ class CardFragment :
         const val TAG = "CardFragment"
         const val REQUEST_CODE_CARD = "0"
         const val REQUEST_CODE_QUIZ_MODE = "300"
-        const val MIN_DEFINITION_LENGTH_FOR_SPAM_1 = 200
-        const val MIN_CONTENT_LENGTH_FOR_SPAM_1 = 100
     }
 
     override fun onCreateView(
@@ -136,7 +134,6 @@ class CardFragment :
         _binding = FragmentCardBinding.inflate(inflater, container, false)
         appContext = container?.context
         tts = TextToSpeech(appContext, this)
-//        activity?.setTheme(R.style.YellowTheme_Flashcard)
         return binding.root
     }
 
@@ -265,14 +262,14 @@ class CardFragment :
 
     }
 
-    fun bindDeckDetailsPanel(deck: ImmutableDeck) {
+    private fun bindDeckDetailsPanel(deck: ImmutableDeck) {
         binding.tvCardSum.text = "${deck.cardSum}"
         binding.tvUnknownCardSum.text = "${deck.unKnownCardCount}"
         binding.tvKnownCardSum.text = "${deck.knownCardCount}"
         binding.btContentLanguage.apply {
             text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
             setOnClickListener {
-                onDeckLanguageClicked(binding.rlContainerContentLanguage, deck) { selectedLanguage ->
+                onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
                     cardViewModel.updateDefaultCardContentLanguage(
                         deck.deckId,
                         selectedLanguage
@@ -281,7 +278,7 @@ class CardFragment :
             }
         }
         binding.rlContainerContentLanguage.setOnClickListener {
-            onDeckLanguageClicked(binding.rlContainerContentLanguage, deck) { selectedLanguage ->
+            onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
                 cardViewModel.updateDefaultCardContentLanguage(
                     deck.deckId,
                     selectedLanguage
@@ -291,7 +288,7 @@ class CardFragment :
         binding.btDefinitionLanguage.apply {
             text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
             setOnClickListener {
-                onDeckLanguageClicked(binding.rlContainerDefinitionLanguage, deck) { selectedLanguage ->
+                onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
                     cardViewModel.updateDefaultCardDefinitionLanguage(
                         deck.deckId,
                         selectedLanguage
@@ -300,7 +297,7 @@ class CardFragment :
             }
         }
         binding.rlContainerDefinitionLanguage.setOnClickListener {
-            onDeckLanguageClicked(binding.rlContainerDefinitionLanguage, deck) { selectedLanguage ->
+            onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
                 cardViewModel.updateDefaultCardDefinitionLanguage(
                     deck.deckId,
                     selectedLanguage
@@ -328,34 +325,11 @@ class CardFragment :
                         is UiState.Success -> {
                             populateRecyclerView(state.data.cards!!, state.data.deck!!)
                             bindDeckDetailsPanel(state.data.deck)
-//                            setCardFragmentColors(state.data.deck)
                         }
                     }
                 }
             }
         }
-    }
-
-    private fun setCardFragmentColors(deck: ImmutableDeck) {
-        val deckColorHelper = DeckColorCategorySelector()
-        val deckColorSurfaceLow = deckColorHelper.selectDeckColorSurfaceContainerLow(appContext!!, deck.deckColorCode)
-        val deckColorStateListSurfaceLow = deckColorHelper.selectDeckColorStateListSurfaceContainerLow(appContext!!, deck.deckColorCode)
-        val deckColorSurfaceLowest = deckColorHelper.selectDeckColorStateListSurfaceContainerLowEst(appContext!!, deck.deckColorCode)
-        val deckColorOnSurfaceLow = deckColorHelper.selectDeckOnSurfaceColor(appContext!!, deck.deckColorCode)
-        binding.cardsActivityRoot.setBackgroundColor(deckColorSurfaceLow)
-        binding.appBarLayout.setBackgroundColor(deckColorSurfaceLow)
-        binding.clDeckOverviewRoot.setBackgroundColor(deckColorSurfaceLow)
-        binding.cardRecyclerView.backgroundTintList = deckColorSurfaceLowest
-        binding.cvContainerCardSum.backgroundTintList = deckColorSurfaceLowest
-        binding.cvContainerUnknownCardSum.backgroundTintList = deckColorSurfaceLowest
-        binding.cvContainerKnownCardSum.backgroundTintList = deckColorSurfaceLowest
-        binding.rlContainerContentLanguage.backgroundTintList = deckColorSurfaceLowest
-        binding.rlContainerDefinitionLanguage.backgroundTintList = deckColorSurfaceLowest
-        val window = activity?.window
-        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window?.statusBarColor = deckColorSurfaceLow
-        binding.bottomAppBar.backgroundTintList = deckColorStateListSurfaceLow
     }
 
     private fun onDeckEmpty() {
@@ -492,7 +466,6 @@ class CardFragment :
         binding.cardRecyclerView.isVisible = true
         recyclerViewAdapter = CardsRecyclerViewAdapter(
             appContext!!,
-            getLayoutManager(),
             appTheme,
             deck,
             cardList,
@@ -516,49 +489,7 @@ class CardFragment :
                 } else {
                     onStartReadingText(text, text.text.language, text.type)
                 }
-            },
-            { anchor ->
-                onDeckLanguageClicked(anchor, deck) { selectedLanguage ->
-                    cardViewModel.updateDefaultCardContentLanguage(
-                        deck.deckId,
-                        selectedLanguage
-                    )
-                }
-            }) { anchor ->
-            onDeckLanguageClicked(anchor, deck) { selectedLanguage ->
-                cardViewModel.updateDefaultCardDefinitionLanguage(
-                    deck.deckId,
-                    selectedLanguage
-                )
-            }
-//            listPopupWindow = ListPopupWindow(appContext!!, null)
-//            listPopupWindow.setBackgroundDrawable(
-//                ResourcesCompat.getDrawable(
-//                    resources,
-//                    R.drawable.filter_spinner_dropdown_background,
-//                    requireActivity().theme
-//                )
-//            )
-//            listPopupWindow.apply {
-//                anchorView = anchor
-//                setAdapter(arrayAdapterSupportedLanguages)
-//                setOnItemClickListener { _, _, position, _ ->
-//
-//                    dismiss()
-//                }
-//                show()
-//            }
-        }
-//        val gridLayoutManager = GridLayoutManager(appContext, 2, GridLayoutManager.VERTICAL, false)
-//        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-//            override fun getSpanSize(position: Int): Int {
-//                if (position == 0) {
-//                    return 1
-//                } else {
-//                    return 2 // Fill the screen width
-//                }
-//            }
-//        }
+            })
 
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
@@ -587,7 +518,6 @@ class CardFragment :
 
     private fun onDeckLanguageClicked(
         anchor: RelativeLayout,
-        deck: ImmutableDeck,
         setLanguage: (String) -> Unit
     ) {
         listPopupWindow = ListPopupWindow(appContext!!, null)
@@ -650,24 +580,6 @@ class CardFragment :
                     readeText(textAndView, detectedLanguage)
                 }
             )
-//            { languageCode ->
-//                when (languageCode) {
-//                    "und" -> showSnackBar(R.string.error_message_can_not_identify_language)
-//                    ERROR -> showSnackBar(R.string.error_message_error_while_detecting_language)
-//                    else -> {
-//                        val detectedLanguage = languageUtil.getLanguageByCode(languageCode)
-//                        if (detectedLanguage.isNullOrBlank()) {
-//                            showSnackBar(R.string.error_message_language_not_supported)
-//                        } else {
-//                            when (type) {
-//                                CONTENT -> cardViewModel.updateCardContentDefaultLanguage(deck.deckId, detectedLanguage)
-//                                DEFINITION -> cardViewModel.updateCardDefinitionDefaultLanguage(deck.deckId, detectedLanguage)
-//                            }
-//                            readeText(textAndView, detectedLanguage)
-//                        }
-//                    }
-//                }
-//            }
         } else {
             readeText(textAndView, language)
         }
@@ -732,24 +644,6 @@ class CardFragment :
         tts?.stop()
     }
 
-    private fun getSpanSize(
-        cardList: List<ImmutableCard?>,
-        cardPosition: Int,
-    ): Int {
-        val contentSize = cardList[cardPosition]?.cardContent?.content?.length ?: 0
-        val definitionSize = getMaxDefinitionLength(cardList[cardPosition]?.cardDefinition)
-
-
-        if (
-            definitionSize > MIN_DEFINITION_LENGTH_FOR_SPAM_1 && cardPosition.minus(1) % 2 != 0 ||
-            contentSize > MIN_CONTENT_LENGTH_FOR_SPAM_1 && cardPosition.minus(1) % 2 != 0
-        ) {
-            return 2
-        }
-
-        return 1
-    }
-
 
     private fun getMaxDefinitionLength(definitions: List<CardDefinition>?): Int {
         definitions?.let {
@@ -771,19 +665,8 @@ class CardFragment :
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,
             this
-        ) { requestKey, bundle ->
+        ) { _, bundle ->
             val result = bundle.getInt(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
-//            if (result == null) {
-//                Toast.makeText(appContext, getString(R.string.error_message_card_addition_failed), Toast.LENGTH_LONG).show()
-//            } else {
-//                cardViewModel.insertCard(result)
-//                Toast.makeText(
-//                    appContext,
-//                    getString(R.string.message_card_added),
-//                    Toast.LENGTH_LONG
-//                ).show()
-//            }
-
             when {
                 result > 1 -> {
                     Toast.makeText(
@@ -792,7 +675,6 @@ class CardFragment :
                         Toast.LENGTH_LONG
                     ).show()
                 }
-
                 result == 1 -> {
                     Toast.makeText(
                         appContext,
@@ -825,7 +707,7 @@ class CardFragment :
 
     @SuppressLint("RestrictedApi")
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.deck_fragment_menu, menu)
+        menuInflater.inflate(R.menu.card_fragment_menu, menu)
         val search = menu.findItem(R.id.search_deck_menu)
         val searchView = search?.actionView as SearchView
 
