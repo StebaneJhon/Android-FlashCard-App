@@ -154,12 +154,10 @@ class WritingQuizGameActivity :
     }
 
     private fun applySettings() {
-
         val filter = miniGamePref?.getString(
             FlashCardMiniGameRef.CHECKED_FILTER,
             FlashCardMiniGameRef.FILTER_RANDOM
         )
-
         val unKnownCardFirst = miniGamePref?.getBoolean(
             FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST,
             true
@@ -168,31 +166,25 @@ class WritingQuizGameActivity :
             FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY,
             false
         )
-
         if (unKnownCardOnly == true) {
             viewModel.cardToReviseOnly()
         } else {
             viewModel.restoreCardList()
         }
-
         when (filter) {
             FlashCardMiniGameRef.FILTER_RANDOM -> {
                 viewModel.shuffleCards()
             }
-
             FlashCardMiniGameRef.FILTER_BY_LEVEL -> {
                 viewModel.sortCardsByLevel()
             }
-
             FlashCardMiniGameRef.FILTER_CREATION_DATE -> {
                 viewModel.sortByCreationDate()
             }
         }
-
         if (unKnownCardFirst == true) {
             viewModel.sortCardsByLevel()
         }
-
     }
 
     private fun onNoCardToRevise() {

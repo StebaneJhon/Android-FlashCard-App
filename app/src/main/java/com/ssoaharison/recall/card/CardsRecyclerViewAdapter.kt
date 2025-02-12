@@ -10,8 +10,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
@@ -19,7 +17,6 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
@@ -28,7 +25,6 @@ import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAGER
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -100,7 +96,12 @@ class CardsRecyclerViewAdapter(
             cardDescription10,
         )
 
+        val spaceRepetitionAlgorithmHelper = SpaceRepetitionAlgorithmHelper()
+
         private val ICON_MARGIN = 5
+
+        var contentTextColor: Int = R.color.red950
+        var definitionTextColor: Int = R.color.red900
 
         fun bind(
             context: Context,
@@ -115,9 +116,9 @@ class CardsRecyclerViewAdapter(
         ) {
 
             if (appTheme == DARK_THEME) {
-                onBrightTheme(boxLevels, card, context)
+                this.onDarkTheme(boxLevels, card, context)
             } else {
-                onDarkTheme(boxLevels, card, context)
+                this.onBrightTheme(boxLevels, card, context)
             }
 
             val correctDefinition = getCorrectDefinition(card?.cardDefinition)
@@ -145,12 +146,12 @@ class CardsRecyclerViewAdapter(
                     tv.setOnClickListener {
                         it as TextView
                         val text = it.text.toString()
-                        val language =
-                            if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage
+                        val language = if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage
                         onReadDefinition(
                             TextClickedModel(
                                 TextWithLanguageModel(card?.cardId!!, text, DEFINITION, language),
                                 it,
+                                definitionTextColor,
                                 DEFINITION
                             )
                         )
@@ -197,6 +198,7 @@ class CardsRecyclerViewAdapter(
                         TextClickedModel(
                             TextWithLanguageModel(card?.cardId!!, text, CONTENT, language),
                             it,
+                            contentTextColor,
                             CONTENT
                         )
                     )
@@ -218,44 +220,47 @@ class CardsRecyclerViewAdapter(
 
         }
 
-        private fun onDarkTheme(
-            boxLevels: List<ImmutableSpaceRepetitionBox>,
-            card: ImmutableCard?,
-            context: Context
-        ) {
-            val actualBoxLevel =
-                SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
-            val statusColor =
-                SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor =
-                SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
-
-            val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
-            val cardBackgroundStateList =
-                ContextCompat.getColorStateList(context, cardBackgroundStatusColor!!)
-            cvContainerCard.backgroundTintList = cardBackgroundStateList
-            cardStatus.apply {
-                text = card.cardStatus
-                backgroundTintList = colorStateList
-            }
-            onCardText.text = card.cardContent?.content
-        }
-
         private fun onBrightTheme(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             card: ImmutableCard?,
             context: Context
         ) {
-            val actualBoxLevel =
-                SpaceRepetitionAlgorithmHelper().getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
-            val statusColor =
-                SpaceRepetitionAlgorithmHelper().selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor =
-                SpaceRepetitionAlgorithmHelper().selectBackgroundLevelColor(actualBoxLevel.levelColor)
+            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
+            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
+            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColor(actualBoxLevel.levelColor)
+            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorVariant(actualBoxLevel.levelColor)
 
-            val colorStateList = ContextCompat.getColorStateList(context, statusColor!!)
+            val colorStateList = ContextCompat.getColorStateList(context, statusColor)
             val cardBackgroundStateList =
-                ContextCompat.getColorStateList(context, cardBackgroundStatusColor!!)
+                ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
+            cvContainerCard.backgroundTintList = cardBackgroundStateList
+            cardStatus.apply {
+                text = card.cardStatus
+                backgroundTintList = colorStateList
+            }
+            onCardText.apply {
+                text = card.cardContent?.content
+                setTextColor(context.getColor(contentTextColor))
+            }
+            tvDescriptions.forEach {
+                it.setTextColor(context.getColor(definitionTextColor))
+            }
+        }
+
+        private fun onDarkTheme(
+            boxLevels: List<ImmutableSpaceRepetitionBox>,
+            card: ImmutableCard?,
+            context: Context
+        ) {
+            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
+            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
+            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
+            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLightVariant(actualBoxLevel.levelColor)
+
+            val colorStateList = ContextCompat.getColorStateList(context, statusColor)
+            val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
             cvContainerCard.backgroundTintList = colorStateList
             cardStatus.apply {
                 text = card.cardStatus
@@ -263,7 +268,10 @@ class CardsRecyclerViewAdapter(
             }
             onCardText.apply {
                 text = card.cardContent?.content
-                setTextColor(context.getColor(R.color.white))
+                setTextColor(context.getColor(contentTextColor))
+            }
+            tvDescriptions.forEach {
+                it.setTextColor(context.getColor(definitionTextColor))
             }
             cardStatus.setTextColor(context.getColor(R.color.black))
         }

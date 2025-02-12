@@ -82,25 +82,67 @@ class SpaceRepetitionAlgorithmHelper{
         GREEN700 to R.color.emerald50
     )
 
+    private val cardOnSurfaceColors = mapOf(
+        RED to R.color.red950,
+        ORANGE to R.color.orange950,
+        BROWNE to R.color.amber950,
+        YELLOW700 to R.color.yellow950,
+        YELLOW500 to R.color.lime950,
+        GREEN500 to R.color.green950,
+        GREEN700 to R.color.emerald950
+    )
 
+    private val cardOnSurfaceColorsVariant = mapOf(
+        RED to R.color.red900,
+        ORANGE to R.color.orange900,
+        BROWNE to R.color.amber900,
+        YELLOW700 to R.color.yellow900,
+        YELLOW500 to R.color.lime900,
+        GREEN500 to R.color.green900,
+        GREEN700 to R.color.emerald900
+    )
 
-    fun selectBoxLevelColor(color: String): Int? {
-        return if (color in colors.keys) {
-            colors[color]
-        } else {
-            R.color.red700
-        }
+    private val cardOnSurfaceColorsLight = mapOf(
+        RED to R.color.red50,
+        ORANGE to R.color.orange50,
+        BROWNE to R.color.amber50,
+        YELLOW700 to R.color.yellow50,
+        YELLOW500 to R.color.lime50,
+        GREEN500 to R.color.green50,
+        GREEN700 to R.color.emerald50
+    )
+
+    private val cardOnSurfaceColorsLightVariant = mapOf(
+        RED to R.color.red100,
+        ORANGE to R.color.orange100,
+        BROWNE to R.color.amber100,
+        YELLOW700 to R.color.yellow100,
+        YELLOW500 to R.color.lime100,
+        GREEN500 to R.color.green100,
+        GREEN700 to R.color.emerald100
+    )
+
+    fun selectBoxLevelColor(color: String): Int {
+        return colors.getOrDefault(color, R.color.red700)
+    }
+    fun selectBackgroundLevelColor(color: String): Int {
+        return carBackgroundColors.getOrDefault(color, R.color.red100)
+    }
+    fun selectOnSurfaceColor(color: String): Int {
+        return cardOnSurfaceColors.getOrDefault(color, R.color.red950)
+    }
+    fun selectOnSurfaceColorVariant(color: String): Int {
+        return cardOnSurfaceColorsVariant.getOrDefault(color, R.color.red900)
     }
 
-    fun selectBackgroundLevelColor(color: String): Int? {
-        return if (color in carBackgroundColors.keys) {
-            carBackgroundColors[color]
-        } else {
-            R.color.red100
-        }
+    fun selectOnSurfaceColorLight(color: String): Int {
+        return cardOnSurfaceColorsLight.getOrDefault(color, R.color.red50)
+    }
+    fun selectOnSurfaceColorLightVariant(color: String): Int {
+        return cardOnSurfaceColorsLightVariant.getOrDefault(color, R.color.red100)
     }
 
-    fun getInitialSpaceRepetitionBox(): List<SpaceRepetitionBox> {
+    private fun getInitialSpaceRepetitionBox(): List<SpaceRepetitionBox> {
         return listOf(
             SpaceRepetitionBox(null, L1, "Red", 0, revisionMargin(0)),
             SpaceRepetitionBox(null, L2, "Orange", 1, revisionMargin(1)),

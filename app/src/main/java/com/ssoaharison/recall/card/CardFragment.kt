@@ -40,7 +40,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
@@ -48,7 +47,6 @@ import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.FragmentCardBinding
 import com.ssoaharison.recall.deck.NewDeckDialog
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
@@ -83,7 +81,6 @@ import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.parcelable
-import com.ssoaharison.recall.util.parcelableArrayList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
@@ -152,18 +149,26 @@ class CardFragment :
         if (!deck.deckColorCode.isNullOrBlank()) {
             val deckTheme: Int
             val deckColorSurfaceLow: Int
-            if (appThemeName == DARK_THEME){
+            if (appThemeName == DARK_THEME) {
                 deckTheme = themePicker.selectDarkThemeByDeckColorCode(
                     deck.deckColorCode!!,
                     themePicker.getDefaultTheme()
                 )
-                deckColorSurfaceLow = DeckColorCategorySelector().selectDeckDarkColorSurfaceContainerLow(requireContext(), deck.deckColorCode)
+                deckColorSurfaceLow =
+                    DeckColorCategorySelector().selectDeckDarkColorSurfaceContainerLow(
+                        requireContext(),
+                        deck.deckColorCode
+                    )
             } else {
                 deckTheme = themePicker.selectThemeByDeckColorCode(
                     deck.deckColorCode!!,
                     themePicker.getDefaultTheme()
                 )
-                deckColorSurfaceLow = DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(requireContext(), deck.deckColorCode)
+                deckColorSurfaceLow =
+                    DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(
+                        requireContext(),
+                        deck.deckColorCode
+                    )
             }
             contextThemeWrapper = ContextThemeWrapper(requireContext(), deckTheme)
             window?.statusBarColor = deckColorSurfaceLow
@@ -259,7 +264,6 @@ class CardFragment :
             })
 
 
-
     }
 
     private fun bindDeckDetailsPanel(deck: ImmutableDeck) {
@@ -267,7 +271,8 @@ class CardFragment :
         binding.tvUnknownCardSum.text = "${deck.unKnownCardCount}"
         binding.tvKnownCardSum.text = "${deck.knownCardCount}"
         binding.btContentLanguage.apply {
-            text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
+            text =
+                if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
             setOnClickListener {
                 onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
                     cardViewModel.updateDefaultCardContentLanguage(
@@ -286,7 +291,8 @@ class CardFragment :
             }
         }
         binding.btDefinitionLanguage.apply {
-            text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
+            text =
+                if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
             setOnClickListener {
                 onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
                     cardViewModel.updateDefaultCardDefinitionLanguage(
@@ -634,29 +640,8 @@ class CardFragment :
     }
 
     private fun stopReading(textAndView: TextClickedModel) {
-        val view = textAndView.view
-        val textColor = MaterialColors.getColor(
-            appContext!!,
-            com.google.android.material.R.attr.colorOnSurface,
-            Color.GRAY
-        )
-        view.setTextColor(textColor)
+        textAndView.view.setTextColor(requireContext().getColor(textAndView.textColor))
         tts?.stop()
-    }
-
-
-    private fun getMaxDefinitionLength(definitions: List<CardDefinition>?): Int {
-        definitions?.let {
-            var maxLength = 0
-            it.forEach { defin ->
-                val actualLength = defin.definition.length
-                if (actualLength > maxLength) {
-                    maxLength = actualLength
-                }
-            }
-            return maxLength
-        }
-        return 0
     }
 
     private fun onAddNewCard() {
@@ -675,6 +660,7 @@ class CardFragment :
                         Toast.LENGTH_LONG
                     ).show()
                 }
+
                 result == 1 -> {
                     Toast.makeText(
                         appContext,

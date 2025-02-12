@@ -159,7 +159,7 @@
                                 android:fontFamily="@font/open_sans"
                                 android:text="@string/text_total"
                                 android:textAlignment="center"
-                                android:textColor="?colorPrimary"
+                                android:textColor="?colorOnSurface"
                                 android:textSize="@dimen/text_sm"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -205,7 +205,7 @@
                                 android:fontFamily="@font/open_sans"
                                 android:text="@string/text_known"
                                 android:textAlignment="center"
-                                android:textColor="?colorPrimary"
+                                android:textColor="?colorOnSurface"
                                 android:textSize="@dimen/text_sm"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -251,7 +251,7 @@
                                 android:fontFamily="@font/open_sans"
                                 android:text="@string/text_unknown"
                                 android:textAlignment="center"
-                                android:textColor="?colorPrimary"
+                                android:textColor="?colorOnSurface"
                                 android:textSize="@dimen/text_sm"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
@@ -296,12 +296,12 @@
                             android:fontFamily="@font/open_sans"
                             android:padding="0dp"
                             android:text="@string/text_content_language"
-                            android:textColor="?colorPrimary"
+                            android:textColor="?colorOnSurface"
                             android:textSize="@dimen/text_xs"
                             android:textAlignment="textEnd"
                             app:icon="@drawable/icon_unfold_more"
                             app:iconGravity="end"
-                            app:iconTint="?colorPrimary"
+                            app:iconTint="?colorOnSurface"
                             app:rippleColor="?colorSurfaceContainerLow"/>
                     </RelativeLayout>
 
@@ -342,12 +342,12 @@
                             android:fontFamily="@font/open_sans"
                             android:padding="0dp"
                             android:text="@string/text_definition_language"
-                            android:textColor="?colorPrimary"
+                            android:textColor="?colorOnSurface"
                             android:textSize="@dimen/text_xs"
                             android:textAlignment="textEnd"
                             app:icon="@drawable/icon_unfold_more"
                             app:iconGravity="end"
-                            app:iconTint="?colorPrimary"
+                            app:iconTint="?colorOnSurface"
                             app:rippleColor="?colorSurfaceContainerLow"/>
                     </RelativeLayout>
                 </androidx.constraintlayout.widget.ConstraintLayout>
