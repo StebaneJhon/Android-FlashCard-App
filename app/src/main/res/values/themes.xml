@@ -1,6 +1,45 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.FlashCard" parent="Theme.Material3.Light.NoActionBar">
+
+    <style name="Common.App.Theme.FlashCard.Light" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <style name="Common.App.Theme.FlashCard.Dark" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorError">@color/red700</item>
+        <item name="colorOnError">@color/white</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
+        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
+        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
+        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
+        <item name="colorControlActivated">@color/black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
+        <item name="actionMenuTextColor">?colorOnSurface</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
+        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+    </style>
+
+    <style name="Base.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/grey600</item>
         <item name="colorOnPrimary">@color/grey50</item>
         <item name="colorSecondaryContainer">@color/grey100_transparent</item>
@@ -15,28 +54,11 @@
         <item name="colorSurfaceContainerHighest">@color/grey400</item>
         <item name="colorOnSurface">@color/grey950</item>
         <item name="colorOnSurfaceVariant">@color/grey950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-<!--        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>-->
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
 
-    <style name="Stale.Theme.FlashCard" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Stale.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/stale600</item>
         <item name="colorOnPrimary">@color/stale50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -51,28 +73,11 @@
         <item name="colorSurfaceContainerHighest">@color/stale400</item>
         <item name="colorOnSurface">@color/stale950</item>
         <item name="colorOnSurfaceVariant">@color/stale950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/stale400</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
 
-    <style name="Dark.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/neutral50</item>
         <item name="colorOnPrimary">@color/neutral950</item>
         <item name="colorSecondaryContainer">@color/neutral800_transparent</item>
@@ -87,28 +92,10 @@
         <item name="colorSurfaceContainerHighest">@color/neutral300</item>
         <item name="colorOnSurface">@color/neutral50</item>
         <item name="colorOnSurfaceVariant">@color/neutral950</item>
-        <item name="colorError">@color/neutral700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="actionModeStyle">@style/MyActionBarTheme</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />
 
-    <style name="Red.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Red.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/red700</item>
         <item name="colorOnPrimary">@color/red50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -122,27 +109,10 @@
         <item name="colorSurfaceContainerHighest">@color/red400</item>
         <item name="colorOnSurface">@color/red950</item>
         <item name="colorOnSurfaceVariant">@color/red950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
-    <style name="Dark.Red.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Red.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/red50</item>
         <item name="colorOnPrimary">@color/red950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -156,27 +126,10 @@
         <item name="colorSurfaceContainerHighest">@color/red600</item>
         <item name="colorOnSurface">@color/red50</item>
         <item name="colorOnSurfaceVariant">@color/red950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkRedTheme.Flashcard" parent="Dark.Red.Theme.FlashCard" />
 
-    <style name="Orange.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Orange.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/orange700</item>
         <item name="colorOnPrimary">@color/orange50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -190,27 +143,10 @@
         <item name="colorSurfaceContainerHighest">@color/orange400</item>
         <item name="colorOnSurface">@color/orange950</item>
         <item name="colorOnSurfaceVariant">@color/orange950</item>
-        <item name="colorError">@color/orange700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="OrangeTheme.Flashcard" parent="Orange.Theme.FlashCard" />
 
-    <style name="Dark.Orange.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Orange.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/orange50</item>
         <item name="colorOnPrimary">@color/orange950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -224,27 +160,10 @@
         <item name="colorSurfaceContainerHighest">@color/orange600</item>
         <item name="colorOnSurface">@color/orange50</item>
         <item name="colorOnSurfaceVariant">@color/orange950</item>
-        <item name="colorError">@color/orange700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkOrangeTheme.Flashcard" parent="Dark.Orange.Theme.FlashCard" />
 
-    <style name="Amber.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Amber.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/amber700</item>
         <item name="colorOnPrimary">@color/amber50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -258,27 +177,10 @@
         <item name="colorSurfaceContainerHighest">@color/amber400</item>
         <item name="colorOnSurface">@color/amber950</item>
         <item name="colorOnSurfaceVariant">@color/amber950</item>
-        <item name="colorError">@color/amber700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="AmberTheme.Flashcard" parent="Amber.Theme.FlashCard" />
 
-    <style name="Dark.Amber.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Amber.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/amber50</item>
         <item name="colorOnPrimary">@color/amber950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -292,27 +194,10 @@
         <item name="colorSurfaceContainerHighest">@color/amber600</item>
         <item name="colorOnSurface">@color/amber50</item>
         <item name="colorOnSurfaceVariant">@color/amber950</item>
-        <item name="colorError">@color/amber700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkAmberTheme.Flashcard" parent="Dark.Amber.Theme.FlashCard" />
 
-    <style name="Yellow.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Yellow.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/yellow700</item>
         <item name="colorOnPrimary">@color/yellow50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -326,27 +211,10 @@
         <item name="colorSurfaceContainerHighest">@color/yellow400</item>
         <item name="colorOnSurface">@color/yellow950</item>
         <item name="colorOnSurfaceVariant">@color/yellow950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
-    <style name="Dark.Yellow.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Yellow.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/yellow50</item>
         <item name="colorOnPrimary">@color/yellow950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -360,27 +228,10 @@
         <item name="colorSurfaceContainerHighest">@color/yellow600</item>
         <item name="colorOnSurface">@color/yellow50</item>
         <item name="colorOnSurfaceVariant">@color/yellow950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkYellowTheme.Flashcard" parent="Dark.Yellow.Theme.FlashCard" />
 
-    <style name="Lime.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Lime.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/lime700</item>
         <item name="colorOnPrimary">@color/lime50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -394,27 +245,10 @@
         <item name="colorSurfaceContainerHighest">@color/lime400</item>
         <item name="colorOnSurface">@color/lime950</item>
         <item name="colorOnSurfaceVariant">@color/lime950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="LimeTheme.Flashcard" parent="Lime.Theme.FlashCard" />
 
-    <style name="Dark.Lime.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Lime.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/lime50</item>
         <item name="colorOnPrimary">@color/lime950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -428,27 +262,10 @@
         <item name="colorSurfaceContainerHighest">@color/lime600</item>
         <item name="colorOnSurface">@color/lime50</item>
         <item name="colorOnSurfaceVariant">@color/lime950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkLimeTheme.Flashcard" parent="Dark.Lime.Theme.FlashCard" />
 
-    <style name="Green.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Green.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/green700</item>
         <item name="colorOnPrimary">@color/green50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -462,27 +279,10 @@
         <item name="colorSurfaceContainerHighest">@color/green400</item>
         <item name="colorOnSurface">@color/green950</item>
         <item name="colorOnSurfaceVariant">@color/green950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
-    <style name="Dark.Green.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Green.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/green50</item>
         <item name="colorOnPrimary">@color/green950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -496,27 +296,10 @@
         <item name="colorSurfaceContainerHighest">@color/green600</item>
         <item name="colorOnSurface">@color/green50</item>
         <item name="colorOnSurfaceVariant">@color/green950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkGreenTheme.Flashcard" parent="Dark.Green.Theme.FlashCard" />
 
-    <style name="Emerald.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Emerald.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/emerald700</item>
         <item name="colorOnPrimary">@color/emerald50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -530,27 +313,10 @@
         <item name="colorSurfaceContainerHighest">@color/emerald400</item>
         <item name="colorOnSurface">@color/emerald950</item>
         <item name="colorOnSurfaceVariant">@color/emerald950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="EmeraldTheme.Flashcard" parent="Emerald.Theme.FlashCard" />
 
-    <style name="Dark.Emerald.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Emerald.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/emerald50</item>
         <item name="colorOnPrimary">@color/emerald950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -564,27 +330,10 @@
         <item name="colorSurfaceContainerHighest">@color/emerald600</item>
         <item name="colorOnSurface">@color/emerald50</item>
         <item name="colorOnSurfaceVariant">@color/emerald950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkEmeraldTheme.Flashcard" parent="Dark.Emerald.Theme.FlashCard" />
 
-    <style name="Teal.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Teal.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/teal700</item>
         <item name="colorOnPrimary">@color/teal50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -598,27 +347,10 @@
         <item name="colorSurfaceContainerHighest">@color/teal400</item>
         <item name="colorOnSurface">@color/teal950</item>
         <item name="colorOnSurfaceVariant">@color/teal950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
-    <style name="Dark.Teal.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Teal.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/teal50</item>
         <item name="colorOnPrimary">@color/teal950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -632,27 +364,10 @@
         <item name="colorSurfaceContainerHighest">@color/teal600</item>
         <item name="colorOnSurface">@color/teal50</item>
         <item name="colorOnSurfaceVariant">@color/teal950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkTealTheme.Flashcard" parent="Dark.Teal.Theme.FlashCard" />
 
-    <style name="Cyan.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Cyan.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/cyan700</item>
         <item name="colorOnPrimary">@color/cyan50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -666,27 +381,10 @@
         <item name="colorSurfaceContainerHighest">@color/cyan400</item>
         <item name="colorOnSurface">@color/cyan950</item>
         <item name="colorOnSurfaceVariant">@color/cyan950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="CyanTheme.Flashcard" parent="Cyan.Theme.FlashCard" />
 
-    <style name="Dark.Cyan.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Cyan.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/cyan50</item>
         <item name="colorOnPrimary">@color/cyan950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -700,27 +398,10 @@
         <item name="colorSurfaceContainerHighest">@color/cyan600</item>
         <item name="colorOnSurface">@color/cyan50</item>
         <item name="colorOnSurfaceVariant">@color/cyan950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkCyanTheme.Flashcard" parent="Dark.Cyan.Theme.FlashCard" />
 
-    <style name="Sky.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Sky.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/sky700</item>
         <item name="colorOnPrimary">@color/sky50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -734,27 +415,10 @@
         <item name="colorSurfaceContainerHighest">@color/sky400</item>
         <item name="colorOnSurface">@color/sky950</item>
         <item name="colorOnSurfaceVariant">@color/sky950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="SkyTheme.Flashcard" parent="Sky.Theme.FlashCard" />
 
-    <style name="Dark.Sky.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Sky.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/sky50</item>
         <item name="colorOnPrimary">@color/sky950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -768,27 +432,10 @@
         <item name="colorSurfaceContainerHighest">@color/sky600</item>
         <item name="colorOnSurface">@color/sky50</item>
         <item name="colorOnSurfaceVariant">@color/sky950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkSkyTheme.Flashcard" parent="Dark.Sky.Theme.FlashCard" />
 
-    <style name="Blue.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Blue.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/blue700</item>
         <item name="colorOnPrimary">@color/blue50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -802,27 +449,10 @@
         <item name="colorSurfaceContainerHighest">@color/blue400</item>
         <item name="colorOnSurface">@color/blue950</item>
         <item name="colorOnSurfaceVariant">@color/blue950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
 
-    <style name="Dark.Blue.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Blue.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/blue50</item>
         <item name="colorOnPrimary">@color/blue950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -836,27 +466,10 @@
         <item name="colorSurfaceContainerHighest">@color/blue600</item>
         <item name="colorOnSurface">@color/blue50</item>
         <item name="colorOnSurfaceVariant">@color/blue950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkBlueTheme.Flashcard" parent="Dark.Blue.Theme.FlashCard" />
 
-    <style name="Indigo.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Indigo.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/indigo700</item>
         <item name="colorOnPrimary">@color/indigo50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -870,27 +483,10 @@
         <item name="colorSurfaceContainerHighest">@color/indigo400</item>
         <item name="colorOnSurface">@color/indigo950</item>
         <item name="colorOnSurfaceVariant">@color/indigo950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="IndigoTheme.Flashcard" parent="Indigo.Theme.FlashCard" />
 
-    <style name="Dark.Indigo.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Indigo.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/indigo50</item>
         <item name="colorOnPrimary">@color/indigo950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -904,27 +500,10 @@
         <item name="colorSurfaceContainerHighest">@color/indigo600</item>
         <item name="colorOnSurface">@color/indigo50</item>
         <item name="colorOnSurfaceVariant">@color/indigo950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkIndigoTheme.Flashcard" parent="Dark.Indigo.Theme.FlashCard" />
 
-    <style name="Violet.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Violet.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/violet700</item>
         <item name="colorOnPrimary">@color/violet50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -938,27 +517,10 @@
         <item name="colorSurfaceContainerHighest">@color/violet400</item>
         <item name="colorOnSurface">@color/violet950</item>
         <item name="colorOnSurfaceVariant">@color/violet950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="VioletTheme.Flashcard" parent="Violet.Theme.FlashCard" />
 
-    <style name="Dark.Violet.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Violet.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/violet50</item>
         <item name="colorOnPrimary">@color/violet950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -972,27 +534,10 @@
         <item name="colorSurfaceContainerHighest">@color/violet600</item>
         <item name="colorOnSurface">@color/violet50</item>
         <item name="colorOnSurfaceVariant">@color/violet950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkVioletTheme.Flashcard" parent="Dark.Violet.Theme.FlashCard" />
 
-    <style name="Purple.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Purple.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/purple700</item>
         <item name="colorOnPrimary">@color/purple50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1006,27 +551,10 @@
         <item name="colorSurfaceContainerHighest">@color/purple400</item>
         <item name="colorOnSurface">@color/purple950</item>
         <item name="colorOnSurfaceVariant">@color/purple950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
 
-    <style name="Dark.Purple.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Purple.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/purple50</item>
         <item name="colorOnPrimary">@color/purple950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1040,27 +568,10 @@
         <item name="colorSurfaceContainerHighest">@color/purple600</item>
         <item name="colorOnSurface">@color/purple50</item>
         <item name="colorOnSurfaceVariant">@color/purple950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkPurpleTheme.Flashcard" parent="Dark.Purple.Theme.FlashCard" />
 
-    <style name="Fuchsia.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Fuchsia.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/fuchsia700</item>
         <item name="colorOnPrimary">@color/fuchsia50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1074,27 +585,10 @@
         <item name="colorSurfaceContainerHighest">@color/fuchsia400</item>
         <item name="colorOnSurface">@color/fuchsia950</item>
         <item name="colorOnSurfaceVariant">@color/fuchsia950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="FuchsiaTheme.Flashcard" parent="Fuchsia.Theme.FlashCard" />
 
-    <style name="Dark.Fuchsia.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Fuchsia.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/fuchsia50</item>
         <item name="colorOnPrimary">@color/fuchsia950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1108,27 +602,10 @@
         <item name="colorSurfaceContainerHighest">@color/fuchsia600</item>
         <item name="colorOnSurface">@color/fuchsia50</item>
         <item name="colorOnSurfaceVariant">@color/fuchsia950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkFuchsiaTheme.Flashcard" parent="Dark.Fuchsia.Theme.FlashCard" />
 
-    <style name="Pink.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Pink.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/pink700</item>
         <item name="colorOnPrimary">@color/pink50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1142,27 +619,10 @@
         <item name="colorSurfaceContainerHighest">@color/pink400</item>
         <item name="colorOnSurface">@color/pink950</item>
         <item name="colorOnSurfaceVariant">@color/pink950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
 
-    <style name="Dark.Pink.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Pink.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/pink50</item>
         <item name="colorOnPrimary">@color/pink950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1176,27 +636,10 @@
         <item name="colorSurfaceContainerHighest">@color/pink600</item>
         <item name="colorOnSurface">@color/pink50</item>
         <item name="colorOnSurfaceVariant">@color/pink950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkPinkTheme.Flashcard" parent="Dark.Pink.Theme.FlashCard" />
 
-    <style name="Rose.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Rose.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/rose700</item>
         <item name="colorOnPrimary">@color/rose50</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1210,27 +653,10 @@
         <item name="colorSurfaceContainerHighest">@color/rose400</item>
         <item name="colorOnSurface">@color/rose950</item>
         <item name="colorOnSurfaceVariant">@color/rose950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="RoseTheme.Flashcard" parent="Rose.Theme.FlashCard" />
 
-    <style name="Dark.Rose.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Rose.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/rose50</item>
         <item name="colorOnPrimary">@color/rose950</item>
         <item name="colorPrimaryDark">?colorSurfaceContainerLow</item>
@@ -1244,27 +670,10 @@
         <item name="colorSurfaceContainerHighest">@color/rose600</item>
         <item name="colorOnSurface">@color/rose50</item>
         <item name="colorOnSurfaceVariant">@color/rose950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkRoseTheme.Flashcard" parent="Dark.Rose.Theme.FlashCard" />
 
-    <style name="Brown.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Brown.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Light">
         <item name="colorPrimary">@color/stone700</item>
         <item name="colorOnPrimary">@color/stone50</item>
         <item name="colorSecondaryContainer">@color/stone100_transparent</item>
@@ -1278,28 +687,10 @@
         <item name="colorSurfaceContainerHighest">@color/stone400</item>
         <item name="colorOnSurface">@color/stone950</item>
         <item name="colorOnSurfaceVariant">@color/stone950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="endIconTint">@color/black</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
-    <style name="Dark.Brown.Theme.FlashCard" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Dark.Brown.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">
         <item name="colorPrimary">@color/stone50</item>
         <item name="colorOnPrimary">@color/stone950</item>
         <item name="colorSecondaryContainer">@color/stone800_transparent</item>
@@ -1313,26 +704,43 @@
         <item name="colorSurfaceContainerHighest">@color/stone600</item>
         <item name="colorOnSurface">@color/stone50</item>
         <item name="colorOnSurfaceVariant">@color/stone950</item>
-        <item name="colorError">@color/red700</item>
-        <item name="colorOnError">@color/white</item>
-        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
-        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>
-        <item name="popupMenuBackground">@drawable/custom_popup_background</item>
-        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>
-        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>
-        <item name="colorControlActivated">@color/black</item>
-        <item name="endIconTint">@color/black</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>
-        <item name="actionMenuTextColor">?colorOnSurface</item>
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>
-        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>
-        <item name="actionBarTheme">@style/ThemeOverlay.Material3.Dark.ActionBar</item>
-        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
     <style name="DarkBrownTheme.Flashcard" parent="Dark.Brown.Theme.FlashCard" />
+
+    <!-- Text Appearance -->
+    <style name="TextAppearance.App.Medium" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+    <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans_light</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+    <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorOnSurface</item>
+        <item name="android:textSize">@dimen/text_base</item>
+    </style>
+    <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorOnSurface</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+    </style>
+    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/montserrat_bold</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+    <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="android:textColor">?colorOnSurface</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
     <!--Action Bar theme-->
     <style name="MyActionBarTheme" parent="Widget.AppCompat.ActionMode">
@@ -1374,19 +782,7 @@
     </style>
 
     <!-- PopUpMenu theme -->
-    <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
-        <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:textSize">@dimen/text_base</item>
-    </style>
 
-    <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
-        <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:textSize">@dimen/text_sm</item>
-    </style>
 
     <!-- Toolbar theme -->
     <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
@@ -1398,11 +794,6 @@
 
     <style name="ThemeOverlay.App.Toolbar" parent="">
 
-    </style>
-    <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
-        <item name="fontFamily">@font/montserrat_bold</item>
-        <item name="android:fontFamily">@font/montserrat_bold</item>
-        <item name="android:textColor">?colorOnSurface</item>
     </style>
 
     <!-- Toolbar edit&add theme -->
@@ -1419,16 +810,6 @@
 
     <style name="ThemeOverlay.App.Toolbar.Add.Edit.Card" parent="">
 
-    </style>
-    <style name="TextAppearance.App.Medium" parent="TextAppearance.Material3.TitleLarge">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
-        <item name="android:textColor">?colorOnSurface</item>
-    </style>
-    <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.TitleSmall">
-        <item name="fontFamily">@font/open_sans_light</item>
-        <item name="android:fontFamily">@font/open_sans_light</item>
-        <item name="android:textColor">?colorOnSurface</item>
     </style>
 
 
@@ -1487,6 +868,75 @@
     <!-- Divider -->
     <style name="Widget.App.MaterialDivider" parent="Widget.Material3.MaterialDivider">
         <item name="dividerColor">?colorSurfaceContainer</item>
+    </style>
+
+    <!-- Settings buttons -->
+    <style name="Widget.App.Settings.Button.Top" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Top</item>
+        <item name="iconSize">@dimen/icon_base</item>
+    </style>
+
+    <style name="Widget.App.Settings.Button.Middle" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Middle</item>
+        <item name="iconSize">@dimen/icon_base</item>
+    </style>
+
+    <style name="Widget.App.Settings.Button.Bottom" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Bottom</item>
+        <item name="iconSize">@dimen/icon_base</item>
+    </style>
+
+    <style name="Widget.App.Settings.Button.Single" parent="Widget.Material3.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>
+        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Single</item>
+        <item name="iconSize">@dimen/icon_base</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Button" parent="ThemeOverlay.Material3.Button">
+        <item name="colorContainer">?colorSurfaceContainer</item>
+        <item name="colorOnContainer">?colorOnSurface</item>
+        <item name="android:padding">@dimen/space_lg</item>
+        <item name="iconTint">?colorOnSurface</item>
+        <item name="android:textAlignment">textStart</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Top" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/card_radius</item>
+        <item name="cornerSizeTopRight">@dimen/card_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/bt_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Middle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeTopRight">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/bt_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Bottom" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeTopRight">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/card_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/card_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Single" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/card_radius</item>
+        <item name="cornerSizeTopRight">@dimen/card_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/card_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/card_radius</item>
     </style>
 
 </resources>
