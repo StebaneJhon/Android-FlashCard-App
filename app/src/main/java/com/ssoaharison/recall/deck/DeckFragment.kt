@@ -22,7 +22,6 @@ import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ThemeUtils
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -34,7 +33,6 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableDeck
@@ -60,14 +58,12 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.TEST
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.WRITING_QUIZ
-import com.ssoaharison.recall.util.ItemLayoutManager.LAYOUT_MANAGER
-import com.ssoaharison.recall.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
-import com.ssoaharison.recall.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAGER
 import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -95,6 +91,9 @@ class DeckFragment :
 
     private var deckSharedPref: SharedPreferences? = null
     private var deckSharedPrefEditor: SharedPreferences.Editor? = null
+
+    private var appSharedPref: SharedPreferences? = null
+    private lateinit var appThemeName: String
 
     companion object {
         const val TAG = "DeckFragment"
@@ -125,6 +124,9 @@ class DeckFragment :
 
         deckSharedPref = activity?.getSharedPreferences("deckSharedpref", Context.MODE_PRIVATE)
         deckSharedPrefEditor = deckSharedPref?.edit()
+
+        appSharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        appThemeName = appSharedPref?.getString("themName", "WHITE THEM") ?: WHITE_THEME
 
         binding.deckTopAppBar.setNavigationOnClickListener {
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
@@ -230,8 +232,6 @@ class DeckFragment :
         binding.tvNoDeckFound.visibility = View.GONE
         val sortedListOfDeck =
             sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
-        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
         if (appContext != null) {
             recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, appThemeName, {
                 onEditDeck(it)
@@ -310,9 +310,9 @@ class DeckFragment :
     }
 
     private fun onAddNewDeck() {
-        val newDeckDialog = NewDeckDialog(null)
+        val newDeckDialog = NewDeckDialog(null, appThemeName)
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
             val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
             result?.let {
                 deckViewModel.insertDeck(it.deck)
@@ -324,7 +324,7 @@ class DeckFragment :
     }
 
     private fun onEditDeck(deck: ImmutableDeck?) {
-        val newDeckDialog = NewDeckDialog(deck)
+        val newDeckDialog = NewDeckDialog(deck, appThemeName)
         newDeckDialog.show(childFragmentManager, "Edit Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
             val result = bundle.parcelable<Deck>(NewDeckDialog.EDIT_DECK_BUNDLE_KEY)

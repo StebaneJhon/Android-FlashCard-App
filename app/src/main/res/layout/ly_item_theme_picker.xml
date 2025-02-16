@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.button.MaterialButton
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_item_theme_picker"
+    style="?attr/materialIconButtonFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/card_radius_sm"
-    android:id="@+id/cv_item_theme_picker"
-    android:contentDescription="@string/bt_description_app_theme">
-
-    <ImageView
-        android:id="@+id/im_on_theme_checked"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/icon_check"
-        android:layout_margin="@dimen/space_sm"
-        android:layout_gravity="center" />
-
-</com.google.android.material.card.MaterialCardView>
+    android:layout_margin="0dp"
+    android:backgroundTint="?colorSurfaceContainerLow"
+    android:contentDescription="@string/bt_description_deck_color"
+    app:iconTint="?colorOnSurface"
+    app:shapeAppearance="@style/ShapeAppearance.App.Button.Single"
+    app:strokeColor="?colorSurfaceContainer"
+    app:strokeWidth="@dimen/space_xxs"
+    app:iconGravity="textStart"/>

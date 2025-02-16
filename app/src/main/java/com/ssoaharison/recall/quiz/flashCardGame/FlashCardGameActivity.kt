@@ -587,7 +587,6 @@ class FlashCardGameActivity :
         var currentX1 = currentX
         var currentY1 = currentY
         completeSwipeToLeft(view, currentX1)
-
         onSwipeToLeftCompleted(view, cardStartX, cardStartY, currentX1, currentY1)
     }
 
@@ -630,6 +629,9 @@ class FlashCardGameActivity :
             .x(currentX1 - width)
             .setDuration(250)
             .start()
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
+        }
     }
 
     private fun onCardKnown(
@@ -684,6 +686,9 @@ class FlashCardGameActivity :
             .x(currentX1 + width)
             .setDuration(250)
             .start()
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
+        }
     }
 
     private fun isCardKnown(isKnown: Boolean?) {
@@ -735,6 +740,9 @@ class FlashCardGameActivity :
             backAnim.start()
             frontAnim.start()
             true
+        }
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
         }
     }
 
@@ -812,9 +820,9 @@ class FlashCardGameActivity :
             "$sumCardsInDeck"
         )
 
-        binding.btCardFrontSpeak.setOnClickListener { v ->
+        binding.btCardFrontSpeak.setOnClickListener {
             if (tts?.isSpeaking == true) {
-                stopReading(listOf(binding.tvQuizFront), v as Button)
+                stopReading(listOf(binding.tvQuizFront))
             } else {
                 val language = onScreenCards.top.cardContentLanguage ?: viewModel.deck?.cardContentDefaultLanguage
                 if (language.isNullOrBlank()) {
@@ -840,9 +848,9 @@ class FlashCardGameActivity :
 
             }
         }
-        binding.btCardBackSpeak.setOnClickListener { v ->
+        binding.btCardBackSpeak.setOnClickListener {
             if (tts?.isSpeaking == true) {
-                stopReading(views, v as Button)
+                stopReading(views)
             } else {
                 val definitions = cardDefinitionsToStrings(correctDefinitions)
                 val language = onScreenCards.top.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage
@@ -887,8 +895,16 @@ class FlashCardGameActivity :
         ).show()
     }
 
-    private fun stopReading(views: List<TextView>, button: Button) {
+    private fun stopReading(views: List<TextView>) {
         tts?.stop()
+        views.forEach { v ->
+            v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+        }
+    }
+
+    private fun stopReadingAllText() {
+        tts?.stop()
+        val views = tvDefinitions + listOf(binding.tvQuizFront)
         views.forEach { v ->
             v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
         }
@@ -1030,6 +1046,20 @@ class FlashCardGameActivity :
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (tts?.isSpeaking == true) {
+            tts?.stop()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
         }
     }
 

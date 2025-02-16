@@ -396,6 +396,32 @@ class MultiChoiceQuizGameActivity :
         }
     }
 
+    private fun stopReadingAllText() {
+        tts?.stop()
+        val tvOnCardWord: TextView = findViewById(R.id.tv_on_card_word)
+        val views = listOf(
+            findViewById<MaterialButton>(R.id.bt_alternative1),
+            findViewById<MaterialButton>(R.id.bt_alternative2),
+            findViewById<MaterialButton>(R.id.bt_alternative3),
+            findViewById<MaterialButton>(R.id.bt_alternative4),
+        )
+        tvOnCardWord.setTextColor(MaterialColors.getColor(
+            this,
+            com.google.android.material.R.attr.colorOnSurface,
+            Color.BLACK
+        ))
+        views.forEach {
+            it.setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
+        }
+
+    }
+
     private fun readText(
         text: List<TextWithLanguageModel>,
         view: List<View>,
@@ -694,6 +720,20 @@ class MultiChoiceQuizGameActivity :
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG)
                     .show()
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (tts?.isSpeaking == true) {
+            tts?.stop()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
         }
     }
 

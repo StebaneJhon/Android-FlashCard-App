@@ -373,6 +373,39 @@ class TestActivity :
         }
     }
 
+    private fun stopReadingAllText() {
+        tts?.stop()
+        val views = listOf(
+            findViewById<MaterialButton>(R.id.bt_alternative1),
+            findViewById<MaterialButton>(R.id.bt_alternative2),
+            findViewById<MaterialButton>(R.id.bt_alternative3),
+            findViewById<MaterialButton>(R.id.bt_alternative4),
+            findViewById<MaterialButton>(R.id.bt_alternative5),
+            findViewById<MaterialButton>(R.id.bt_alternative6),
+            findViewById<MaterialButton>(R.id.bt_alternative7),
+            findViewById<MaterialButton>(R.id.bt_alternative8),
+            findViewById<MaterialButton>(R.id.bt_alternative9),
+            findViewById<MaterialButton>(R.id.bt_alternative10),
+        )
+        val content = findViewById<TextView>(R.id.tv_content)
+        content.setTextColor(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorOnSurface,
+                Color.BLACK
+            )
+        )
+        views.forEach {
+            it.setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
+        }
+    }
+
     private fun onReadingStop(
         position: Int,
         view: List<View>,

@@ -27,12 +27,16 @@ import com.ssoaharison.recall.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_A
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
+class NewDeckDialog(
+    val deck: ImmutableDeck?,
+    val appTheme: String,
+) : AppCompatDialogFragment() {
 
     private var _binding: AddDeckLayoutDialogBinding? = null
     private val binding get() = _binding!!
@@ -59,7 +63,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
-        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         binding.deckFirstLanguageET.apply {
             setAdapter(arrayAdapterSupportedLanguages)
             setDropDownBackgroundDrawable(
@@ -85,7 +90,7 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         }
 
         if (deck != null) {
-            binding.btAddCard.isVisible =  false
+            binding.btAddCard.isVisible = false
             binding.tvTitle.text = getString(R.string.tv_update_deck)
             binding.deckNameET.setText(deck.deckName)
             binding.deckDescriptionET.setText(deck.deckDescription)
@@ -142,7 +147,13 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
         lifecycleScope.launch {
             delay(50)
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                newDeckDialogViewModel.initColorSelection(DeckColorCategorySelector().getColors(), deckCategoryColor)
+                val deckColorCategorySelector = DeckColorCategorySelector()
+                val deckColors = if (appTheme == DARK_THEME) {
+                    deckColorCategorySelector.getDarkColors()
+                } else {
+                    deckColorCategorySelector.getColors()
+                }
+                newDeckDialogViewModel.initColorSelection(deckColors, deckCategoryColor)
                 newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
                     displayColorPicker(listOfColors)
                     binding.rvDeckColorPicker.visibility = View.GONE
@@ -175,8 +186,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 now(),
                 binding.deckNameET.text.toString(),
                 binding.deckDescriptionET.text.toString(),
-                if (deckFirstLanguage.isBlank()) null else  deckFirstLanguage.toString(),
-                if (deckSecondLanguage.isBlank()) null else  deckSecondLanguage.toString(),
+                if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
+                if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
                 deckCategoryColor,
                 null,
                 0
@@ -195,8 +206,8 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
                 deck.deckId,
                 binding.deckNameET.text.toString(),
                 binding.deckDescriptionET.text.toString(),
-                if (deckFirstLanguage.isBlank()) null else  deckFirstLanguage.toString(),
-                if (deckSecondLanguage.isBlank()) null else  deckSecondLanguage.toString(),
+                if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
+                if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
                 deckCategoryColor,
                 deck.deckCategory,
                 isCorrectRevers(deck.isFavorite)
@@ -212,13 +223,13 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
     private fun displayColorPicker(listOfColors: List<ColorModel>) {
         deckColorPickerAdapter = DeckColorPickerAdapter(
-                requireContext(),
-                listOfColors
-            ) { selectedColor ->
-                newDeckDialogViewModel.selectColor(selectedColor.id)
-                deckCategoryColor = selectedColor.id
-                deckColorPickerAdapter.notifyDataSetChanged()
-            }
+            requireContext(),
+            listOfColors
+        ) { selectedColor ->
+            newDeckDialogViewModel.selectColor(selectedColor.id)
+            deckCategoryColor = selectedColor.id
+            deckColorPickerAdapter.notifyDataSetChanged()
+        }
         binding.rvDeckColorPicker.apply {
             adapter = deckColorPickerAdapter
             layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
@@ -266,7 +277,10 @@ class NewDeckDialog(val deck: ImmutableDeck?) : AppCompatDialogFragment() {
 
     private fun sendDeckOnSave(requestCode: String, action: String, deck: Deck) {
         val result = OnSaveDeckWithCationModel(deck, action)
-        parentFragmentManager.setFragmentResult(requestCode, bundleOf(SAVE_DECK_BUNDLE_KEY to result))
+        parentFragmentManager.setFragmentResult(
+            requestCode,
+            bundleOf(SAVE_DECK_BUNDLE_KEY to result)
+        )
     }
 
     private fun sendDeckOnEdit(requestCode: String, deck: Deck) {

@@ -345,6 +345,9 @@ class WritingQuizGameActivity :
                     } else {
                         onQuizComplete(viewModel.cardLeft(), cards)
                     }
+                    if (tts?.isSpeaking == true) {
+                        stopReadingAllText()
+                    }
                 }
                 isClickable = true
             }
@@ -354,6 +357,9 @@ class WritingQuizGameActivity :
                         binding.vpCardHolder.currentItem.minus(1),
                         true
                     )
+                    if (tts?.isSpeaking == true) {
+                        stopReadingAllText()
+                    }
                 }
                 isClickable = true
             }
@@ -371,6 +377,20 @@ class WritingQuizGameActivity :
         speakButton.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
         tts?.stop()
         (v as TextView).setTextColor(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorOnSurface,
+                Color.BLACK
+            )
+        )
+    }
+
+    private fun stopReadingAllText() {
+        tts?.stop()
+        val btRead: Button = findViewById(R.id.bt_card_front_speak)
+        val tvOnCardWord: TextView = findViewById(R.id.tv_top_on_card_word)
+        btRead.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_speak, 0, 0, 0)
+        tvOnCardWord.setTextColor(
             MaterialColors.getColor(
                 this,
                 com.google.android.material.R.attr.colorOnSurface,
@@ -655,6 +675,20 @@ class WritingQuizGameActivity :
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (tts?.isSpeaking == true) {
+            tts?.stop()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
         }
     }
 

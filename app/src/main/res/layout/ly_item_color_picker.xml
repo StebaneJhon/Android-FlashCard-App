@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cv_item_color_picker"
+    style="?attr/materialIconButtonFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="@dimen/card_radius_sm"
-    android:id="@+id/cv_item_color_picker"
-    android:contentDescription="@string/bt_description_deck_color">
-
-    <ImageView
-        android:id="@+id/im_on_color_checked"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/icon_check"
-        android:layout_margin="@dimen/space_sm"
-        android:layout_gravity="center"/>
-
-</com.google.android.material.card.MaterialCardView>
+    android:contentDescription="@string/bt_description_deck_color"
+    android:layout_margin="0dp"
+    app:iconTint="?colorOnSurface"
+    android:backgroundTint="?colorSurfaceContainerLow"
+    app:strokeWidth="@dimen/space_xxs"
+    app:strokeColor="?colorSurfaceContainer"
+    app:iconGravity="textStart"/>

@@ -6,7 +6,6 @@ import android.util.TypedValue
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.util.DeckCategoryColorConst.BLACK
 import com.ssoaharison.recall.util.DeckCategoryColorConst.BLUE
 import com.ssoaharison.recall.util.DeckCategoryColorConst.CYAN
 import com.ssoaharison.recall.util.DeckCategoryColorConst.EMERALD
@@ -21,7 +20,6 @@ import com.ssoaharison.recall.util.DeckCategoryColorConst.ROSE
 import com.ssoaharison.recall.util.DeckCategoryColorConst.SKY
 import com.ssoaharison.recall.util.DeckCategoryColorConst.TEAL
 import com.ssoaharison.recall.util.DeckCategoryColorConst.VIOLET
-import com.ssoaharison.recall.util.DeckCategoryColorConst.WHITE
 import com.ssoaharison.recall.util.DeckCategoryColorConst.YELLOW
 import com.ssoaharison.recall.util.DeckCategoryColorConst.ORANGE
 import com.ssoaharison.recall.util.DeckCategoryColorConst.FUCHSIA
@@ -30,9 +28,9 @@ class DeckColorCategorySelector {
 
 
     private val deckColorSurfaceLow = mapOf(
-        WHITE to R.color.neutral100,
+//        WHITE to R.color.neutral100,
         GREY to R.color.neutral100,
-        BLACK to R.color.neutral950,
+//        BLACK to R.color.neutral950,
         RED to R.color.red100,
         ORANGE to R.color.orange100,
         YELLOW to R.color.yellow100,
@@ -52,9 +50,9 @@ class DeckColorCategorySelector {
     )
 
     private val deckDarkColorSurfaceLow = mapOf(
-        WHITE to R.color.neutral900,
+//        WHITE to R.color.neutral900,
         GREY to R.color.neutral900,
-        BLACK to R.color.neutral700,
+//        BLACK to R.color.neutral700,
         RED to R.color.red900,
         ORANGE to R.color.orange900,
         YELLOW to R.color.yellow900,
@@ -74,9 +72,9 @@ class DeckColorCategorySelector {
     )
 
     private val deckColorOnSurface = mapOf(
-        WHITE to R.color.neutral50,
+//        WHITE to R.color.neutral50,
         GREY to R.color.neutral950,
-        BLACK to R.color.neutral950,
+//        BLACK to R.color.neutral950,
         RED to R.color.red950,
         ORANGE to R.color.orange950,
         YELLOW to R.color.yellow950,
@@ -96,9 +94,9 @@ class DeckColorCategorySelector {
     )
 
     private val deckDarkColorOnSurface = mapOf(
-        WHITE to R.color.neutral950,
+//        WHITE to R.color.neutral950,
         GREY to R.color.neutral50,
-        BLACK to R.color.neutral50,
+//        BLACK to R.color.neutral50,
         RED to R.color.red50,
         ORANGE to R.color.orange50,
         YELLOW to R.color.yellow50,
@@ -118,9 +116,9 @@ class DeckColorCategorySelector {
     )
 
     private val deckColorSurfaceLowEst = mapOf(
-        WHITE to R.color.neutral50,
+//        WHITE to R.color.neutral50,
         GREY to R.color.neutral50,
-        BLACK to R.color.neutral950,
+//        BLACK to R.color.neutral950,
         RED to R.color.red50,
         ORANGE to R.color.orange50,
         YELLOW to R.color.yellow50,
@@ -140,9 +138,9 @@ class DeckColorCategorySelector {
     )
 
     private val deckDarkColorSurfaceLowEst = mapOf(
-        WHITE to R.color.neutral950,
+//        WHITE to R.color.neutral950,
         GREY to R.color.neutral950,
-        BLACK to R.color.neutral950,
+//        BLACK to R.color.neutral950,
         RED to R.color.red950,
         ORANGE to R.color.orange950,
         YELLOW to R.color.yellow950,
@@ -162,6 +160,8 @@ class DeckColorCategorySelector {
     )
 
     fun getColors() = this.deckColorSurfaceLow
+
+    fun getDarkColors() = this.deckDarkColorSurfaceLow
 
     fun getRandomColor() = this.deckColorSurfaceLow.keys.random()
 

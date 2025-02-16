@@ -371,6 +371,9 @@ class QuizGameActivity :
                     )
                 }
             }
+            if (tts?.isSpeaking == true) {
+                stopReadingAllText()
+            }
         }
         binding.btKnownNot.setOnClickListener {
             viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, false, binding.vpCardHolder.currentItem)
@@ -392,6 +395,9 @@ class QuizGameActivity :
                     )
                 }
             }
+            if (tts?.isSpeaking == true) {
+                stopReadingAllText()
+            }
         }
     }
 
@@ -408,6 +414,9 @@ class QuizGameActivity :
                         itemPosition.minus(1),
                         true
                     )
+                }
+                if (tts?.isSpeaking == true) {
+                    stopReadingAllText()
                 }
             }
         } else {
@@ -432,6 +441,9 @@ class QuizGameActivity :
                         true
                     )
                 }
+            }
+            if (tts?.isSpeaking == true) {
+                stopReadingAllText()
             }
         }
     }
@@ -733,6 +745,47 @@ class QuizGameActivity :
         }
     }
 
+    private fun stopReadingAllText() {
+        tts?.stop()
+        val tvContent: TextView = findViewById(R.id.tv_content)
+        val tvDefinition: TextView = findViewById(R.id.tv_definition)
+        val alternatives = listOf(
+            findViewById<MaterialButton>(R.id.bt_alternative1),
+            findViewById<MaterialButton>(R.id.bt_alternative2),
+            findViewById<MaterialButton>(R.id.bt_alternative3),
+            findViewById<MaterialButton>(R.id.bt_alternative4),
+            findViewById<MaterialButton>(R.id.bt_alternative5),
+            findViewById<MaterialButton>(R.id.bt_alternative6),
+            findViewById<MaterialButton>(R.id.bt_alternative7),
+            findViewById<MaterialButton>(R.id.bt_alternative8),
+            findViewById<MaterialButton>(R.id.bt_alternative9),
+            findViewById<MaterialButton>(R.id.bt_alternative10),
+        )
+        tvContent.setTextColor(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorOnSurface,
+                Color.BLACK
+            )
+        )
+        tvDefinition.setTextColor(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorOnSurface,
+                Color.BLACK
+            )
+        )
+        alternatives.forEach {
+            it.setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
+        }
+    }
+
     private fun onReading(
         position: Int,
         view: List<View>,
@@ -819,6 +872,20 @@ class QuizGameActivity :
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (tts?.isSpeaking == true) {
+            tts?.stop()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (tts?.isSpeaking == true) {
+            stopReadingAllText()
         }
     }
 

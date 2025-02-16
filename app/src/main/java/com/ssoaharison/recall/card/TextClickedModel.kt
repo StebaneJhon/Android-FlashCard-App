@@ -1,6 +1,5 @@
 package com.ssoaharison.recall.card
 
-import android.content.res.ColorStateList
 import android.widget.TextView
 import com.ssoaharison.recall.util.TextWithLanguageModel
 
