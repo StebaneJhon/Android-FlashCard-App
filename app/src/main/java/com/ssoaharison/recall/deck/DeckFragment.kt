@@ -71,8 +71,7 @@ import kotlinx.coroutines.launch
 
 
 class DeckFragment :
-    Fragment(),
-    MenuProvider {
+    Fragment(), MenuProvider{
 
     private var _binding: FragmentDeckBinding? = null
     private val binding get() = _binding!!
@@ -487,6 +486,7 @@ class DeckFragment :
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.deck_fragment_menu, menu)
         val search = menu.findItem(R.id.search_deck_menu)
+        binding.deckTopAppBar.title = getString(R.string.app_name)
         val searchView: SearchView = search.actionView as SearchView
 
         val searchIcon: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_button)
@@ -559,10 +559,10 @@ class DeckFragment :
     @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
-            R.id.settings_deck_menu -> {
-                findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
-                true
-            }
+//            R.id.settings_deck_menu -> {
+//                findNavController().navigate(R.id.action_deckFragment_to_settingsFragment)
+//                true
+//            }
             R.id.sort_deck_menu -> {
                 val sortButton: ActionMenuItemView = binding.deckTopAppBar.findViewById(R.id.sort_deck_menu)
                 showMenu(sortButton, R.menu.menu_filter_deck)

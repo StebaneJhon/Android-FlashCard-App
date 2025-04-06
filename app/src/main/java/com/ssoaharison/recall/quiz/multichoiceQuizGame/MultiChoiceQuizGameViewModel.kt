@@ -123,15 +123,15 @@ class MultiChoiceQuizGameViewModel(
                 if ((randomDefinition as CardDefinition).definition !in addedDefinitionTexts) {
                     temporaryMultiChoiceCardDefinitionList.add(
                         MultiChoiceCardDefinitionModel(
-                            actualCardId,
-                            TextWithLanguageModel(
+                            cardId = actualCardId,
+                            definition = TextWithLanguageModel(
                                 randomDefinition.cardId,
                                 randomDefinition.definition,
                                 DEFINITION,
                                 selectedDefinitionLanguage
                             ),
-                            false,
-                            false
+                            isCorrect = false,
+                            isSelected = false
                         )
                     )
                     addedDefinitionTexts.add(randomDefinition.definition)
@@ -140,15 +140,15 @@ class MultiChoiceQuizGameViewModel(
                 if ((randomDefinition as CardContent).content !in addedDefinitionTexts) {
                     temporaryMultiChoiceCardDefinitionList.add(
                         MultiChoiceCardDefinitionModel(
-                            actualCardId,
-                            TextWithLanguageModel(
+                            cardId = actualCardId,
+                            definition = TextWithLanguageModel(
                                 randomDefinition.cardId,
                                 randomDefinition.content,
                                 CONTENT,
                                 selectedDefinitionLanguage
                             ),
-                            false,
-                            false
+                            isCorrect = false,
+                            isSelected = false
                         )
                     )
                     addedDefinitionTexts.add(randomDefinition.content)
@@ -156,7 +156,12 @@ class MultiChoiceQuizGameViewModel(
             }
         }
 
-        return temporaryMultiChoiceCardDefinitionList.shuffled()
+        val shuffledCards = temporaryMultiChoiceCardDefinitionList.shuffled()
+
+        return shuffledCards.mapIndexed { index, item ->
+            item.position = index
+            item
+        }
     }
 
     private fun getRandomCorrectDefinition(definitions: List<CardDefinition>?): String? {
@@ -229,29 +234,44 @@ class MultiChoiceQuizGameViewModel(
         }
     }
 
-    fun isUserChoiceCorrect(userChoice: MultiChoiceCardDefinitionModel): Boolean {
-        localMultiChoiceCards.forEach {
-            if (it.cardId == userChoice.cardId) {
-                it.alternatives.forEach { c ->
-                    if (c.definition.text == userChoice.definition.text) {
-                        c.isSelected = userChoice.isSelected
-                        it.attemptTime++
-                        it.isCorrectlyAnswered = userChoice.isCorrect
-                        updateCardOnKnownOrKnownNot(userChoice)
-                        if (attemptTime < 1) {
-                            onUserAnswered(userChoice.isSelected && userChoice.isCorrect, it.cardId)
-                        }
-                    }
-                }
+    private fun getOriginalCardById(cardId: String): ImmutableCard? {
+        originalCardList.forEach { card ->
+            if (card?.cardId == cardId) {
+                return card
             }
         }
-        increaseAttemptTime()
-        return userChoice.isCorrect
+        return null
+    }
+
+    fun isUserChoiceCorrect(
+        userChoice: MultiChoiceCardDefinitionModel,
+        cardOrientation: String,
+        currentCardPosition: Int
+        ): Boolean {
+        if (userChoice.isSelected || userChoice.position != null) {
+            val temporaryCard = localMultiChoiceCards[currentCardPosition]
+            val temporaryAlternative = temporaryCard.alternatives[userChoice.position!!]
+            temporaryAlternative.isSelected = userChoice.isSelected
+            temporaryCard.attemptTime++
+            temporaryCard.isCorrectlyAnswered = userChoice.isCorrect
+            updateCardOnKnownOrKnownNot(userChoice)
+            if (attemptTime < 1) {
+                onUserAnswered(userChoice.isSelected && userChoice.isCorrect, temporaryCard.cardId)
+                if (!(userChoice.isSelected && userChoice.isCorrect)) {
+                    val currentCard = localCardToMultiChoiceGameCardMode(getOriginalCardById(temporaryCard.cardId), cardOrientation)
+                    localMultiChoiceCards.add(currentCard)
+                }
+            }
+
+            increaseAttemptTime()
+            return userChoice.isCorrect
+        }
+        return false
     }
 
     private fun updateCardOnKnownOrKnownNot(
         answer: MultiChoiceCardDefinitionModel
-    ) {
+    ): Boolean {
         originalCardList.forEach {
             if (it?.cardId == answer.cardId) {
                 if (answer.isSelected && !answer.isCorrect) {
@@ -259,9 +279,17 @@ class MultiChoiceQuizGameViewModel(
                         missedCards.add(it)
                     }
                 }
-                return
+                return answer.isSelected && !answer.isCorrect
             }
         }
+        return false
+    }
+
+    fun isCurrentCardCorrectlyAnswered(card: MultiChoiceGameCardModel): Boolean {
+
+
+
+        return false
     }
 
     fun sortCardsByLevel() {
@@ -317,113 +345,68 @@ class MultiChoiceQuizGameViewModel(
 
     fun updateActualCards(amount: Int, cardOrientation: String) {
         val cards = getCardsAmount(amount)
-        localMultiChoiceCards = cards?.map { card ->
-            val correctAlternative = getRandomCorrectDefinition(card?.cardDefinition)!!
-            if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
-                    card?.cardId!!,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        correctAlternative,
-                        DEFINITION,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
-                    ),
-                    true,
-                    false,
-                )
-                val definitions = getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
-                MultiChoiceGameCardModel(
-                    card.cardId,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        card.cardContent?.content!!,
-                        CONTENT,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
-                    ),
-                    definitions,
-                )
-            } else {
-                val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
-                    card?.cardId!!,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        card.cardContent?.content!!,
-                        CONTENT,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
-                    ),
-                    true,
-                    false,
-                )
-                val definitions =
-                    getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
-                MultiChoiceGameCardModel(
-                    card.cardId,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        correctAlternative,
-                        DEFINITION,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
-                    ),
-                    definitions,
-                )
-            }
+        localMultiChoiceCards = cards!!.map { card ->
+            localCardToMultiChoiceGameCardMode(card, cardOrientation)
+        }.toMutableList()
+    }
 
-        }!!.toMutableList()
+    private fun localCardToMultiChoiceGameCardMode(
+        card: ImmutableCard?,
+        cardOrientation: String
+    ): MultiChoiceGameCardModel {
+        val correctAlternative = getRandomCorrectDefinition(card?.cardDefinition)!!
+        return if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+            val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
+                cardId = card?.cardId!!,
+                definition = TextWithLanguageModel(
+                    card.cardId,
+                    correctAlternative,
+                    DEFINITION,
+                    card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
+                ),
+                isCorrect = true,
+                isSelected = false,
+            )
+            val definitions = getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
+            MultiChoiceGameCardModel(
+                card.cardId,
+                TextWithLanguageModel(
+                    card.cardId,
+                    card.cardContent?.content!!,
+                    CONTENT,
+                    card.cardContentLanguage ?: deck.cardContentDefaultLanguage
+                ),
+                definitions,
+            )
+        } else {
+            val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
+                cardId = card?.cardId!!,
+                definition = TextWithLanguageModel(
+                    card.cardId,
+                    card.cardContent?.content!!,
+                    CONTENT,
+                    card.cardContentLanguage ?: deck.cardContentDefaultLanguage
+                ),
+                isCorrect = true,
+                isSelected = false,
+            )
+            val definitions = getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
+            MultiChoiceGameCardModel(
+                card.cardId,
+                TextWithLanguageModel(
+                    card.cardId,
+                    correctAlternative,
+                    DEFINITION,
+                    card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
+                ),
+                definitions,
+            )
+        }
     }
 
     fun updateActualCardsWithMissedCards(cardOrientation: String) {
         localMultiChoiceCards = missedCards.map { card ->
-            val correctAlternative = getRandomCorrectDefinition(card?.cardDefinition)!!
-            if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-                val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
-                    card?.cardId!!,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        correctAlternative,
-                        DEFINITION,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
-                    ),
-                    true,
-                    false,
-                )
-                val definitions =
-                    getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
-                MultiChoiceGameCardModel(
-                    card.cardId,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        card.cardContent?.content!!,
-                        CONTENT,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
-                    ),
-                    definitions,
-                )
-            } else {
-                val correctAlternativeDefinitionModel = MultiChoiceCardDefinitionModel(
-                    card?.cardId!!,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        card.cardContent?.content!!,
-                        CONTENT,
-                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
-                    ),
-                    true,
-                    false,
-                )
-                val definitions =
-                    getAlternatives(correctAlternativeDefinitionModel, cardOrientation, card.cardId)
-                MultiChoiceGameCardModel(
-                    card.cardId,
-                    TextWithLanguageModel(
-                        card.cardId,
-                        correctAlternative,
-                        DEFINITION,
-                        card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
-                    ),
-                    definitions,
-                )
-            }
-
+            localCardToMultiChoiceGameCardMode(card, cardOrientation)
         }.toMutableList()
         missedCards.clear()
     }

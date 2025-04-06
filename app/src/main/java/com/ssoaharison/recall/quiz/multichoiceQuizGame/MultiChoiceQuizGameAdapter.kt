@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
@@ -91,16 +92,22 @@ class MultiChoiceQuizGameAdapter(
 
             btAlternativesList.forEachIndexed { index, button ->
                 val actualDefinition = card.alternatives[index]
-                button.text = actualDefinition.definition.text
+                button.apply {
+                    text = actualDefinition.definition.text
+                    setOnClickListener {
+                        if (!card.isCardCorrectlyAnswered()) {
+                            actualDefinition.isSelected = true
+                            userChoiceModel( actualDefinition )
+                        } else {
+                            Toast.makeText(context, context.getString(R.string.message_on_card_already_answered), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
 
                 if (actualDefinition.isSelected) {
                     onButtonClicked(button, actualDefinition.isCorrect, appTheme)
                 } else {
                     onButtonUnClicked(button, context)
-                }
-                button.setOnClickListener {
-                    actualDefinition.isSelected = !actualDefinition.isSelected
-                    userChoiceModel( actualDefinition )
                 }
                 views.add(button)
                 texts.add(card.alternatives[index].definition)

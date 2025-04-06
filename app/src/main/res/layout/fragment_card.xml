@@ -101,7 +101,7 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_deck_overview_root"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="210dp"
                     android:background="?colorSurfaceContainerLow"
                     android:paddingStart="@dimen/space_lg"
                     android:paddingEnd="@dimen/space_lg"
@@ -149,7 +149,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                android:text="10" />
+                                tools:text="10" />
 
                             <TextView
                                 android:id="@+id/tv_text_card_sum"
@@ -195,7 +195,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                android:text="5" />
+                                tools:text="5" />
 
                             <TextView
                                 android:id="@+id/tv_text_known_card_sum"
@@ -241,7 +241,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                android:text="5" />
+                                tools:text="5" />
 
                             <TextView
                                 android:id="@+id/tv_text_unknown_card_sum"

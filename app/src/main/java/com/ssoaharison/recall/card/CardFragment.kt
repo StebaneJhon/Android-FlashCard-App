@@ -796,10 +796,10 @@ class CardFragment :
     @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
-            R.id.settings_deck_menu -> {
-                findNavController().navigate(R.id.action_cardFragment_to_settingsFragment)
-                true
-            }
+//            R.id.settings_deck_menu -> {
+//                findNavController().navigate(R.id.action_cardFragment_to_settingsFragment)
+//                true
+//            }
 
             R.id.view_deck_menu -> {
                 if (item == null) {

@@ -5,7 +5,7 @@
     <item
         android:id="@+id/mn_bt_settings"
         android:title="@string/settings_hint"
-        android:icon="@drawable/icon_settings"
+        android:icon="@drawable/icon_settings_fill"
         app:showAsAction="ifRoom"
         android:iconTint="@color/black"/>
 

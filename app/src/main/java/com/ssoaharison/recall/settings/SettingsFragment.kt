@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -77,7 +78,8 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         binding.settingsTopAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
+//            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
+            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
         lifecycleScope.launch {

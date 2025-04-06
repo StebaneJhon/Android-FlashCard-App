@@ -247,7 +247,7 @@
     <string name="text_try_again">Try again</string>
     <string name="text_correct_answer">Correct answer: %1$s</string>
     <string name="text_correct_answer_more">Correct! Keep selecting.</string>
-    <string name="text_wrong_answer">Keep selection until you get it correctly.</string>
+    <string name="text_wrong_answer">Keep on selecting until you get it correctly.</string>
     <string name="text_show_answer">Show answer</string>
     <string name="error_message_no_card_found">Card not found</string>
     <string name="error_message_deck_not_found">Deck not found</string>
@@ -266,4 +266,5 @@
     <string name="text_known">Known</string>
     <string name="text_total">Total</string>
     <string name="content_description_icon_clickable_item">Icon clickable item</string>
+    <string name="message_on_card_already_answered">Card answered correctly! Precede by tapping at the left arrow.</string>
 </resources>

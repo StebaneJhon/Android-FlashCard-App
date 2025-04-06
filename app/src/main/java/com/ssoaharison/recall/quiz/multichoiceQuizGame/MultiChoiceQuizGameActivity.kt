@@ -236,7 +236,7 @@ class MultiChoiceQuizGameActivity :
                 data,
                 appTheme ?: "WHITE THEM",
                 {
-                if (viewModel.isUserChoiceCorrect(it)) {
+                if (viewModel.isUserChoiceCorrect(it, getCardOrientation(), binding.vpCardHolder.currentItem)) {
                     areOptionsEnabled(true)
                 }
                 multiChoiceGameAdapter.notifyDataSetChanged()
@@ -354,12 +354,13 @@ class MultiChoiceQuizGameActivity :
                     viewModel.getCurrentCardPosition(),
                     true
                 )
-                if (viewModel.isNextCardAnsweredCorrectly()) {
-                    viewModel.initAttemptTime()
-                }
+//                if (viewModel.isNextCardAnsweredCorrectly()) {
+//                    viewModel.initAttemptTime()
+//                }
             } else {
                 onQuizComplete(viewModel.cardLeft(), cardCount)
             }
+            viewModel.initAttemptTime()
             tts?.stop()
         }
         binding.btPreviousQuestion.setOnClickListener {
@@ -369,6 +370,7 @@ class MultiChoiceQuizGameActivity :
                     viewModel.getCurrentCardPosition(),
                     true
                 )
+                viewModel.initAttemptTime()
                 tts?.stop()
             }
         }

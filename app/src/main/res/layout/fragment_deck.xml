@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainActivityRoot"
+    android:id="@+id/fr_deck_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
@@ -21,7 +21,8 @@
             android:id="@+id/deckTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_name">
+            app:navigationIcon="@drawable/icon_menu"
+            app:navigationIconTint="?colorOnSurface">
 
         </com.google.android.material.appbar.MaterialToolbar>
 

@@ -16,9 +16,7 @@
         <argument
             android:name="selectedDeck"
             app:argType="com.ssoaharison.recall.backend.models.ImmutableDeck" />
-        <action
-            android:id="@+id/action_cardFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+
         <argument
             android:name="opener"
             app:argType="string" />
@@ -31,18 +29,13 @@
         <action
             android:id="@+id/navigateToCardFragment"
             app:destination="@id/cardFragment" />
-        <action
-            android:id="@+id/action_deckFragment_to_settingsFragment"
-            app:destination="@id/settingsFragment" />
+
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.ssoaharison.recall.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
-        <action
-            android:id="@+id/action_settingsFragment_to_cardFragment"
-            app:destination="@id/cardFragment" />
 
         <action
             android:id="@+id/action_settingsFragment_to_privacyPolicyFragment"
@@ -50,9 +43,7 @@
         <action
             android:id="@+id/action_settingsFragment_to_emailFragment"
             app:destination="@id/emailFragment" />
-        <action
-            android:id="@+id/action_settingsFragment_to_deckFragment"
-            app:destination="@id/deckFragment" />
+
         <action
             android:id="@+id/action_settingsFragment_to_aboutRecallFragment"
             app:destination="@id/aboutRecallFragment" />
@@ -107,11 +98,6 @@
             android:id="@+id/action_emailFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/testResultFragment"
-        android:name="com.ssoaharison.recall.quiz.test.TestResultFragment"
-        android:label="fragment_test_result"
-        tools:layout="@layout/fragment_test_result" />
     <fragment
         android:id="@+id/aboutRecallFragment"
         android:name="com.ssoaharison.recall.settings.AboutRecallFragment"
