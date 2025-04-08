@@ -272,6 +272,7 @@ class MultiChoiceQuizGameViewModel(
     private fun updateCardOnKnownOrKnownNot(
         answer: MultiChoiceCardDefinitionModel
     ): Boolean {
+        // To be optimized
         originalCardList.forEach {
             if (it?.cardId == answer.cardId) {
                 if (answer.isSelected && !answer.isCorrect) {
@@ -282,13 +283,6 @@ class MultiChoiceQuizGameViewModel(
                 return answer.isSelected && !answer.isCorrect
             }
         }
-        return false
-    }
-
-    fun isCurrentCardCorrectlyAnswered(card: MultiChoiceGameCardModel): Boolean {
-
-
-
         return false
     }
 

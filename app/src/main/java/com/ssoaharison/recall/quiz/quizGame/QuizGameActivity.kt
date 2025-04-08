@@ -202,13 +202,13 @@ class QuizGameActivity :
             appTheme ?: "WHITE THEM",
             viewModel.deck!!,
             { userAnswer ->
-                viewModel.submitUserAnswer(userAnswer)
+                viewModel.submitUserAnswer(userAnswer, binding.vpCardHolder.currentItem)
                 val actualCard = viewModel.getCardByPosition(binding.vpCardHolder.currentItem)
                 if (userAnswer.cardType != SINGLE_ANSWER_CARD && actualCard.attemptTime <= 1) {
-                    viewModel.updateMultipleAnswerAndChoiceCardOnAnswered(userAnswer)
+                    viewModel.updateMultipleAnswerAndChoiceCardOnAnswered(userAnswer, binding.vpCardHolder.currentItem)
                 }
                 quizGameAdapter.notifyDataSetChanged()
-                if (viewModel.isAllAnswerSelected(userAnswer)) {
+                if (viewModel.isAllAnswerSelected(userAnswer, binding.vpCardHolder.currentItem)) {
                     optionsState(userAnswer, actualCard)
                 }
             },
@@ -325,7 +325,7 @@ class QuizGameActivity :
 
                             actualCard.attemptTime > 0 && !actualCard.isCorrectlyAnswered -> {
                                 areNextAndBackButtonsVisible(true)
-                                specifyKnownAndKnownNotActions(actualCard)
+                                specifyKnownAndKnownNotActions()
                                 areKnownAndKnownNotButtonsVisible(true)
                             }
 
@@ -350,9 +350,9 @@ class QuizGameActivity :
         }
     }
 
-    private fun specifyKnownAndKnownNotActions(card: QuizGameCardModel) {
+    private fun specifyKnownAndKnownNotActions() {
         binding.btKnown.setOnClickListener {
-            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, true, binding.vpCardHolder.currentItem )
+            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot( true, binding.vpCardHolder.currentItem )
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -376,7 +376,7 @@ class QuizGameActivity :
             }
         }
         binding.btKnownNot.setOnClickListener {
-            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot(card, false, binding.vpCardHolder.currentItem)
+            viewModel.updateSingleAnsweredCardOnKnownOrKnownNot( false, binding.vpCardHolder.currentItem)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
@@ -458,7 +458,7 @@ class QuizGameActivity :
                 SINGLE_ANSWER_CARD -> {
                     specifyNextAndBackActions()
                         if (!card.isCorrectlyAnswered) {
-                            specifyKnownAndKnownNotActions(card)
+                            specifyKnownAndKnownNotActions()
                             areKnownAndKnownNotButtonsVisible(true)
                         } else {
                             areKnownAndKnownNotButtonsVisible(false)

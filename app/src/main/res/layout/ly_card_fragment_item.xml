@@ -223,7 +223,7 @@
             android:layout_marginTop="@dimen/space_xs"
             android:paddingStart="@dimen/space_xs"
             android:paddingEnd="@dimen/space_xs"
-            android:background="@drawable/bg_2_dp_radius"
+            android:background="@drawable/bg_10_dp_radius"
             android:backgroundTint="@color/green700"
             android:fontFamily="@font/open_sans_light"
             android:gravity="center"

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -208,12 +209,17 @@ class QuizGameAdapter(
         }
 
         private fun MaterialButton.onAlternativeClicked(
+            card: QuizGameCardModel,
             answer: QuizGameCardDefinitionModel,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
             setOnClickListener {
-                answer.isSelected = !answer.isSelected
-                cardOnClick(answer)
+                if (!card.isCorrectlyAnswered) {
+                    answer.isSelected = !answer.isSelected
+                    cardOnClick(answer)
+                } else {
+                    Toast.makeText(context, context.getString(R.string.message_on_card_already_answered), Toast.LENGTH_LONG).show()
+                }
             }
         }
 
@@ -379,7 +385,11 @@ class QuizGameAdapter(
                         materialButton.apply {
                             visibility = View.VISIBLE
                             text = card.cardDefinition[index].definition
-                            onAlternativeClicked(card.cardDefinition[index], cardOnClick)
+                            onAlternativeClicked(
+                                card = card,
+                                answer = card.cardDefinition[index],
+                                cardOnClick = cardOnClick
+                            )
                         }
                         texts.add(
                             TextWithLanguageModel(

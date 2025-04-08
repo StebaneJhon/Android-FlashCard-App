@@ -61,23 +61,6 @@ class TestQuizGameViewModel(
 
     fun getDeckColorCode() = deck?.deckColorCode ?: "black"
 
-//    fun getMissedCard(): MutableList<ImmutableCard?> {
-//        val newCards = arrayListOf<ImmutableCard?>()
-//        missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-//        return newCards
-//    }
-
-//    fun getOriginalCardList() = originalCardList
-
-//    fun increaseAttemptTime() {
-//        attemptTime += 1
-//    }
-
-//    fun initAttemptTime() {
-//        attemptTime = 0
-//    }
-
-//    fun getAttemptTime() = attemptTime
 
     private lateinit var localQuizGameCards: MutableList<QuizGameCardModel>
     private var flowOfLocalQuizGameCards: Flow<List<QuizGameCardModel>> = flow {
@@ -106,21 +89,8 @@ class TestQuizGameViewModel(
         }
     }
 
-//    fun initLocalQuizGameCards(cards: List<ImmutableCard?>) {
-//        localQuizGameCards = cards.map { card ->
-//            val externalDefinitions = toQuizGameCardDefinitionModel(card?.cardId!!, card.cardType!!, card.cardDefinition!!).shuffled()
-//            QuizGameCardModel(
-//                card.cardId,
-//                card.cardContent,
-//                externalDefinitions,
-//                card.cardType,
-//                card.cardStatus
-//            )
-//        }.toMutableList()
-//    }
 
     fun onRestartQuiz() {
-//        initQuizGame()
         initPassedCards()
         initRestCards()
     }
@@ -128,41 +98,32 @@ class TestQuizGameViewModel(
     fun updateActualCards(amount: Int) {
         val cards = getCardsAmount(cardList, amount)
         localQuizGameCards = cards?.map { card ->
-            val externalDefinitions = toQuizGameCardDefinitionModel(
-                card?.cardId!!,
-                card.cardType!!,
-                card.cardDefinition!!
-            ).shuffled()
-            QuizGameCardModel(
-                card.cardId,
-                card.cardContent,
-                card.cardContentLanguage ?: deck?.cardContentDefaultLanguage,
-                externalDefinitions,
-                card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
-                card.cardType,
-                card.cardStatus
-            )
+            localCardToQuizGameCardModel(card)
         }!!.toMutableList()
     }
 
     fun updateActualCardsWithMissedCards() {
         localQuizGameCards = missedCards.map { card ->
-            val externalDefinitions = toQuizGameCardDefinitionModel(
-                card?.cardId!!,
-                card.cardType!!,
-                card.cardDefinition!!
-            ).shuffled()
-            QuizGameCardModel(
-                card.cardId,
-                card.cardContent,
-                card.cardContentLanguage ?: deck?.cardContentDefaultLanguage!!,
-                externalDefinitions,
-                card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage!!,
-                card.cardType,
-                card.cardStatus
-            )
+            localCardToQuizGameCardModel(card)
         }.toMutableList()
         missedCards.clear()
+    }
+
+    private fun localCardToQuizGameCardModel(card: ImmutableCard?): QuizGameCardModel {
+        val externalDefinitions = toQuizGameCardDefinitionModel(
+            card?.cardId!!,
+            card.cardType!!,
+            card.cardDefinition!!
+        )
+        return QuizGameCardModel(
+            card.cardId,
+            card.cardContent,
+            card.cardContentLanguage ?: deck?.cardContentDefaultLanguage,
+            externalDefinitions,
+            card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
+            card.cardType,
+            card.cardStatus
+        )
     }
 
     fun getQuizGameCardsSum() = localQuizGameCards.size
@@ -173,101 +134,39 @@ class TestQuizGameViewModel(
 
     fun cardLeft() = restCard
 
-    fun submitUserAnswer(answer: QuizGameCardDefinitionModel) {
-        when (answer.cardType) {
-            MULTIPLE_ANSWER_CARD -> {
-                onSubmitMultiAnswerCardAnswer(answer)
-            }
+    fun submitUserAnswer(answer: QuizGameCardDefinitionModel, cardPosition: Int) {
+        val actualCard = localQuizGameCards[cardPosition]
+        actualCard.onDefinitionSelected(answer.position!!, answer.isSelected)
 
-            SINGLE_ANSWER_CARD -> {
-                onSubmitSingleAnswerCardAnswer(answer)
-            }
-
-            else -> {
-                onSubmitMultiChoiceCardAnswer(answer)
-            }
-        }
-    }
-
-    private fun onSubmitSingleAnswerCardAnswer(answer: QuizGameCardDefinitionModel) {
-        localQuizGameCards.forEach { card ->
-            if (card.cardId == answer.cardId) {
-                card.cardDefinition.first().isSelected = answer.isSelected
-                card.isFlipped = !card.isFlipped
-                card.attemptTime++
-                card.flipCount++
-            }
-        }
-    }
-
-    private fun onSubmitMultiChoiceCardAnswer(answer: QuizGameCardDefinitionModel) {
-        localQuizGameCards.forEach { card ->
-            if (card.cardId == answer.cardId) {
-                card.cardDefinition.forEach { d ->
-                    if (d.definitionId == answer.definitionId) {
-                        d.isSelected = answer.isSelected
-                        card.attemptTime++
-                        if (d.isCorrect == 1) {
-                            card.isCorrectlyAnswered = true
-                        }
-                    } else {
-                        d.isSelected = false
-                    }
-                }
-            }
-        }
-    }
-
-    private fun onSubmitMultiAnswerCardAnswer(answer: QuizGameCardDefinitionModel) {
-        localQuizGameCards.forEach { card ->
-            if (card.cardId == answer.cardId) {
-                card.cardDefinition.forEach { d ->
-                    if (d.definitionId == answer.definitionId) {
-                        d.isSelected = answer.isSelected
-                        card.attemptTime++
-                    }
-                }
-                card.cardDefinition.forEach { d ->
-                    card.isCorrectlyAnswered = true
-                    if (d.isCorrect == 1 && !d.isSelected) {
-                        card.isCorrectlyAnswered = false
-                        return
-                    }
-                }
-            }
-        }
     }
 
     fun getCardByPosition(position: Int) = localQuizGameCards[position]
 
-    fun isAllAnswerSelected(answer: QuizGameCardDefinitionModel): Boolean {
-        localQuizGameCards.forEach {
-            if (it.cardId == answer.cardId) {
-                it.cardDefinition.forEach { d ->
-                    if (d.isCorrect == 1 && !d.isSelected) {
-                        return false
-                    }
-                }
-            }
-        }
-        return true
+    fun isAllAnswerSelected(answer: QuizGameCardDefinitionModel, actualCardPosition: Int): Boolean {
+        val actualCard = localQuizGameCards[actualCardPosition]
+        return actualCard.isAllAnswerSelected()
     }
 
-    fun toQuizGameCardDefinitionModel(
+    private fun toQuizGameCardDefinitionModel(
         cardId: String,
         cardType: String,
         d: List<CardDefinition>
     ): List<QuizGameCardDefinitionModel> {
-        return d.map {
+        val formatedDefinitions = d.map {
             QuizGameCardDefinitionModel(
-                it.definitionId,
-                cardId,
-                it.definition,
-                cardType,
-                it.isCorrectDefinition,
-                false
+                definitionId = it.definitionId,
+                cardId = cardId,
+                definition = it.definition,
+                cardType = cardType,
+                isCorrect = it.isCorrectDefinition,
+                isSelected = false
             )
+        }.shuffled()
+        return formatedDefinitions.mapIndexed { index, item ->
+            item.position = index
+            item
         }
+
     }
 
 
@@ -288,22 +187,11 @@ class TestQuizGameViewModel(
             cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
-    fun isNextCardAnswered(actualCardPosition: Int): Boolean {
-        val nextCardPosition = actualCardPosition.plus(1)
-        if (nextCardPosition < localQuizGameCards.size) {
-            val nextCard = localQuizGameCards[nextCardPosition]
-
-            return isAllAnswerSelected(nextCard.cardDefinition.first())
-        }
-        return false
-    }
-
     fun restoreCardList() {
         cardList = originalCardList!!.toMutableList()
     }
 
     fun initQuizGame() {
-//        missedCards.clear()
         localQuizGameCards.forEach {
             it.isFlipped = false
             it.isCorrectlyAnswered = false
@@ -335,40 +223,45 @@ class TestQuizGameViewModel(
 
     fun updateMultipleAnswerAndChoiceCardOnAnswered(
         answer: QuizGameCardDefinitionModel,
+        cardPosition: Int,
     ) {
-        originalCardList?.forEach {
-            if (it?.cardId == answer.cardId) {
-                if (answer.isSelected && answer.isCorrect == 1) {
-                    upOrDowngradeCard(true, it)
-                } else {
-                    upOrDowngradeCard(false, it)
-                    missedCards.add(it)
-                }
-            }
+        val actualCard = localQuizGameCards[cardPosition]
+        if (answer.giveFeedbackOnSelected()) {
+            upOrDowngradeCard(true, answer.cardId)
+        } else {
+            upOrDowngradeCard(false, answer.cardId)
+            missedCards.add(getLocalCardById(actualCard.cardId))
+            val currentCard = localCardToQuizGameCardModel(getLocalCardById(answer.cardId))
+            localQuizGameCards.add(currentCard)
         }
     }
 
     fun updateSingleAnsweredCardOnKnownOrKnownNot(
-        card: QuizGameCardModel,
         knownOrNot: Boolean,
         cardPosition: Int,
     ) {
-        originalCardList?.forEach {
-            if (it?.cardId == card.cardId) {
-                upOrDowngradeCard(knownOrNot, it)
-                if (!knownOrNot) {
-                    missedCards.add(it)
-                }
-            }
-        }
-        localQuizGameCards.forEach {
-            if (it.cardId == card.cardId) {
-                if (knownOrNot) {
-                    card.isCorrectlyAnswered = true
-                }
-            }
+        val actualCard = localQuizGameCards[cardPosition]
+        upOrDowngradeCard(knownOrNot, actualCard.cardId)
+        if (!knownOrNot) {
+            missedCards.add(getLocalCardById(actualCard.cardId))
+            val currentCard = localCardToQuizGameCardModel(getLocalCardById(actualCard.cardId))
+            localQuizGameCards.add(currentCard)
+        } else {
+            actualCard.isCorrectlyAnswered = true
         }
         initCardFlipCount(cardPosition)
+    }
+
+    private fun getLocalCardById(cardId: String): ImmutableCard? {
+        var i = 0
+        while (i < cardList.size) {
+            val c = cardList[i]
+            if (c?.cardId == cardId) {
+                return c
+            }
+            i++
+        }
+        return null
     }
 
     private fun getCardsAmount(
@@ -403,7 +296,8 @@ class TestQuizGameViewModel(
         }
     }
 
-    fun upOrDowngradeCard(isKnown: Boolean, card: ImmutableCard?) {
+    private fun upOrDowngradeCard(isKnown: Boolean, cardId: String) {
+        val card = getLocalCardById(cardId)
         if (card != null) {
             val newStatus = spaceRepetitionHelper.status(card, isKnown)
             val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
