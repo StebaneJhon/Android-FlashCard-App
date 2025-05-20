@@ -220,7 +220,7 @@ class WritingQuizGameActivity :
             this,
             cards,
             {
-                if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer, it.cardId)) {
+                if (viewModel.isUserAnswerCorrect(it.userAnswer, it.correctAnswer, it.cardId, binding.vpCardHolder.currentItem)) {
                     areOptionsShownAndActive(true, cards)
                 }
                 writingQuizGameAdapter.notifyDataSetChanged()

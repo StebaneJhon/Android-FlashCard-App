@@ -13,8 +13,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.util.DeckColorCategorySelector
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -70,7 +68,7 @@ class WritingQuizGameAdapter(
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             tvOnCardWord.text = card.onCardWord.text
             tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
-            tvAnswer.text = context.getString(R.string.text_correct_answer, card.answer.first().text)
+            tvAnswer.text = context.getString(R.string.text_correct_answer, card.answers.first().text)
 
             when {
                 card.attemptTime == 0 -> {
@@ -87,7 +85,7 @@ class WritingQuizGameAdapter(
             tieTopCard.setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_DONE){
                     val userInput = v.text?.trim().toString().lowercase()
-                    val correctAnswer = card.answer
+                    val correctAnswer = card.answers
                     userAnswer(
                         WritingQuizGameUserResponseModel(
                             card.cardId,

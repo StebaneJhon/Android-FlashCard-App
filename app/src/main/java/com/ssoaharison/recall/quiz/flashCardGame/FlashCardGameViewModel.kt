@@ -10,10 +10,13 @@ import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 class FlashCardGameViewModel(
     private val repository: FlashCardRepository
@@ -21,14 +24,19 @@ class FlashCardGameViewModel(
 
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
-    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
-    private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
-    val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
+
     private var originalCardList: List<ImmutableCard?>? = null
     private lateinit var cardList: MutableList<ImmutableCard?>
+    private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
+    val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
+    private var cardToRevise: MutableList<ImmutableCard?>? = null
+    private var flowOfCardToRevise: Flow<List<ImmutableCard?>?> = flow {
+        emit(cardToRevise)
+    }
+    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
+
     var deck: ImmutableDeck? = null
     private var progress: Int = 0
-    private var cardToRevise: MutableList<ImmutableCard?>? = null
     private var passedCards = 0
     private var restCards = 0
 
@@ -76,10 +84,10 @@ class FlashCardGameViewModel(
         missedCards.clear()
     }
 
-    private val topCard
-        get() = cardToRevise?.get(currentCardPosition)
-    private val bottomCard
-        get() = cardToRevise?.let { getBottomCard(it, currentCardPosition) }
+//    private val topCard
+//        get() = cardToRevise?.get(currentCardPosition)
+//    private val bottomCard
+//        get() = cardToRevise?.let { getBottomCard(it, currentCardPosition) }
 
     fun sortCardsByLevel() {
         cardList.sortBy { it?.cardStatus }
@@ -108,11 +116,12 @@ class FlashCardGameViewModel(
     }
 
     fun swipe(isKnown: Boolean): Boolean {
-        val isQuizComplete = currentCardPosition == cardToRevise?.size?.minus(1)
         if (!isKnown) {
             missedCards.add(cardToRevise?.get(currentCardPosition))
+            cardToRevise?.add(cardToRevise?.get(currentCardPosition))
         }
         onCardSwiped(isKnown)
+        val isQuizComplete = currentCardPosition == cardToRevise?.size?.minus(1)
         if (!isQuizComplete) {
             currentCardPosition += 1
             updateOnScreenCards()
@@ -166,6 +175,17 @@ class FlashCardGameViewModel(
         }
     }
 
+    private fun getTopCard(cards: List<ImmutableCard?>, currentCartPosition: Int): ImmutableCard? {
+        return cards[currentCartPosition]
+    }
+
+    private fun getActualFlashCardGameModel(cards: List<ImmutableCard?>, currentCartPosition: Int): FlashCardGameModel {
+        return FlashCardGameModel(
+            top = getTopCard(cards, currentCardPosition)!!,
+            bottom = getBottomCard(cards, currentCardPosition)
+        )
+    }
+
     fun initFlashCard() {
         missedCards.clear()
         progress = 0
@@ -195,20 +215,21 @@ class FlashCardGameViewModel(
     }
 
     fun updateOnScreenCards() {
-        cardToRevise?.let {cards ->
-            if (cards.size == 0) {
-                _actualCards.value = UiState.Error("No Cards To Revise")
-            } else {
-                fetchJob?.cancel()
-                _actualCards.value = UiState.Loading
-                fetchJob = viewModelScope.launch {
+        _actualCards.value = UiState.Loading
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            try {
+                flowOfCardToRevise.collect { cards ->
+                    if (cards.isNullOrEmpty()) {
+                        _actualCards.value = UiState.Error("No Cards To Revise")
+                    } else {
                         _actualCards.value = UiState.Success(
-                            FlashCardGameModel(
-                                top = topCard!!,
-                                bottom = bottomCard
-                            )
-                    )
+                            getActualFlashCardGameModel(cards, currentCardPosition)
+                        )
+                    }
                 }
+            } catch (e: IOException) {
+                _actualCards.value = UiState.Error(e.message.toString())
             }
         }
     }

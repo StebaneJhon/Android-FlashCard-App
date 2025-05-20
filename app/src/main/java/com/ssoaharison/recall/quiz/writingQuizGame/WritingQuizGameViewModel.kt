@@ -32,7 +32,8 @@ class WritingQuizGameViewModel(
     var progress: Int = 0
     var attemptTime: Int = 0
     private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
-//    private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
+
+    //    private val _actualCard = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
 //    val actualCard: StateFlow<UiState<List<WritingQuizGameModel>>> = _actualCard.asStateFlow()
     private lateinit var cardList: MutableList<ImmutableCard?>
     lateinit var deck: ImmutableDeck
@@ -144,52 +145,36 @@ class WritingQuizGameViewModel(
     fun isUserAnswerCorrect(
         userAnswer: String,
         correctAnswers: List<TextWithLanguageModel>,
-        cardId: String
+        cardId: String,
+        currentCardPosition: Int
     ): Boolean {
-        //var isCorrect = false
-        localWritingCards.forEach { wc ->
-            if (wc.cardId == cardId) {
-                wc.attemptTime++
-                wc.answer.forEach { a ->
-                    when {
-                        a.text.trim().lowercase() == userAnswer.trim().lowercase() && wc.attemptTime <= 1 -> {
-                            wc.isCorrectlyAnswered  = true
-                            wc.userAnswer = userAnswer
-                            onUserAnswered(true, cardId)
-                            return true
-                        }
-                        a.text.trim().lowercase() == userAnswer.trim().lowercase() -> {
-                            wc.isCorrectlyAnswered = true
-                            wc.userAnswer = userAnswer
-                            return true
-                        }
-                        a.text.trim().lowercase() != userAnswer.trim().lowercase() && wc.attemptTime <= 1 -> {
-                            onUserAnswered(false, cardId)
-                        }
-                    }
-                }
-                wc.userAnswer = userAnswer
-                wc.isCorrectlyAnswered = false
+        val temporaryCard = localWritingCards[currentCardPosition]
+        val isAnswerCorrect = temporaryCard.onUserAnswered(userAnswer)
+        when {
+            isAnswerCorrect && temporaryCard.attemptTime <= 1 -> {
+                onUserAnswered(true, cardId)
+                return true
             }
-        }
-        /*
-        var isCorrect = false
-        correctAnswers.forEach { answer ->
-            if (answer.text.trim().lowercase() == userAnswer) {
-                isCorrect = true
+            isAnswerCorrect -> {
+                return true
             }
-        }
-        if (isCorrect == false) {
-            onCardMissed(cardId)
-            onUserAnswered(isCorrect, cardId)
-        }
-        if (attemptTime == 0 && isCorrect) {
-            onUserAnswered(isCorrect, cardId)
+            !isAnswerCorrect && temporaryCard.attemptTime <= 1 -> {
+                onUserAnswered(false, cardId)
+                val newCard = initWritingQuizGameModel(temporaryCard)
+                localWritingCards.add(newCard)
+            }
         }
 
-         */
         onCardMissed(cardId)
         return false
+    }
+
+    private fun initWritingQuizGameModel(card: WritingQuizGameModel): WritingQuizGameModel {
+        return card.copy(
+            attemptTime = 0,
+            isCorrectlyAnswered = false,
+            userAnswer = null
+        )
     }
 
     fun sortCardsByLevel() {
@@ -217,49 +202,61 @@ class WritingQuizGameViewModel(
         cardList = originalCardList!!.toMutableList()
     }
 
-    private fun cardToWritingQuizGameItem(
+    private fun cardsToWritingQuizGameItem(
         cards: List<ImmutableCard?>,
         cardOrientation: String
     ): List<WritingQuizGameModel> {
         val newList = mutableListOf<WritingQuizGameModel>()
-        if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
-            cards.forEach { item ->
-                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition, item?.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage)
-                newList.add(
-                    WritingQuizGameModel(
-                        item?.cardId!!,
-                        TextWithLanguageModel(
-                            item.cardId,
-                            item.cardContent?.content!!,
-                            CONTENT,
-                            item.cardContentLanguage ?: deck.cardContentDefaultLanguage
-                        ),
-                        correctAlternatives
-                    )
-                )
-            }
-        } else {
-            cards.forEach { item ->
-                val correctAlternatives = getCorrectDefinitions(item?.cardDefinition, item?.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage)
-                newList.add(
-                    WritingQuizGameModel(
-                        item?.cardId!!,
-                        correctAlternatives.random(),
-                        listOf(TextWithLanguageModel(
-                            item.cardId,
-                            item.cardContent?.content!!,
-                            CONTENT,
-                            item.cardContentLanguage ?: deck.cardContentDefaultLanguage!!
-                        )
-                        )
-                    )
-                )
-            }
+        cards.forEach { item ->
+            newList.add(cardToWritingQuizGameItem(item!!, cardOrientation))
         }
         return newList
     }
 
-    private fun getCorrectDefinitions(definitions: List<CardDefinition>?, definitionLanguage: String?): List<TextWithLanguageModel> {
+
+    fun cardToWritingQuizGameItem(
+        item: ImmutableCard,
+        cardOrientation: String
+    ): WritingQuizGameModel {
+        return if (cardOrientation == CARD_ORIENTATION_FRONT_AND_BACK) {
+            val correctAlternatives = getCorrectDefinitions(
+                item.cardDefinition,
+                item.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
+            )
+            WritingQuizGameModel(
+                item.cardId,
+                TextWithLanguageModel(
+                    item.cardId,
+                    item.cardContent?.content!!,
+                    CONTENT,
+                    item.cardContentLanguage ?: deck.cardContentDefaultLanguage
+                ),
+                correctAlternatives
+            )
+        } else {
+            val correctAlternatives = getCorrectDefinitions(
+                item.cardDefinition,
+                item.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
+            )
+            WritingQuizGameModel(
+                item.cardId,
+                correctAlternatives.random(),
+                listOf(
+                    TextWithLanguageModel(
+                        item.cardId,
+                        item.cardContent?.content!!,
+                        CONTENT,
+                        item.cardContentLanguage ?: deck.cardContentDefaultLanguage!!
+                    )
+                )
+            )
+        }
+    }
+
+    private fun getCorrectDefinitions(
+        definitions: List<CardDefinition>?,
+        definitionLanguage: String?
+    ): List<TextWithLanguageModel> {
         val correctDefinitions =
             definitions?.let { defins -> defins.filter { isCorrect(it.isCorrectDefinition) } }
         val correctAlternative = mutableListOf<TextWithLanguageModel>()
@@ -327,8 +324,11 @@ class WritingQuizGameViewModel(
     private var flowOfLocalWritingCards: Flow<List<WritingQuizGameModel>> = flow {
         emit(localWritingCards)
     }
-    private var _externalWritingCards = MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
-    val externalWritingCards: StateFlow<UiState<List<WritingQuizGameModel>>> = _externalWritingCards.asStateFlow()
+    private var _externalWritingCards =
+        MutableStateFlow<UiState<List<WritingQuizGameModel>>>(UiState.Loading)
+    val externalWritingCards: StateFlow<UiState<List<WritingQuizGameModel>>> =
+        _externalWritingCards.asStateFlow()
+
     fun getWritingCards() {
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
@@ -348,12 +348,12 @@ class WritingQuizGameViewModel(
 
     fun updateActualCards(amount: Int, cardOrientation: String) {
         val cards = getCardsAmount(cardList, amount)
-        localWritingCards = cardToWritingQuizGameItem(cards!!, cardOrientation).toMutableList()
+        localWritingCards = cardsToWritingQuizGameItem(cards!!, cardOrientation).toMutableList()
     }
 
     fun updateActualCardsWithMissedCards(cardOrientation: String) {
         val cards = missedCards
-        localWritingCards = cardToWritingQuizGameItem(cards, cardOrientation).toMutableList()
+        localWritingCards = cardsToWritingQuizGameItem(cards, cardOrientation).toMutableList()
     }
 
     fun getCardByPosition(position: Int) = localWritingCards[position]
@@ -380,7 +380,8 @@ class WritingQuizGameViewModel(
                         result = quizCardList.slice(passedCards..passedCards.plus(amount).minus(1))
                         passedCards += amount
                     } else {
-                        result = quizCardList.slice(passedCards..quizCardList.size.minus(1)).toMutableList()
+                        result = quizCardList.slice(passedCards..quizCardList.size.minus(1))
+                            .toMutableList()
                         passedCards += quizCardList.size.plus(50)
                     }
                 }
