@@ -7,9 +7,9 @@ import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
-import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
-import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
+import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -31,6 +31,7 @@ class TestQuizGameViewModel(
 
     //    private var attemptTime = 0
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private val roteLearningHelper = RoteLearningAlgorithmHelper()
     private var passedCards: Int = 0
     private var restCard = 0
 
@@ -230,9 +231,11 @@ class TestQuizGameViewModel(
             upOrDowngradeCard(true, answer.cardId)
         } else {
             upOrDowngradeCard(false, answer.cardId)
-            missedCards.add(getLocalCardById(actualCard.cardId))
-            val currentCard = localCardToQuizGameCardModel(getLocalCardById(answer.cardId))
-            localQuizGameCards.add(currentCard)
+            val currentCard = getLocalCardWithPositionById(actualCard.cardId)?.card
+            missedCards.add(currentCard)
+            val cardToRepeat = localCardToQuizGameCardModel(currentCard)
+            val cardToRepeatNewPosition = roteLearningHelper.onRepeatCardPosition(localQuizGameCards, cardPosition)
+            localQuizGameCards.add(cardToRepeatNewPosition, cardToRepeat)
         }
     }
 
@@ -243,8 +246,8 @@ class TestQuizGameViewModel(
         val actualCard = localQuizGameCards[cardPosition]
         upOrDowngradeCard(knownOrNot, actualCard.cardId)
         if (!knownOrNot) {
-            missedCards.add(getLocalCardById(actualCard.cardId))
-            val currentCard = localCardToQuizGameCardModel(getLocalCardById(actualCard.cardId))
+            missedCards.add(getLocalCardWithPositionById(actualCard.cardId)?.card)
+            val currentCard = localCardToQuizGameCardModel(getLocalCardWithPositionById(actualCard.cardId)?.card)
             localQuizGameCards.add(currentCard)
         } else {
             actualCard.isCorrectlyAnswered = true
@@ -252,12 +255,12 @@ class TestQuizGameViewModel(
         initCardFlipCount(cardPosition)
     }
 
-    private fun getLocalCardById(cardId: String): ImmutableCard? {
+    private fun getLocalCardWithPositionById(cardId: String): ImmutableCardWithPosition? {
         var i = 0
         while (i < cardList.size) {
             val c = cardList[i]
             if (c?.cardId == cardId) {
-                return c
+                return ImmutableCardWithPosition(c, i)
             }
             i++
         }
@@ -297,35 +300,20 @@ class TestQuizGameViewModel(
     }
 
     private fun upOrDowngradeCard(isKnown: Boolean, cardId: String) {
-        val card = getLocalCardById(cardId)
+        val cardWithPosition = getLocalCardWithPositionById(cardId)
+        val card = cardWithPosition?.card
+        val cardPosition = cardWithPosition?.position
         if (card != null) {
-            val newStatus = spaceRepetitionHelper.status(card, isKnown)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-            val lastRevision = spaceRepetitionHelper.today()
-            val nextForgettingDate =
-                spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.cardDefinition,
-                card.deckId,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                lastRevision,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.cardContentLanguage,
-                card.cardDefinitionLanguage
-            )
-            updateCard(newCard)
+            val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
+            updateCard(newCard, cardPosition!!)
         }
     }
 
-    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
+    fun updateCard(
+        card: ImmutableCard,
+        position: Int
+    ) = viewModelScope.launch {
+        cardList[position] = card
         repository.updateCard(card)
     }
 

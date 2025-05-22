@@ -13,6 +13,7 @@ import com.ssoaharison.recall.util.CardLevel.L4
 import com.ssoaharison.recall.util.CardLevel.L5
 import com.ssoaharison.recall.util.CardLevel.L6
 import com.ssoaharison.recall.util.CardLevel.L7
+import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.LevelColors.BROWNE
 import com.ssoaharison.recall.util.LevelColors.GREEN500
 import com.ssoaharison.recall.util.LevelColors.GREEN700
@@ -368,6 +369,33 @@ class SpaceRepetitionAlgorithmHelper{
         val repeatIn = boxLevels?.let { getBoxLevelByStatus(it, L2)?.levelRepeatIn } ?: 1
         val period = Period.of(0, 0, repeatIn)
         return formatter.format(today.plus(period))
+    }
+
+    fun rescheduleCard(
+        card: ImmutableCard,
+        isKnown: Boolean
+    ): ImmutableCard {
+        val newStatus = status(card, isKnown)
+        val nextRevision = nextRevisionDate(card, isKnown, newStatus)
+        val lastRevision = today()
+        val nextForgettingDate = nextForgettingDate(card, isKnown, newStatus)
+        return ImmutableCard(
+            card.cardId,
+            card.cardContent,
+            card.cardDefinition,
+            card.deckId,
+            card.isFavorite,
+            card.revisionTime,
+            card.missedTime,
+            card.creationDate,
+            lastRevision,
+            newStatus,
+            nextForgettingDate,
+            nextRevision,
+            card.cardType,
+            card.cardContentLanguage,
+            card.cardDefinitionLanguage,
+        )
     }
 
 }

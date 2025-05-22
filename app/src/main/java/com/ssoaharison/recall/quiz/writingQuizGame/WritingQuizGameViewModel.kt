@@ -1,5 +1,6 @@
 package com.ssoaharison.recall.quiz.writingQuizGame
 
+import android.icu.text.Transliterator.Position
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -7,9 +8,11 @@ import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
+import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -43,6 +46,7 @@ class WritingQuizGameViewModel(
 
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private val roteLearningHelper = RoteLearningAlgorithmHelper()
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
@@ -84,20 +88,20 @@ class WritingQuizGameViewModel(
     }
 
     fun onCardMissed(cardId: String) {
-        val missedCard = getLocalCardById(cardId)
+        val missedCard = getLocalCardById(cardId)?.card
         if (missedCard !in missedCards) {
             missedCards.add(missedCard)
         }
         increaseAttemptTime()
     }
 
-    private fun getLocalCardById(cardId: String): ImmutableCard? {
+    private fun getLocalCardById(cardId: String): ImmutableCardWithPosition? {
         var i = 0
-        var result: ImmutableCard? = null
+        var result: ImmutableCardWithPosition? = null
         while (true) {
             val actualCard = cardList[i]
             if (actualCard?.cardId == cardId) {
-                result = actualCard
+                result = ImmutableCardWithPosition(actualCard, i)
                 break
             }
             i++
@@ -161,7 +165,8 @@ class WritingQuizGameViewModel(
             !isAnswerCorrect && temporaryCard.attemptTime <= 1 -> {
                 onUserAnswered(false, cardId)
                 val newCard = initWritingQuizGameModel(temporaryCard)
-                localWritingCards.add(newCard)
+                val cardToReviseNewPosition = roteLearningHelper.onRepeatCardPosition(localWritingCards, currentCardPosition)
+                localWritingCards.add(cardToReviseNewPosition, newCard)
             }
         }
 
@@ -395,35 +400,20 @@ class WritingQuizGameViewModel(
         isKnown: Boolean,
         cardId: String
     ) {
-        val card = getLocalCardById(cardId)
+        val cardWithPosition = getLocalCardById(cardId)
+        val card = getLocalCardById(cardId)?.card
+        val cardPosition = getLocalCardById(cardId)?.position
         if (card != null) {
-            val newStatus = spaceRepetitionHelper.status(card, isKnown)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-            val lastRevision = spaceRepetitionHelper.today()
-            val nextForgettingDate =
-                spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.cardDefinition,
-                card.deckId,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                lastRevision,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.cardContentLanguage,
-                card.cardDefinitionLanguage
-            )
-            updateCard(newCard)
+            val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
+            updateCard(newCard, cardPosition!!)
         }
     }
 
-    private fun updateCard(card: ImmutableCard) = viewModelScope.launch {
+    private fun updateCard(
+        card: ImmutableCard,
+        position: Int
+    ) = viewModelScope.launch {
+        cardList[position] = card
         repository.updateCard(card)
     }
 

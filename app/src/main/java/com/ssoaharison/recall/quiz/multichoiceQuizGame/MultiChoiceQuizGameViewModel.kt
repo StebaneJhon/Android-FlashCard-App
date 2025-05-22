@@ -8,9 +8,11 @@ import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
+import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
@@ -38,6 +40,7 @@ class MultiChoiceQuizGameViewModel(
     lateinit var deck: ImmutableDeck
     private lateinit var originalCardList: List<ImmutableCard?>
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+    private val roteLearningHelper = RoteLearningAlgorithmHelper()
     private var passedCards: Int = 0
     private var restCard = 0
 
@@ -223,12 +226,12 @@ class MultiChoiceQuizGameViewModel(
         }
     }
 
-    private fun getLocalCardById(cardId: String): ImmutableCard {
+    private fun getLocalCardWithPositionById(cardId: String): ImmutableCardWithPosition {
         var i = 0
         while (true) {
             val c = cardList[i]
             if (c?.cardId == cardId) {
-                return c
+                return ImmutableCardWithPosition(c, i)
             }
             i++
         }
@@ -259,7 +262,8 @@ class MultiChoiceQuizGameViewModel(
                 onUserAnswered(userChoice.isSelected && userChoice.isCorrect, temporaryCard.cardId)
                 if (!(userChoice.isSelected && userChoice.isCorrect)) {
                     val currentCard = localCardToMultiChoiceGameCardMode(getOriginalCardById(temporaryCard.cardId), cardOrientation)
-                    localMultiChoiceCards.add(currentCard)
+                    val currentNewCardPosition = roteLearningHelper.onRepeatCardPosition(localMultiChoiceCards, currentCardPosition)
+                    localMultiChoiceCards.add(currentNewCardPosition, currentCard)
                 }
             }
 
@@ -446,32 +450,15 @@ class MultiChoiceQuizGameViewModel(
     }
 
     private fun onUserAnswered(isKnown: Boolean, cardId: String) {
-        val card = getLocalCardById(cardId)
-        val newStatus = spaceRepetitionHelper.status(card, isKnown)
-        val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-        val lastRevision = spaceRepetitionHelper.today()
-        val nextForgettingDate = spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-        val newCard = ImmutableCard(
-            card.cardId,
-            card.cardContent,
-            card.cardDefinition,
-            card.deckId,
-            card.isFavorite,
-            card.revisionTime,
-            card.missedTime,
-            card.creationDate,
-            lastRevision,
-            newStatus,
-            nextForgettingDate,
-            nextRevision,
-            card.cardType,
-            card.cardContentLanguage,
-            card.cardDefinitionLanguage,
-        )
-        updateCard(newCard)
+        val cardWithPosition = getLocalCardWithPositionById(cardId)
+        val card = cardWithPosition.card
+        val cardPosition = cardWithPosition.position
+        val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
+        updateCard(newCard, cardPosition)
     }
 
-    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
+    fun updateCard(card: ImmutableCard, position: Int) = viewModelScope.launch {
+        cardList[position] = card
         repository.updateCard(card)
     }
 

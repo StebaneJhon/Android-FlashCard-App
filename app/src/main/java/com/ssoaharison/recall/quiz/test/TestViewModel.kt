@@ -3,6 +3,7 @@ package com.ssoaharison.recall.quiz.test
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.room.Index
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
@@ -233,28 +234,7 @@ class TestViewModel(
 
     private fun upOrDowngradeCard(isKnown: Boolean, card: ImmutableCard?) {
         if (card != null) {
-            val newStatus = spaceRepetitionHelper.status(card, isKnown)
-            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, isKnown, newStatus)
-            val lastRevision = spaceRepetitionHelper.today()
-            val nextForgettingDate =
-                spaceRepetitionHelper.nextForgettingDate(card, isKnown, newStatus)
-            val newCard = ImmutableCard(
-                card.cardId,
-                card.cardContent,
-                card.cardDefinition,
-                card.deckId,
-                card.isFavorite,
-                card.revisionTime,
-                card.missedTime,
-                card.creationDate,
-                lastRevision,
-                newStatus,
-                nextForgettingDate,
-                nextRevision,
-                card.cardType,
-                card.cardContentLanguage,
-                card.cardDefinitionLanguage
-            )
+            val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
             updateCard(newCard)
         }
     }
