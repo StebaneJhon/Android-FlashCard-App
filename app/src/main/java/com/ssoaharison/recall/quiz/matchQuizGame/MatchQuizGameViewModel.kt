@@ -1,13 +1,16 @@
 package com.ssoaharison.recall.quiz.matchQuizGame
 
+import android.text.format.DateUtils.formatElapsedTime
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.MatchQuizGameItemModel
+import com.ssoaharison.recall.util.Calculations
 import com.ssoaharison.recall.util.MatchQuizGameClickStatus
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,6 +32,8 @@ class MatchQuizGameViewModel : ViewModel() {
     private var restCard = 0
     private var numMove = 0
     private var numMiss = 0
+    private var revisedCardsCount = 0
+    private var missedAnswersCount = 0
 
     fun initCardList(gameCards: List<ImmutableCard?>) {
         cardList = gameCards
@@ -54,6 +59,7 @@ class MatchQuizGameViewModel : ViewModel() {
             it.isMatched = false
             it.isActive = false
         }
+        revisedCardsCount = onBoarItems.size / 2
     }
 
     fun initQuiz() {
@@ -67,6 +73,11 @@ class MatchQuizGameViewModel : ViewModel() {
     fun getUserPerformance() = (100/numMove) * numMiss
 
     fun getOnBoardCardSum(boardSize: MatchQuizGameBorderSize) = boardSize.getCardCount()
+    fun getRevisedCardsCount() = revisedCardsCount
+
+    fun getUserAnswerAccuracyFraction() = Calculations().fractionOfPart(revisedCardsCount, missedAnswersCount)
+
+    fun getUserAnswerAccuracy() = Calculations().percentageOfRest(revisedCardsCount, missedAnswersCount)
 
 
     fun updateBoardCards(boardSize: MatchQuizGameBorderSize ) {
@@ -76,6 +87,9 @@ class MatchQuizGameViewModel : ViewModel() {
             fetchJob?.cancel()
             fetchJob = viewModelScope.launch {
                 val cards = getCards(cardList, boardSize.getCardCount())
+                revisedCardsCount = (cards!!.size / 2) ?: 0
+                missedAnswersCount = 0
+                stopTimer()
                 if (cards.isNullOrEmpty()) {
                     _actualCards.value = UiState.Error("Too Few Cards")
                 } else {
@@ -111,6 +125,7 @@ class MatchQuizGameViewModel : ViewModel() {
 
     private fun isMatching(item1: MatchQuizGameItemModel, item2: MatchQuizGameItemModel): Boolean {
         if (item1.text != item2.match) {
+            missedAnswersCount++
             return false
         }
         if (item2.text != item1.match) {
@@ -217,4 +232,37 @@ class MatchQuizGameViewModel : ViewModel() {
         restCard = quizCardList.size - passedCards
         return result
     }
+
+    private val _timer = MutableStateFlow(0L)
+    val timer = _timer.asStateFlow()
+    private var timerJob: Job? = null
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
+    }
+
+    fun formatTime(seconds: Long): String {
+        return formatElapsedTime(seconds)
+    }
+
 }

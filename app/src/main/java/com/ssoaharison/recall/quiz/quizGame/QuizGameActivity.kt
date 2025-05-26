@@ -16,7 +16,9 @@ import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -34,7 +36,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
@@ -128,7 +129,7 @@ class QuizGameActivity :
 
         binding.topAppBar.apply {
             title = getString(R.string.start_quiz_button_text)
-            subtitle = getString(R.string.title_flash_card_game, viewModel.deck?.deckName)
+            subtitle = viewModel.deck?.deckName
             setNavigationOnClickListener { finish() }
         }
 
@@ -348,6 +349,7 @@ class QuizGameActivity :
                 }
             })
         }
+        viewModel.startTimer()
     }
 
     private fun specifyKnownAndKnownNotActions() {
@@ -358,10 +360,10 @@ class QuizGameActivity :
                 delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
                     displayReview(
-                        viewModel.getKnownCardSum(),
-                        viewModel.getMissedCardSum(),
-                        viewModel.getQuizGameCardsSum(),
-                        viewModel.cardLeft()
+//                        viewModel.getKnownCardSum(),
+//                        viewModel.getMissedCardSum(),
+//                        viewModel.getQuizGameCardsSum(),
+//                        viewModel.cardLeft()
                     )
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
@@ -382,10 +384,10 @@ class QuizGameActivity :
                 delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
                     displayReview(
-                        viewModel.getKnownCardSum(),
-                        viewModel.getMissedCardSum(),
-                        viewModel.getQuizGameCardsSum(),
-                        viewModel.cardLeft()
+//                        viewModel.getKnownCardSum(),
+//                        viewModel.getMissedCardSum(),
+//                        viewModel.getQuizGameCardsSum(),
+//                        viewModel.cardLeft()
                     )
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
@@ -429,10 +431,10 @@ class QuizGameActivity :
                 delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
                     displayReview(
-                        viewModel.getKnownCardSum(),
-                        viewModel.getMissedCardSum(),
-                        viewModel.getQuizGameCardsSum(),
-                        viewModel.cardLeft()
+//                        viewModel.getKnownCardSum(),
+//                        viewModel.getMissedCardSum(),
+//                        viewModel.getQuizGameCardsSum(),
+//                        viewModel.cardLeft()
                     )
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
@@ -476,101 +478,108 @@ class QuizGameActivity :
     }
 
     private fun displayReview(
-        knownCardsSum: Int,
-        missedCardsSum: Int,
-        totalCardsSum: Int,
-        cardsLeft: Int,
     ) {
+        viewModel.pauseTimer()
         areKnownAndKnownNotButtonsVisible(false)
         areNextAndBackButtonsVisible(false)
         binding.vpCardHolder.visibility = View.GONE
         binding.lyOnNoMoreCardsErrorContainer.visibility = View.GONE
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
-            tvTotalCardsSumScoreLayout.text = totalCardsSum.toString()
-            tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
-            tvKnownCardsSumScoreLayout.text = knownCardsSum.toString()
+            tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
+//            tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
+            tvAccuracyScoreLayout.text = getString(R.string.text_accuracy_mini_game_review, viewModel.getUserAnswerAccuracy())
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.timer.collect { t ->
+                        tvTimeScoreLayout.text = viewModel.formatTime(t)
+                    }
+                }
+            }
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
-                knownCardsSum.toFloat() / totalCardsSum,
-                ContextCompat.getColor(this@QuizGameActivity, R.color.green50),
+                viewModel.getUserAnswerAccuracyFraction(),
+                ContextCompat.getColor(this@QuizGameActivity, R.color.red400),
                 ContextCompat.getColor(this@QuizGameActivity, R.color.green400),
             ) as Int
 
-            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
-                missedCardsSum.toFloat() / totalCardsSum,
+//            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
+//                missedCardsSum.toFloat() / totalCardsSum,
+//                ContextCompat.getColor(this@QuizGameActivity, R.color.red50),
+//                ContextCompat.getColor(this@QuizGameActivity, R.color.red400),
+//            ) as Int
+
+            val textColorKnownCards = ArgbEvaluator().evaluate(
+                viewModel.getUserAnswerAccuracyFraction(),
                 ContextCompat.getColor(this@QuizGameActivity, R.color.red50),
-                ContextCompat.getColor(this@QuizGameActivity, R.color.red400),
+                ContextCompat.getColor(this@QuizGameActivity, R.color.green50)
             ) as Int
 
-            val textColorKnownCards =
-                if (totalCardsSum / 2 < viewModel.getKnownCardSum())
-                    ContextCompat.getColor(this@QuizGameActivity, R.color.green50)
-                else ContextCompat.getColor(this@QuizGameActivity, R.color.green400)
+//            val textColorMissedCards =
+//                if (totalCardsSum / 2 < viewModel.getMissedCardSum())
+//                    ContextCompat.getColor(this@QuizGameActivity, R.color.red50)
+//                else ContextCompat.getColor(this@QuizGameActivity, R.color.red400)
 
-            val textColorMissedCards =
-                if (totalCardsSum / 2 < viewModel.getMissedCardSum())
-                    ContextCompat.getColor(this@QuizGameActivity, R.color.red50)
-                else ContextCompat.getColor(this@QuizGameActivity, R.color.red400)
-
-            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
-            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
-            tvKnownCardsSumScoreLayout.setTextColor(textColorKnownCards)
-            tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
+//            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
+//            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
+            tvAccuracyScoreLayout.setTextColor(textColorKnownCards)
+            tvAccuracyCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
+//            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@QuizGameActivity, MainActivity::class.java))
                 finish()
             }
 
-            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-                restartQuiz()
-            }
+//            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
+//                restartQuiz()
+//            }
+//
+//            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
+//                completelyRestartQuiz()
+//            }
 
-            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
-                completelyRestartQuiz()
-            }
+//            if (missedCardsSum == 0) {
+//                btReviseMissedCardScoreLayout.isActivated = false
+//                btReviseMissedCardScoreLayout.isVisible = false
+//            } else {
+//                btReviseMissedCardScoreLayout.isActivated = true
+//                btReviseMissedCardScoreLayout.isVisible = true
+//                btReviseMissedCardScoreLayout.setOnClickListener {
+//                    viewModel.updateActualCardsWithMissedCards()
+//                    quizJob?.cancel()
+//                    quizJob = lifecycleScope.launch {
+//                        viewModel.getQuizGameCards()
+//                        viewModel.externalQuizGameCards.collect { state ->
+//                            when (state) {
+//                                is UiState.Error -> {
+//                                    onNoCardToRevise()
+//                                }
+//
+//                                is UiState.Loading -> {}
+//                                is UiState.Success -> {
+//                                    binding.gameReviewContainerMQ.visibility = View.GONE
+//                                    binding.vpCardHolder.visibility = View.VISIBLE
+//                                    binding.vpCardHolder.setCurrentItem(0, true)
+//                                    viewModel.resetLocalQuizGameCardsState()
+//                                    launchTestQuizGame(state.data)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
 
-            if (missedCardsSum == 0) {
-                btReviseMissedCardScoreLayout.isActivated = false
-                btReviseMissedCardScoreLayout.isVisible = false
-            } else {
-                btReviseMissedCardScoreLayout.isActivated = true
-                btReviseMissedCardScoreLayout.isVisible = true
-                btReviseMissedCardScoreLayout.setOnClickListener {
-                    viewModel.updateActualCardsWithMissedCards()
-                    quizJob?.cancel()
-                    quizJob = lifecycleScope.launch {
-                        viewModel.getQuizGameCards()
-                        viewModel.externalQuizGameCards.collect { state ->
-                            when (state) {
-                                is UiState.Error -> {
-                                    onNoCardToRevise()
-                                }
-
-                                is UiState.Loading -> {}
-                                is UiState.Success -> {
-                                    binding.gameReviewContainerMQ.visibility = View.GONE
-                                    binding.vpCardHolder.visibility = View.VISIBLE
-                                    binding.vpCardHolder.setCurrentItem(0, true)
-                                    viewModel.resetLocalQuizGameCardsState()
-                                    launchTestQuizGame(state.data)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (cardsLeft <= 0) {
+            if (viewModel.cardLeft() <= 0) {
                 btContinueQuizScoreLayout.visibility = View.GONE
+                tvLeftCardsScoreLayout.text = getString(R.string.text_all_cards_learned)
             } else {
+                tvLeftCardsScoreLayout.text = getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
                 btContinueQuizScoreLayout.apply {
                     visibility = View.VISIBLE
-                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
+//                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
                     setOnClickListener {
                         viewModel.updateActualCards(getCardCount())
                         quizJob?.cancel()
@@ -613,6 +622,7 @@ class QuizGameActivity :
     private fun restartQuiz() {
         viewModel.initMissedCards()
         viewModel.initQuizGame()
+        viewModel.stopTimer()
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
         binding.vpCardHolder.setCurrentItem(0, true)

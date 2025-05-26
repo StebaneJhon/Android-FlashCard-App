@@ -17,7 +17,6 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -26,7 +25,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableCard
@@ -52,47 +53,11 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
-import com.ssoaharison.recall.util.DeckCategoryColorConst.BLACK
-import com.ssoaharison.recall.util.DeckCategoryColorConst.BLUE
-import com.ssoaharison.recall.util.DeckCategoryColorConst.CYAN
-import com.ssoaharison.recall.util.DeckCategoryColorConst.EMERALD
-import com.ssoaharison.recall.util.DeckCategoryColorConst.FUCHSIA
-import com.ssoaharison.recall.util.DeckCategoryColorConst.GREEN
-import com.ssoaharison.recall.util.DeckCategoryColorConst.GREY
-import com.ssoaharison.recall.util.DeckCategoryColorConst.INDIGO
-import com.ssoaharison.recall.util.DeckCategoryColorConst.LIME
-import com.ssoaharison.recall.util.DeckCategoryColorConst.ORANGE
-import com.ssoaharison.recall.util.DeckCategoryColorConst.PINK
-import com.ssoaharison.recall.util.DeckCategoryColorConst.PURPLE
-import com.ssoaharison.recall.util.DeckCategoryColorConst.RED
-import com.ssoaharison.recall.util.DeckCategoryColorConst.ROSE
-import com.ssoaharison.recall.util.DeckCategoryColorConst.SKY
-import com.ssoaharison.recall.util.DeckCategoryColorConst.TEAL
-import com.ssoaharison.recall.util.DeckCategoryColorConst.VIOLET
-import com.ssoaharison.recall.util.DeckCategoryColorConst.WHITE
-import com.ssoaharison.recall.util.DeckCategoryColorConst.YELLOW
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.BLUE_THEME
-import com.ssoaharison.recall.util.ThemeConst.CYAN_THEME
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
-import com.ssoaharison.recall.util.ThemeConst.EMERALD_THEME
-import com.ssoaharison.recall.util.ThemeConst.FUCHSIA_THEME
-import com.ssoaharison.recall.util.ThemeConst.GREEN_THEME
-import com.ssoaharison.recall.util.ThemeConst.INDIGO_THEME
-import com.ssoaharison.recall.util.ThemeConst.LIME_THEME
-import com.ssoaharison.recall.util.ThemeConst.ORANGE_THEME
-import com.ssoaharison.recall.util.ThemeConst.PINK_THEME
-import com.ssoaharison.recall.util.ThemeConst.PURPLE_THEME
-import com.ssoaharison.recall.util.ThemeConst.RED_THEME
-import com.ssoaharison.recall.util.ThemeConst.ROSE_THEME
-import com.ssoaharison.recall.util.ThemeConst.SKY_THEME
-import com.ssoaharison.recall.util.ThemeConst.TEAL_THEME
-import com.ssoaharison.recall.util.ThemeConst.VIOLET_THEME
-import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
-import com.ssoaharison.recall.util.ThemeConst.YELLOW_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -200,6 +165,7 @@ class FlashCardGameActivity :
                         }
 
                         is UiState.Success -> {
+                            viewModel.startTimer()
                             bindCard(state.data, getCardOrientation())
                         }
                     }
@@ -354,90 +320,105 @@ class FlashCardGameActivity :
     }
 
     private fun onQuizComplete() {
+        viewModel.pauseTimer()
         isFlashCardGameScreenHidden(true)
         binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
-            tvTotalCardsSumScoreLayout.text = viewModel.getTotalCards().toString()
-            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
-            tvKnownCardsSumScoreLayout.text = viewModel.getKnownCardSum().toString()
+            tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
+//            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
+//            val accuracy = viewModel.getUserAnswerAccuracy()
+            tvAccuracyScoreLayout.text = getString(R.string.text_accuracy_mini_game_review, viewModel.getUserAnswerAccuracy())
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.timer.collect {t ->
+                        tvTimeScoreLayout.text = viewModel.formatTime(t)
+                    }
+                }
+            }
 
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getKnownCardSum().toFloat() / viewModel.getTotalCards(),
-                ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50),
+                viewModel.getUserAnswerAccuracyFraction(),
+                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400),
                 ContextCompat.getColor(this@FlashCardGameActivity, R.color.green400),
             ) as Int
 
-            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getMissedCardSum().toFloat() / viewModel.getTotalCards(),
+//            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
+//                viewModel.getMissedCardSum().toFloat() / viewModel.getTotalCards(),
+//                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50),
+//                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400),
+//            ) as Int
+
+//            val textColorKnownCards =
+//                if (viewModel.getTotalCards() / 2 < viewModel.getKnownCardSum())
+//                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50)
+//                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50)
+
+            val textColorKnownCards = ArgbEvaluator().evaluate(
+                viewModel.getUserAnswerAccuracyFraction(),
                 ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50),
-                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400),
+                ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50)
             ) as Int
+//            val textColorMissedCards =
+//                if (viewModel.getTotalCards() / 2 < viewModel.getMissedCardSum())
+//                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50)
+//                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400)
 
-            val textColorKnownCards =
-                if (viewModel.getTotalCards() / 2 < viewModel.getKnownCardSum())
-                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50)
-                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.green400)
-
-            val textColorMissedCards =
-                if (viewModel.getTotalCards() / 2 < viewModel.getMissedCardSum())
-                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50)
-                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400)
-
-            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
-            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
-            tvKnownCardsSumScoreLayout.setTextColor(textColorKnownCards)
-            tvKnownCardsScoreLayout.setTextColor(textColorKnownCards)
+//            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
+//            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
+            tvAccuracyScoreLayout.setTextColor(textColorKnownCards)
+            tvAccuracyCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
+//            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
                 finish()
             }
-            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-                isFlashCardGameScreenHidden(false)
-                binding.lyOnNoMoreCardsErrorContainer.isVisible = false
-                binding.lyGameReviewContainer.isVisible = false
-                viewModel.initFlashCard()
-                viewModel.updateOnScreenCards()
-                if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
-                    initCardLayout()
-                } else {
-                    onCardOrientationBackFront()
-                }
-            }
-            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
-                completelyRestartFlashCard(getCardOrientation())
-            }
-            if (viewModel.getMissedCardSum() == 0) {
-                btReviseMissedCardScoreLayout.isActivated = false
-                btReviseMissedCardScoreLayout.isVisible = false
-            } else {
-                btReviseMissedCardScoreLayout.isActivated = true
-                btReviseMissedCardScoreLayout.isVisible = true
-                btReviseMissedCardScoreLayout.setOnClickListener {
-                    isFlashCardGameScreenHidden(false)
-                    binding.lyOnNoMoreCardsErrorContainer.isVisible = false
-                    binding.lyGameReviewContainer.isVisible = false
-                    viewModel.initCurrentCardPosition()
-                    viewModel.initProgress()
-                    viewModel.updateCardOnReviseMissedCards()
-                    viewModel.updateOnScreenCards()
-                    if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
-                        initCardLayout()
-                    } else {
-                        onCardOrientationBackFront()
-                    }
-                }
-            }
+//            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
+//                isFlashCardGameScreenHidden(false)
+//                binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+//                binding.lyGameReviewContainer.isVisible = false
+//                viewModel.initFlashCard()
+//                viewModel.updateOnScreenCards()
+//                if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
+//                    initCardLayout()
+//                } else {
+//                    onCardOrientationBackFront()
+//                }
+//            }
+//            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
+//                completelyRestartFlashCard(getCardOrientation())
+//            }
+//            if (viewModel.getMissedCardSum() == 0) {
+//                btReviseMissedCardScoreLayout.isActivated = false
+//                btReviseMissedCardScoreLayout.isVisible = false
+//            } else {
+//                btReviseMissedCardScoreLayout.isActivated = true
+//                btReviseMissedCardScoreLayout.isVisible = true
+//                btReviseMissedCardScoreLayout.setOnClickListener {
+//                    isFlashCardGameScreenHidden(false)
+//                    binding.lyOnNoMoreCardsErrorContainer.isVisible = false
+//                    binding.lyGameReviewContainer.isVisible = false
+//                    viewModel.initCurrentCardPosition()
+//                    viewModel.initProgress()
+//                    viewModel.updateCardOnReviseMissedCards()
+//                    viewModel.updateOnScreenCards()
+//                    if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
+//                        initCardLayout()
+//                    } else {
+//                        onCardOrientationBackFront()
+//                    }
+//                }
+//            }
 
             if (viewModel.getCardLeft() <= 0) {
                 btContinueQuizScoreLayout.visibility = View.GONE
+                tvLeftCardsScoreLayout.text = getString(R.string.text_all_cards_learned)
             } else {
+                tvLeftCardsScoreLayout.text = getString(R.string.text_cards_left_in_deck, viewModel.getCardLeft())
                 btContinueQuizScoreLayout.apply {
                     visibility = View.VISIBLE
-                    text = getString(R.string.cards_left_match_quiz_score, "${viewModel.getCardLeft()}")
                     setOnClickListener {
                         isFlashCardGameScreenHidden(false)
                         binding.lyOnNoMoreCardsErrorContainer.isVisible = false

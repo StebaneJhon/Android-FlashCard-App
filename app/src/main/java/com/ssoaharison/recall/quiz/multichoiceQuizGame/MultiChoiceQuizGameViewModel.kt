@@ -1,5 +1,6 @@
 package com.ssoaharison.recall.quiz.multichoiceQuizGame
 
+import android.text.format.DateUtils.formatElapsedTime
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.Calculations
 import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.TextType.CONTENT
@@ -19,6 +21,7 @@ import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +46,8 @@ class MultiChoiceQuizGameViewModel(
     private val roteLearningHelper = RoteLearningAlgorithmHelper()
     private var passedCards: Int = 0
     private var restCard = 0
+    private var revisedCardsCount = 0
+    private var missedAnswersCount = 0
 
     fun detectDefaultContentLanguages(): String? {
         var contentLanguage: String? = null
@@ -92,6 +97,8 @@ class MultiChoiceQuizGameViewModel(
     }
 
     fun onRestartQuiz() {
+        stopTimer()
+        missedAnswersCount = 0
         initTimedFlashCard()
         initPassedCards()
         initRestCards()
@@ -214,9 +221,11 @@ class MultiChoiceQuizGameViewModel(
     fun cardLeft() = restCard
 
     fun initTimedFlashCard() {
+        stopTimer()
         missedCards.clear()
         progress = 0
         currentCardPosition = 0
+        missedAnswersCount = 0
         localMultiChoiceCards.forEach {
             it.attemptTime = 0
             it.isCorrectlyAnswered = false
@@ -224,6 +233,7 @@ class MultiChoiceQuizGameViewModel(
                 a.isSelected = false
             }
         }
+        revisedCardsCount = localMultiChoiceCards.size
     }
 
     private fun getLocalCardWithPositionById(cardId: String): ImmutableCardWithPosition {
@@ -246,12 +256,17 @@ class MultiChoiceQuizGameViewModel(
         return null
     }
 
+    fun getRevisedCardsCount() = revisedCardsCount
+
     fun isUserChoiceCorrect(
         userChoice: MultiChoiceCardDefinitionModel,
         cardOrientation: String,
         currentCardPosition: Int
         ): Boolean {
         if (userChoice.isSelected || userChoice.position != null) {
+            if (!userChoice.isCorrect) {
+                missedAnswersCount++
+            }
             val temporaryCard = localMultiChoiceCards[currentCardPosition]
             val temporaryAlternative = temporaryCard.alternatives[userChoice.position!!]
             temporaryAlternative.isSelected = userChoice.isSelected
@@ -341,11 +356,27 @@ class MultiChoiceQuizGameViewModel(
         }
     }
 
+    fun getAnswersCount(): Int {
+        var answersCount = 0
+        localMultiChoiceCards.forEach { card ->
+            answersCount += card.alternatives.size
+        }
+        return answersCount
+    }
+
+    fun getUserAnswerAccuracy(): Int {
+        val answerCount = getAnswersCount()
+        return Calculations().percentageOfRest(answerCount, missedAnswersCount)
+    }
+
+    fun getUserAnswerAccuracyFraction() = Calculations().fractionOfPart(getAnswersCount(), missedAnswersCount)
+
     fun updateActualCards(amount: Int, cardOrientation: String) {
         val cards = getCardsAmount(amount)
         localMultiChoiceCards = cards!!.map { card ->
             localCardToMultiChoiceGameCardMode(card, cardOrientation)
         }.toMutableList()
+        revisedCardsCount = localMultiChoiceCards.size
     }
 
     private fun localCardToMultiChoiceGameCardMode(
@@ -406,6 +437,7 @@ class MultiChoiceQuizGameViewModel(
         localMultiChoiceCards = missedCards.map { card ->
             localCardToMultiChoiceGameCardMode(card, cardOrientation)
         }.toMutableList()
+        revisedCardsCount = localMultiChoiceCards.size
         missedCards.clear()
     }
 
@@ -442,6 +474,7 @@ class MultiChoiceQuizGameViewModel(
                         result = cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
                         passedCards += cardList.size.plus(50)
                     }
+
                 }
                 restCard = cardList.size - passedCards
                 result
@@ -468,6 +501,38 @@ class MultiChoiceQuizGameViewModel(
 
     fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
         repository.updateCardDefinitionLanguage(cardId, language)
+    }
+
+    private val _timer = MutableStateFlow(0L)
+    val timer = _timer.asStateFlow()
+    private var timerJob: Job? = null
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
+    }
+
+    fun formatTime(seconds: Long): String {
+        return formatElapsedTime(seconds)
     }
 
 }

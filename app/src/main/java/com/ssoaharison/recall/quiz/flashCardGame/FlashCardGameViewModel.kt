@@ -1,5 +1,6 @@
 package com.ssoaharison.recall.quiz.flashCardGame
 
+import android.text.format.DateUtils.formatElapsedTime
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -9,8 +10,10 @@ import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.Calculations
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,7 +24,7 @@ import java.io.IOException
 
 class FlashCardGameViewModel(
     private val repository: FlashCardRepository
-): ViewModel() {
+) : ViewModel() {
 
     private var fetchJob: Job? = null
     private var currentCardPosition: Int = 0
@@ -40,6 +43,8 @@ class FlashCardGameViewModel(
     private var progress: Int = 0
     private var passedCards = 0
     private var restCards = 0
+    private var missedCardsCount = 0
+    private var revisedCardsCount = 0
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
     private val roteLearningHelper = RoteLearningAlgorithmHelper()
@@ -63,27 +68,35 @@ class FlashCardGameViewModel(
             cardList.isEmpty() -> {
                 cardToRevise = null
             }
+
             cardList.size == amount -> {
                 cardToRevise = cardList
             }
+
             else -> {
                 if (passedCards <= cardList.size) {
                     if (restCards >= amount) {
-                        cardToRevise = cardList.slice(passedCards..passedCards.plus(amount).minus(1)).toMutableList()
+                        cardToRevise =
+                            cardList.slice(passedCards..passedCards.plus(amount).minus(1))
+                                .toMutableList()
                         passedCards += amount
                     } else {
-                        cardToRevise = cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
+                        cardToRevise =
+                            cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
                         passedCards += cardList.size.plus(50)
                     }
                 }
                 restCards = cardList.size - passedCards
             }
         }
+        revisedCardsCount = cardToRevise?.size ?: 0
     }
 
     fun updateCardOnReviseMissedCards() {
         cardToRevise = missedCards.clone() as MutableList<ImmutableCard?>
+        revisedCardsCount = cardToRevise?.size ?: 0
         missedCards.clear()
+        missedCardsCount = 0
     }
 
 //    private val topCard
@@ -110,7 +123,8 @@ class FlashCardGameViewModel(
     }
 
     fun cardToReviseOnly() {
-        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
+        cardList =
+            cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
     }
 
     fun restoreCardList() {
@@ -121,7 +135,9 @@ class FlashCardGameViewModel(
         if (!isKnown) {
             val cardToRepeat = cardToRevise?.get(currentCardPosition)
             missedCards.add(cardToRepeat)
-            val cardToRepeatNewPosition = roteLearningHelper.onRepeatCardPosition(cardToRevise!!, currentCardPosition)
+            missedCardsCount++
+            val cardToRepeatNewPosition =
+                roteLearningHelper.onRepeatCardPosition(cardToRevise!!, currentCardPosition)
             cardToRevise?.add(cardToRepeatNewPosition, cardToRepeat)
         }
         onCardSwiped(isKnown)
@@ -139,15 +155,16 @@ class FlashCardGameViewModel(
         cardToRevise?.get(currentCardPosition)?.let {
             if (it in missedCards) {
                 missedCards.remove(it)
+                missedCardsCount--
             } else {
-                progress -= 100/getTotalCards()
+                progress -= 100 / getTotalCards()
             }
         }
         updateOnScreenCards()
     }
 
     fun getKnownCardSum(): Int {
-        cardToRevise?.let { return it.size - missedCards.size }
+        cardToRevise?.let { return it.size - missedCardsCount }
         return 0
     }
 
@@ -160,7 +177,7 @@ class FlashCardGameViewModel(
 
     fun getCurrentCardNumber() = currentCardPosition.plus(1)
 
-    fun getMissedCardSum() = missedCards.size
+    fun getMissedCardSum() = missedCardsCount
 
     fun getMissedCards(): MutableList<ImmutableCard?> {
         val newCards = arrayListOf<ImmutableCard?>()
@@ -168,11 +185,25 @@ class FlashCardGameViewModel(
         return newCards
     }
 
+    fun getUserAnswerAccuracy(): Int {
+        cardToRevise?.let {
+            return Calculations().percentageOfRest(it.size, missedCardsCount)
+        }
+        return 0
+    }
+
+    fun getUserAnswerAccuracyFraction(): Float {
+        cardToRevise?.let {
+            return Calculations().fractionOfPart(it.size, missedCardsCount)
+        }
+        return 0.toFloat()
+    }
+
     private fun getBottomCard(
         cards: List<ImmutableCard?>,
         currentCartPosition: Int
     ): ImmutableCard? {
-        return if (currentCartPosition > cards.size-2) {
+        return if (currentCartPosition > cards.size - 2) {
             null
         } else {
             cards[currentCartPosition + 1]
@@ -183,7 +214,12 @@ class FlashCardGameViewModel(
         return cards[currentCartPosition]
     }
 
-    private fun getActualFlashCardGameModel(cards: List<ImmutableCard?>, currentCartPosition: Int): FlashCardGameModel {
+    fun getRevisedCardsCount() = revisedCardsCount
+
+    private fun getActualFlashCardGameModel(
+        cards: List<ImmutableCard?>,
+        currentCartPosition: Int
+    ): FlashCardGameModel {
         return FlashCardGameModel(
             top = getTopCard(cards, currentCardPosition)!!,
             bottom = getBottomCard(cards, currentCardPosition)
@@ -191,7 +227,9 @@ class FlashCardGameViewModel(
     }
 
     fun initFlashCard() {
+        stopTimer()
         missedCards.clear()
+        missedCardsCount = 0
         progress = 0
         currentCardPosition = 0
     }
@@ -238,12 +276,12 @@ class FlashCardGameViewModel(
         }
     }
 
-     private fun onCardSwiped(isKnown: Boolean) {
-         val card = cardToRevise?.get(currentCardPosition)
-         if (card != null) {
-             val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
-             updateCard(newCard, currentCardPosition)
-         }
+    private fun onCardSwiped(isKnown: Boolean) {
+        val card = cardToRevise?.get(currentCardPosition)
+        if (card != null) {
+            val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
+            updateCard(newCard, currentCardPosition)
+        }
     }
 
     fun updateCard(
@@ -262,9 +300,41 @@ class FlashCardGameViewModel(
         repository.updateCardDefinitionLanguage(cardId, language)
     }
 
+    private val _timer = MutableStateFlow(0L)
+    val timer = _timer.asStateFlow()
+    private var timerJob: Job? = null
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
+    }
+
+    fun formatTime(seconds: Long): String {
+        return formatElapsedTime(seconds)
+    }
 }
 
-class FlashCardGameViewModelFactory(private val repository: FlashCardRepository): ViewModelProvider.Factory {
+class FlashCardGameViewModelFactory(private val repository: FlashCardRepository) :
+    ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(FlashCardGameViewModel::class.java)) {

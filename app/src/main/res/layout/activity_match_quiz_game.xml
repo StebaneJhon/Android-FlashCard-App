@@ -25,7 +25,7 @@
             app:menu="@menu/mn_flash_card_top_app_bar"
             app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
-            app:title="@string/title_flash_card_game" />
+            app:title="@string/text_accuracy_mini_game_review" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -40,7 +40,7 @@
         app:layout_constraintTop_toBottomOf="@+id/topToolBar" />
 
     <LinearLayout
-        android:id="@+id/game_score_container"
+        android:id="@+id/gameReviewContainerMQ"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"
@@ -48,9 +48,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topToolBar">
+
         <include
-            android:id="@+id/ly_game_score"
-            layout="@layout/ly_matching_quiz_game_score" />
+            android:id="@+id/gameReviewLayoutMQ"
+            layout="@layout/layout_score" />
     </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:id="@+id/game_score_container"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:visibility="gone"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/topToolBar">-->
+<!--        <include-->
+<!--            android:id="@+id/ly_game_score"-->
+<!--            layout="@layout/ly_matching_quiz_game_score" />-->
+<!--    </LinearLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

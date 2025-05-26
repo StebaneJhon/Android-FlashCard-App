@@ -1,5 +1,6 @@
 package com.ssoaharison.recall.quiz.quizGame
 
+import android.text.format.DateUtils.formatElapsedTime
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -9,9 +10,11 @@ import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.Calculations
 import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -34,6 +37,8 @@ class TestQuizGameViewModel(
     private val roteLearningHelper = RoteLearningAlgorithmHelper()
     private var passedCards: Int = 0
     private var restCard = 0
+    private var revisedCardsCount = 0
+    private var missedAnswersCount = 0
 
     fun initCardList(gameCards: MutableList<ImmutableCard?>) {
         cardList = gameCards
@@ -101,12 +106,14 @@ class TestQuizGameViewModel(
         localQuizGameCards = cards?.map { card ->
             localCardToQuizGameCardModel(card)
         }!!.toMutableList()
+        revisedCardsCount = localQuizGameCards.size
     }
 
     fun updateActualCardsWithMissedCards() {
         localQuizGameCards = missedCards.map { card ->
             localCardToQuizGameCardModel(card)
         }.toMutableList()
+        revisedCardsCount = localQuizGameCards.size
         missedCards.clear()
     }
 
@@ -201,6 +208,8 @@ class TestQuizGameViewModel(
                 d.isSelected = false
             }
         }
+        revisedCardsCount = localQuizGameCards.size
+        missedAnswersCount = 0
     }
 
     fun resetLocalQuizGameCardsState() {
@@ -212,6 +221,7 @@ class TestQuizGameViewModel(
                 d.isSelected = false
             }
         }
+        missedAnswersCount = 0
     }
 
     fun initCardFlipCount(cardPosition: Int) {
@@ -236,6 +246,7 @@ class TestQuizGameViewModel(
             val cardToRepeat = localCardToQuizGameCardModel(currentCard)
             val cardToRepeatNewPosition = roteLearningHelper.onRepeatCardPosition(localQuizGameCards, cardPosition)
             localQuizGameCards.add(cardToRepeatNewPosition, cardToRepeat)
+            missedAnswersCount++
         }
     }
 
@@ -249,11 +260,24 @@ class TestQuizGameViewModel(
             missedCards.add(getLocalCardWithPositionById(actualCard.cardId)?.card)
             val currentCard = localCardToQuizGameCardModel(getLocalCardWithPositionById(actualCard.cardId)?.card)
             localQuizGameCards.add(currentCard)
+            missedAnswersCount++
         } else {
             actualCard.isCorrectlyAnswered = true
         }
         initCardFlipCount(cardPosition)
     }
+
+    fun getAnswersCount(): Int {
+        var answersCount = 0
+        localQuizGameCards.forEach { card ->
+            answersCount += card.cardDefinition.size
+        }
+        return answersCount
+    }
+
+    fun getUserAnswerAccuracyFraction() = Calculations().fractionOfPart(getAnswersCount(), missedAnswersCount)
+
+    fun getUserAnswerAccuracy() = Calculations().percentageOfRest(getAnswersCount(), missedAnswersCount)
 
     private fun getLocalCardWithPositionById(cardId: String): ImmutableCardWithPosition? {
         var i = 0
@@ -299,6 +323,8 @@ class TestQuizGameViewModel(
         }
     }
 
+    fun getRevisedCardsCount() = revisedCardsCount
+
     private fun upOrDowngradeCard(isKnown: Boolean, cardId: String) {
         val cardWithPosition = getLocalCardWithPositionById(cardId)
         val card = cardWithPosition?.card
@@ -323,6 +349,38 @@ class TestQuizGameViewModel(
 
     fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
         repository.updateCardDefinitionLanguage(cardId, language)
+    }
+
+    private val _timer = MutableStateFlow(0L)
+    val timer = _timer.asStateFlow()
+    private var timerJob: Job? = null
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
+    }
+
+    fun formatTime(seconds: Long): String {
+        return formatElapsedTime(seconds)
     }
 
 }

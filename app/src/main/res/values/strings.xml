@@ -43,7 +43,7 @@
     <string name="timed_flash_card_text_button">Timed Flash Card</string>
     <string name="known_button_text">Known</string>
     <string name="no_button_text">known Not</string>
-    <string name="total_revised_cards_text">Revised cards:</string>
+    <string name="total_revised_cards_text">Revised cards</string>
     <string name="multiple_choice_quiz_button_text">Multiple-choice quiz</string>
     <string name="warning_icon">Warning Icon</string>
     <string name="revised_cards_sum_profile">Revised cards: %1$s</string>
@@ -53,12 +53,14 @@
     <string name="bt_match_quiz_mode_text">Matching cards</string>
     <string name="title_match_quiz_score">You did it!</string>
     <string name="cards_left_match_quiz_score">You have %1$s cards left in your deck what\'s next?</string>
-    <string name="bt_continue_match_quiz_score">%1$s cards left. Continue?</string>
+    <string name="bt_continue_match_quiz_score">Revise more cards</string>
+    <string name="text_cards_left_in_deck">%1$d cards left in this deck.</string>
+    <string name="text_all_cards_learned">All cards learned. Well done!</string>
     <string name="bt_restart_match_quiz_score">RESTART</string>
     <string name="bt_back_to_deck_match_quiz_score">BACK TO DECK</string>
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
-    <string name="title_flash_card_game">%1$s</string>
+    <string name="text_accuracy_mini_game_review">%1$d%%</string>
     <string name="tx_flash_card_game_progression">%1$s/%2$s</string>
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
     <string name="text_back">Back</string>
@@ -267,4 +269,7 @@
     <string name="text_total">Total</string>
     <string name="content_description_icon_clickable_item">Icon clickable item</string>
     <string name="message_on_card_already_answered">Card answered correctly! Precede by tapping at the left arrow.</string>
+    <string name="text_congratulations">Congratulations!</string>
+    <string name="text_accuracy">Accuracy</string>
+    <string name="text_time_in_min">Time</string>
 </resources>

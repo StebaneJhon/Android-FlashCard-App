@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.quiz.writingQuizGame
 
 import android.icu.text.Transliterator.Position
+import android.text.format.DateUtils.formatElapsedTime
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -12,12 +13,14 @@ import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.Calculations
 import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +46,8 @@ class WritingQuizGameViewModel(
     private var originalCardList: List<ImmutableCard?>? = null
     private var passedCards: Int = 0
     private var restCard = 0
+    private var revisedCardsCount = 0
+    private var missedAnswersCount = 0
 
 
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
@@ -88,6 +93,7 @@ class WritingQuizGameViewModel(
     }
 
     fun onCardMissed(cardId: String) {
+        missedAnswersCount++
         val missedCard = getLocalCardById(cardId)?.card
         if (missedCard !in missedCards) {
             missedCards.add(missedCard)
@@ -115,6 +121,20 @@ class WritingQuizGameViewModel(
         return newCards
     }
 
+    fun getRevisedCardsCount() = revisedCardsCount
+
+    fun getAnswersCount(): Int {
+        var answersCount = 0
+        localWritingCards.forEach { card ->
+            answersCount += card.answers.size
+        }
+        return answersCount
+    }
+
+    fun getUserAnswerAccuracyFraction() = Calculations().fractionOfPart(getAnswersCount(), missedAnswersCount)
+
+    fun getUserAnswerAccuracy() = Calculations().percentageOfRest(getAnswersCount(), missedAnswersCount)
+
     fun cardLeft() = restCard
 
     fun cardSum() = cardList.size
@@ -128,6 +148,9 @@ class WritingQuizGameViewModel(
             it.attemptTime = 0
             it.isCorrectlyAnswered = false
         }
+        revisedCardsCount = localWritingCards.size
+        missedAnswersCount = 0
+        stopTimer()
     }
 
     fun increaseAttemptTime() {
@@ -169,7 +192,6 @@ class WritingQuizGameViewModel(
                 localWritingCards.add(cardToReviseNewPosition, newCard)
             }
         }
-
         onCardMissed(cardId)
         return false
     }
@@ -354,11 +376,13 @@ class WritingQuizGameViewModel(
     fun updateActualCards(amount: Int, cardOrientation: String) {
         val cards = getCardsAmount(cardList, amount)
         localWritingCards = cardsToWritingQuizGameItem(cards!!, cardOrientation).toMutableList()
+        revisedCardsCount = localWritingCards.size
     }
 
     fun updateActualCardsWithMissedCards(cardOrientation: String) {
         val cards = missedCards
         localWritingCards = cardsToWritingQuizGameItem(cards, cardOrientation).toMutableList()
+        revisedCardsCount = localWritingCards.size
     }
 
     fun getCardByPosition(position: Int) = localWritingCards[position]
@@ -423,6 +447,38 @@ class WritingQuizGameViewModel(
 
     fun updateCardDefinitionLanguage(cardId: String, language: String) = viewModelScope.launch {
         repository.updateCardDefinitionLanguage(cardId, language)
+    }
+
+    private val _timer = MutableStateFlow(0L)
+    val timer = _timer.asStateFlow()
+    private var timerJob: Job? = null
+
+    fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                _timer.value++
+            }
+        }
+    }
+
+    fun pauseTimer() {
+        timerJob?.cancel()
+    }
+
+    fun stopTimer() {
+        _timer.value = 0
+        timerJob?.cancel()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timerJob?.cancel()
+    }
+
+    fun formatTime(seconds: Long): String {
+        return formatElapsedTime(seconds)
     }
 
 }

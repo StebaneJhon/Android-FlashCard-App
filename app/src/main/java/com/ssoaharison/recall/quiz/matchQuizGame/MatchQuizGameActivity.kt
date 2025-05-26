@@ -10,7 +10,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableCard
@@ -24,7 +26,6 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
@@ -103,7 +104,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
 
         binding.topAppBar.apply {
             title = getString(R.string.bt_match_quiz_mode_text)
-            subtitle = getString(R.string.title_flash_card_game, viewModel.deck.deckName)
+            subtitle = viewModel.deck.deckName
             setNavigationOnClickListener { finish() }
         }
 
@@ -146,7 +147,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
     }
 
     private fun displayMatchQuizGameItems(items: List<MatchQuizGameItemModel>) {
-        binding.gameScoreContainer.visibility = View.GONE
+        binding.gameReviewContainerMQ.visibility = View.GONE
         binding.rvMatchingGame.visibility = View.VISIBLE
 
         val boardSize = when {
@@ -179,6 +180,7 @@ class MatchQuizGameActivity : AppCompatActivity() {
             layoutManager = GridLayoutManager(this@MatchQuizGameActivity, boardSize.getWidth())
             setHasFixedSize(true)
         }
+        viewModel.startTimer()
     }
 
     private fun getBoardSize(): MatchQuizGameBorderSize {
@@ -283,55 +285,47 @@ class MatchQuizGameActivity : AppCompatActivity() {
     }
 
     private fun onQuizComplete(onBoardItems: List<MatchQuizGameItemModel>) {
-        binding.gameScoreContainer.visibility = View.VISIBLE
+        viewModel.pauseTimer()
+        binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.rvMatchingGame.visibility = View.GONE
-        binding.lyGameScore.apply {
-            tvMoveNumberSumLayout.text = viewModel.getNumMove().toString()
-            tvMissedMoveSumLayout.text = viewModel.getNumMiss().toString()
-            tvTotalCardSumScoreLayout.text = viewModel.getOnBoardCardSum(getBoardSize()).toString()
 
+        binding.gameReviewLayoutMQ.apply {
+            tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
+            tvAccuracyScoreLayout.text = getString(R.string.text_accuracy_mini_game_review, viewModel.getUserAnswerAccuracy())
+            lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.timer.collect { t ->
+                        tvTimeScoreLayout.text = viewModel.formatTime(t)
+                    }
+                }
+            }
             val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getNumMove().toFloat() / viewModel.getOnBoardCardSum(getBoardSize()),
-                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50),
+                viewModel.getUserAnswerAccuracyFraction(),
+                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400),
                 ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400),
             ) as Int
-
-            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
-                viewModel.getNumMiss().toFloat() / viewModel.getOnBoardCardSum(getBoardSize()),
+            val textColorKnownCards = ArgbEvaluator().evaluate(
+                viewModel.getUserAnswerAccuracyFraction(),
                 ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50),
-                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400),
+                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50),
             ) as Int
-
-            val textColorKnownCards =
-                if (viewModel.getOnBoardCardSum(getBoardSize()) / 2 < viewModel.getNumMove())
-                    ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50)
-                else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400)
-
-            val textColorMissedCards =
-                if (viewModel.getOnBoardCardSum(getBoardSize()) / 2 < viewModel.getNumMiss())
-                    ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50)
-                else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400)
-
-            tvMissedMoveSumLayout.setTextColor(textColorMissedCards)
-            tvMissedMoveLayout.setTextColor(textColorMissedCards)
-            tvMoveNumberSumLayout.setTextColor(textColorKnownCards)
-            tvMoveNumberLayout.setTextColor(textColorKnownCards)
+            tvAccuracyScoreLayout.setTextColor(textColorKnownCards)
+            tvAccuracyCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
-
-            btBackToDeck.setOnClickListener {
+            btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@MatchQuizGameActivity, MainActivity::class.java))
+                finish()
             }
-            btRestart.setOnClickListener {
-                displayMatchQuizGameItems(onBoardItems)
-            }
-            if (viewModel.cardLeft() < 0) {
-                btContinue.visibility = View.GONE
+
+            if (viewModel.cardLeft() <= 0) {
+                btContinueQuizScoreLayout.visibility = View.GONE
+                tvLeftCardsScoreLayout.text = getString(R.string.text_all_cards_learned)
             } else {
-                btContinue.apply {
-                    text =
-                        getString(R.string.cards_left_match_quiz_score, "${viewModel.cardLeft()}")
+                tvLeftCardsScoreLayout.text = getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
+                btContinueQuizScoreLayout.apply {
+                    visibility = View.VISIBLE
+//                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
                     setOnClickListener {
                         setUpBoard()
                     }
@@ -339,6 +333,62 @@ class MatchQuizGameActivity : AppCompatActivity() {
             }
 
         }
+
+
+//        binding.lyGameScore.apply {
+//            tvMoveNumberSumLayout.text = viewModel.getNumMove().toString()
+//            tvMissedMoveSumLayout.text = viewModel.getNumMiss().toString()
+//            tvTotalCardSumScoreLayout.text = viewModel.getOnBoardCardSum(getBoardSize()).toString()
+//
+//            val knownCardsBackgroundColor = ArgbEvaluator().evaluate(
+//                viewModel.getNumMove().toFloat() / viewModel.getOnBoardCardSum(getBoardSize()),
+//                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50),
+//                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400),
+//            ) as Int
+//
+//            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
+//                viewModel.getNumMiss().toFloat() / viewModel.getOnBoardCardSum(getBoardSize()),
+//                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50),
+//                ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400),
+//            ) as Int
+//
+//            val textColorKnownCards =
+//                if (viewModel.getOnBoardCardSum(getBoardSize()) / 2 < viewModel.getNumMove())
+//                    ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green50)
+//                else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.green400)
+//
+//            val textColorMissedCards =
+//                if (viewModel.getOnBoardCardSum(getBoardSize()) / 2 < viewModel.getNumMiss())
+//                    ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red50)
+//                else ContextCompat.getColor(this@MatchQuizGameActivity, R.color.red400)
+//
+//            tvMissedMoveSumLayout.setTextColor(textColorMissedCards)
+//            tvMissedMoveLayout.setTextColor(textColorMissedCards)
+//            tvMoveNumberSumLayout.setTextColor(textColorKnownCards)
+//            tvMoveNumberLayout.setTextColor(textColorKnownCards)
+//
+//            cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
+//            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
+//
+//            btBackToDeck.setOnClickListener {
+//                startActivity(Intent(this@MatchQuizGameActivity, MainActivity::class.java))
+//            }
+//            btRestart.setOnClickListener {
+//                displayMatchQuizGameItems(onBoardItems)
+//            }
+//            if (viewModel.cardLeft() < 0) {
+//                btContinue.visibility = View.GONE
+//            } else {
+//                btContinue.apply {
+//                    text =
+//                        getString(R.string.cards_left_match_quiz_score, "${viewModel.cardLeft()}")
+//                    setOnClickListener {
+//                        setUpBoard()
+//                    }
+//                }
+//            }
+//
+//        }
     }
 
     private fun setUpBoard() {

@@ -26,7 +26,7 @@
             app:menu="@menu/mn_flash_card_top_app_bar"
             app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
-            app:title="@string/title_flash_card_game" />
+            app:title="@string/text_accuracy_mini_game_review" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
