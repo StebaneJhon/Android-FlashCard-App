@@ -19,6 +19,7 @@ data class QuizGameCardModel(
     var attemptTime: Int = 0,
     var isCorrectlyAnswered: Boolean = false,
     var flipCount: Int = 0,
+    var isActualOrPassed: Boolean = false,
 ): Parcelable {
     fun isAllAnswerSelected(): Boolean {
         cardDefinition.forEach { definition ->
@@ -53,5 +54,11 @@ data class QuizGameCardModel(
                 isCorrectlyAnswered = isAllAnswerSelected()
             }
         }
+    }
+    fun setAsActualOrPassed() {
+        isActualOrPassed = true
+    }
+    fun setAsNotActualOrNotPassed() {
+        isActualOrPassed = false
     }
 }

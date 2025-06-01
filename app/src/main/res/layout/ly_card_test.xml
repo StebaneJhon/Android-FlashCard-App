@@ -13,19 +13,21 @@
         android:layout_height="match_parent"
         android:alpha="0"
         android:layout_margin="@dimen/space_md"
-        app:cardCornerRadius="@dimen/card_radius">
+        app:cardCornerRadius="@dimen/card_radius"
+        app:strokeWidth="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainerHigh"
+            android:backgroundTint="?colorSurfaceContainer"
             android:paddingTop="@dimen/space_lg"
             android:paddingStart="@dimen/space_lg"
             android:paddingEnd="@dimen/space_lg"
             android:paddingBottom="@dimen/space_md">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_back_progression"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,7 +80,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_back_progression"
+                app:layout_constraintTop_toBottomOf="@+id/bt_speak_back"
                 tools:text="1. What is the capital of Madagascar?" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -90,19 +92,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="@dimen/space_md"
-        app:cardCornerRadius="@dimen/card_radius">
+        app:cardCornerRadius="@dimen/card_radius"
+        app:strokeWidth="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
-            android:backgroundTint="?colorSurfaceContainerLow"
+            android:backgroundTint="?colorSurfaceContainer"
             android:paddingTop="@dimen/space_lg"
             android:paddingStart="@dimen/space_lg"
             android:paddingEnd="@dimen/space_lg"
             android:paddingBottom="@dimen/space_md">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_front_progression"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -143,7 +147,6 @@
                 android:id="@+id/tv_content"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_marginTop="@dimen/space_sm"
                 android:fontFamily="@font/montserrat_bold"
                 android:gravity="center"
                 android:textAlignment="center"
@@ -155,7 +158,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_front_progression"
+                app:layout_constraintTop_toBottomOf="@+id/bt_speak"
                 tools:text="1. What is the capital of Madagascar?" />
 
             <TextView
@@ -185,7 +188,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative1" />
 
             <com.google.android.material.button.MaterialButton
@@ -203,7 +206,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_alternative3"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative2" />
 
             <com.google.android.material.button.MaterialButton
@@ -221,7 +224,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative3" />
 
             <com.google.android.material.button.MaterialButton
@@ -239,7 +242,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative5"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative4" />
 
             <com.google.android.material.button.MaterialButton
@@ -257,7 +260,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative5" />
 
             <com.google.android.material.button.MaterialButton
@@ -275,7 +278,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_alternative7"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative6" />
 
             <com.google.android.material.button.MaterialButton
@@ -293,7 +296,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative7" />
 
             <com.google.android.material.button.MaterialButton
@@ -311,7 +314,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative9"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative8" />
 
             <com.google.android.material.button.MaterialButton
@@ -329,7 +332,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative9" />
 
             <com.google.android.material.button.MaterialButton
@@ -347,7 +350,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:strokeColor="?colorSurfaceContainerHigh"
+                app:strokeColor="?colorSurfaceContainer"
                 tools:text="Alternative10" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

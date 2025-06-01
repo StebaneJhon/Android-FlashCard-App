@@ -19,6 +19,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -36,6 +38,9 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
+import com.ssoaharison.recall.quiz.multichoiceQuizGame.MultiChoiceGameCardModel
+import com.ssoaharison.recall.quiz.multichoiceQuizGame.MultiChoiceQuizProgressionAdapter
+import com.ssoaharison.recall.quiz.multichoiceQuizGame.QuizGameProgressBarAdapter
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
@@ -67,6 +72,7 @@ class QuizGameActivity :
 
     private var deckWithCards: ImmutableDeckWithCards? = null
     private lateinit var quizGameAdapter: QuizGameAdapter
+    private lateinit var quizGameProgressBarAdapter: QuizGameProgressBarAdapter
 
     private var tts: TextToSpeech? = null
     private var quizJob: Job? = null
@@ -209,6 +215,7 @@ class QuizGameActivity :
                     viewModel.updateMultipleAnswerAndChoiceCardOnAnswered(userAnswer, binding.vpCardHolder.currentItem)
                 }
                 quizGameAdapter.notifyDataSetChanged()
+                quizGameProgressBarAdapter.notifyDataSetChanged()
                 if (viewModel.isAllAnswerSelected(userAnswer, binding.vpCardHolder.currentItem)) {
                     optionsState(userAnswer, actualCard)
                 }
@@ -352,8 +359,28 @@ class QuizGameActivity :
         viewModel.startTimer()
     }
 
+    private fun displayProgression(data: List<QuizGameCardModel>, recyclerView: RecyclerView) {
+        quizGameProgressBarAdapter = QuizGameProgressBarAdapter(
+            cardList = data,
+            context = this,
+            recyclerView
+        )
+        binding.rvMiniGameProgression.apply {
+            adapter = quizGameProgressBarAdapter
+            layoutManager = LinearLayoutManager(
+                this@QuizGameActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+    }
+
     private fun specifyKnownAndKnownNotActions() {
         binding.btKnown.setOnClickListener {
+            if (binding.vpCardHolder.currentItem < viewModel.getQuizGameCardsSum() - 1) {
+                viewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem.plus(1))
+                quizGameProgressBarAdapter.notifyDataSetChanged()
+            }
             viewModel.updateSingleAnsweredCardOnKnownOrKnownNot( true, binding.vpCardHolder.currentItem )
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -378,6 +405,10 @@ class QuizGameActivity :
             }
         }
         binding.btKnownNot.setOnClickListener {
+            if (binding.vpCardHolder.currentItem < viewModel.getQuizGameCardsSum() - 1) {
+                viewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem.plus(1))
+                quizGameProgressBarAdapter.notifyDataSetChanged()
+            }
             viewModel.updateSingleAnsweredCardOnKnownOrKnownNot( false, binding.vpCardHolder.currentItem)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -404,16 +435,19 @@ class QuizGameActivity :
     }
 
     private fun specifyNextAndBackActions() {
+        val currentCardIndex = binding.vpCardHolder.currentItem
         if (binding.vpCardHolder.currentItem > 0) {
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
+                viewModel.setCardAsNotActualOrNotPassedByPosition(binding.vpCardHolder.currentItem)
+                quizGameProgressBarAdapter.notifyDataSetChanged()
                 viewModel.initCardFlipCount(binding.vpCardHolder.currentItem)
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
-                    val itemPosition = binding.vpCardHolder.currentItem
+//                    val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
-                        itemPosition.minus(1),
+                        binding.vpCardHolder.currentItem.minus(1),
                         true
                     )
                 }
@@ -425,6 +459,11 @@ class QuizGameActivity :
             isRewindButtonActive(false)
         }
         binding.btNext.setOnClickListener {
+
+            if (binding.vpCardHolder.currentItem < viewModel.getQuizGameCardsSum() - 1) {
+                viewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem.plus(1))
+                quizGameProgressBarAdapter.notifyDataSetChanged()
+            }
             viewModel.initCardFlipCount(binding.vpCardHolder.currentItem)
             fetchJob1?.cancel()
             fetchJob1 = lifecycleScope.launch {
@@ -595,6 +634,7 @@ class QuizGameActivity :
                                     is UiState.Success -> {
                                         restartQuiz()
                                         launchTestQuizGame(state.data)
+                                        displayProgression(state.data, binding.rvMiniGameProgression)
                                     }
                                 }
                             }
@@ -649,6 +689,7 @@ class QuizGameActivity :
                     is UiState.Success -> {
                         restartQuiz()
                         launchTestQuizGame(state.data)
+                        displayProgression(state.data, binding.rvMiniGameProgression)
                     }
                 }
             }

@@ -311,7 +311,7 @@ class QuizGameAdapter(
             )
             button.strokeColor = MaterialColors.getColorStateList(
                 context,
-                com.google.android.material.R.attr.colorSurfaceContainerHigh,
+                com.google.android.material.R.attr.colorSurfaceContainer,
                 ContextCompat.getColorStateList(context, R.color.neutral500)!!
             )
         }

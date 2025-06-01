@@ -101,11 +101,20 @@ class TestQuizGameViewModel(
         initRestCards()
     }
 
+    fun setCardAsActualOrPassedByPosition(position: Int) {
+        localQuizGameCards[position].setAsActualOrPassed()
+    }
+
+    fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
+        localQuizGameCards[position].setAsNotActualOrNotPassed()
+    }
+
     fun updateActualCards(amount: Int) {
         val cards = getCardsAmount(cardList, amount)
         localQuizGameCards = cards?.map { card ->
             localCardToQuizGameCardModel(card)
         }!!.toMutableList()
+        localQuizGameCards.first().setAsActualOrPassed()
         revisedCardsCount = localQuizGameCards.size
     }
 
