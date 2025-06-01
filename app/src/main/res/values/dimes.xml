@@ -40,4 +40,6 @@
 
     <dimen name="card_info_height">85dp</dimen>
 
+    <dimen name="progression_region_height">9dp</dimen>
+    
 </resources>

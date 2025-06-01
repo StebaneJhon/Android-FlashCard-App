@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
@@ -16,12 +16,19 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
+import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableCard
@@ -29,22 +36,19 @@ import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.databinding.ActivityMultichoiceQuizGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity
-import com.ssoaharison.recall.settings.MiniGameSettingsSheet
-import com.ssoaharison.recall.util.LanguageUtil
-import com.ssoaharison.recall.util.FlashCardMiniGameRef
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
-import com.ssoaharison.recall.util.ThemePicker
-import com.ssoaharison.recall.util.UiState
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.color.MaterialColors
-import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
+import com.ssoaharison.recall.settings.MiniGameSettingsSheet
+import com.ssoaharison.recall.util.FlashCardMiniGameRef
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
+import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
+import com.ssoaharison.recall.util.ThemePicker
+import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -75,6 +79,7 @@ class MultiChoiceQuizGameActivity :
     private var tts: TextToSpeech? = null
     private var multiChoiceQuizJob: Job? = null
     private lateinit var multiChoiceGameAdapter: MultiChoiceQuizGameAdapter
+    private lateinit var multiChoiceGameProgressionAdapter: MultiChoiceQuizProgressionAdapter
 
     companion object {
         private const val TAG = "MultiChoiceQuizGameActivity"
@@ -235,12 +240,19 @@ class MultiChoiceQuizGameActivity :
                 data,
                 appTheme ?: "WHITE THEM",
                 {
-                if (viewModel.isUserChoiceCorrect(it, getCardOrientation(), binding.vpCardHolder.currentItem)) {
-                    areOptionsEnabled(true)
-                }
-                multiChoiceGameAdapter.notifyDataSetChanged()
-                specifyOptions(data.size)
-            }) {
+//                    viewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem)
+//                    multiChoiceGameProgressionAdapter.notifyItemChanged(binding.vpCardHolder.currentItem)
+                },
+                {
+                    if (viewModel.isUserChoiceCorrect(it, getCardOrientation(), binding.vpCardHolder.currentItem)) {
+                        areOptionsEnabled(true)
+                        specifyOptions(data.size)
+                    }
+                    else if (viewModel.getAttemptTime() <= 1) {
+                        multiChoiceGameProgressionAdapter.notifyDataSetChanged()
+                    }
+                    multiChoiceGameAdapter.notifyDataSetChanged()
+                }) {
                 if (tts?.isSpeaking == true) {
                     stopReading(it.views)
                 } else {
@@ -271,10 +283,14 @@ class MultiChoiceQuizGameActivity :
                 binding.btNextQuestion.apply {
                     if (position == data.size.minus(1)) {
                         text = getString(R.string.text_finish)
-                        iconPadding = resources.getDimension(R.dimen.icon_padding_next_question_button).toInt()
+                        iconPadding =
+                            resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                .toInt()
                     } else {
                         text = null
-                        iconPadding = resources.getDimension(R.dimen.icon_padding_next_question_button).toInt()
+                        iconPadding =
+                            resources.getDimension(R.dimen.icon_padding_next_question_button)
+                                .toInt()
                     }
                 }
                 binding.btPreviousQuestion.apply {
@@ -297,14 +313,16 @@ class MultiChoiceQuizGameActivity :
                                     this@MultiChoiceQuizGameActivity, R.color.neutral50
                                 )!!
                             )
-                        setTextColor(MaterialColors
-                            .getColorStateList(
-                                this@MultiChoiceQuizGameActivity,
-                                com.google.android.material.R.attr.colorSurfaceContainerLowest,
-                                ContextCompat.getColorStateList(
-                                    this@MultiChoiceQuizGameActivity, R.color.neutral50
-                                )!!
-                            ))
+                        setTextColor(
+                            MaterialColors
+                                .getColorStateList(
+                                    this@MultiChoiceQuizGameActivity,
+                                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                    ContextCompat.getColorStateList(
+                                        this@MultiChoiceQuizGameActivity, R.color.neutral50
+                                    )!!
+                                )
+                        )
                     } else {
                         isActivated = false
                         isClickable = false
@@ -325,19 +343,38 @@ class MultiChoiceQuizGameActivity :
                                 )!!
                             )
 
-                        setTextColor(MaterialColors
-                            .getColorStateList(
-                                this@MultiChoiceQuizGameActivity,
-                                com.google.android.material.R.attr.colorPrimary,
-                                ContextCompat.getColorStateList(
-                                    this@MultiChoiceQuizGameActivity, R.color.neutral700
-                                )!!
-                            ))
+                        setTextColor(
+                            MaterialColors
+                                .getColorStateList(
+                                    this@MultiChoiceQuizGameActivity,
+                                    com.google.android.material.R.attr.colorPrimary,
+                                    ContextCompat.getColorStateList(
+                                        this@MultiChoiceQuizGameActivity, R.color.neutral700
+                                    )!!
+                                )
+                        )
                     }
                 }
             }
         })
         viewModel.startTimer()
+    }
+
+    private fun displayProgression(data: List<MultiChoiceGameCardModel>, recyclerView: RecyclerView) {
+        multiChoiceGameProgressionAdapter = MultiChoiceQuizProgressionAdapter(
+            cardList = data,
+            appTheme = appTheme ?: "WHITE THEME",
+            context = this,
+            recyclerView
+        )
+        binding.rvMiniGameProgression.apply {
+            adapter = multiChoiceGameProgressionAdapter
+            layoutManager = LinearLayoutManager(
+                this@MultiChoiceQuizGameActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
     }
 
     private fun areOptionsEnabled(enabled: Boolean) {
@@ -350,6 +387,8 @@ class MultiChoiceQuizGameActivity :
         binding.btNextQuestion.setOnClickListener {
             areOptionsEnabled(viewModel.isNextCardAnsweredCorrectly())
             if (viewModel.increaseCurrentCardPosition(cardCount)) {
+                viewModel.setCardAsActualOrPassedByPosition(viewModel.getCurrentCardPosition())
+                multiChoiceGameProgressionAdapter.notifyDataSetChanged()
                 binding.vpCardHolder.setCurrentItem(
                     viewModel.getCurrentCardPosition(),
                     true
@@ -365,6 +404,8 @@ class MultiChoiceQuizGameActivity :
         }
         binding.btPreviousQuestion.setOnClickListener {
             if (viewModel.getCurrentCardPosition() > 0) {
+                viewModel.setCardAsNotActualOrNotPassedByPosition(viewModel.getCurrentCardPosition())
+                multiChoiceGameProgressionAdapter.notifyDataSetChanged()
                 viewModel.decreaseCurrentCardPosition()
                 binding.vpCardHolder.setCurrentItem(
                     viewModel.getCurrentCardPosition(),
@@ -407,11 +448,13 @@ class MultiChoiceQuizGameActivity :
             findViewById<MaterialButton>(R.id.bt_alternative3),
             findViewById<MaterialButton>(R.id.bt_alternative4),
         )
-        tvOnCardWord.setTextColor(MaterialColors.getColor(
-            this,
-            com.google.android.material.R.attr.colorOnSurface,
-            Color.BLACK
-        ))
+        tvOnCardWord.setTextColor(
+            MaterialColors.getColor(
+                this,
+                com.google.android.material.R.attr.colorOnSurface,
+                Color.BLACK
+            )
+        )
         views.forEach {
             it.setTextColor(
                 MaterialColors.getColor(
@@ -503,13 +546,20 @@ class MultiChoiceQuizGameActivity :
         if (actualText.language.isNullOrBlank()) {
             languageUtil.detectLanguage(
                 text = actualText.text,
-                onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
-                onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
-                onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
+                onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
+                onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
                 onSuccess = { detectedLanguage ->
                     when (actualText.textType) {
-                        CONTENT -> viewModel.updateCardContentLanguage(actualText.cardId, detectedLanguage)
-                        DEFINITION -> viewModel.updateCardDefinitionLanguage(actualText.cardId, detectedLanguage)
+                        CONTENT -> viewModel.updateCardContentLanguage(
+                            actualText.cardId,
+                            detectedLanguage
+                        )
+
+                        DEFINITION -> viewModel.updateCardDefinitionLanguage(
+                            actualText.cardId,
+                            detectedLanguage
+                        )
                     }
                     speak(actualText.text, detectedLanguage, params, speechListener)
                 }
@@ -551,7 +601,10 @@ class MultiChoiceQuizGameActivity :
         binding.vpCardHolder.visibility = View.GONE
         binding.gameReviewLayoutMQ.apply {
             tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
-            tvAccuracyScoreLayout.text = getString(R.string.text_accuracy_mini_game_review, viewModel.getUserAnswerAccuracy())
+            tvAccuracyScoreLayout.text = getString(
+                R.string.text_accuracy_mini_game_review,
+                viewModel.getUserAnswerAccuracy()
+            )
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.timer.collect { t ->
@@ -577,7 +630,6 @@ class MultiChoiceQuizGameActivity :
                 ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red50),
                 ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green50)
             ) as Int
-
 
 
 //                if (viewModel.cardSum() / 2 < viewModel.getKnownCardSum(cardCount))
@@ -648,7 +700,8 @@ class MultiChoiceQuizGameActivity :
                 btContinueQuizScoreLayout.visibility = View.GONE
                 tvLeftCardsScoreLayout.text = getString(R.string.text_all_cards_learned)
             } else {
-                tvLeftCardsScoreLayout.text = getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
+                tvLeftCardsScoreLayout.text =
+                    getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
                 btContinueQuizScoreLayout.apply {
                     visibility = View.VISIBLE
 //                    text = getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
@@ -667,6 +720,7 @@ class MultiChoiceQuizGameActivity :
                                     is UiState.Success -> {
                                         restartMultiChoiceQuiz()
                                         launchMultiChoiceQuizGame(state.data)
+                                        displayProgression(state.data, binding.rvMiniGameProgression)
                                     }
                                 }
                             }
@@ -718,6 +772,7 @@ class MultiChoiceQuizGameActivity :
 
                     is UiState.Success -> {
                         launchMultiChoiceQuizGame(state.data)
+                        displayProgression(state.data, binding.rvMiniGameProgression)
                     }
                 }
             }

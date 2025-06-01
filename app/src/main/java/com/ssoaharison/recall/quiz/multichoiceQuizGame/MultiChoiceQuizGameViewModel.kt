@@ -288,6 +288,8 @@ class MultiChoiceQuizGameViewModel(
         return false
     }
 
+    fun getAttemptTime() = attemptTime
+
     private fun updateCardOnKnownOrKnownNot(
         answer: MultiChoiceCardDefinitionModel
     ): Boolean {
@@ -303,6 +305,14 @@ class MultiChoiceQuizGameViewModel(
             }
         }
         return false
+    }
+
+    fun setCardAsActualOrPassedByPosition(position: Int) {
+        localMultiChoiceCards[position].setAsActualOrPassed()
+    }
+
+    fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
+        localMultiChoiceCards[position].setAsNotActualOrNotPassed()
     }
 
     fun sortCardsByLevel() {
@@ -376,6 +386,7 @@ class MultiChoiceQuizGameViewModel(
         localMultiChoiceCards = cards!!.map { card ->
             localCardToMultiChoiceGameCardMode(card, cardOrientation)
         }.toMutableList()
+        localMultiChoiceCards.first().setAsActualOrPassed()
         revisedCardsCount = localMultiChoiceCards.size
     }
 

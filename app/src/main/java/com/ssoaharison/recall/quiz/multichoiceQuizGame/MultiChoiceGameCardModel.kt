@@ -8,6 +8,7 @@ data class MultiChoiceGameCardModel(
     val alternatives: List<MultiChoiceCardDefinitionModel>,
     var attemptTime: Int = 0,
     var isCorrectlyAnswered: Boolean = false,
+    var isActualOrPassed: Boolean = false
 ) {
     fun getCorrectAlternative(): MultiChoiceCardDefinitionModel? {
         alternatives.forEach { alternative ->
@@ -20,5 +21,11 @@ data class MultiChoiceGameCardModel(
     fun isCardCorrectlyAnswered(): Boolean {
         val correctAlternative = getCorrectAlternative()
         return correctAlternative?.isSelected == true && correctAlternative.isCorrect
+    }
+    fun setAsActualOrPassed() {
+        isActualOrPassed = true
+    }
+    fun setAsNotActualOrNotPassed() {
+        isActualOrPassed = false
     }
 }

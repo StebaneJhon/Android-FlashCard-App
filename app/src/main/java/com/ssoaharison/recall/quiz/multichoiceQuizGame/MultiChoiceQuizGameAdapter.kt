@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
@@ -22,6 +21,7 @@ class MultiChoiceQuizGameAdapter(
     val context: Context,
     val cardList: List<MultiChoiceGameCardModel>,
     val appTheme: String,
+    private val setCardAsActual: () -> Unit,
     private val userChoiceModel: (MultiChoiceCardDefinitionModel) -> Unit,
     private val onSpeak: (SpeakModel) -> Unit,
 ): RecyclerView.Adapter<MultiChoiceQuizGameAdapter.MultiChoiceQuizGameAdapterViewHolder>() {
@@ -40,8 +40,9 @@ class MultiChoiceQuizGameAdapter(
         return holder.bind(
             context,
             cardList[position],
-            position.plus(1),
-            cardList.size,
+//            position,
+//            cardList.size,
+            setCardAsActual,
             userChoiceModel,
             appTheme,
             onSpeak
@@ -50,8 +51,8 @@ class MultiChoiceQuizGameAdapter(
 
     inner class MultiChoiceQuizGameAdapterViewHolder(view: View):  RecyclerView.ViewHolder(view) {
 
-        private val cvCardItem: MaterialCardView = view.findViewById(R.id.cv_card)
-        private val tvProgressionFrontCard: TextView = view.findViewById(R.id.tv_multi_Choice_quiz_front_progression)
+//        private val cvCardItem: MaterialCardView = view.findViewById(R.id.cv_card)
+//        private val tvProgressionFrontCard: TextView = view.findViewById(R.id.tv_multi_Choice_quiz_front_progression)
         private val tvOnCardWord: TextView = view.findViewById(R.id.tv_on_card_word)
         private val btAlternative1: MaterialButton = view.findViewById(R.id.bt_alternative1)
         private val btAlternative2: MaterialButton = view.findViewById(R.id.bt_alternative2)
@@ -64,13 +65,14 @@ class MultiChoiceQuizGameAdapter(
         fun bind(
             context: Context,
             card: MultiChoiceGameCardModel,
-            cardNumber: Int,
-            cardSum: Int,
+//            cardPosition: Int,
+//            cardSum: Int,
+            setCardAsActual: () -> Unit,
             userChoiceModel: (MultiChoiceCardDefinitionModel) -> Unit,
             appTheme: String,
             onSpeak: (SpeakModel) -> Unit
         ) {
-            tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+//            tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardPosition", "$cardSum")
             tvOnCardWord.text = card.onCardWord.text
             val views: ArrayList<View> = arrayListOf(tvOnCardWord)
             val texts: ArrayList<TextWithLanguageModel> = arrayListOf(card.onCardWord)
@@ -123,6 +125,8 @@ class MultiChoiceQuizGameAdapter(
                 )
             }
 
+            setCardAsActual()
+
         }
 
         private fun onButtonUnClicked(
@@ -138,7 +142,7 @@ class MultiChoiceQuizGameAdapter(
             )
             button.strokeColor = MaterialColors.getColorStateList(
                 context,
-                com.google.android.material.R.attr.colorSurfaceContainerHigh,
+                com.google.android.material.R.attr.colorSurfaceContainer,
                 ContextCompat.getColorStateList(context, R.color.neutral500)!!
             )
         }
