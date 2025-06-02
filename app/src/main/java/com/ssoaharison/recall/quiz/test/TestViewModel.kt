@@ -3,7 +3,6 @@ package com.ssoaharison.recall.quiz.test
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.room.Index
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
@@ -60,6 +59,14 @@ class TestViewModel(
         }
     }
 
+    fun setCardAsActualOrPassedByPosition(position: Int) {
+        localCards[position].setAsActualOrPassed()
+    }
+
+    fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
+        localCards[position].setAsNotActualOrNotPassed()
+    }
+
     fun initLocalCards(cards: List<ImmutableCard?>) {
         localCards = cards.map { card ->
             val cardDefinitions = if (card?.cardType == SINGLE_ANSWER_CARD) {
@@ -76,6 +83,7 @@ class TestViewModel(
                 cardDefinitionLanguage = card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
             )
         }
+        localCards.first().setAsActualOrPassed()
     }
 
     fun onRetakeTest() {
@@ -83,7 +91,9 @@ class TestViewModel(
             tc.cardDefinition.forEach { df ->
                 df.isSelected = false
             }
+            tc.setAsNotActualOrNotPassed()
         }
+        localCards.first().setAsActualOrPassed()
     }
 
     fun initOriginalCards(cards: List<ImmutableCard?>) {
@@ -96,7 +106,7 @@ class TestViewModel(
 
     fun noteSingleUserAnswer(answer: TestCardDefinitionModel) {
         if (answer.cardType == MULTIPLE_ANSWER_CARD) {
-            moteUserAnswerOnMultipleAnswerCard(answer)
+            noteUserAnswerOnMultipleAnswerCard(answer)
         } else {
             noteUserAnswerOnSingleAnswerCard(answer)
         }
@@ -116,7 +126,7 @@ class TestViewModel(
         }
     }
 
-    private fun moteUserAnswerOnMultipleAnswerCard(answer: TestCardDefinitionModel) {
+    private fun noteUserAnswerOnMultipleAnswerCard(answer: TestCardDefinitionModel) {
         localCards.forEach {
             if (it.cardId == answer.attachedCardId) {
                 it.cardDefinition.forEach { def ->

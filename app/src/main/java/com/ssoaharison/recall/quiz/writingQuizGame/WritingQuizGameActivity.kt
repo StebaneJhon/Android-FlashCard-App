@@ -20,6 +20,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -37,6 +39,8 @@ import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
+import com.ssoaharison.recall.quiz.test.TestCardModel
+import com.ssoaharison.recall.quiz.test.TestProgressBarAdapter
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
@@ -67,6 +71,7 @@ class WritingQuizGameActivity :
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
 
     private lateinit var writingQuizGameAdapter: WritingQuizGameAdapter
+    private lateinit var writingProgressBarAdapter: WritingProgressBarAdapter
 
     private var tts: TextToSpeech? = null
     private var writingQuizJob: Job? = null
@@ -223,6 +228,7 @@ class WritingQuizGameActivity :
                     areOptionsShownAndActive(true, cards)
                 }
                 writingQuizGameAdapter.notifyDataSetChanged()
+                writingProgressBarAdapter.notifyDataSetChanged()
             },
             { dataToRead ->
                 if (tts?.isSpeaking == true) {
@@ -329,6 +335,22 @@ class WritingQuizGameActivity :
         viewModel.startTimer()
     }
 
+    private fun displayProgression(data: List<WritingQuizGameModel>, recyclerView: RecyclerView) {
+        writingProgressBarAdapter = WritingProgressBarAdapter(
+            cardList = data,
+            context = this,
+            recyclerView
+        )
+        binding.rvMiniGameProgression.apply {
+            adapter = writingProgressBarAdapter
+            layoutManager = LinearLayoutManager(
+                this@WritingQuizGameActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+    }
+
     private fun areOptionsShownAndActive(
         areSownAndActive: Boolean,
         cards: List<WritingQuizGameModel>
@@ -337,7 +359,10 @@ class WritingQuizGameActivity :
             binding.lyContainerOptions.visibility = View.VISIBLE
             binding.btNextQuestion.apply {
                 setOnClickListener {
-                    if (viewModel.swipe(cards.size)) {
+//                    viewModel.swipe(cards.size)
+                    if (binding.vpCardHolder.currentItem < cards.size.minus(1)) {
+                        viewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem.plus(1))
+                        writingProgressBarAdapter.notifyDataSetChanged()
                         binding.vpCardHolder.setCurrentItem(
                             binding.vpCardHolder.currentItem.plus(1),
                             true
@@ -353,6 +378,8 @@ class WritingQuizGameActivity :
             }
             binding.btPreviousQuestion.apply {
                 setOnClickListener {
+                    viewModel.setCardAsNotActualOrNotPassedByPosition(binding.vpCardHolder.currentItem)
+                    writingProgressBarAdapter.notifyDataSetChanged()
                     binding.vpCardHolder.setCurrentItem(
                         binding.vpCardHolder.currentItem.minus(1),
                         true
@@ -361,7 +388,7 @@ class WritingQuizGameActivity :
                         stopReadingAllText()
                     }
                 }
-                isClickable = true
+                isClickable = binding.vpCardHolder.currentItem > 0
             }
         } else {
             binding.lyContainerOptions.visibility = View.GONE
@@ -624,6 +651,7 @@ class WritingQuizGameActivity :
                                     is UiState.Success -> {
                                         restartWritingQuiz()
                                         launchWritingQuizGame(state.data)
+                                        displayProgression(state.data, binding.rvMiniGameProgression)
                                     }
                                 }
                             }
@@ -673,6 +701,7 @@ class WritingQuizGameActivity :
                         binding.cvCardErrorLy.visibility = View.GONE
                         binding.pbCardLoadingLy.visibility = View.GONE
                         launchWritingQuizGame(state.data)
+                        displayProgression(state.data, binding.rvMiniGameProgression)
                     }
                 }
             }

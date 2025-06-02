@@ -200,7 +200,8 @@ class WritingQuizGameViewModel(
         return card.copy(
             attemptTime = 0,
             isCorrectlyAnswered = false,
-            userAnswer = null
+            userAnswer = null,
+            isActualOrPassed = false
         )
     }
 
@@ -376,8 +377,18 @@ class WritingQuizGameViewModel(
     fun updateActualCards(amount: Int, cardOrientation: String) {
         val cards = getCardsAmount(cardList, amount)
         localWritingCards = cardsToWritingQuizGameItem(cards!!, cardOrientation).toMutableList()
+        localWritingCards.first().setAsActualOrPassed()
         revisedCardsCount = localWritingCards.size
     }
+
+    fun setCardAsActualOrPassedByPosition(position: Int) {
+        localWritingCards[position].setAsActualOrPassed()
+    }
+
+    fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
+        localWritingCards[position].setAsNotActualOrNotPassed()
+    }
+
 
     fun updateActualCardsWithMissedCards(cardOrientation: String) {
         val cards = missedCards

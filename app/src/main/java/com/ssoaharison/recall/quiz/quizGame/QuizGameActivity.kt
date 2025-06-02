@@ -38,9 +38,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
-import com.ssoaharison.recall.quiz.multichoiceQuizGame.MultiChoiceGameCardModel
-import com.ssoaharison.recall.quiz.multichoiceQuizGame.MultiChoiceQuizProgressionAdapter
-import com.ssoaharison.recall.quiz.multichoiceQuizGame.QuizGameProgressBarAdapter
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT

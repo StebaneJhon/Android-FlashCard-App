@@ -8,7 +8,8 @@ data class WritingQuizGameModel (
     val answers: List<TextWithLanguageModel>,
     var attemptTime: Int = 0,
     var isCorrectlyAnswered: Boolean = false,
-    var userAnswer: String? = null
+    var userAnswer: String? = null,
+    var isActualOrPassed: Boolean = false,
 ) {
 
     private fun isUserAnswerCorrect(temporaryUserAnswer: String): Boolean {
@@ -33,6 +34,14 @@ data class WritingQuizGameModel (
             userAnswer = answer
             return false
         }
+    }
+
+    fun setAsActualOrPassed() {
+        isActualOrPassed = true
+    }
+
+    fun setAsNotActualOrNotPassed() {
+        isActualOrPassed = false
     }
 
 }

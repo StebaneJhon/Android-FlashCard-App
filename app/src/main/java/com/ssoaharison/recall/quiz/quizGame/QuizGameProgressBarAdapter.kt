@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.quiz.multichoiceQuizGame
+package com.ssoaharison.recall.quiz.quizGame
 
 import android.content.Context
 import android.graphics.Color
@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.quiz.quizGame.QuizGameCardModel
 
 class QuizGameProgressBarAdapter(
     val cardList: List<QuizGameCardModel>,

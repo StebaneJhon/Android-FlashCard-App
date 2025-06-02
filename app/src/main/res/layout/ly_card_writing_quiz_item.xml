@@ -9,6 +9,7 @@
     android:layout_margin="@dimen/space_md"
     app:cardBackgroundColor="?colorPrimaryContainer"
     app:cardCornerRadius="@dimen/card_radius"
+    app:strokeWidth="0dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -50,7 +51,6 @@
             android:id="@+id/tv_top_on_card_word"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/space_sm"
             android:layout_marginBottom="@dimen/space_sm"
             android:fontFamily="@font/montserrat_bold"
             android:gravity="center"
@@ -63,7 +63,7 @@
             app:layout_constraintBottom_toTopOf="@+id/tilTopCardContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_writing_quiz_front_progression"
+            app:layout_constraintTop_toBottomOf="@+id/bt_card_front_speak"
             tools:text="1. What is the capital of Madagascar?" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -77,6 +77,7 @@
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:boxStrokeColor="?colorSurfaceContainer"
             app:layout_constraintBottom_toTopOf="@+id/bt_show_answer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">

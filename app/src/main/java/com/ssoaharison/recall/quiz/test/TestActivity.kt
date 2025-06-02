@@ -19,6 +19,8 @@ import androidx.fragment.app.commit
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -36,6 +38,8 @@ import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
+import com.ssoaharison.recall.quiz.quizGame.QuizGameCardModel
+import com.ssoaharison.recall.quiz.quizGame.QuizGameProgressBarAdapter
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -60,6 +64,7 @@ class TestActivity :
     }
 
     private lateinit var testAdapter: TestAdapter
+    private lateinit var testProgressBarAdapter: TestProgressBarAdapter
 
     companion object {
         const val TAG = "TestActivity"
@@ -136,6 +141,7 @@ class TestActivity :
                                 binding.fragmentContainerView.visibility = View.GONE
                                 launchTest(state.data)
                                 startTimer()
+                                displayProgression(state.data, binding.rvMiniGameProgression)
                             }
                         }
                     }
@@ -192,6 +198,8 @@ class TestActivity :
                 binding.btNextQuestion.apply {
                     if (binding.vpCardHolder.currentItem < cards.size.minus(1)) {
                         setOnClickListener {
+                            testViewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem.plus(1))
+                            testProgressBarAdapter.notifyDataSetChanged()
                             binding.vpCardHolder.currentItem += 1
                         }
                         text = null
@@ -222,6 +230,8 @@ class TestActivity :
                                 )!!
                             )
                         setOnClickListener {
+                            testViewModel.setCardAsNotActualOrNotPassedByPosition(binding.vpCardHolder.currentItem)
+                            testProgressBarAdapter.notifyDataSetChanged()
                             binding.vpCardHolder.currentItem -= 1
                         }
                         iconTint = MaterialColors
@@ -267,6 +277,22 @@ class TestActivity :
 
     }
 
+    private fun displayProgression(data: List<TestCardModel>, recyclerView: RecyclerView) {
+        testProgressBarAdapter = TestProgressBarAdapter(
+            cardList = data,
+            context = this,
+            recyclerView
+        )
+        binding.rvMiniGameProgression.apply {
+            adapter = testProgressBarAdapter
+            layoutManager = LinearLayoutManager(
+                this@TestActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
+    }
+
     private fun onShowTestResult() {
         testViewModel.pauseTimer()
         binding.testActivityProgressBar.visibility = View.GONE
@@ -296,6 +322,7 @@ class TestActivity :
         binding.testActivityProgressBar.visibility = View.VISIBLE
         binding.fragmentContainerView.visibility = View.GONE
         testViewModel.onRetakeTest()
+        testProgressBarAdapter.notifyDataSetChanged()
         binding.vpCardHolder.currentItem = 0
         binding.testActivityProgressBar.visibility = View.GONE
         testViewModel.stopTimer()

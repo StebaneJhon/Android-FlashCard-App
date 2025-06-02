@@ -12,5 +12,13 @@ data class TestCardModel (
     val cardDefinition: List<TestCardDefinitionModel>,
     val cardDefinitionLanguage: String?,
     val cardType: String,
+    var isActualOrPassed: Boolean = false,
 //    var userAnswers: ArrayList<TestCardDefinitionModel>? = null
-): Parcelable
+): Parcelable {
+    fun setAsActualOrPassed() {
+        isActualOrPassed = true
+    }
+    fun setAsNotActualOrNotPassed() {
+        isActualOrPassed = false
+    }
+}
