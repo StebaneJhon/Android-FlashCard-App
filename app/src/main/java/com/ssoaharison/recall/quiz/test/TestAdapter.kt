@@ -39,8 +39,8 @@ class TestAdapter(
         return holder.bind(
             context,
             cardList[position],
-            position,
-            cardList.size,
+//            position,
+//            cardList.size,
             onUserAnswered,
             onSpeak
         )
@@ -73,16 +73,16 @@ class TestAdapter(
         fun bind(
             context: Context,
             card: TestCardModel,
-            cardPosition: Int,
-            cardSum: Int,
+//            cardPosition: Int,
+//            cardSum: Int,
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
-            tvFrontProgression.text = context.getString(
-                R.string.tx_flash_card_game_progression,
-                "${cardPosition.plus(1)}",
-                "$cardSum"
-            )
+//            tvFrontProgression.text = context.getString(
+//                R.string.tx_flash_card_game_progression,
+//                "${cardPosition.plus(1)}",
+//                "$cardSum"
+//            )
             tvContent.text = card.cardContent.content
             tvCardType.text = card.cardType
             if (card.cardType == MULTIPLE_ANSWER_CARD) {

@@ -61,7 +61,7 @@
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
     <string name="text_accuracy_mini_game_review">%1$d%%</string>
-    <string name="tx_flash_card_game_progression">%1$s/%2$s</string>
+<!--    <string name="tx_flash_card_game_progression">%1$s/%2$s</string>-->
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
     <string name="text_back">Back</string>
     <string name="text_tap_to_flip">Tap to flip</string>

@@ -27,17 +27,22 @@ class FlashCardGameViewModel(
 ) : ViewModel() {
 
     private var fetchJob: Job? = null
+    private var flashCardCardsFetchJob: Job? = null
     private var currentCardPosition: Int = 0
 
     private var originalCardList: List<ImmutableCard?>? = null
     private lateinit var cardList: MutableList<ImmutableCard?>
-    private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
-    val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
-    private var cardToRevise: MutableList<ImmutableCard?>? = null
-    private var flowOfCardToRevise: Flow<List<ImmutableCard?>?> = flow {
+
+    //    private var cardToRevise: MutableList<ImmutableCard?>? = null
+//    private var flowOfCardToRevise: Flow<List<ImmutableCard?>?> = flow {
+//        emit(cardToRevise)
+//    }
+    private lateinit var cardToRevise: MutableList<FlashCardCardModel?>
+    private var flowOfCardToRevise: Flow<List<FlashCardCardModel?>?> = flow {
         emit(cardToRevise)
     }
-    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
+    private val missedCards: ArrayList<FlashCardCardModel?> = arrayListOf()
+//    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
 
     var deck: ImmutableDeck? = null
     private var progress: Int = 0
@@ -64,39 +69,93 @@ class FlashCardGameViewModel(
     }
 
     fun updateCardToRevise(amount: Int) {
-        when {
+        val cards = getCardAmount(amount)
+        cardToRevise = immutableCardsToFlashCardCards(cards).toMutableList()
+        cardToRevise.first()?.setAsActualOrPassed()
+//        when {
+//            cardList.isEmpty() -> {
+//                cardToRevise = null
+//            }
+//
+//            cardList.size == amount -> {
+//                cardToRevise = cardList
+//            }
+//
+//            else -> {
+//                if (passedCards <= cardList.size) {
+//                    if (restCards >= amount) {
+//                        cardToRevise =
+//                            cardList.slice(passedCards..passedCards.plus(amount).minus(1))
+//                                .toMutableList()
+//                        passedCards += amount
+//                    } else {
+//                        cardToRevise =
+//                            cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
+//                        passedCards += cardList.size.plus(50)
+//                    }
+//                }
+//                restCards = cardList.size - passedCards
+//            }
+//        }
+        revisedCardsCount = cardToRevise.size
+    }
+
+    fun setCardAsActualOrPassedByPosition(position: Int) {
+        cardToRevise[position]?.setAsActualOrPassed()
+    }
+
+    fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
+        cardToRevise[position]?.setAsNotActualOrNotPassed()
+    }
+
+    fun getCardAmount(amount: Int): List<ImmutableCard?>? {
+        return when {
             cardList.isEmpty() -> {
-                cardToRevise = null
+                null
             }
 
             cardList.size == amount -> {
-                cardToRevise = cardList
+                cardList
             }
 
             else -> {
+                var result = listOf<ImmutableCard?>()
                 if (passedCards <= cardList.size) {
                     if (restCards >= amount) {
-                        cardToRevise =
-                            cardList.slice(passedCards..passedCards.plus(amount).minus(1))
-                                .toMutableList()
+                        result = cardList.slice(passedCards..passedCards.plus(amount).minus(1))
+                            .toMutableList()
                         passedCards += amount
                     } else {
-                        cardToRevise =
-                            cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
+                        result = cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
                         passedCards += cardList.size.plus(50)
                     }
                 }
                 restCards = cardList.size - passedCards
+                result
             }
         }
-        revisedCardsCount = cardToRevise?.size ?: 0
     }
 
-    fun updateCardOnReviseMissedCards() {
-        cardToRevise = missedCards.clone() as MutableList<ImmutableCard?>
-        revisedCardsCount = cardToRevise?.size ?: 0
-        missedCards.clear()
-        missedCardsCount = 0
+//    fun updateCardOnReviseMissedCards() {
+//        cardToRevise = missedCards.clone() as MutableList<ImmutableCard?>
+//        revisedCardsCount = cardToRevise?.size ?: 0
+//        missedCards.clear()
+//        missedCardsCount = 0
+//    }
+
+    fun immutableCardsToFlashCardCards(cards: List<ImmutableCard?>?): List<FlashCardCardModel> {
+        val newList = mutableListOf<FlashCardCardModel>()
+        cards?.forEach { card ->
+            newList.add(immutableCardToFlashCardCard(card!!))
+        }
+        return newList
+    }
+
+    fun immutableCardToFlashCardCard(card: ImmutableCard): FlashCardCardModel {
+        return FlashCardCardModel(
+            card = card,
+            isActualOrPassed = false
+        )
     }
 
 //    private val topCard
@@ -133,17 +192,19 @@ class FlashCardGameViewModel(
 
     fun swipe(isKnown: Boolean): Boolean {
         if (!isKnown) {
-            val cardToRepeat = cardToRevise?.get(currentCardPosition)
-            missedCards.add(cardToRepeat)
+            val actualCard = cardToRevise[currentCardPosition]
+            missedCards.add(actualCard)
             missedCardsCount++
             val cardToRepeatNewPosition =
-                roteLearningHelper.onRepeatCardPosition(cardToRevise!!, currentCardPosition)
-            cardToRevise?.add(cardToRepeatNewPosition, cardToRepeat)
+                roteLearningHelper.onRepeatCardPosition(cardToRevise, currentCardPosition)
+            val cardToRepeat = actualCard?.copy(isActualOrPassed = false)
+            cardToRevise.add(cardToRepeatNewPosition, cardToRepeat)
         }
         onCardSwiped(isKnown)
-        val isQuizComplete = currentCardPosition == cardToRevise?.size?.minus(1)
+        val isQuizComplete = currentCardPosition == cardToRevise.size.minus(1)
         if (!isQuizComplete) {
             currentCardPosition += 1
+            setCardAsActualOrPassedByPosition(currentCardPosition)
             updateOnScreenCards()
         }
 
@@ -151,27 +212,21 @@ class FlashCardGameViewModel(
     }
 
     fun rewind() {
+        setCardAsNotActualOrNotPassedByPosition(currentCardPosition)
         currentCardPosition -= 1
-        cardToRevise?.get(currentCardPosition)?.let {
-            if (it in missedCards) {
-                missedCards.remove(it)
-                missedCardsCount--
-            } else {
-                progress -= 100 / getTotalCards()
-            }
+        val currentCard = cardToRevise[currentCardPosition]
+        if (currentCard in missedCards) {
+            missedCards.remove(currentCard)
+            missedCardsCount--
+        } else {
+            progress -= 100 / getTotalCards()
         }
         updateOnScreenCards()
     }
 
-    fun getKnownCardSum(): Int {
-        cardToRevise?.let { return it.size - missedCardsCount }
-        return 0
-    }
+    fun getKnownCardSum() = cardToRevise.size - missedCardsCount
 
-    fun getTotalCards(): Int {
-        cardToRevise?.let { return it.size }
-        return 0
-    }
+    fun getTotalCards() = cardToRevise.size
 
     fun getCardBackground() = deck?.deckColorCode
 
@@ -179,45 +234,38 @@ class FlashCardGameViewModel(
 
     fun getMissedCardSum() = missedCardsCount
 
-    fun getMissedCards(): MutableList<ImmutableCard?> {
-        val newCards = arrayListOf<ImmutableCard?>()
-        missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-        return newCards
-    }
+//    fun getMissedCards(): MutableList<ImmutableCard?> {
+//        val newCards = arrayListOf<ImmutableCard?>()
+//        missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
+//        return newCards
+//    }
 
-    fun getUserAnswerAccuracy(): Int {
-        cardToRevise?.let {
-            return Calculations().percentageOfRest(it.size, missedCardsCount)
-        }
-        return 0
-    }
+    fun getUserAnswerAccuracy() = Calculations().percentageOfRest(cardToRevise.size, missedCardsCount)
 
-    fun getUserAnswerAccuracyFraction(): Float {
-        cardToRevise?.let {
-            return Calculations().fractionOfPart(it.size, missedCardsCount)
-        }
-        return 0.toFloat()
-    }
+    fun getUserAnswerAccuracyFraction() = Calculations().fractionOfPart(cardToRevise.size, missedCardsCount)
 
     private fun getBottomCard(
-        cards: List<ImmutableCard?>,
+        cards: List<FlashCardCardModel?>,
         currentCartPosition: Int
     ): ImmutableCard? {
         return if (currentCartPosition > cards.size - 2) {
             null
         } else {
-            cards[currentCartPosition + 1]
+            cards[currentCartPosition + 1]?.card
         }
     }
 
-    private fun getTopCard(cards: List<ImmutableCard?>, currentCartPosition: Int): ImmutableCard? {
-        return cards[currentCartPosition]
+    private fun getTopCard(
+        cards: List<FlashCardCardModel?>,
+        currentCartPosition: Int
+    ): ImmutableCard? {
+        return cards[currentCartPosition]?.card
     }
 
     fun getRevisedCardsCount() = revisedCardsCount
 
     private fun getActualFlashCardGameModel(
-        cards: List<ImmutableCard?>,
+        cards: List<FlashCardCardModel?>,
         currentCartPosition: Int
     ): FlashCardGameModel {
         return FlashCardGameModel(
@@ -256,6 +304,8 @@ class FlashCardGameViewModel(
         currentCardPosition = 0
     }
 
+    private val _actualCards = MutableStateFlow<UiState<FlashCardGameModel>>(UiState.Loading)
+    val actualCards: StateFlow<UiState<FlashCardGameModel>> = _actualCards.asStateFlow()
     fun updateOnScreenCards() {
         _actualCards.value = UiState.Loading
         fetchJob?.cancel()
@@ -276,10 +326,35 @@ class FlashCardGameViewModel(
         }
     }
 
+    private val _flashCardCardsCardsToRevise =
+        MutableStateFlow<UiState<List<FlashCardCardModel?>>>(UiState.Loading)
+    val flashCardCardsCardsToRevise: StateFlow<UiState<List<FlashCardCardModel?>>> =
+        _flashCardCardsCardsToRevise.asStateFlow()
+
+    fun getFlashCardCards() {
+        _flashCardCardsCardsToRevise.value = UiState.Loading
+        flashCardCardsFetchJob?.cancel()
+        flashCardCardsFetchJob = viewModelScope.launch {
+            try {
+                flowOfCardToRevise.collect { cards ->
+                    if (cards.isNullOrEmpty()) {
+                        _flashCardCardsCardsToRevise.value = UiState.Error("No Cards To Revise")
+                    } else {
+                        _flashCardCardsCardsToRevise.value = UiState.Success(
+                            cards
+                        )
+                    }
+                }
+            } catch (e: IOException) {
+                _flashCardCardsCardsToRevise.value = UiState.Error(e.message.toString())
+            }
+        }
+    }
+
     private fun onCardSwiped(isKnown: Boolean) {
-        val card = cardToRevise?.get(currentCardPosition)
+        val card = cardToRevise[currentCardPosition]
         if (card != null) {
-            val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
+            val newCard = spaceRepetitionHelper.rescheduleCard(card.card, isKnown)
             updateCard(newCard, currentCardPosition)
         }
     }
@@ -288,7 +363,8 @@ class FlashCardGameViewModel(
         card: ImmutableCard,
         cardPosition: Int
     ) = viewModelScope.launch {
-        cardToRevise?.set(cardPosition, card)
+//        val flashCardCard = immutableCardToFlashCardCard(card)
+//        cardToRevise?.set(cardPosition, flashCardCard)
         repository.updateCard(card)
     }
 

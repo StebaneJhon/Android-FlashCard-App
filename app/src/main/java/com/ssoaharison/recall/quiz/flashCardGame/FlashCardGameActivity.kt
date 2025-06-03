@@ -28,6 +28,9 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableCard
@@ -67,13 +70,14 @@ import java.util.Locale
 class FlashCardGameActivity :
     AppCompatActivity(),
     MiniGameSettingsSheet.SettingsApplication,
-    TextToSpeech.OnInitListener
-{
+    TextToSpeech.OnInitListener {
 
     private lateinit var binding: ActivityFlashCardGameBinding
     private val viewModel: FlashCardGameViewModel by viewModels {
         FlashCardGameViewModelFactory((application as FlashCardApplication).repository)
     }
+
+    private lateinit var flashCardProgressBarAdapter: FlashCardProgressBarAdapter
 
     private var sharedPref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
@@ -147,8 +151,16 @@ class FlashCardGameActivity :
         }
 
         tvDefinitions = listOf(
-            binding.tvQuizBack1, binding.tvQuizBack2, binding.tvQuizBack3, binding.tvQuizBack4, binding.tvQuizBack5,
-            binding.tvQuizBack6, binding.tvQuizBack7, binding.tvQuizBack8, binding.tvQuizBack9, binding.tvQuizBack10,
+            binding.tvQuizBack1,
+            binding.tvQuizBack2,
+            binding.tvQuizBack3,
+            binding.tvQuizBack4,
+            binding.tvQuizBack5,
+            binding.tvQuizBack6,
+            binding.tvQuizBack7,
+            binding.tvQuizBack8,
+            binding.tvQuizBack9,
+            binding.tvQuizBack10,
         )
 
         applySettings()
@@ -172,6 +184,19 @@ class FlashCardGameActivity :
                 }
         }
 
+        lifecycleScope.launch {
+            viewModel.getFlashCardCards()
+            viewModel.flashCardCardsCardsToRevise.collect { state ->
+                when (state) {
+                    is UiState.Error -> {}
+                    is UiState.Loading -> {}
+                    is UiState.Success -> {
+                        displayProgression(state.data, binding.rvMiniGameProgression)
+                    }
+                }
+            }
+        }
+
         gameOn(binding.clOnScreenCardRoot)
 
         binding.btKnow.setOnClickListener {
@@ -185,11 +210,16 @@ class FlashCardGameActivity :
         binding.btRewind.setOnClickListener {
             if (viewModel.getCurrentCardNumber() > 1) {
                 viewModel.rewind()
+                flashCardProgressBarAdapter.notifyDataSetChanged()
                 if (!isFront) {
                     initCardLayout()
                 }
             } else {
-                Toast.makeText(this, getString(R.string.error_message_previous_card), Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    getString(R.string.error_message_previous_card),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -209,6 +239,22 @@ class FlashCardGameActivity :
     override fun onSettingsApplied() {
         applySettings()
         completelyRestartFlashCard(getCardOrientation())
+    }
+
+    private fun displayProgression(data: List<FlashCardCardModel?>, recyclerView: RecyclerView) {
+        flashCardProgressBarAdapter = FlashCardProgressBarAdapter(
+            cardList = data,
+            context = this,
+            recyclerView
+        )
+        binding.rvMiniGameProgression.apply {
+            adapter = flashCardProgressBarAdapter
+            layoutManager = LinearLayoutManager(
+                this@FlashCardGameActivity,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+        }
     }
 
     private fun applySettings() {
@@ -264,8 +310,9 @@ class FlashCardGameActivity :
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
+        val extraPaddings = resources.getDimension(R.dimen.space_md)
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - EXTRA_MARGIN
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
         val currentX = card.x
         val currentY = card.y
         completeSwipeToRight(card, currentX)
@@ -283,8 +330,9 @@ class FlashCardGameActivity :
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
+        val extraPaddings = resources.getDimension(R.dimen.space_md)
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) - EXTRA_MARGIN
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
         val currentX = card.x
         val currentY = card.y
         completeSwipeToLeft(card, currentX)
@@ -327,10 +375,13 @@ class FlashCardGameActivity :
             tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
 //            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
 //            val accuracy = viewModel.getUserAnswerAccuracy()
-            tvAccuracyScoreLayout.text = getString(R.string.text_accuracy_mini_game_review, viewModel.getUserAnswerAccuracy())
+            tvAccuracyScoreLayout.text = getString(
+                R.string.text_accuracy_mini_game_review,
+                viewModel.getUserAnswerAccuracy()
+            )
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.timer.collect {t ->
+                    viewModel.timer.collect { t ->
                         tvTimeScoreLayout.text = viewModel.formatTime(t)
                     }
                 }
@@ -416,7 +467,8 @@ class FlashCardGameActivity :
                 btContinueQuizScoreLayout.visibility = View.GONE
                 tvLeftCardsScoreLayout.text = getString(R.string.text_all_cards_learned)
             } else {
-                tvLeftCardsScoreLayout.text = getString(R.string.text_cards_left_in_deck, viewModel.getCardLeft())
+                tvLeftCardsScoreLayout.text =
+                    getString(R.string.text_cards_left_in_deck, viewModel.getCardLeft())
                 btContinueQuizScoreLayout.apply {
                     visibility = View.VISIBLE
                     setOnClickListener {
@@ -425,6 +477,8 @@ class FlashCardGameActivity :
                         binding.lyGameReviewContainer.isVisible = false
                         viewModel.initFlashCard()
                         viewModel.updateCardToRevise(getCardCount())
+                        viewModel.getFlashCardCards()
+                        flashCardProgressBarAdapter.notifyDataSetChanged()
                         viewModel.updateOnScreenCards()
                         if (getCardOrientation() == CARD_ORIENTATION_FRONT_AND_BACK) {
                             initCardLayout()
@@ -444,6 +498,8 @@ class FlashCardGameActivity :
         binding.lyGameReviewContainer.isVisible = false
         viewModel.onRestartQuizWithAllCards()
         viewModel.updateCardToRevise(getCardCount())
+        viewModel.getFlashCardCards()
+        flashCardProgressBarAdapter.notifyDataSetChanged()
         viewModel.updateOnScreenCards()
         if (orientation == CARD_ORIENTATION_FRONT_AND_BACK) {
             initCardLayout()
@@ -466,8 +522,9 @@ class FlashCardGameActivity :
             val displayMetrics = resources.displayMetrics
             val cardWidth = view.width
             val cardHeight = binding.cvCardFront.height
+            val extraPaddings = resources.getDimension(R.dimen.space_md)
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = ((displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)) - EXTRA_MARGIN
+            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -484,17 +541,17 @@ class FlashCardGameActivity :
                     var currentY = view.y
                     when {
                         currentX > MIN_SWIPE_DISTANCE && currentX <= 0 || currentX < (MIN_SWIPE_DISTANCE * -1) && currentX >= 0
-                        -> {
+                            -> {
                             flipCardOnClicked(view, cardStartX, cardStartY, currentX, currentY)
                         }
 
                         currentX < MIN_SWIPE_DISTANCE
-                        -> {
+                            -> {
                             onCardKnownNot(view, currentX, cardStartX, cardStartY, currentY)
                         }
 
                         currentX > (MIN_SWIPE_DISTANCE * (-1))
-                        -> {
+                            -> {
                             onCardKnown(view, currentX, cardStartX, cardStartY, currentY)
                         }
                     }
@@ -548,8 +605,12 @@ class FlashCardGameActivity :
                     if (currentX1 == view.x || currentY1 == view.y) {
                         flipCard()
                     } else {
-                        val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(this@FlashCardGameActivity, viewModel.deck?.deckColorCode)
-                        binding.cvCardFront.backgroundTintList =deckColorCode
+                        val deckColorCode =
+                            DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
+                                this@FlashCardGameActivity,
+                                viewModel.deck?.deckColorCode
+                            )
+                        binding.cvCardFront.backgroundTintList = deckColorCode
                     }
                     currentX1 = 0f
                     currentY1 = 0f
@@ -595,6 +656,8 @@ class FlashCardGameActivity :
                             if (viewModel.swipe(false)) {
                                 onQuizComplete()
                             }
+                            flashCardProgressBarAdapter.notifyDataSetChanged()
+
                             currentY11 = 0f
                             currentX11 = 0f
                         }
@@ -652,6 +715,9 @@ class FlashCardGameActivity :
                             if (viewModel.swipe(true)) {
                                 onQuizComplete()
                             }
+                            flashCardProgressBarAdapter.notifyDataSetChanged()
+
+
                             currentY11 = 0f
                             currentX11 = 0f
                         }
@@ -689,9 +755,13 @@ class FlashCardGameActivity :
             }
 
             else -> {
-                val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(this, viewModel.deck?.deckColorCode)
+                val deckColorCode =
+                    DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
+                        this,
+                        viewModel.deck?.deckColorCode
+                    )
                 binding.cvCardFront.backgroundTintList = deckColorCode
-                binding.cvCardBack.backgroundTintList =deckColorCode
+                binding.cvCardBack.backgroundTintList = deckColorCode
             }
         }
 
@@ -730,9 +800,12 @@ class FlashCardGameActivity :
     @SuppressLint("ResourceType")
     private fun bindCard(onScreenCards: FlashCardGameModel, cardOrientation: String) {
 
-        val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(this, viewModel.deck?.deckColorCode)
-        val sumCardsInDeck = viewModel.getTotalCards()
-        val currentCardNumber = viewModel.getCurrentCardNumber()
+        val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
+            this,
+            viewModel.deck?.deckColorCode
+        )
+//        val sumCardsInDeck = viewModel.getTotalCards()
+//        val currentCardNumber = viewModel.getCurrentCardNumber()
 
         if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {
             onCardOrientationBackFront()
@@ -746,8 +819,8 @@ class FlashCardGameActivity :
                 onScreenCards,
                 deckColorCode,
                 text,
-                currentCardNumber,
-                sumCardsInDeck
+//                currentCardNumber,
+//                sumCardsInDeck
             )
         } else {
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(
@@ -760,18 +833,23 @@ class FlashCardGameActivity :
                 onScreenCards,
                 deckColorCode,
                 text,
-                currentCardNumber,
-                sumCardsInDeck
+//                currentCardNumber,
+//                sumCardsInDeck
             )
         }
-        bindCardFrontAndBack(deckColorCode, onScreenCards, currentCardNumber, sumCardsInDeck)
+        bindCardFrontAndBack(
+            deckColorCode,
+            onScreenCards,
+//            currentCardNumber,
+//            sumCardsInDeck
+        )
     }
 
     private fun bindCardFrontAndBack(
         deckColorCode: ColorStateList?,
         onScreenCards: FlashCardGameModel,
-        currentCardNumber: Int,
-        sumCardsInDeck: Int
+//        currentCardNumber: Int,
+//        sumCardsInDeck: Int
     ) {
         binding.cvCardFront.backgroundTintList = deckColorCode
 
@@ -790,39 +868,57 @@ class FlashCardGameActivity :
         }
 
         binding.cvCardBack.backgroundTintList = deckColorCode
-        binding.tvFlashCardFrontProgression.text = getString(
-            R.string.tx_flash_card_game_progression,
-            "$currentCardNumber",
-            "$sumCardsInDeck"
-        )
-        binding.tvFlashCardBackProgression.text = getString(
-            R.string.tx_flash_card_game_progression,
-            "$currentCardNumber",
-            "$sumCardsInDeck"
-        )
+//        binding.tvFlashCardFrontProgression.text = getString(
+//            R.string.tx_flash_card_game_progression,
+//            "$currentCardNumber",
+//            "$sumCardsInDeck"
+//        )
+//        binding.tvFlashCardBackProgression.text = getString(
+//            R.string.tx_flash_card_game_progression,
+//            "$currentCardNumber",
+//            "$sumCardsInDeck"
+//        )
 
         binding.btCardFrontSpeak.setOnClickListener {
             if (tts?.isSpeaking == true) {
                 stopReading(listOf(binding.tvQuizFront))
             } else {
-                val language = onScreenCards.top.cardContentLanguage ?: viewModel.deck?.cardContentDefaultLanguage
+                val language = onScreenCards.top.cardContentLanguage
+                    ?: viewModel.deck?.cardContentDefaultLanguage
                 if (language.isNullOrBlank()) {
                     LanguageUtil().detectLanguage(
                         text = onScreenCards.top.cardContent?.content!!,
-                        onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
-                        onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
-                        onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                        onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
+                        onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
+                        onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
                         onSuccess = { detectedLanguage ->
-                            viewModel.updateCardContentLanguage(onScreenCards.top.cardId, detectedLanguage)
+                            viewModel.updateCardContentLanguage(
+                                onScreenCards.top.cardId,
+                                detectedLanguage
+                            )
                             readText(
-                                listOf(TextWithLanguageModel(onScreenCards.top.cardId, onScreenCards.top.cardContent.content, CONTENT, detectedLanguage)),
+                                listOf(
+                                    TextWithLanguageModel(
+                                        onScreenCards.top.cardId,
+                                        onScreenCards.top.cardContent.content,
+                                        CONTENT,
+                                        detectedLanguage
+                                    )
+                                ),
                                 listOf(binding.tvQuizFront),
                             )
                         }
                     )
                 } else {
                     readText(
-                        listOf(TextWithLanguageModel(onScreenCards.top.cardId, onScreenCards.top.cardContent?.content!!, CONTENT, language)),
+                        listOf(
+                            TextWithLanguageModel(
+                                onScreenCards.top.cardId,
+                                onScreenCards.top.cardContent?.content!!,
+                                CONTENT,
+                                language
+                            )
+                        ),
                         listOf(binding.tvQuizFront),
                     )
                 }
@@ -834,17 +930,26 @@ class FlashCardGameActivity :
                 stopReading(views)
             } else {
                 val definitions = cardDefinitionsToStrings(correctDefinitions)
-                val language = onScreenCards.top.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage
+                val language = onScreenCards.top.cardDefinitionLanguage
+                    ?: viewModel.deck?.cardDefinitionDefaultLanguage
                 if (language.isNullOrBlank()) {
                     LanguageUtil().detectLanguage(
                         text = definitions.first(),
-                        onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
-                        onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
-                        onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                        onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
+                        onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
+                        onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
                         onSuccess = { detectedLanguage ->
-                            viewModel.updateCardDefinitionLanguage(onScreenCards.top.cardId, detectedLanguage)
+                            viewModel.updateCardDefinitionLanguage(
+                                onScreenCards.top.cardId,
+                                detectedLanguage
+                            )
                             val textsToRead = definitions.map { d ->
-                                TextWithLanguageModel(onScreenCards.top.cardId, d, DEFINITION, detectedLanguage)
+                                TextWithLanguageModel(
+                                    onScreenCards.top.cardId,
+                                    d,
+                                    DEFINITION,
+                                    detectedLanguage
+                                )
                             }
                             readText(
                                 textsToRead,
@@ -879,7 +984,13 @@ class FlashCardGameActivity :
     private fun stopReading(views: List<TextView>) {
         tts?.stop()
         views.forEach { v ->
-            v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+            v.setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
         }
     }
 
@@ -887,7 +998,13 @@ class FlashCardGameActivity :
         tts?.stop()
         val views = tvDefinitions + listOf(binding.tvQuizFront)
         views.forEach { v ->
-            v.setTextColor(MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK))
+            v.setTextColor(
+                MaterialColors.getColor(
+                    this,
+                    com.google.android.material.R.attr.colorOnSurface,
+                    Color.BLACK
+                )
+            )
         }
     }
 
@@ -906,8 +1023,13 @@ class FlashCardGameActivity :
 
         var position = 0
         val textSum = text.size
-        val textColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorOnSurface, Color.BLACK)
-        val onReadColor = MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val textColor = MaterialColors.getColor(
+            this,
+            com.google.android.material.R.attr.colorOnSurface,
+            Color.BLACK
+        )
+        val onReadColor =
+            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
 
         val params = Bundle()
 
@@ -928,7 +1050,11 @@ class FlashCardGameActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(this@FlashCardGameActivity, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@FlashCardGameActivity,
+                    getString(R.string.error_read),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
 
@@ -956,20 +1082,20 @@ class FlashCardGameActivity :
         onScreenCards: FlashCardGameModel,
         deckColorCode: ColorStateList?,
         text: String?,
-        currentCardNumber: Int,
-        sumCardsInDeck: Int
+//        currentCardNumber: Int,
+//        sumCardsInDeck: Int
     ) {
         binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
         if (onScreenCards.bottom != null) {
             binding.cvCardBottom.backgroundTintList = deckColorCode
             binding.tvQuizBottom.text = text
-            binding.tvFlashCardBottomProgression.text = getString(
-                R.string.tx_flash_card_game_progression,
-                "${currentCardNumber.plus(1)}",
-                "$sumCardsInDeck"
-            )
+//            binding.tvFlashCardBottomProgression.text = getString(
+//                R.string.tx_flash_card_game_progression,
+//                "${currentCardNumber.plus(1)}",
+//                "$sumCardsInDeck"
+//            )
         } else {
-            binding.cvCardBottom.backgroundTintList =  deckColorCode
+            binding.cvCardBottom.backgroundTintList = deckColorCode
             binding.tvQuizBottom.text = "..."
         }
     }
@@ -995,7 +1121,9 @@ class FlashCardGameActivity :
         viewModel.initCardList(cardList)
         viewModel.initDeck(deck)
         viewModel.updateCardToRevise(getCardCount())
-        if (initOriginalCardList) { viewModel.initOriginalCardList(cardList) }
+        if (initOriginalCardList) {
+            viewModel.initOriginalCardList(cardList)
+        }
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
             setNavigationOnClickListener { finish() }
@@ -1020,10 +1148,11 @@ class FlashCardGameActivity :
     }
 
     override fun onInit(status: Int) {
-        when(status) {
+        when (status) {
             TextToSpeech.SUCCESS -> {
                 tts?.setSpeechRate(1.0f)
             }
+
             else -> {
                 Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
             }

@@ -29,6 +29,18 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_mini_game_progression"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/progression_region_height"
+        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_md"
+        android:scrollbars="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_card_bottom"
         android:layout_width="0dp"
@@ -48,6 +60,7 @@
             android:padding="@dimen/space_lg">
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_flash_card_bottom_progression"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,15 +75,14 @@
                 android:id="@+id/bt_card_bottom_speak"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="39dp"
-                android:layout_height="wrap_content"
+                android:layout_height="39dp"
                 android:contentDescription="@string/bt_description_button_speak"
                 app:icon="@drawable/icon_speak"
                 app:iconSize="@dimen/icon_base"
                 app:rippleColor="@color/transparent"
                 app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_bottom_progression"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_flash_card_bottom_progression"/>
+                app:layout_constraintTop_toTopOf="parent"/>
 
 
             <TextView
@@ -88,7 +100,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tv_card_bottom_flip_hint"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_flash_card_bottom_progression"
+                app:layout_constraintTop_toBottomOf="@+id/bt_card_bottom_speak"
                 tools:text="1. What is the capital of Madagascar?" />
 
             <TextView
@@ -115,7 +127,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/rv_mini_game_progression">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_card_back"
@@ -138,6 +150,7 @@
                 android:padding="@dimen/space_lg">
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_flash_card_back_progression"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -152,14 +165,13 @@
                     android:id="@+id/bt_card_back_speak"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="39dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="39dp"
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_speak"
                     app:iconSize="@dimen/icon_base"
                     app:iconTint="?colorOnSurface"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_back_progression"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_flash_card_back_progression"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:rippleColor="@color/transparent" />
 
 
@@ -178,7 +190,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tv_quiz_back_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_flash_card_back_progression"
+                    app:layout_constraintTop_toBottomOf="@+id/bt_card_back_speak"
                     tools:text="1. What is the capital of Madagascar?" />
 
                 <TextView
@@ -379,6 +391,7 @@
                 android:padding="@dimen/space_lg">
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_flash_card_front_progression"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -393,15 +406,14 @@
                     android:id="@+id/bt_card_front_speak"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="39dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="39dp"
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_speak"
                     app:iconSize="@dimen/icon_base"
                     app:iconTint="?colorOnSurface"
                     app:rippleColor="@color/transparent"
-                    app:layout_constraintBottom_toBottomOf="@+id/tv_flash_card_front_progression"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/tv_flash_card_front_progression" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
                 <TextView
@@ -419,7 +431,7 @@
                     app:layout_constraintBottom_toTopOf="@+id/tv_card_front_flip_hint"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_flash_card_front_progression"
+                    app:layout_constraintTop_toBottomOf="@+id/bt_card_front_speak"
                     tools:text="1. What is the capital of Madagascar?" />
 
                 <TextView

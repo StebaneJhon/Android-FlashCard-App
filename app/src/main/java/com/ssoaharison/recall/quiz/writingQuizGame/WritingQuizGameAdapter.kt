@@ -38,8 +38,8 @@ class WritingQuizGameAdapter(
         return holder.bind(
             context,
             cardList[position],
-            position.plus(1),
-            cardList.size,
+//            position.plus(1),
+//            cardList.size,
             userAnswerAndView,
             onSpeak,
         )
@@ -60,14 +60,14 @@ class WritingQuizGameAdapter(
         fun bind(
             context: Context,
             card: WritingQuizGameModel,
-            cardNumber: Int,
-            cardSum: Int,
+//            cardNumber: Int,
+//            cardSum: Int,
             userAnswer: (WritingQuizGameUserResponseModel) -> Unit,
             onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             tvOnCardWord.text = card.onCardWord.text
-            tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
+//            tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvAnswer.text = context.getString(R.string.text_correct_answer, card.answers.first().text)
 
             when {

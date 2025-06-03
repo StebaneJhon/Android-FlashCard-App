@@ -102,11 +102,11 @@ class QuizGameAdapter(
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
 
-            tvFrontProgression.text = context.getString(
-                R.string.tx_flash_card_game_progression,
-                "$cardNumber",
-                "$cardSum"
-            )
+//            tvFrontProgression.text = context.getString(
+//                R.string.tx_flash_card_game_progression,
+//                "$cardNumber",
+//                "$cardSum"
+//            )
             tvContent.text = card.cardContent?.content
             tvCardType.text = card.cardType
             when {
@@ -193,8 +193,8 @@ class QuizGameAdapter(
             }
             bindAnswerAlternatives(
                 card,
-                cardNumber,
-                cardSum,
+//                cardNumber,
+//                cardSum,
                 cardOnClick
             )
         }
@@ -318,8 +318,8 @@ class QuizGameAdapter(
 
         private fun bindAnswerAlternatives(
             card: QuizGameCardModel,
-            cardNumber: Int,
-            cardSum: Int,
+//            cardNumber: Int,
+//            cardSum: Int,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit
         ) {
             if (card.cardType == SINGLE_ANSWER_CARD) {
@@ -328,11 +328,11 @@ class QuizGameAdapter(
                 btAlternatives.forEach { materialButton ->
                     materialButton.visibility = View.GONE
                 }
-                tvBackProgression.text = context.getString(
-                    R.string.tx_flash_card_game_progression,
-                    "$cardNumber",
-                    "$cardSum"
-                )
+//                tvBackProgression.text = context.getString(
+//                    R.string.tx_flash_card_game_progression,
+//                    "$cardNumber",
+//                    "$cardSum"
+//                )
                 tvDefinition.text = card.cardDefinition.first().definition
                 tvCardTypeBack.text = card.cardType
                 flCardRoot.setOnClickListener {
