@@ -383,12 +383,7 @@ class QuizGameActivity :
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
-                    displayReview(
-//                        viewModel.getKnownCardSum(),
-//                        viewModel.getMissedCardSum(),
-//                        viewModel.getQuizGameCardsSum(),
-//                        viewModel.cardLeft()
-                    )
+                    displayReview()
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
@@ -411,12 +406,7 @@ class QuizGameActivity :
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
-                    displayReview(
-//                        viewModel.getKnownCardSum(),
-//                        viewModel.getMissedCardSum(),
-//                        viewModel.getQuizGameCardsSum(),
-//                        viewModel.cardLeft()
-                    )
+                    displayReview()
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
@@ -432,7 +422,6 @@ class QuizGameActivity :
     }
 
     private fun specifyNextAndBackActions() {
-        val currentCardIndex = binding.vpCardHolder.currentItem
         if (binding.vpCardHolder.currentItem > 0) {
             isRewindButtonActive(true)
             binding.btRewind.setOnClickListener {
@@ -442,7 +431,6 @@ class QuizGameActivity :
                 fetchJob1?.cancel()
                 fetchJob1 = lifecycleScope.launch {
                     delay(TIME_BEFORE_HIDING_ACTIONS)
-//                    val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
                         binding.vpCardHolder.currentItem.minus(1),
                         true
@@ -466,12 +454,7 @@ class QuizGameActivity :
             fetchJob1 = lifecycleScope.launch {
                 delay(TIME_BEFORE_HIDING_ACTIONS)
                 if (binding.vpCardHolder.currentItem >= viewModel.getQuizGameCardsSum() - 1) {
-                    displayReview(
-//                        viewModel.getKnownCardSum(),
-//                        viewModel.getMissedCardSum(),
-//                        viewModel.getQuizGameCardsSum(),
-//                        viewModel.cardLeft()
-                    )
+                    displayReview()
                 } else {
                     val itemPosition = binding.vpCardHolder.currentItem
                     binding.vpCardHolder.setCurrentItem(
@@ -523,7 +506,6 @@ class QuizGameActivity :
         binding.gameReviewContainerMQ.visibility = View.VISIBLE
         binding.gameReviewLayoutMQ.apply {
             tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
-//            tvMissedCardSumScoreLayout.text = missedCardsSum.toString()
             tvAccuracyScoreLayout.text = getString(R.string.text_accuracy_mini_game_review, viewModel.getUserAnswerAccuracy())
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -539,31 +521,16 @@ class QuizGameActivity :
                 ContextCompat.getColor(this@QuizGameActivity, R.color.green400),
             ) as Int
 
-//            val missedCardsBackgroundColor = ArgbEvaluator().evaluate(
-//                missedCardsSum.toFloat() / totalCardsSum,
-//                ContextCompat.getColor(this@QuizGameActivity, R.color.red50),
-//                ContextCompat.getColor(this@QuizGameActivity, R.color.red400),
-//            ) as Int
-
             val textColorKnownCards = ArgbEvaluator().evaluate(
                 viewModel.getUserAnswerAccuracyFraction(),
                 ContextCompat.getColor(this@QuizGameActivity, R.color.red50),
                 ContextCompat.getColor(this@QuizGameActivity, R.color.green50)
             ) as Int
 
-//            val textColorMissedCards =
-//                if (totalCardsSum / 2 < viewModel.getMissedCardSum())
-//                    ContextCompat.getColor(this@QuizGameActivity, R.color.red50)
-//                else ContextCompat.getColor(this@QuizGameActivity, R.color.red400)
-
-//            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
-//            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
             tvAccuracyScoreLayout.setTextColor(textColorKnownCards)
             tvAccuracyCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-//            cvContainerMissedCards.background.setTint(missedCardsBackgroundColor)
-
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@QuizGameActivity, MainActivity::class.java))
                 finish()
@@ -615,7 +582,6 @@ class QuizGameActivity :
                 tvLeftCardsScoreLayout.text = getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
                 btContinueQuizScoreLayout.apply {
                     visibility = View.VISIBLE
-//                    text = getString(R.string.cards_left_match_quiz_score, "$cardsLeft")
                     setOnClickListener {
                         viewModel.updateActualCards(getCardCount())
                         quizJob?.cancel()
@@ -626,7 +592,6 @@ class QuizGameActivity :
                                     is UiState.Error -> {
                                         onNoCardToRevise()
                                     }
-
                                     is UiState.Loading -> {}
                                     is UiState.Success -> {
                                         restartQuiz()

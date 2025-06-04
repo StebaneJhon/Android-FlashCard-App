@@ -50,8 +50,6 @@ class QuizGameAdapter(
         return holder.bind(
             context,
             cardList[position],
-            position.plus(1),
-            cardList.size,
             appTheme,
             cardOnClick,
         )
@@ -65,8 +63,6 @@ class QuizGameAdapter(
         private val cvCardContainer: MaterialCardView = view.findViewById(R.id.cv_card_container)
         private val cvCardContainerBack: MaterialCardView =
             view.findViewById(R.id.cv_card_container_back)
-        private val tvFrontProgression: TextView = view.findViewById(R.id.tv_front_progression)
-        private val tvBackProgression: TextView = view.findViewById(R.id.tv_back_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val tvCardTypeBack: TextView = view.findViewById(R.id.tv_card_type_back)
         private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
@@ -96,17 +92,9 @@ class QuizGameAdapter(
         fun bind(
             context: Context,
             card: QuizGameCardModel,
-            cardNumber: Int,
-            cardSum: Int,
             appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
-
-//            tvFrontProgression.text = context.getString(
-//                R.string.tx_flash_card_game_progression,
-//                "$cardNumber",
-//                "$cardSum"
-//            )
             tvContent.text = card.cardContent?.content
             tvCardType.text = card.cardType
             when {
@@ -191,12 +179,7 @@ class QuizGameAdapter(
                     }
                 }
             }
-            bindAnswerAlternatives(
-                card,
-//                cardNumber,
-//                cardSum,
-                cardOnClick
-            )
+            bindAnswerAlternatives(card, cardOnClick)
         }
 
         private fun hasCardCorrectAnswer(card: QuizGameCardModel): Boolean {
@@ -318,8 +301,6 @@ class QuizGameAdapter(
 
         private fun bindAnswerAlternatives(
             card: QuizGameCardModel,
-//            cardNumber: Int,
-//            cardSum: Int,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit
         ) {
             if (card.cardType == SINGLE_ANSWER_CARD) {
@@ -328,11 +309,6 @@ class QuizGameAdapter(
                 btAlternatives.forEach { materialButton ->
                     materialButton.visibility = View.GONE
                 }
-//                tvBackProgression.text = context.getString(
-//                    R.string.tx_flash_card_game_progression,
-//                    "$cardNumber",
-//                    "$cardSum"
-//                )
                 tvDefinition.text = card.cardDefinition.first().definition
                 tvCardTypeBack.text = card.cardType
                 flCardRoot.setOnClickListener {

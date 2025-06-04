@@ -239,16 +239,17 @@ class MultiChoiceQuizGameActivity :
                 this,
                 data,
                 appTheme ?: "WHITE THEM",
+
                 {
-//                    viewModel.setCardAsActualOrPassedByPosition(binding.vpCardHolder.currentItem)
-//                    multiChoiceGameProgressionAdapter.notifyItemChanged(binding.vpCardHolder.currentItem)
-                },
-                {
-                    if (viewModel.isUserChoiceCorrect(it, getCardOrientation(), binding.vpCardHolder.currentItem)) {
+                    if (viewModel.isUserChoiceCorrect(
+                            it,
+                            getCardOrientation(),
+                            binding.vpCardHolder.currentItem
+                        )
+                    ) {
                         areOptionsEnabled(true)
                         specifyOptions(data.size)
-                    }
-                    else if (viewModel.getAttemptTime() <= 1) {
+                    } else if (viewModel.getAttemptTime() <= 1) {
                         multiChoiceGameProgressionAdapter.notifyDataSetChanged()
                     }
                     multiChoiceGameAdapter.notifyDataSetChanged()
@@ -360,7 +361,10 @@ class MultiChoiceQuizGameActivity :
         viewModel.startTimer()
     }
 
-    private fun displayProgression(data: List<MultiChoiceGameCardModel>, recyclerView: RecyclerView) {
+    private fun displayProgression(
+        data: List<MultiChoiceGameCardModel>,
+        recyclerView: RecyclerView
+    ) {
         multiChoiceGameProgressionAdapter = MultiChoiceQuizProgressionAdapter(
             cardList = data,
             appTheme = appTheme ?: "WHITE THEME",
@@ -619,35 +623,16 @@ class MultiChoiceQuizGameActivity :
                 ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green400),
             ) as Int
 
-//            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
-//                viewModel.getMissedCardSum().toFloat() / viewModel.cardSum(),
-//                ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red50),
-//                ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red400),
-//            ) as Int
-//
             val textColorKnownCards = ArgbEvaluator().evaluate(
                 viewModel.getUserAnswerAccuracyFraction(),
                 ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red50),
                 ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green50)
             ) as Int
 
-
-//                if (viewModel.cardSum() / 2 < viewModel.getKnownCardSum(cardCount))
-//                    ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green50)
-//                else ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.green400)
-
-//            val textColorMissedCards =
-//                if (viewModel.cardSum() / 2 < viewModel.getMissedCardSum())
-//                    ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red50)
-//                else ContextCompat.getColor(this@MultiChoiceQuizGameActivity, R.color.red400)
-
-//            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
-//            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
             tvAccuracyScoreLayout.setTextColor(textColorKnownCards)
             tvAccuracyCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-//            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@MultiChoiceQuizGameActivity, MainActivity::class.java))
@@ -704,7 +689,6 @@ class MultiChoiceQuizGameActivity :
                     getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
                 btContinueQuizScoreLayout.apply {
                     visibility = View.VISIBLE
-//                    text = getString(R.string.text_cards_left_in_deck, viewModel.cardLeft())
                     setOnClickListener {
                         viewModel.updateActualCards(getCardCount(), getCardOrientation())
                         multiChoiceQuizJob?.cancel()
@@ -720,7 +704,10 @@ class MultiChoiceQuizGameActivity :
                                     is UiState.Success -> {
                                         restartMultiChoiceQuiz()
                                         launchMultiChoiceQuizGame(state.data)
-                                        displayProgression(state.data, binding.rvMiniGameProgression)
+                                        displayProgression(
+                                            state.data,
+                                            binding.rvMiniGameProgression
+                                        )
                                     }
                                 }
                             }

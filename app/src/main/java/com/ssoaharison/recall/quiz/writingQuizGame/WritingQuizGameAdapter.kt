@@ -38,8 +38,6 @@ class WritingQuizGameAdapter(
         return holder.bind(
             context,
             cardList[position],
-//            position.plus(1),
-//            cardList.size,
             userAnswerAndView,
             onSpeak,
         )
@@ -52,7 +50,6 @@ class WritingQuizGameAdapter(
         private val tvOnCardWord: TextView = itemView.findViewById(R.id.tv_top_on_card_word)
         private val tieTopCard: TextInputEditText = itemView.findViewById(R.id.ti_top_card_content)
         private val tilTopCard: TextInputLayout = itemView.findViewById(R.id.tilTopCardContent)
-        private val tvProgressionFrontCard: TextView = itemView.findViewById(R.id.tv_writing_quiz_front_progression)
         private val btSpeak: Button = itemView.findViewById(R.id.bt_card_front_speak)
         private val btShowAnswer: MaterialButton = itemView.findViewById(R.id.bt_show_answer)
         private val tvAnswer: TextView = itemView.findViewById(R.id.tv_answer)
@@ -60,14 +57,11 @@ class WritingQuizGameAdapter(
         fun bind(
             context: Context,
             card: WritingQuizGameModel,
-//            cardNumber: Int,
-//            cardSum: Int,
             userAnswer: (WritingQuizGameUserResponseModel) -> Unit,
             onSpeak: (WritingQuizSpeakModel) -> Unit,
         ) {
             imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             tvOnCardWord.text = card.onCardWord.text
-//            tvProgressionFrontCard.text = context.getString(R.string.tx_flash_card_game_progression, "$cardNumber", "$cardSum")
             tvAnswer.text = context.getString(R.string.text_correct_answer, card.answers.first().text)
 
             when {

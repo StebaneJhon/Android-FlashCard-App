@@ -373,8 +373,6 @@ class FlashCardGameActivity :
         binding.lyGameReviewContainer.isVisible = true
         binding.lyGameReviewLayout.apply {
             tvTotalCardsSumScoreLayout.text = viewModel.getRevisedCardsCount().toString()
-//            tvMissedCardSumScoreLayout.text = viewModel.getMissedCardSum().toString()
-//            val accuracy = viewModel.getUserAnswerAccuracy()
             tvAccuracyScoreLayout.text = getString(
                 R.string.text_accuracy_mini_game_review,
                 viewModel.getUserAnswerAccuracy()
@@ -393,34 +391,15 @@ class FlashCardGameActivity :
                 ContextCompat.getColor(this@FlashCardGameActivity, R.color.green400),
             ) as Int
 
-//            val mossedCardsBackgroundColor = ArgbEvaluator().evaluate(
-//                viewModel.getMissedCardSum().toFloat() / viewModel.getTotalCards(),
-//                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50),
-//                ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400),
-//            ) as Int
-
-//            val textColorKnownCards =
-//                if (viewModel.getTotalCards() / 2 < viewModel.getKnownCardSum())
-//                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50)
-//                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50)
-
             val textColorKnownCards = ArgbEvaluator().evaluate(
                 viewModel.getUserAnswerAccuracyFraction(),
                 ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50),
                 ContextCompat.getColor(this@FlashCardGameActivity, R.color.green50)
             ) as Int
-//            val textColorMissedCards =
-//                if (viewModel.getTotalCards() / 2 < viewModel.getMissedCardSum())
-//                    ContextCompat.getColor(this@FlashCardGameActivity, R.color.red50)
-//                else ContextCompat.getColor(this@FlashCardGameActivity, R.color.red400)
-
-//            tvMissedCardSumScoreLayout.setTextColor(textColorMissedCards)
-//            tvMissedCardScoreLayout.setTextColor(textColorMissedCards)
             tvAccuracyScoreLayout.setTextColor(textColorKnownCards)
             tvAccuracyCardsScoreLayout.setTextColor(textColorKnownCards)
 
             cvContainerKnownCards.background.setTint(knownCardsBackgroundColor)
-//            cvContainerMissedCards.background.setTint(mossedCardsBackgroundColor)
 
             btBackToDeckScoreLayout.setOnClickListener {
                 startActivity(Intent(this@FlashCardGameActivity, MainActivity::class.java))
@@ -804,8 +783,6 @@ class FlashCardGameActivity :
             this,
             viewModel.deck?.deckColorCode
         )
-//        val sumCardsInDeck = viewModel.getTotalCards()
-//        val currentCardNumber = viewModel.getCurrentCardNumber()
 
         if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {
             onCardOrientationBackFront()
@@ -819,8 +796,6 @@ class FlashCardGameActivity :
                 onScreenCards,
                 deckColorCode,
                 text,
-//                currentCardNumber,
-//                sumCardsInDeck
             )
         } else {
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(
@@ -832,24 +807,14 @@ class FlashCardGameActivity :
                 onFlippedBackgroundColor,
                 onScreenCards,
                 deckColorCode,
-                text,
-//                currentCardNumber,
-//                sumCardsInDeck
-            )
+                text,)
         }
-        bindCardFrontAndBack(
-            deckColorCode,
-            onScreenCards,
-//            currentCardNumber,
-//            sumCardsInDeck
-        )
+        bindCardFrontAndBack(deckColorCode, onScreenCards,)
     }
 
     private fun bindCardFrontAndBack(
         deckColorCode: ColorStateList?,
         onScreenCards: FlashCardGameModel,
-//        currentCardNumber: Int,
-//        sumCardsInDeck: Int
     ) {
         binding.cvCardFront.backgroundTintList = deckColorCode
 
@@ -868,16 +833,6 @@ class FlashCardGameActivity :
         }
 
         binding.cvCardBack.backgroundTintList = deckColorCode
-//        binding.tvFlashCardFrontProgression.text = getString(
-//            R.string.tx_flash_card_game_progression,
-//            "$currentCardNumber",
-//            "$sumCardsInDeck"
-//        )
-//        binding.tvFlashCardBackProgression.text = getString(
-//            R.string.tx_flash_card_game_progression,
-//            "$currentCardNumber",
-//            "$sumCardsInDeck"
-//        )
 
         binding.btCardFrontSpeak.setOnClickListener {
             if (tts?.isSpeaking == true) {
@@ -1082,18 +1037,11 @@ class FlashCardGameActivity :
         onScreenCards: FlashCardGameModel,
         deckColorCode: ColorStateList?,
         text: String?,
-//        currentCardNumber: Int,
-//        sumCardsInDeck: Int
     ) {
         binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
         if (onScreenCards.bottom != null) {
             binding.cvCardBottom.backgroundTintList = deckColorCode
             binding.tvQuizBottom.text = text
-//            binding.tvFlashCardBottomProgression.text = getString(
-//                R.string.tx_flash_card_game_progression,
-//                "${currentCardNumber.plus(1)}",
-//                "$sumCardsInDeck"
-//            )
         } else {
             binding.cvCardBottom.backgroundTintList = deckColorCode
             binding.tvQuizBottom.text = "..."

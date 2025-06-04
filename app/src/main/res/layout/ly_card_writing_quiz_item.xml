@@ -22,16 +22,6 @@
         android:backgroundTint="?colorSurfaceContainer"
         android:padding="@dimen/space_lg">
 
-        <TextView
-            android:id="@+id/tv_writing_quiz_front_progression"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_sm"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="1/20" />
 
         <Button
             android:id="@+id/bt_card_front_speak"
@@ -42,9 +32,8 @@
             app:icon="@drawable/icon_speak"
             app:iconSize="@dimen/icon_base"
             app:iconTint="?colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_writing_quiz_front_progression"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_writing_quiz_front_progression"
+            app:layout_constraintTop_toTopOf="parent"
             app:rippleColor="@color/transparent" />
 
         <TextView

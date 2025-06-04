@@ -39,8 +39,6 @@ class TestAdapter(
         return holder.bind(
             context,
             cardList[position],
-//            position,
-//            cardList.size,
             onUserAnswered,
             onSpeak
         )
@@ -59,7 +57,6 @@ class TestAdapter(
         private val btAlternative8: MaterialButton = view.findViewById(R.id.bt_alternative8)
         private val btAlternative9: MaterialButton = view.findViewById(R.id.bt_alternative9)
         private val btAlternative10: MaterialButton = view.findViewById(R.id.bt_alternative10)
-        private val tvFrontProgression: TextView = view.findViewById(R.id.tv_front_progression)
         private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
         private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
         private val tvHint: TextView = view.findViewById(R.id.tv_hint)
@@ -73,16 +70,9 @@ class TestAdapter(
         fun bind(
             context: Context,
             card: TestCardModel,
-//            cardPosition: Int,
-//            cardSum: Int,
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
-//            tvFrontProgression.text = context.getString(
-//                R.string.tx_flash_card_game_progression,
-//                "${cardPosition.plus(1)}",
-//                "$cardSum"
-//            )
             tvContent.text = card.cardContent.content
             tvCardType.text = card.cardType
             if (card.cardType == MULTIPLE_ANSWER_CARD) {

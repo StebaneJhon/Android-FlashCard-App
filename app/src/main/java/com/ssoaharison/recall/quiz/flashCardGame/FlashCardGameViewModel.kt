@@ -33,16 +33,11 @@ class FlashCardGameViewModel(
     private var originalCardList: List<ImmutableCard?>? = null
     private lateinit var cardList: MutableList<ImmutableCard?>
 
-    //    private var cardToRevise: MutableList<ImmutableCard?>? = null
-//    private var flowOfCardToRevise: Flow<List<ImmutableCard?>?> = flow {
-//        emit(cardToRevise)
-//    }
     private lateinit var cardToRevise: MutableList<FlashCardCardModel?>
     private var flowOfCardToRevise: Flow<List<FlashCardCardModel?>?> = flow {
         emit(cardToRevise)
     }
     private val missedCards: ArrayList<FlashCardCardModel?> = arrayListOf()
-//    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
 
     var deck: ImmutableDeck? = null
     private var progress: Int = 0
@@ -72,43 +67,18 @@ class FlashCardGameViewModel(
         val cards = getCardAmount(amount)
         cardToRevise = immutableCardsToFlashCardCards(cards).toMutableList()
         cardToRevise.first()?.setAsActualOrPassed()
-//        when {
-//            cardList.isEmpty() -> {
-//                cardToRevise = null
-//            }
-//
-//            cardList.size == amount -> {
-//                cardToRevise = cardList
-//            }
-//
-//            else -> {
-//                if (passedCards <= cardList.size) {
-//                    if (restCards >= amount) {
-//                        cardToRevise =
-//                            cardList.slice(passedCards..passedCards.plus(amount).minus(1))
-//                                .toMutableList()
-//                        passedCards += amount
-//                    } else {
-//                        cardToRevise =
-//                            cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
-//                        passedCards += cardList.size.plus(50)
-//                    }
-//                }
-//                restCards = cardList.size - passedCards
-//            }
-//        }
         revisedCardsCount = cardToRevise.size
     }
 
-    fun setCardAsActualOrPassedByPosition(position: Int) {
+    private fun setCardAsActualOrPassedByPosition(position: Int) {
         cardToRevise[position]?.setAsActualOrPassed()
     }
 
-    fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
+    private fun setCardAsNotActualOrNotPassedByPosition(position: Int) {
         cardToRevise[position]?.setAsNotActualOrNotPassed()
     }
 
-    fun getCardAmount(amount: Int): List<ImmutableCard?>? {
+    private fun getCardAmount(amount: Int): List<ImmutableCard?>? {
         return when {
             cardList.isEmpty() -> {
                 null
@@ -157,11 +127,6 @@ class FlashCardGameViewModel(
             isActualOrPassed = false
         )
     }
-
-//    private val topCard
-//        get() = cardToRevise?.get(currentCardPosition)
-//    private val bottomCard
-//        get() = cardToRevise?.let { getBottomCard(it, currentCardPosition) }
 
     fun sortCardsByLevel() {
         cardList.sortBy { it?.cardStatus }
@@ -266,7 +231,6 @@ class FlashCardGameViewModel(
 
     private fun getActualFlashCardGameModel(
         cards: List<FlashCardCardModel?>,
-        currentCartPosition: Int
     ): FlashCardGameModel {
         return FlashCardGameModel(
             top = getTopCard(cards, currentCardPosition)!!,
@@ -316,7 +280,7 @@ class FlashCardGameViewModel(
                         _actualCards.value = UiState.Error("No Cards To Revise")
                     } else {
                         _actualCards.value = UiState.Success(
-                            getActualFlashCardGameModel(cards, currentCardPosition)
+                            getActualFlashCardGameModel(cards)
                         )
                     }
                 }
@@ -355,16 +319,13 @@ class FlashCardGameViewModel(
         val card = cardToRevise[currentCardPosition]
         if (card != null) {
             val newCard = spaceRepetitionHelper.rescheduleCard(card.card, isKnown)
-            updateCard(newCard, currentCardPosition)
+            updateCard(newCard)
         }
     }
 
     fun updateCard(
         card: ImmutableCard,
-        cardPosition: Int
     ) = viewModelScope.launch {
-//        val flashCardCard = immutableCardToFlashCardCard(card)
-//        cardToRevise?.set(cardPosition, flashCardCard)
         repository.updateCard(card)
     }
 

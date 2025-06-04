@@ -59,17 +59,6 @@
             android:background="@drawable/bg_card_flash_card"
             android:padding="@dimen/space_lg">
 
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_flash_card_bottom_progression"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:text="@string/tx_flash_card_game_card_orientation_front" />
 
             <Button
                 android:id="@+id/bt_card_bottom_speak"
@@ -148,18 +137,6 @@
                 android:background="@drawable/bg_card_flash_card"
                 android:backgroundTint="?colorSurfaceContainerHigh"
                 android:padding="@dimen/space_lg">
-
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/tv_flash_card_back_progression"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="1/20" />
 
                 <Button
                     android:id="@+id/bt_card_back_speak"
@@ -389,18 +366,6 @@
                 android:background="@drawable/bg_card_flash_card"
                 android:backgroundTint="?colorSurfaceContainer"
                 android:padding="@dimen/space_lg">
-
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/tv_flash_card_front_progression"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="1/20" />
 
                 <Button
                     android:id="@+id/bt_card_front_speak"

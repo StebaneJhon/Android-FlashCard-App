@@ -55,7 +55,6 @@ class FlashCardProgressBarAdapter(
             card: FlashCardCardModel?,
             context: Context
         ) {
-            val cards = cardList
             val cardItemColor = if (!card?.isActualOrPassed!!) {
                 MaterialColors.getColor(
                     context,

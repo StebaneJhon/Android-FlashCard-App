@@ -27,18 +27,6 @@
             android:paddingBottom="@dimen/space_md">
 
             <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_back_progression"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1/20" />
-
-            <TextView
                 android:id="@+id/tv_card_type_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -104,18 +92,6 @@
             android:paddingStart="@dimen/space_lg"
             android:paddingEnd="@dimen/space_lg"
             android:paddingBottom="@dimen/space_md">
-
-            <TextView
-                android:visibility="gone"
-                android:id="@+id/tv_front_progression"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1/20" />
 
             <TextView
                 android:id="@+id/tv_card_type"
