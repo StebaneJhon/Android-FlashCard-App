@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.deck
+package com.ssoaharison.recall.util
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
+import com.ssoaharison.recall.deck.ColorModel
 
 class DeckColorPickerAdapter(
     private val context: Context,
@@ -21,7 +22,7 @@ class DeckColorPickerAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): DeckColorPickerAdapter.ViewHolder {
+    ): ViewHolder {
 
         val pickerItemWidth = parent.width / 6 - ( 2 * MARGIN)
         val view = LayoutInflater.from(context).inflate(R.layout.ly_item_color_picker, parent, false)
@@ -33,7 +34,7 @@ class DeckColorPickerAdapter(
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: DeckColorPickerAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         return holder.bind(
             context,
             listOfColors[position],

@@ -40,6 +40,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
@@ -74,6 +75,8 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.util.DeckColorPickerAdapter
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.TextType.CONTENT
@@ -83,6 +86,7 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
 
@@ -102,6 +106,8 @@ class CardFragment :
     private val supportedLanguages = LanguageUtil().getSupportedLang()
     private lateinit var arrayAdapterSupportedLanguages: ArrayAdapter<String>
     private lateinit var listPopupWindow: ListPopupWindow
+
+    private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -191,8 +197,6 @@ class CardFragment :
         linearLayoutManager = LinearLayoutManager(appContext)
         arrayAdapterSupportedLanguages =
             ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
-
-
         view.findViewById<MaterialToolbar>(R.id.cardsTopAppBar).apply {
             title = deck.deckName
             setNavigationOnClickListener {
@@ -237,7 +241,18 @@ class CardFragment :
                 }
             }
         }
+
         displayAllCards()
+
+        initDeckColorPicker()
+
+        binding.btDeckDetails.setOnClickListener {
+            showDeckDetails()
+        }
+
+        binding.btExport.setOnClickListener {
+            Toast.makeText(context, "Not yet implemented", Toast.LENGTH_LONG).show()
+        }
 
         binding.fabAddCard.setOnClickListener {
             onAddNewCard()
@@ -246,8 +261,6 @@ class CardFragment :
         if (opener == NewDeckDialog.TAG) {
             onAddNewCard()
         }
-
-
 
         requireActivity()
             .onBackPressedDispatcher
@@ -263,6 +276,45 @@ class CardFragment :
                 }
             })
 
+    }
+
+    private fun showDeckDetails() {
+        binding.tilDeckName.isVisible = !binding.tilDeckName.isVisible
+        binding.tvDeckColorPickerTitle.isVisible = !binding.tvDeckColorPickerTitle.isVisible
+        binding.rvDeckColorPicker.isVisible = !binding.rvDeckColorPicker.isVisible
+        binding.btExport.isVisible = !binding.btExport.isVisible
+        if (binding.tilDeckName.isVisible) {
+            binding.btDeckDetails.setIconResource(R.drawable.icon_expand_less)
+            lifecycleScope.launch {
+                delay(50)
+                cardViewModel.colorSelectionList.collect { listOfColors ->
+                    displayColorPicker(listOfColors)
+                }
+            }
+        } else {
+            binding.btDeckDetails.setIconResource(R.drawable.icon_expand_more)
+        }
+    }
+
+    private fun initDeckColorPicker() {
+        val deckColorCategorySelector = DeckColorCategorySelector()
+        val deckColors = deckColorCategorySelector.getColors()
+        cardViewModel.initColorSelection(deckColors, deck.deckColorCode)
+    }
+
+    private fun displayColorPicker(colorList: List<ColorModel>) {
+        deckColorPickerAdapter = DeckColorPickerAdapter(
+            requireContext(),
+            colorList
+        ) { selectedColor ->
+//            cardViewModel.selectColor(selectedColor.id)
+//            deckColorPickerAdapter.notifyDataSetChanged()
+        }
+        binding.rvDeckColorPicker.apply {
+            adapter = deckColorPickerAdapter
+            layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
+            setHasFixedSize(true)
+        }
 
     }
 

@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
@@ -16,7 +14,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableDeck
@@ -27,6 +24,7 @@ import com.ssoaharison.recall.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_A
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ssoaharison.recall.util.DeckColorPickerAdapter
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -146,18 +144,16 @@ class NewDeckDialog(
 
         lifecycleScope.launch {
             delay(50)
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                val deckColorCategorySelector = DeckColorCategorySelector()
-                val deckColors = if (appTheme == DARK_THEME) {
-                    deckColorCategorySelector.getDarkColors()
-                } else {
-                    deckColorCategorySelector.getColors()
-                }
-                newDeckDialogViewModel.initColorSelection(deckColors, deckCategoryColor)
-                newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
-                    displayColorPicker(listOfColors)
-                    binding.rvDeckColorPicker.visibility = View.GONE
-                }
+            val deckColorCategorySelector = DeckColorCategorySelector()
+            val deckColors = if (appTheme == DARK_THEME) {
+                deckColorCategorySelector.getDarkColors()
+            } else {
+                deckColorCategorySelector.getColors()
+            }
+            newDeckDialogViewModel.initColorSelection(deckColors, deckCategoryColor)
+            newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
+                displayColorPicker(listOfColors)
+                binding.rvDeckColorPicker.visibility = View.GONE
             }
         }
 

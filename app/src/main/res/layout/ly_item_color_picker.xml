@@ -10,6 +10,4 @@
     android:layout_margin="0dp"
     app:iconTint="?colorOnSurface"
     android:backgroundTint="?colorSurfaceContainerLow"
-    app:strokeWidth="@dimen/space_xxs"
-    app:strokeColor="?colorSurfaceContainer"
     app:iconGravity="textStart"/>

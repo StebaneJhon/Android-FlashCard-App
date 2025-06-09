@@ -10,6 +10,7 @@ import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.deck.ColorModel
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
@@ -87,6 +88,34 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     fun updateDefaultCardDefinitionLanguage(deckId: String, language: String) = viewModelScope.launch {
         repository.updateDefaultCardDefinitionLanguage(deckId, language)
+    }
+
+    private var _colorSelectionList = MutableStateFlow<ArrayList<ColorModel>>(arrayListOf())
+    val colorSelectionList: StateFlow<ArrayList<ColorModel>> = _colorSelectionList.asStateFlow()
+
+    fun initColorSelection(colors: Map<String, Int>, actualColorId: String?) {
+        colors.forEach { (id, color) ->
+            if (actualColorId == id) {
+                _colorSelectionList.value.add(
+                    ColorModel(color, id, true)
+                )
+            } else {
+                _colorSelectionList.value.add(
+                    ColorModel(color, id)
+                )
+            }
+
+        }
+    }
+
+    fun selectColor(id: String) {
+        _colorSelectionList.value.forEachIndexed { index, color ->
+            if (color.id == id) {
+                _colorSelectionList.value[index].isSelected = true
+            } else {
+                _colorSelectionList.value[index].isSelected = false
+            }
+        }
     }
 
 }
