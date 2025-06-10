@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.deck
+package com.ssoaharison.recall.card
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -12,6 +12,8 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.LyDialogUploadDeckWithCardsBinding
 import com.ssoaharison.recall.helper.OpenTriviaQuizCategoryHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ssoaharison.recall.deck.DeckFragment
+import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 
 class UploadOpenTriviaQuizDialog : DialogFragment() {
 

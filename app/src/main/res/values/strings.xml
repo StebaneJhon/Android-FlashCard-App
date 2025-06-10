@@ -274,4 +274,8 @@
     <string name="text_time_in_min">Time</string>
     <string name="deck_details">Deck details</string>
     <string name="export">Export</string>
+    <string name="export_deck">Export Deck</string>
+    <string name="format">Format</string>
+    <string name="txt">.txt</string>
+    <string name="text_separator">Text separator</string>
 </resources>

@@ -66,7 +66,6 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
-import com.ssoaharison.recall.deck.UploadOpenTriviaQuizDialog
 import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job

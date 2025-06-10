@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.PorterDuff
+import android.net.Uri
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
@@ -22,6 +23,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.view.menu.ActionMenuItemView
@@ -83,11 +85,15 @@ import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.ThemePicker
+import com.ssoaharison.recall.util.cardToText
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.Locale
 
 
@@ -106,6 +112,7 @@ class CardFragment :
     private val supportedLanguages = LanguageUtil().getSupportedLang()
     private lateinit var arrayAdapterSupportedLanguages: ArrayAdapter<String>
     private lateinit var listPopupWindow: ListPopupWindow
+    var deckExportModel: DeckExportModel? = null
 
     private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
@@ -113,6 +120,13 @@ class CardFragment :
         val repository = (requireActivity().application as FlashCardApplication).repository
         ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
+
+    private var createFile =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+            if (uri != null && deckExportModel != null) {
+                cardsToTextToUri(uri, deckExportModel?.separator!!)
+            }
+        }
 
     @SuppressLint("RestrictedApi")
     private var item: ActionMenuItemView? = null
@@ -128,6 +142,7 @@ class CardFragment :
         const val TAG = "CardFragment"
         const val REQUEST_CODE_CARD = "0"
         const val REQUEST_CODE_QUIZ_MODE = "300"
+        const val REQUEST_EXPORT_DECK_CODE = "400"
     }
 
     override fun onCreateView(
@@ -251,7 +266,8 @@ class CardFragment :
         }
 
         binding.btExport.setOnClickListener {
-            Toast.makeText(context, "Not yet implemented", Toast.LENGTH_LONG).show()
+            showExportDeckDialog()
+
         }
 
         binding.fabAddCard.setOnClickListener {
@@ -276,6 +292,20 @@ class CardFragment :
                 }
             })
 
+    }
+
+    private fun showExportDeckDialog() {
+        val exportDeckDialog = ExportDeckDialog()
+        exportDeckDialog.show(childFragmentManager, "Export deck dialog")
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_EXPORT_DECK_CODE,
+            this
+        ) { _, bundle ->
+            deckExportModel =
+                bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
+
+            createFile.launch("${deck.deckName}${deckExportModel?.format}")
+        }
     }
 
     private fun showDeckDetails() {
@@ -507,9 +537,7 @@ class CardFragment :
                         )
                     )
                 }
-
             }
-
         }
     }
 
@@ -901,6 +929,30 @@ class CardFragment :
         val editor = sharedPreferences.edit()
         editor.putString(LAYOUT_MANAGER, which)
         editor.apply()
+    }
+
+    private fun cardsToTextToUri(uri: Uri, separator: String) {
+        lifecycleScope.launch {
+            val stringBuilder = StringBuilder()
+            try {
+                appContext?.contentResolver?.openFileDescriptor(uri, "w")?.use { fd ->
+
+                    FileOutputStream(fd.fileDescriptor).use { outputStream ->
+                        val cards = cardViewModel.getCards(deck.deckId)
+                        cards.forEach { card ->
+                            val newLine = cardToText(card!!, separator)
+                            stringBuilder.append(newLine)
+                        }
+
+                        outputStream.write(stringBuilder.toString().toByteArray())
+                    }
+                }
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
     }
 
     override fun onInit(status: Int) {
