@@ -278,4 +278,11 @@
     <string name="format">Format</string>
     <string name="txt">.txt</string>
     <string name="text_separator">Text separator</string>
+    <string name="import_source">Import source</string>
+    <string name="device">Device</string>
+    <string name="txt_file_only">.txt file only</string>
+    <string name="others">Others</string>
+    <string name="from_open_trivia_database">From Open Trivia database.</string>
+    <string name="search_file">Search File</string>
+    <string name="error_message_card_import_failed">Card import failed</string>
 </resources>

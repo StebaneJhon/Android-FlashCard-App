@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/space_sm">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_dismiss"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/bt_description_exit"
+        app:icon="@drawable/icon_exit"
+        app:iconSize="25sp"
+        app:iconTint="?colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans"
+        android:text="@string/import_source"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_lg"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bt_dismiss"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <GridLayout
+        android:id="@+id/gr_import_sources"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_info_height"
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/space_md"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cv_from_device"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:background="@drawable/bg_10_dp_radius"
+            android:backgroundTint="?colorPrimary"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/space_md">
+
+            <TextView
+                android:id="@+id/tv_from_device"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fontFamily="@font/open_sans"
+                android:gravity="center"
+                android:text="@string/device"
+                android:textAlignment="gravity"
+                android:textColor="?colorOnPrimary"
+                android:textStyle="bold"
+                app:autoSizeMaxTextSize="@dimen/text_base"
+                app:autoSizeMinTextSize="@dimen/text_sm"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/tv_info_file_format"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_info_file_format"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_xs"
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/txt_file_only"
+                android:textAlignment="center"
+                android:textColor="?colorOnPrimary"
+                android:textSize="@dimen/text_xs"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cv_from_other_sources"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
+            android:background="@drawable/bg_10_dp_radius"
+            android:backgroundTint="?colorPrimary"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="@dimen/space_md">
+
+            <TextView
+                android:id="@+id/tv_from_other_sources"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:fontFamily="@font/open_sans"
+                android:gravity="center"
+                android:text="@string/others"
+                android:textAlignment="gravity"
+                android:textColor="?colorOnPrimary"
+                android:textStyle="bold"
+                app:autoSizeMaxTextSize="@dimen/text_base"
+                app:autoSizeMinTextSize="@dimen/text_sm"
+                app:autoSizeStepGranularity="2sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintBottom_toTopOf="@+id/tv_info_cards_sources"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_info_cards_sources"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_xs"
+                android:fontFamily="@font/open_sans_light"
+                android:text="@string/from_open_trivia_database"
+                android:textAlignment="center"
+                android:textColor="?colorOnPrimary"
+                android:textSize="@dimen/text_xs"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </GridLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

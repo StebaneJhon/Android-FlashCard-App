@@ -68,10 +68,13 @@ import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.parcelable
+import com.ssoaharison.recall.util.textToImmutableCard
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
+import java.io.InputStreamReader
 import java.lang.IndexOutOfBoundsException
 import java.util.Locale
 
@@ -90,6 +93,7 @@ class NewCardDialog(
     private var actualFieldLanguage: String? = null
     private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
+    private lateinit var importCardsFromDeviceModel: CardImportFromDeviceModel
 
     private val newCardViewModel by lazy {
         val openTriviaRepository = (requireActivity().application as FlashCardApplication).openTriviaRepository
@@ -167,12 +171,27 @@ class NewCardDialog(
         }
     }
 
+    private var openFile = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+        if (uri != null) {
+            val cards = textFromUriToImmutableCards(uri, ":")
+            newCardViewModel.insertCards(cards)
+            Toast.makeText(
+                appContext,
+                getString(R.string.message_cards_added, "${cards.size}"),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+
     companion object {
         private const val RECORD_AUDIO_REQUEST_CODE = 3455
         const val TAG = "NewCardDialog"
         const val SAVE_CARDS_BUNDLE_KEY = "1"
         const val EDIT_CARD_BUNDLE_KEY = "2"
         const val REQUEST_CODE_CARD = "0"
+        const val REQUEST_CODE_CARD_IMPORT_SOURCE = "3"
+        const val REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE = "4"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -325,8 +344,8 @@ class NewCardDialog(
                     true
                 }
 
-                R.id.bt_upload_card -> {
-                    showTriviaQuestionUploader()
+                R.id.bt_import_card -> {
+                    showCardImportSourceDialog()
                     true
                 }
 
@@ -417,6 +436,36 @@ class NewCardDialog(
 
         binding.btMoreDefinition.setOnClickListener {
             onAddMoreDefinition()
+        }
+    }
+
+    private fun showCardImportSourceDialog() {
+        val newImportCardsSourceDialog = ImportCardsSourceDialog()
+        newImportCardsSourceDialog.show(childFragmentManager, "Import card source dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE_CARD_IMPORT_SOURCE, this) {_, bundle ->
+            val result = bundle.getString(ImportCardsSourceDialog.IMPORT_CARDS_SOURCE_BUNDLE_KEY)
+            when (result) {
+                ImportCardsSourceDialog.IMPORT_FROM_DEVICE -> {
+                    showCardImportFromDeviceDialog()
+                }
+                ImportCardsSourceDialog.IMPORT_FROM_OTHERS -> {
+                    showTriviaQuestionUploader()
+                }
+            }
+        }
+    }
+
+    private fun showCardImportFromDeviceDialog() {
+        val cardImportFromDeviceDialog = ImportCardsFromDeviceDialog()
+        cardImportFromDeviceDialog.show(childFragmentManager, "Import card from device dialog")
+        childFragmentManager.setFragmentResultListener(REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE, this) {_, bundle ->
+            val result = bundle.parcelable<CardImportFromDeviceModel>(ImportCardsFromDeviceDialog.EXPORT_CARD_FROM_DEVICE_BUNDLE_KEY)
+            if (result != null) {
+                importCardsFromDeviceModel = result
+                openFile.launch(arrayOf("text/*"))
+            } else {
+                Toast.makeText(appContext, getString(R.string.error_message_card_import_failed), Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -1269,4 +1318,19 @@ class NewCardDialog(
         }
         revealedDefinitionFields--
     }
+
+    @Throws(IOException::class)
+    private fun textFromUriToImmutableCards(uri: Uri, separator: String): List<ImmutableCard> {
+        val result: MutableList<ImmutableCard> = mutableListOf()
+        appContext?.contentResolver?.openInputStream(uri)?.use { inputStream ->
+            BufferedReader(InputStreamReader(inputStream)).use { reader ->
+                reader.forEachLine { line ->
+                    val card = textToImmutableCard(line, separator, deck.deckId)
+                    result.add(card)
+                }
+            }
+        }
+        return result
+    }
+
 }

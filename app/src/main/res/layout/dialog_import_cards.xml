@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="?colorSurfaceContainerLowest"
+    android:padding="@dimen/space_sm">
+    
+    <TextView
+        android:id="@+id/tv_title"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Import cards from device"
+        android:textSize="@dimen/text_lg" 
+        android:fontFamily="@font/open_sans"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:textColor="?colorOnSurface" />
+
+    <TextView
+        android:id="@+id/tv_title_format"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/format"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_base"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/space_md"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+
+    <RadioGroup
+        android:id="@+id/rg_format"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkedButton="@+id/enabled_selected"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title_format"
+        tools:layout_editor_absoluteX="8dp">
+        <RadioButton
+            android:id="@+id/rb_format_txt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:enabled="true"
+            android:checked="true"
+            android:text="@string/txt" />
+    </RadioGroup>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans"
+        android:textColor="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
+        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        android:layout_marginTop="@dimen/space_sm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_format">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/tie_separator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/text_separator"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:textColor="?colorOnSurface"
+            android:textColorHint="?colorOnSurface" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/bt_cancel"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/bt_text_cancel"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_sm"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/space_md"
+        app:layout_constraintEnd_toStartOf="@+id/bt_get_file"
+        app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+
+    <Button
+        android:id="@+id/bt_get_file"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/search_file"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_sm"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bt_cancel" />
+    
+</androidx.constraintlayout.widget.ConstraintLayout>
