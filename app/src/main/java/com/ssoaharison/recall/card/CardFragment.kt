@@ -117,7 +117,7 @@ class CardFragment :
     private lateinit var listPopupWindow: ListPopupWindow
     var deckExportModel: DeckExportModel? = null
 
-    private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
+//    private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -262,16 +262,16 @@ class CardFragment :
 
         displayAllCards()
 
-        initDeckColorPicker()
-
-        binding.btDeckDetails.setOnClickListener {
-            showDeckDetails()
-        }
-
-        binding.btExport.setOnClickListener {
-            showExportDeckDialog()
-
-        }
+//        initDeckColorPicker()
+//
+//        binding.btDeckDetails.setOnClickListener {
+//            showDeckDetails()
+//        }
+//
+//        binding.btExport.setOnClickListener {
+//            showExportDeckDialog()
+//
+//        }
 
         binding.fabAddCard.setOnClickListener {
             onAddNewCard()
@@ -304,54 +304,52 @@ class CardFragment :
             REQUEST_EXPORT_DECK_CODE,
             this
         ) { _, bundle ->
-            deckExportModel =
-                bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
-
+            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
             createFile.launch("${deck.deckName}${deckExportModel?.format}")
         }
     }
 
-    private fun showDeckDetails() {
-        binding.tilDeckName.isVisible = !binding.tilDeckName.isVisible
-        binding.tvDeckColorPickerTitle.isVisible = !binding.tvDeckColorPickerTitle.isVisible
-        binding.rvDeckColorPicker.isVisible = !binding.rvDeckColorPicker.isVisible
-        binding.btExport.isVisible = !binding.btExport.isVisible
-        if (binding.tilDeckName.isVisible) {
-            binding.btDeckDetails.setIconResource(R.drawable.icon_expand_less)
-            lifecycleScope.launch {
-                delay(50)
-                cardViewModel.colorSelectionList.collect { listOfColors ->
-                    displayColorPicker(listOfColors)
-                }
-            }
-        } else {
-            binding.btDeckDetails.setIconResource(R.drawable.icon_expand_more)
-        }
-    }
+//    private fun showDeckDetails() {
+//        binding.tilDeckName.isVisible = !binding.tilDeckName.isVisible
+//        binding.tvDeckColorPickerTitle.isVisible = !binding.tvDeckColorPickerTitle.isVisible
+//        binding.rvDeckColorPicker.isVisible = !binding.rvDeckColorPicker.isVisible
+//        binding.btExport.isVisible = !binding.btExport.isVisible
+//        if (binding.tilDeckName.isVisible) {
+//            binding.btDeckDetails.setIconResource(R.drawable.icon_expand_less)
+//            lifecycleScope.launch {
+//                delay(50)
+//                cardViewModel.colorSelectionList.collect { listOfColors ->
+//                    displayColorPicker(listOfColors)
+//                }
+//            }
+//        } else {
+//            binding.btDeckDetails.setIconResource(R.drawable.icon_expand_more)
+//        }
+//    }
 
-    private fun initDeckColorPicker() {
-        val deckColorCategorySelector = DeckColorCategorySelector()
-        val deckColors = deckColorCategorySelector.getColors()
-        cardViewModel.initColorSelection(deckColors, deck.deckColorCode)
-    }
-
-    private fun displayColorPicker(colorList: List<ColorModel>) {
-        deckColorPickerAdapter = DeckColorPickerAdapter(
-            requireContext(),
-            colorList
-        ) { selectedColor ->
-            cardViewModel.selectColor(selectedColor.id)
-            deckColorPickerAdapter.notifyDataSetChanged()
-            val newDeck = deck.copy(deckColorCode = selectedColor.id)
-            cardViewModel.updateDeck(newDeck.toLocal())
-        }
-        binding.rvDeckColorPicker.apply {
-            adapter = deckColorPickerAdapter
-            layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
-            setHasFixedSize(true)
-        }
-
-    }
+//    private fun initDeckColorPicker() {
+//        val deckColorCategorySelector = DeckColorCategorySelector()
+//        val deckColors = deckColorCategorySelector.getColors()
+//        cardViewModel.initColorSelection(deckColors, deck.deckColorCode)
+//    }
+//
+//    private fun displayColorPicker(colorList: List<ColorModel>) {
+//        deckColorPickerAdapter = DeckColorPickerAdapter(
+//            requireContext(),
+//            colorList
+//        ) { selectedColor ->
+//            cardViewModel.selectColor(selectedColor.id)
+//            deckColorPickerAdapter.notifyDataSetChanged()
+//            val newDeck = deck.copy(deckColorCode = selectedColor.id)
+//            cardViewModel.updateDeck(newDeck.toLocal())
+//        }
+//        binding.rvDeckColorPicker.apply {
+//            adapter = deckColorPickerAdapter
+//            layoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
+//            setHasFixedSize(true)
+//        }
+//
+//    }
 
     private fun bindDeckDetailsPanel(deck: ImmutableDeck) {
         binding.tvCardSum.text = "${deck.cardSum}"
@@ -880,10 +878,10 @@ class CardFragment :
     @SuppressLint("RestrictedApi")
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         return when (menuItem.itemId) {
-//            R.id.settings_deck_menu -> {
-//                findNavController().navigate(R.id.action_cardFragment_to_settingsFragment)
-//                true
-//            }
+            R.id.mb_export_deck -> {
+                showExportDeckDialog()
+                true
+            }
 
             R.id.view_deck_menu -> {
                 if (item == null) {
@@ -940,21 +938,22 @@ class CardFragment :
             val stringBuilder = StringBuilder()
             try {
                 appContext?.contentResolver?.openFileDescriptor(uri, "w")?.use { fd ->
-
                     FileOutputStream(fd.fileDescriptor).use { outputStream ->
                         val cards = cardViewModel.getCards(deck.deckId)
                         cards.forEach { card ->
                             val newLine = cardToText(card!!, separator)
                             stringBuilder.append(newLine)
                         }
-
                         outputStream.write(stringBuilder.toString().toByteArray())
                     }
+                    Toast.makeText(requireContext(), getString(R.string.message_cards_exported_successfully), Toast.LENGTH_LONG).show()
                 }
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
+                Toast.makeText(requireContext(), getString(R.string.error_message_file_not_found), Toast.LENGTH_LONG).show()
             } catch (e: IOException) {
                 e.printStackTrace()
+                Toast.makeText(requireContext(), getString(R.string.error_message_cards_exported_failed), Toast.LENGTH_LONG).show()
             }
         }
     }

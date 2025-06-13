@@ -326,7 +326,7 @@ class FlashCardGameViewModel(
     fun updateCard(
         card: ImmutableCard,
     ) = viewModelScope.launch {
-        repository.updateCard(card)
+        repository.updateCardWithContentAndDefinition(card)
     }
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {

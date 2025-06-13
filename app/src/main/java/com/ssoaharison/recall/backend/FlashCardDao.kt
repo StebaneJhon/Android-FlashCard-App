@@ -31,6 +31,20 @@ interface FlashCardDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCard(card: Card)
 
+    @Transaction
+    suspend fun insertCardWithDefinition(card: ImmutableCard) {
+        val localCard = card.toLocal()
+        insertCard(localCard)
+        card.cardContent?.let { content ->
+            insertCardContent(content)
+        }
+        card.cardDefinition?.let { definitions ->
+            definitions.forEach { definition ->
+                insertCardDefinition(definition)
+            }
+        }
+    }
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCardContent(cardContent: CardContent)
 
@@ -105,6 +119,29 @@ interface FlashCardDao {
 
     @Update()
     suspend fun updateCard(card: Card)
+
+    @Transaction
+    suspend fun updateCardWithContentAndDefinition(card: ImmutableCard) {
+        card.cardContent?.let { content ->
+            updateCardContent(content)
+        }
+        card.cardDefinition?.let { definitions ->
+            definitions.forEach { actualDefinition ->
+                when {
+                    actualDefinition.definition.isEmpty() -> {
+                        deleteCardDefinition(actualDefinition)
+                    }
+                    actualDefinition.definitionId == null -> {
+                        insertCardDefinition(actualDefinition)
+                    }
+                    else -> {
+                        updateCardDefinition(actualDefinition)
+                    }
+                }
+            }
+        }
+        updateCard(card.toLocal())
+    }
 
     @Query("UPDATE card SET card_content_language = :language WHERE cardId = :cardId")
     suspend fun updateCardContentLanguage(cardId: String, language: String)

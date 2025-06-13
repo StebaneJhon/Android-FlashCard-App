@@ -285,4 +285,7 @@
     <string name="from_open_trivia_database">From Open Trivia database.</string>
     <string name="search_file">Search File</string>
     <string name="error_message_card_import_failed">Card import failed</string>
+    <string name="message_cards_exported_successfully">Cards exported successfully.</string>
+    <string name="error_message_file_not_found">File not found.</string>
+    <string name="error_message_cards_exported_failed">Cards exported failed.</string>
 </resources>

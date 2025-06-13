@@ -11,7 +11,6 @@ import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.deck.ColorModel
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
@@ -67,7 +66,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     }
 
     fun updateCard(card: ImmutableCard) = viewModelScope.launch {
-        repository.updateCard(card)
+        repository.updateCardWithContentAndDefinition(card)
     }
 
     fun deleteCard(card: ImmutableCard) = viewModelScope.launch {

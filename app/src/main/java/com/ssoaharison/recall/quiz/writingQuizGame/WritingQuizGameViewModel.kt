@@ -1,6 +1,5 @@
 package com.ssoaharison.recall.quiz.writingQuizGame
 
-import android.icu.text.Transliterator.Position
 import android.text.format.DateUtils.formatElapsedTime
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -449,7 +448,7 @@ class WritingQuizGameViewModel(
         position: Int
     ) = viewModelScope.launch {
         cardList[position] = card
-        repository.updateCard(card)
+        repository.updateCardWithContentAndDefinition(card)
     }
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {

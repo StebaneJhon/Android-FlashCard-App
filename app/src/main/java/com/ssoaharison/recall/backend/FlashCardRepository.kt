@@ -10,7 +10,6 @@ import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
-import com.ssoaharison.recall.backend.entities.relations.DeckWithCards
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
@@ -99,14 +98,15 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         card: ImmutableCard,
     ) {
 
-        val localCard = card.toLocal()
-        flashCardDao.insertCard(localCard)
-        val cardContent = card.cardContent
-        flashCardDao.insertCardContent(cardContent!!)
-        val cardDefinition = card.cardDefinition
-        cardDefinition?.forEach {
-            flashCardDao.insertCardDefinition(it)
-        }
+//        val localCard = card.toLocal()
+//        flashCardDao.insertCard(localCard)
+//        val cardContent = card.cardContent
+//        flashCardDao.insertCardContent(cardContent!!)
+//        val cardDefinition = card.cardDefinition
+//        cardDefinition?.forEach {
+//            flashCardDao.insertCardDefinition(it)
+//        }
+        flashCardDao.insertCardWithDefinition(card)
     }
 
     @WorkerThread
@@ -175,25 +175,26 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun updateCard(card: ImmutableCard) {
-        flashCardDao.updateCardContent(card.cardContent!!)
-        card.cardDefinition?.forEach {
-            when {
-                it.definition.isEmpty() -> {
-                    flashCardDao.deleteCardDefinition(it)
-                }
-
-                it.definitionId == null -> {
-                    flashCardDao.insertCardDefinition(it)
-                }
-
-                else -> {
-                    flashCardDao.updateCardDefinition(it)
-                }
-            }
-
-        }
-        flashCardDao.updateCard(card.toLocal())
+    suspend fun updateCardWithContentAndDefinition(card: ImmutableCard) {
+//        flashCardDao.updateCardContent(card.cardContent!!)
+//        card.cardDefinition?.forEach {
+//            when {
+//                it.definition.isEmpty() -> {
+//                    flashCardDao.deleteCardDefinition(it)
+//                }
+//
+//                it.definitionId == null -> {
+//                    flashCardDao.insertCardDefinition(it)
+//                }
+//
+//                else -> {
+//                    flashCardDao.updateCardDefinition(it)
+//                }
+//            }
+//
+//        }
+//        flashCardDao.updateCard(card.toLocal())
+        flashCardDao.updateCardWithContentAndDefinition(card)
     }
 
     @WorkerThread

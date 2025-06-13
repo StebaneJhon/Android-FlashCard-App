@@ -503,7 +503,7 @@ class MultiChoiceQuizGameViewModel(
 
     fun updateCard(card: ImmutableCard, position: Int) = viewModelScope.launch {
         cardList[position] = card
-        repository.updateCard(card)
+        repository.updateCardWithContentAndDefinition(card)
     }
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
