@@ -15,6 +15,8 @@ import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.relations.CardAndContent
 import com.ssoaharison.recall.backend.entities.relations.CardWithDefinitions
 import com.ssoaharison.recall.backend.entities.relations.DeckWithCards
+import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.toLocal
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -56,6 +58,10 @@ interface FlashCardDao {
     @Transaction
     @Query("SELECT * FROM deck WHERE deckId = :deckId")
     fun getDeckWithCards(deckId: String): Flow<DeckWithCards>
+
+    @Transaction
+    @Query("SELECT * FROM deck WHERE deckId = :deckId")
+    suspend fun gettDeckWithCards(deckId: String): DeckWithCards
 
     @Transaction
     @Query("SELECT * FROM cardContent WHERE cardId = :cardId")
@@ -118,6 +124,26 @@ interface FlashCardDao {
     @Delete()
     suspend fun deleteCard(card: Card)
 
+    @Transaction()
+    suspend fun deleteCardsWithContentAndDefinition(cards: List<Card?>) {
+        cards.forEach { card ->
+            card?.let {
+                deleteCardWithContentAndDefinition(it)
+            }
+        }
+    }
+
+    @Transaction
+    suspend fun deleteCardWithContentAndDefinition(card: Card) {
+        val cardContent = getCardAndContent(card.cardId).cardContent
+        val cardDefinitions = getCardWithDefinition(card.cardId).definition
+        cardDefinitions.forEach { cardDefinition ->
+            deleteCardDefinition(cardDefinition)
+        }
+        deleteCardContent(cardContent)
+        deleteCard(card)
+    }
+
     @Delete()
     suspend fun deleteDeck(deck: Deck)
 
@@ -126,4 +152,11 @@ interface FlashCardDao {
 
     @Delete()
     suspend fun deleteCardDefinition(cardDefinition: CardDefinition)
+
+    @Transaction
+    suspend fun deleteDeckWithCards(deckId: String) {
+        val deckWithCards = gettDeckWithCards(deckId)
+        deleteCardsWithContentAndDefinition(deckWithCards.cards)
+        deleteDeck(deckWithCards.deck)
+    }
 }

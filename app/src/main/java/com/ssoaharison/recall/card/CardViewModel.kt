@@ -6,10 +6,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
+import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
+import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.deck.ColorModel
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.UiState
@@ -68,7 +70,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateCard(card)
     }
 
-    fun deleteCard(card: ImmutableCard?) = viewModelScope.launch {
+    fun deleteCard(card: ImmutableCard) = viewModelScope.launch {
         repository.deleteCard(card)
     }
 
@@ -118,6 +120,10 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
                 _colorSelectionList.value[index].isSelected = false
             }
         }
+    }
+
+    fun updateDeck(deck: Deck) = viewModelScope.launch {
+        repository.updateDeck(deck)
     }
 
 }

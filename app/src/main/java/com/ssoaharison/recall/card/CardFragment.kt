@@ -77,7 +77,10 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.backend.entities.Deck
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.deck.DeckFragmentDirections
 import com.ssoaharison.recall.util.DeckColorPickerAdapter
 import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
 import com.ssoaharison.recall.util.DeckColorCategorySelector
@@ -337,8 +340,10 @@ class CardFragment :
             requireContext(),
             colorList
         ) { selectedColor ->
-//            cardViewModel.selectColor(selectedColor.id)
-//            deckColorPickerAdapter.notifyDataSetChanged()
+            cardViewModel.selectColor(selectedColor.id)
+            deckColorPickerAdapter.notifyDataSetChanged()
+            val newDeck = deck.copy(deckColorCode = selectedColor.id)
+            cardViewModel.updateDeck(newDeck.toLocal())
         }
         binding.rvDeckColorPicker.apply {
             adapter = deckColorPickerAdapter
@@ -353,8 +358,7 @@ class CardFragment :
         binding.tvUnknownCardSum.text = "${deck.unKnownCardCount}"
         binding.tvKnownCardSum.text = "${deck.knownCardCount}"
         binding.btContentLanguage.apply {
-            text =
-                if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
+            text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
             setOnClickListener {
                 onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
                     cardViewModel.updateDefaultCardContentLanguage(
@@ -373,8 +377,7 @@ class CardFragment :
             }
         }
         binding.btDefinitionLanguage.apply {
-            text =
-                if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
+            text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
             setOnClickListener {
                 onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
                     cardViewModel.updateDefaultCardDefinitionLanguage(
@@ -411,7 +414,8 @@ class CardFragment :
                         }
 
                         is UiState.Success -> {
-                            populateRecyclerView(state.data.cards!!, state.data.deck!!)
+                            deck = state.data.deck!!
+                            populateRecyclerView(state.data.cards!!, state.data.deck)
                             bindDeckDetailsPanel(state.data.deck)
                         }
                     }
@@ -560,7 +564,7 @@ class CardFragment :
                 onEditCard(selectedCard!!)
             },
             { selectedCard ->
-                cardViewModel.deleteCard(selectedCard)
+                cardViewModel.deleteCard(selectedCard!!)
             },
             { text ->
                 if (tts?.isSpeaking == true) {

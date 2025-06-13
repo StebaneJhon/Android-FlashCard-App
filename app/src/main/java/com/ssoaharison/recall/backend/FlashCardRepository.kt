@@ -1,6 +1,7 @@
 package com.ssoaharison.recall.backend
 
 import androidx.annotation.WorkerThread
+import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
@@ -9,8 +10,9 @@ import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
-import kotlinx.coroutines.delay
+import com.ssoaharison.recall.backend.entities.relations.DeckWithCards
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 
 class FlashCardRepository(private val flashCardDao: FlashCardDao) {
@@ -66,28 +68,26 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun getImmutableDeckWithCards(deckId: String): Flow<ImmutableDeckWithCards> {
-        val deckWithCards = flashCardDao.getDeckWithCards(deckId)
-        val immutableDeckWithCards =
-            deckWithCards.map { localDeckWithCards ->
-                val cardCount = flashCardDao.countCardsInDeck(localDeckWithCards.deck.deckId)
-                val knownCardCount = flashCardDao.countKnownCardsInDeck(localDeckWithCards.deck.deckId)
-                val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(localDeckWithCards.deck.deckId)
-                val deck = localDeckWithCards.deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
-                val cardList = localDeckWithCards.cards.map { card ->
-                    card.cardId.let { cardId ->
-                        cardId.let { id ->
-                            val cardContent = flashCardDao.getCardAndContent(id).cardContent
-                            val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
-                            card.toExternal(cardContent, cardDefinitions)
-                        }
-
+        val deckWithCards = flashCardDao.getDeckWithCards(deckId) ?: emptyFlow()
+        return deckWithCards.map { localDeckWithCards ->
+            val cardCount = flashCardDao.countCardsInDeck(localDeckWithCards.deck.deckId)
+            val knownCardCount = flashCardDao.countKnownCardsInDeck(localDeckWithCards.deck.deckId)
+            val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(localDeckWithCards.deck.deckId)
+            val deck = localDeckWithCards.deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
+            val cardList = localDeckWithCards.cards.map { card ->
+                card.cardId.let { cardId ->
+                    cardId.let { id ->
+                        val cardContent = flashCardDao.getCardAndContent(id).cardContent
+                        val cardDefinitions = flashCardDao.getCardWithDefinition(id).definition
+                        card.toExternal(cardContent, cardDefinitions)
                     }
-                }
-                localDeckWithCards.toExternal(deck, cardList)
-            }
 
-        return immutableDeckWithCards
+                }
+            }
+            localDeckWithCards.toExternal(deck, cardList)
+        }
     }
+
 
     @WorkerThread
     suspend fun insertDeck(deck: Deck) {
@@ -202,32 +202,38 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
     }
 
     @WorkerThread
-    suspend fun deleteCard(card: ImmutableCard?) {
-        card?.let { actualCard ->
-            actualCard.cardContent?.let { it1 ->
-                flashCardDao.deleteCardContent(it1)
-            }
-            actualCard.cardDefinition?.forEach {
-                flashCardDao.deleteCardDefinition(it)
-            }
-            flashCardDao.deleteCard(card.toLocal())
-        }
+    suspend fun deleteCard(card: ImmutableCard) {
+//        card?.let { actualCard ->
+//            actualCard.cardContent?.let { it1 ->
+//                flashCardDao.deleteCardContent(it1)
+//            }
+//            actualCard.cardDefinition?.forEach {
+//                flashCardDao.deleteCardDefinition(it)
+//            }
+//            flashCardDao.deleteCard(card.toLocal())
+//        }
+        flashCardDao.deleteCardWithContentAndDefinition(card.toLocal())
     }
 
     @WorkerThread
-    suspend fun deleteCards(deck: ImmutableDeck) {
-        val localDeck = deck.toLocal()
-        val cards = getCards(localDeck.deckId)
-        cards.forEach { card ->
-            delay(300)
-            deleteCard(card)
-        }
+    suspend fun deleteCards(cards: List<Card?>) {
+//        val localDeck = deck.toLocal()
+//        val cards = getCards(localDeck.deckId)
+
+        flashCardDao.deleteCardsWithContentAndDefinition(cards)
+//        cards.forEach { card ->
+////            delay(300)
+//            deleteCard(card!!)
+//        }
     }
 
+
     @WorkerThread
-    suspend fun deleteDeckWithCards(deck: ImmutableDeck) {
-        deleteCards(deck)
-        flashCardDao.deleteDeck(deck.toLocal())
+    suspend fun deleteDeckWithCards(d: ImmutableDeck) {
+//        val deckWithCards = gettDeckWithCards(d.deckId)
+//        deleteCards(deckWithCards.cards)
+//        flashCardDao.deleteDeck(deckWithCards.deck)
+        flashCardDao.deleteDeckWithCards(d.deckId)
     }
 
 }
