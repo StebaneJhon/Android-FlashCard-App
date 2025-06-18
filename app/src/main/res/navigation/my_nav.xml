@@ -107,4 +107,14 @@
             android:id="@+id/action_aboutRecallFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/feedbackFragment"
+        android:name="com.ssoaharison.recall.feedback.FeedbackFragment"
+        android:label="fragment_feedback"
+        tools:layout="@layout/fragment_feedback" />
+    <fragment
+        android:id="@+id/helpFragment"
+        android:name="com.ssoaharison.recall.help.HelpFragment"
+        android:label="fragment_help"
+        tools:layout="@layout/fragment_help" />
 </navigation>

@@ -117,10 +117,10 @@ class OnBoardingViewPagerFragment : Fragment() {
     }
 
     private fun onBoardingFinished() {
-        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("Finished", true)
-        editor.apply()
+//        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+//        val editor = sharedPreferences.edit()
+//        editor.putBoolean("Finished", true)
+//        editor.apply()
         findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
     }
 

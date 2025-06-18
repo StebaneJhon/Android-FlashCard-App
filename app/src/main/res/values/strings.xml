@@ -7,7 +7,7 @@
     <string name="deck_second_language_hint">Deck definition language</string>
     <string name="deck_color">Deck Color</string>
     <string name="bt_description_add_new_card">Add New Card</string>
-<!--    <string name="card_content_hint">%1$s word, sentence</string>-->
+    <!--    <string name="card_content_hint">%1$s word, sentence</string>-->
     <string name="card_content_definition_hint">%1$s word or sentence Definition</string>
     <string name="hint_text">Text</string>
     <string name="card_value_definition_hint">%1$s word or sentence Definition</string>
@@ -61,7 +61,7 @@
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
     <string name="text_accuracy_mini_game_review">%1$d%%</string>
-<!--    <string name="tx_flash_card_game_progression">%1$s/%2$s</string>-->
+    <!--    <string name="tx_flash_card_game_progression">%1$s/%2$s</string>-->
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
     <string name="text_back">Back</string>
     <string name="text_tap_to_flip">Tap to flip</string>
@@ -288,4 +288,5 @@
     <string name="message_cards_exported_successfully">Cards exported successfully.</string>
     <string name="error_message_file_not_found">File not found.</string>
     <string name="error_message_cards_exported_failed">Cards exported failed.</string>
+    <string name="give_a_feedback">Give a feedback</string>
 </resources>
