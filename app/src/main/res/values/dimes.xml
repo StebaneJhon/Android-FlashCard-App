@@ -25,6 +25,7 @@
     <dimen name="popUpMenu_radius">2dp</dimen>
     <dimen name="ed_radius">4dp</dimen>
     <dimen name="cp_radius">2dp</dimen>
+    <dimen name="radius_rounded">50pt</dimen>
 
     <dimen name="icon_base">25dp</dimen>
     <dimen name="icon_lg">30dp</dimen>

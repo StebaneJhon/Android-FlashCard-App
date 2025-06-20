@@ -3,21 +3,26 @@
     <item
         android:id="@+id/deckFragment"
         android:icon="@drawable/icon_nav_decks"
-        android:title="@string/deck_tab_hint" />
+        android:title="@string/deck_tab_hint"
+        android:checkable="true"/>
     <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/icon_nav_settings"
-        android:title="@string/settings_hint" />
+        android:title="@string/settings_hint"
+        android:checkable="true"/>
     <item
         android:id="@+id/bt_rate_app"
         android:icon="@drawable/icon_nav_rate_app"
-        android:title="@string/bt_rate_the_app_text" />
+        android:title="@string/bt_rate_the_app_text"
+        android:checkable="true"/>
     <item
         android:id="@+id/feedbackFragment"
         android:icon="@drawable/icon_nav_feedback"
-        android:title="@string/give_a_feedback" />
+        android:title="@string/give_a_feedback"
+        android:checkable="true"/>
     <item
         android:id="@+id/helpFragment"
         android:icon="@drawable/icon_nav_help"
-        android:title="@string/bt_help_text" />
+        android:title="@string/bt_help_text"
+        android:checkable="true"/>
 </menu>

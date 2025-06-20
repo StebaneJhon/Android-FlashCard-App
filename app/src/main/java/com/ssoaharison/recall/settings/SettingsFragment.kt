@@ -78,7 +78,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         binding.settingsTopAppBar.setNavigationOnClickListener {
-//            findNavController().navigate(R.id.action_settingsFragment_to_deckFragment)
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 

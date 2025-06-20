@@ -6,13 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.FragmentHelpBinding
+import com.ssoaharison.recall.util.FAQDataModel
 
 class HelpFragment : Fragment() {
 
     private var _binding: FragmentHelpBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: HelpFragmentViewModel by viewModels()
+    private lateinit var recyclerViewAdapter: HelpRecyclerViewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +35,17 @@ class HelpFragment : Fragment() {
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
+        showFAQData(viewModel.getFaqData(requireContext()))
+
+    }
+
+    private fun showFAQData(faqDataList: List<FAQDataModel>) {
+        recyclerViewAdapter = HelpRecyclerViewAdapter(faqDataList)
+        binding.rvFaq.apply {
+            adapter = recyclerViewAdapter
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(requireContext())
+        }
     }
 
 }

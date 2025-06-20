@@ -38,6 +38,15 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/menu_navigation_drawer"/>
+        app:menu="@menu/menu_navigation_drawer"
+        app:itemBackground="@drawable/nav_item_background_color"
+        android:background="?colorSurfaceContainerLow"
+        app:itemTextAppearance="@style/TextAppearance.App.BodySmall"
+        app:itemTextColor="@drawable/nav_item_color"
+        app:itemIconTint="@drawable/nav_item_color"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="@dimen/space_xxl"
+        app:headerLayout="@layout/ly_header_navigation_drawer"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
