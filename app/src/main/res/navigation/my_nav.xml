@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
-        android:name="com.ssoaharison.recall.settings.PrivacyPolicyFragment"
+        android:name="com.ssoaharison.recall.privacyPolicy.PrivacyPolicyFragment"
         android:label="fragment_privacy_policy"
         tools:layout="@layout/fragment_privacy_policy" >
         <action

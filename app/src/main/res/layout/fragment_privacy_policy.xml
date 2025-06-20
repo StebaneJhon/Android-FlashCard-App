@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings.PrivacyPolicyFragment">
+    tools:context=".privacyPolicy.PrivacyPolicyFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -21,7 +21,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIconTint="?colorOnSurface"
             app:title="@string/bt_privacy_text"
-            app:navigationIcon="@drawable/icon_arrow_back"
+            app:navigationIcon="@drawable/icon_menu"
             app:navigationContentDescription="@string/bt_description_back_to_settings">
 
         </com.google.android.material.appbar.MaterialToolbar>

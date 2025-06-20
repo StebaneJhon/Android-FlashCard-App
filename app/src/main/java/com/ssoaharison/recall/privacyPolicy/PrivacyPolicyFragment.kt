@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.settings
+package com.ssoaharison.recall.privacyPolicy
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebViewClient
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.fragment.findNavController
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.FragmentPrivacyPolicyBinding
@@ -27,7 +28,7 @@ class PrivacyPolicyFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.PrivacyPolicyTopAppBar.setNavigationOnClickListener {
-            findNavController().navigate(R.id.action_privacyPolicyFragment_to_settingsFragment)
+            activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
         }
 
         weViewSetup()

@@ -25,4 +25,9 @@
         android:icon="@drawable/icon_nav_help"
         android:title="@string/bt_help_text"
         android:checkable="true"/>
+    <item
+        android:id="@+id/privacyPolicyFragment"
+        android:icon="@drawable/icon_nav_privacy_policy"
+        android:title="@string/bt_help_text"
+        android:checkable="true"/>
 </menu>
