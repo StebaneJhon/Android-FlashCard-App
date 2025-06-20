@@ -6,11 +6,9 @@
     style="?attr/materialIconButtonFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="0dp"
     android:backgroundTint="?colorSurfaceContainerLow"
     android:contentDescription="@string/bt_description_deck_color"
     app:iconTint="?colorOnSurface"
+    app:cornerRadius="@dimen/radius_base"
     app:shapeAppearance="@style/ShapeAppearance.App.Button.Single"
-    app:strokeColor="?colorSurfaceContainer"
-    app:strokeWidth="@dimen/space_xxs"
     app:iconGravity="textStart"/>

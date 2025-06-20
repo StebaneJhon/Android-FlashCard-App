@@ -17,8 +17,10 @@
     <dimen name="text_xl2">24sp</dimen>
     <dimen name="text_xl3">30sp</dimen>
 
-    <dimen name="radius_base">5dp</dimen>
-    <dimen name="radius_xl">17dp</dimen>
+    <dimen name="radius_xs">2dp</dimen>
+    <dimen name="radius_sm">4dp</dimen>
+    <dimen name="radius_base">10dp</dimen>
+    <dimen name="radius_xl">18dp</dimen>
     <dimen name="bt_radius">4dp</dimen>
     <dimen name="card_radius">10dp</dimen>
     <dimen name="card_radius_sm">4dp</dimen>

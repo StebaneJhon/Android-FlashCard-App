@@ -16,7 +16,7 @@ class ThemePickerAdapter(
 ): RecyclerView.Adapter<ThemePickerAdapter.ViewHolder>() {
 
     companion object {
-        private const val MARGIN = 0
+        private const val MARGIN = 4
     }
 
     override fun onCreateViewHolder(

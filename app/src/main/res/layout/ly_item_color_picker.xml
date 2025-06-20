@@ -9,5 +9,6 @@
     android:contentDescription="@string/bt_description_deck_color"
     android:layout_margin="0dp"
     app:iconTint="?colorOnSurface"
-    android:backgroundTint="?colorSurfaceContainerLow"
+    app:strokeWidth="0dp"
+    app:strokeColor="?colorSurfaceContainerLow"
     app:iconGravity="textStart"/>

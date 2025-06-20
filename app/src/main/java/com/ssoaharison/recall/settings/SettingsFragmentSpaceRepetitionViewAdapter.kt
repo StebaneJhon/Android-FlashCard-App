@@ -14,10 +14,22 @@ class SettingsFragmentSpaceRepetitionViewAdapter(
     private val context: Context,
     private val boxLevelList: List<ImmutableSpaceRepetitionBox>,
     private val boxLevelClickList: (ImmutableSpaceRepetitionBox) -> Unit
-    ): RecyclerView.Adapter<SettingsFragmentSpaceRepetitionViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SettingsFragmentSpaceRepetitionViewAdapter.ViewHolder>() {
+
+    companion object {
+        private const val MARGIN = 16
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder.create(parent)
+
+        val pickerItemWidth = parent.width / 4 - ( 2 * MARGIN)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.ly_settings_space_repetition_card, parent, false)
+        val layoutParams = view.findViewById<ConstraintLayout>(R.id.ll_space_repetition_section_item).layoutParams as ViewGroup.MarginLayoutParams
+        layoutParams.height = pickerItemWidth
+        layoutParams.width = pickerItemWidth
+        layoutParams.setMargins(MARGIN, MARGIN, MARGIN, MARGIN)
+
+        return ViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -32,7 +44,7 @@ class SettingsFragmentSpaceRepetitionViewAdapter(
         )
     }
 
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val tvSpaceRepetitionForgettingDay: TextView = view.findViewById(R.id.tv_space_repetition_forgetting_day)
         private val tvSpaceRepetitionLevel: TextView = view.findViewById(R.id.tv_space_repetition_level_name)
@@ -51,16 +63,7 @@ class SettingsFragmentSpaceRepetitionViewAdapter(
             }
         }
 
-        companion object {
-            fun create(parent: ViewGroup): ViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.ly_settings_space_repetition_card, parent, false)
-                return ViewHolder(view)
-            }
-        }
-
     }
-
 
 
 }
