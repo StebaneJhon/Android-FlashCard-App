@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.entities.Card
+import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.MainDeck
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,8 +18,8 @@ import java.io.IOException
 
 class MainActivityViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
-    private var _allCards = MutableStateFlow<UiState<List<ImmutableCard?>>>(UiState.Loading)
-    val allCards: StateFlow<UiState<List<ImmutableCard?>>> = _allCards.asStateFlow()
+    private var _allCards = MutableStateFlow<UiState<List<ExternalCard?>>>(UiState.Loading)
+    val allCards: StateFlow<UiState<List<ExternalCard?>>> = _allCards.asStateFlow()
 
     private var _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
@@ -25,19 +27,30 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
     private var fetchJob: Job? = null
 
     init {
-        getAllCards()
+
         SpaceRepetitionAlgorithmHelper()
         viewModelScope.launch {
-            _allCards.collect { state ->
-                when (state) {
-                    is UiState.Error -> {}
-                    is UiState.Loading -> {}
-                    is UiState.Success -> {
-                        updateAllCardsStatus(state.data)
-                    }
-                }
+            val mainDeck = repository.getMainDeck()
+            val a = 1
+            if (mainDeck == null) {
+                repository.insertDeck(MainDeck().getMainDeck())
             }
+            _isLoading.value = false
         }
+
+//        getAllCards()
+//        SpaceRepetitionAlgorithmHelper()
+//        viewModelScope.launch {
+//            _allCards.collect { state ->
+//                when (state) {
+//                    is UiState.Error -> {}
+//                    is UiState.Loading -> {}
+//                    is UiState.Success -> {
+//                        updateAllCardsStatus(state.data)
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun getAllCards() {
@@ -46,7 +59,7 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
         fetchJob = viewModelScope.launch {
             repository.allCards().collect {
                 try {
-                    _allCards.value = success(it)
+                    _allCards.value = UiState.Success(it)
                 } catch (e: IOException) {
                     _allCards.value = UiState.Error(e.toString())
                 }
@@ -55,50 +68,62 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
         }
     }
 
-    private fun success(it: List<ImmutableCard?>) =
-        UiState.Success(it)
 
-    private fun updateAllCardsStatus(data: List<ImmutableCard?>) {
+    private fun updateAllCardsStatus(data: List<ExternalCard?>) {
         data.forEach { card ->
-            updateCardStatus(card)
+            card?.let {
+                updateCardStatus(it)
+            }
         }
         _isLoading.value = false
     }
 
-    private fun updateCardStatus(card: ImmutableCard?) {
-        if (card != null) {
-            val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
-            val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
-            if (isCardForgotten) {
-                val newStatus = spaceRepetitionHelper.status(card, false)
-                val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
-                val nextForgettingDate =
-                    spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
-                val newCard = ImmutableCard(
-                    card.cardId,
-                    card.cardContent,
-                    card.cardDefinition,
-                    card.deckId,
-                    card.isFavorite,
-                    card.revisionTime,
-                    card.missedTime,
-                    card.creationDate,
-                    card.lastRevisionDate,
-                    newStatus,
-                    nextForgettingDate,
-                    nextRevision,
-                    card.cardType,
-                    card.cardContentLanguage,
-                    card.cardDefinitionLanguage,
-                )
-                updateCard(newCard)
-            }
-        }
+    private fun updateCardStatus(card: ExternalCard) {
+        val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
+        val isCardForgotten = spaceRepetitionHelper.isForgotten(card)
+        if (isCardForgotten) {
+            val newStatus = spaceRepetitionHelper.status(card, false)
+            val nextRevision = spaceRepetitionHelper.nextRevisionDate(card, false, newStatus)
+            val nextForgettingDate =
+                spaceRepetitionHelper.nextForgettingDate(card, false, newStatus)
+//                val newCard = ImmutableCard(
+//                    card.cardId,
+//                    card.cardContent,
+//                    card.cardDefinition,
+//                    card.deckId,
+//                    card.isFavorite,
+//                    card.revisionTime,
+//                    card.missedTime,
+//                    card.creationDate,
+//                    card.lastRevisionDate,
+//                    newStatus,
+//                    nextForgettingDate,
+//                    nextRevision,
+//                    card.cardType,
+//                    card.cardContentLanguage,
+//                    card.cardDefinitionLanguage,
+//                )
 
+            val newCard = Card(
+                card.cardId,
+                card.deckOwnerId,
+                newStatus,
+                card.cardType,
+                card.revisionTime,
+                card.missedTime,
+                card.creationDate,
+                card.lastRevisionDate,
+                nextForgettingDate,
+                nextRevision,
+                card.cardContentLanguage,
+                card.cardDefinitionLanguage,
+            )
+            updateCard(newCard)
+        }
     }
 
-    fun updateCard(card: ImmutableCard) = viewModelScope.launch {
-        repository.updateCardWithContentAndDefinition(card)
+    fun updateCard(card: Card) = viewModelScope.launch {
+        repository.updateCard(card)
     }
 
 }

@@ -22,6 +22,7 @@ import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
+import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -31,7 +32,7 @@ class QuizGameAdapter(
     val context: Context,
     val cardList: List<QuizGameCardModel>,
     val appTheme: String,
-    val deck: ImmutableDeck,
+    val deck: ExternalDeck,
     private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit,
 ) : RecyclerView.Adapter<QuizGameAdapter.TestQuizGameAdapterViewHolder>() {
@@ -95,7 +96,7 @@ class QuizGameAdapter(
             appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
-            tvContent.text = card.cardContent?.content
+            tvContent.text = card.cardContent.contentText
             tvCardType.text = card.cardType
             when {
                 card.cardType == SINGLE_ANSWER_CARD -> {
@@ -338,7 +339,7 @@ class QuizGameAdapter(
                         listOf(
                             TextWithLanguageModel(
                                 card.cardId,
-                                card.cardContent?.content!!,
+                                card.cardContent.contentText!!,
                                 CONTENT,
                                 card.cardContentLanguage
                             )
@@ -350,9 +351,9 @@ class QuizGameAdapter(
                 val texts = arrayListOf(
                     TextWithLanguageModel(
                         card.cardId,
-                        card.cardContent?.content!!,
+                        card.cardContent.contentText!!,
                         CONTENT,
-                        card.cardContentLanguage!!
+                        card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     )
                 )
                 val views = arrayListOf(tvContent)
@@ -372,7 +373,7 @@ class QuizGameAdapter(
                                 card.cardDefinition[index].cardId,
                                 card.cardDefinition[index].definition,
                                 DEFINITION,
-                                card.cardDefinitionLanguage!!
+                                card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                             )
                         )
                         views.add(materialButton)

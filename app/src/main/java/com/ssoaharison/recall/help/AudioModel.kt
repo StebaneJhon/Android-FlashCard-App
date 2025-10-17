@@ -1,0 +1,12 @@
+package com.ssoaharison.recall.help
+
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import java.io.File
+
+@Parcelize
+data class AudioModel(
+    val name: String,
+    val file: File,
+    val duration: Float
+): Parcelable

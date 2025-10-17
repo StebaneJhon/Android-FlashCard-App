@@ -10,8 +10,11 @@ import com.ssoaharison.recall.backend.models.OpenTriviaQuestion
 import com.ssoaharison.recall.backend.models.QuizQuestions
 import com.ssoaharison.recall.backend.models.isCorrect
 import com.ssoaharison.recall.backend.OpenTriviaRepository
+import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
+import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
+import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
@@ -25,6 +28,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class NewCardDialogViewModel(
     private val openTriviaRepository: OpenTriviaRepository,
@@ -66,13 +70,11 @@ class NewCardDialogViewModel(
     suspend fun resultsToImmutableCards(
         deckId: String,
         results: List<OpenTriviaQuestion>?
-    ): List<ImmutableCard> {
-        val newCards = arrayListOf<ImmutableCard>()
+    ): List<CardWithContentAndDefinitions> {
+        val newCards = arrayListOf<CardWithContentAndDefinitions>()
         results?.forEach { result ->
-            delay(10)
-            val newCardId = now()
-            delay(10)
-            val contentId = now()
+            val newCardId = UUID.randomUUID().toString()
+            val contentId = UUID.randomUUID().toString()
             val formatedQuestion = reformatText(result.question)
             val newCardContent = generateCardContent(formatedQuestion, newCardId, contentId, deckId)
             val newCardDefinitions = generateCardDefinitions(
@@ -83,25 +85,30 @@ class NewCardDialogViewModel(
                 deckId
             )
 
-            val newCard = ImmutableCard(
-                newCardId,
-                newCardContent,
-                newCardDefinitions,
-                deckId,
-                isCorrect(0),
+            val newCard = Card(
+                cardId = newCardId,
+                deckOwnerId = deckId,
+                cardLevel = L1,
+                cardType = MULTIPLE_CHOICE_CARD,
                 revisionTime = 0,
-                0,
-                today(),
-                null,
-                L1,
-                null,
-                null,
-                MULTIPLE_CHOICE_CARD,
-                "English (United Kingdom)",
-                "English (United Kingdom)",
+                missedTime = 0,
+                creationDate = today(),
+                lastRevisionDate = null,
+                nextMissMemorisationDate = null,
+                nextRevisionDate = null,
+                cardContentLanguage = "English (United Kingdom)",
+                cardDefinitionLanguage = "English (United Kingdom)"
             )
 
-            newCards.add(newCard)
+            val newCardWithContentAndDefinitions = CardWithContentAndDefinitions(
+                card = newCard,
+                contentWithDefinitions = CardContentWithDefinitions(
+                    content = newCardContent,
+                    definitions = newCardDefinitions
+                )
+            )
+
+            newCards.add(newCardWithContentAndDefinitions)
 
         }
         return newCards
@@ -139,12 +146,14 @@ class NewCardDialogViewModel(
         deckId: String
     ): CardDefinition {
         return CardDefinition(
-            null,
-            cardId,
-            deckId,
-            contentId,
-            text,
-            isCorrectRevers(isCorrect)
+            definitionId = UUID.randomUUID().toString(),
+            cardOwnerId = cardId,
+            deckOwnerId = deckId,
+            contentOwnerId = contentId,
+            isCorrectDefinition = isCorrectRevers(isCorrect),
+            definitionText = text,
+            definitionImageName = null,
+            definitionAudioName = null,
         )
     }
 
@@ -155,21 +164,23 @@ class NewCardDialogViewModel(
         deckId: String
     ): CardContent {
         return CardContent(
-            contentId,
-            cardId,
-            deckId,
-            text
+            contentId = contentId,
+            cardOwnerId = cardId,
+            deckOwnerId = deckId,
+            contentText = text,
+            contentImageName = null,
+            contentAudioName = null
         )
     }
 
-    fun insertCards(cards: List<ImmutableCard>) = viewModelScope.launch {
+    fun insertCards(cards: List<CardWithContentAndDefinitions>) = viewModelScope.launch {
         val cardsToAdd = cards.reversed()
-        repository.insertCards(cardsToAdd)
+        repository.insertCardsWithContentAndDefinition(cardsToAdd)
         addedCardSum += cardsToAdd.size
     }
 
-    fun insertCard(card: ImmutableCard) = viewModelScope.launch {
-        repository.insertCard(card)
+    fun insertCard(card: CardWithContentAndDefinitions) = viewModelScope.launch {
+        repository.insertCardWithContentAndDefinition(card)
         addedCardSum++
     }
 

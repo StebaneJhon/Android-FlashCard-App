@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class QuizGameCardDefinitionModel (
-    val definitionId: Int?,
+    val definitionId: String,
     val cardId: String,
     val definition: String,
     val cardType: String,

@@ -9,7 +9,7 @@ data class CardWithDefinitions(
     @Embedded val card: Card,
     @Relation(
         parentColumn = "cardId",
-        entityColumn = "cardId"
+        entityColumn = "cardOwnerId"
     )
     val definition: List<CardDefinition>
 )

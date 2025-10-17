@@ -1,15 +1,11 @@
-package com.ssoaharison.recall.backend.entities
+package com.ssoaharison.recall.backend.models
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity
-data class Card (
-    @PrimaryKey(autoGenerate = false) val cardId: String,
+data class ExternalCard(
+    val cardId: String,
     val deckOwnerId: String,
     val cardLevel: String?,
     val cardType: String?,

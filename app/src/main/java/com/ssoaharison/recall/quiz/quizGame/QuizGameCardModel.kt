@@ -2,6 +2,7 @@ package com.ssoaharison.recall.quiz.quizGame
 
 import android.os.Parcelable
 import com.ssoaharison.recall.backend.entities.CardContent
+import com.ssoaharison.recall.backend.models.ExternalCardContent
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import kotlinx.parcelize.Parcelize
@@ -9,7 +10,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class QuizGameCardModel(
     val cardId: String,
-    val cardContent: CardContent?,
+    val cardContent: ExternalCardContent,
     val cardContentLanguage: String?,
     val cardDefinition: List<QuizGameCardDefinitionModel>,
     val cardDefinitionLanguage: String?,

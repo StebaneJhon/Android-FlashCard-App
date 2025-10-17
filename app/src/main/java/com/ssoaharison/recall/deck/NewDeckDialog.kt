@@ -10,13 +10,10 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.databinding.AddDeckLayoutDialogBinding
 import com.ssoaharison.recall.util.DeckAdditionAction.ADD
@@ -24,15 +21,18 @@ import com.ssoaharison.recall.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_A
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.util.DeckColorPickerAdapter
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class NewDeckDialog(
-    val deck: ImmutableDeck?,
+    val deckToEdit: ExternalDeck?,
+    val parentDeckId: String?,
     val appTheme: String,
 ) : AppCompatDialogFragment() {
 
@@ -87,15 +87,15 @@ class NewDeckDialog(
             showDetailOptions((bt as MaterialButton), !binding.deckFirstLanguageLY.isVisible)
         }
 
-        if (deck != null) {
+        if (deckToEdit != null) {
             binding.btAddCard.isVisible = false
             binding.tvTitle.text = getString(R.string.tv_update_deck)
-            binding.deckNameET.setText(deck.deckName)
-            binding.deckDescriptionET.setText(deck.deckDescription)
-            binding.deckFirstLanguageET.setText(deck.cardContentDefaultLanguage)
-            binding.deckSecondLanguageET.setText(deck.cardDefinitionDefaultLanguage)
-            deck.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
-            deckCategoryColor = deck.deckColorCode
+            binding.deckNameET.setText(deckToEdit.deckName)
+            binding.deckDescriptionET.setText(deckToEdit.deckDescription)
+            binding.deckFirstLanguageET.setText(deckToEdit.cardContentDefaultLanguage)
+            binding.deckSecondLanguageET.setText(deckToEdit.cardDefinitionDefaultLanguage)
+            deckToEdit.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
+            deckCategoryColor = deckToEdit.deckColorCode
 
             builder.setView(binding.root)
 
@@ -104,10 +104,10 @@ class NewDeckDialog(
             binding.dialogPositiveBT.apply {
                 text = getString(R.string.bt_text_update)
                 setOnClickListener {
-                    onUpdate(deck)
+                    onUpdate(deckToEdit)
                 }
                 binding.btAddTop.setOnClickListener {
-                    onUpdate(deck)
+                    onUpdate(deckToEdit)
                 }
             }
         } else {
@@ -118,23 +118,25 @@ class NewDeckDialog(
             binding.dialogPositiveBT.apply {
                 text = getString(R.string.bt_text_add)
                 setOnClickListener {
-                    onAdd()
+                    onAdd(parentDeckId)
                 }
             }
             binding.btAddTop.setOnClickListener {
-                onAdd()
+                onAdd(parentDeckId)
             }
             binding.btAddCard.setOnClickListener {
                 if (!checkError()) {
                     val newDeck = Deck(
-                        now(),
-                        binding.deckNameET.text.toString(),
-                        binding.deckDescriptionET.text.toString(),
-                        binding.deckFirstLanguageET.text.toString(),
-                        binding.deckSecondLanguageET.text.toString(),
-                        deckCategoryColor,
-                        null,
-                        0
+                        deckId = UUID.randomUUID().toString(),
+                        parentDeckId = parentDeckId,
+                        deckName = binding.deckNameET.text.toString(),
+                        deckDescription = binding.deckDescriptionET.text.toString(),
+                        cardContentDefaultLanguage = binding.deckFirstLanguageET.text.toString(),
+                        cardDefinitionDefaultLanguage = binding.deckSecondLanguageET.text.toString(),
+                        deckColorCode = deckCategoryColor,
+                        deckCategory = null,
+                        isFavorite = 0,
+                        deckCreationDate = now()
                     )
                     sendDeckOnSave(REQUEST_CODE, ADD_DECK_FORWARD_TO_CARD_ADDITION, newDeck)
                     dismiss()
@@ -174,19 +176,21 @@ class NewDeckDialog(
 
     }
 
-    private fun onAdd() {
+    private fun onAdd(parentDeckId: String?) {
         if (!checkError()) {
             val deckFirstLanguage = binding.deckFirstLanguageET.text
             val deckSecondLanguage = binding.deckSecondLanguageET.text
             val newDeck = Deck(
-                now(),
-                binding.deckNameET.text.toString(),
-                binding.deckDescriptionET.text.toString(),
-                if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
-                if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
-                deckCategoryColor,
-                null,
-                0
+                deckId = UUID.randomUUID().toString(),
+                parentDeckId = parentDeckId,
+                deckName = binding.deckNameET.text.toString(),
+                deckDescription = binding.deckDescriptionET.text.toString(),
+                cardContentDefaultLanguage = if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
+                cardDefinitionDefaultLanguage = if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
+                deckColorCode = deckCategoryColor,
+                deckCategory = null,
+                isFavorite = 0,
+                deckCreationDate = now()
             )
 
             sendDeckOnSave(REQUEST_CODE, ADD, newDeck)
@@ -194,19 +198,21 @@ class NewDeckDialog(
         }
     }
 
-    private fun onUpdate(deck: ImmutableDeck) {
+    private fun onUpdate(deck: ExternalDeck) {
         if (!checkError()) {
             val deckFirstLanguage = binding.deckFirstLanguageET.text
             val deckSecondLanguage = binding.deckSecondLanguageET.text
             val newDeck = Deck(
-                deck.deckId,
-                binding.deckNameET.text.toString(),
-                binding.deckDescriptionET.text.toString(),
-                if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
-                if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
-                deckCategoryColor,
-                deck.deckCategory,
-                isCorrectRevers(deck.isFavorite)
+                deckId = deck.deckId,
+                parentDeckId = deck.parentDeckId,
+                deckName = binding.deckNameET.text.toString(),
+                deckDescription = binding.deckDescriptionET.text.toString(),
+                cardContentDefaultLanguage = if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
+                cardDefinitionDefaultLanguage = if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
+                deckColorCode = deckCategoryColor,
+                deckCategory = deck.deckCategory,
+                isFavorite = deck.isFavorite,
+                deckCreationDate = deck.deckCreationDate
             )
 
             sendDeckOnEdit(REQUEST_CODE, newDeck)

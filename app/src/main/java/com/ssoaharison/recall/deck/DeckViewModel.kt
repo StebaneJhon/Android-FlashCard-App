@@ -9,6 +9,8 @@ import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.entities.Deck
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +23,8 @@ class DeckViewModel(
     private val repository: FlashCardRepository,
 ) : ViewModel() {
 
-    private var _allDecks = MutableStateFlow<UiState<List<ImmutableDeck>>>(UiState.Loading)
-    val allDecks: StateFlow<UiState<List<ImmutableDeck>>> = _allDecks.asStateFlow()
+    private var _allDecks = MutableStateFlow<UiState<List<ExternalDeck>>>(UiState.Loading)
+    val allDecks: StateFlow<UiState<List<ExternalDeck>>> = _allDecks.asStateFlow()
 
     private var fetchJob: Job? = null
     private var fetchDeckDeletionJob: Job? = null
@@ -32,7 +34,7 @@ class DeckViewModel(
         _allDecks.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.allDecks().collect {
+                repository.getPrimaryDecks().collect {
                     if (it.isEmpty()) {
                         _allDecks.value = UiState.Error("No Deck")
                     } else {
@@ -45,7 +47,7 @@ class DeckViewModel(
         }
     }
 
-    fun searchDeck(searchQuery: String): LiveData<Set<ImmutableDeck>> {
+    fun searchDeck(searchQuery: String): LiveData<Set<ExternalDeck>> {
         return repository.searchDeck(searchQuery).asLiveData()
     }
 
@@ -53,10 +55,10 @@ class DeckViewModel(
         repository.insertDeck(deck)
     }
 
-    fun deleteDeck(deck: ImmutableDeck) {
+    fun deleteDeck(deck: ExternalDeck) {
         fetchDeckDeletionJob?.cancel()
         fetchDeckDeletionJob = viewModelScope.launch {
-            repository.deleteDeckWithCards(deck)
+            repository.deleteDeckWithCards(deck.deckId)
         }
     }
 
@@ -64,18 +66,16 @@ class DeckViewModel(
         repository.updateDeck(deck)
     }
 
-    private var _deckWithAllCards =
-        MutableStateFlow<UiState<ImmutableDeckWithCards>>(UiState.Loading)
-    val deckWithAllCards: StateFlow<UiState<ImmutableDeckWithCards>> =
-        _deckWithAllCards.asStateFlow()
+    private var _deckWithAllCards = MutableStateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>>(UiState.Loading)
+    val deckWithAllCards: StateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>> = _deckWithAllCards.asStateFlow()
 
     fun getDeckWithCards(deckId: String) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getImmutableDeckWithCards(deckId).collect { deckWithCards ->
-                    if (deckWithCards.cards?.isEmpty() == true) {
+                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId).collect { deckWithCards ->
+                    if (deckWithCards.cards.isEmpty()) {
                         _deckWithAllCards.value = UiState.Error("Empty deck")
                     } else {
                         _deckWithAllCards.value = UiState.Success(deckWithCards)

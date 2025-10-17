@@ -170,3 +170,6 @@ object TextType {
     const val CONTENT = "content"
     const val DEFINITION = "definition"
 }
+
+val MAIN_DECK_ID = "000000"
+val MAIN_DECK_NAME = "Main"

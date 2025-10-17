@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.deck
+package com.ssoaharison.recall.card
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -23,7 +23,7 @@ import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 
-class DecksRecyclerViewAdapter(
+class SubdeckRecyclerViewAdapter(
     private val listOfDecks: List<ExternalDeck>,
     private val context: Context,
     private val appTheme: String?,
@@ -31,7 +31,7 @@ class DecksRecyclerViewAdapter(
     private val deleteDeckClickListener: (ExternalDeck) -> Unit,
     private val startQuizListener: (ExternalDeck) -> Unit,
     private val deckClickListener: (ExternalDeck) -> Unit
-) : RecyclerView.Adapter<DecksRecyclerViewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SubdeckRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.create(parent)

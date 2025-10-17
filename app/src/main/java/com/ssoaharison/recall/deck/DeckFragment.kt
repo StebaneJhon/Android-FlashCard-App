@@ -2,7 +2,6 @@ package com.ssoaharison.recall.deck
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -35,33 +34,18 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.databinding.FragmentDeckBinding
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
-import com.ssoaharison.recall.quiz.matchQuizGame.MatchQuizGameActivity
-import com.ssoaharison.recall.quiz.multichoiceQuizGame.MultiChoiceQuizGameActivity
-import com.ssoaharison.recall.quiz.quizGame.QuizGameActivity
-import com.ssoaharison.recall.quiz.test.TestActivity
-import com.ssoaharison.recall.quiz.writingQuizGame.WritingQuizGameActivity
-import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_MATCHING_QUIZ
-import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_MULTI_CHOICE_QUIZ
 import com.ssoaharison.recall.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_ALPHABETICALLY
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CARD_SUM
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.MATCHING_QUIZ
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.QUIZ
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.TEST
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.WRITING_QUIZ
 import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.ssoaharison.recall.util.Constant.MIN_CARD_FOR_TEST
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
 import com.ssoaharison.recall.util.parcelable
@@ -193,14 +177,14 @@ class DeckFragment :
         popup.show()
     }
 
-    private fun sortDeckBy(filter: String, decks: List<ImmutableDeck>): List<ImmutableDeck> {
+    private fun sortDeckBy(filter: String, decks: List<ExternalDeck>): List<ExternalDeck> {
         return when (filter) {
             DECK_SORT_ALPHABETICALLY -> {
                 decks.sortedBy { d -> d.deckName?.lowercase() }
             }
 
             DECK_SORT_BY_CARD_SUM -> {
-                decks.sortedBy { d -> d.cardSum }
+                decks.sortedBy { d -> d.cardCount }
             }
 
             else -> {
@@ -224,7 +208,7 @@ class DeckFragment :
     }
 
     @SuppressLint("RestrictedApi")
-    private fun populateRecyclerView(listOfDecks: List<ImmutableDeck>) {
+    private fun populateRecyclerView(listOfDecks: List<ExternalDeck>) {
         binding.mainActivityProgressBar.visibility = View.GONE
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
@@ -250,7 +234,7 @@ class DeckFragment :
         }
     }
 
-    private fun onStartingQuizError(errorText: String, deck: ImmutableDeck) {
+    private fun onStartingQuizError(errorText: String, deck: ExternalDeck) {
         MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_App_MaterialAlertDialog)
             .setTitle(getString(R.string.error_title_starting_quiz))
             .setMessage(errorText)
@@ -264,30 +248,31 @@ class DeckFragment :
             .show()
     }
 
-    private fun navigateTo(data: ImmutableDeck, opener: String) {
-        val action = DeckFragmentDirections.navigateToCardFragment(data, opener)
-        findNavController().navigate(
-            action,
-            NavOptions.Builder().setPopUpTo(R.id.deckFragment, true).build()
-        )
+    private fun navigateTo(data: ExternalDeck, opener: String) {
+//        val action = DeckFragmentDirections.navigateToCardFragment(data, opener)
+//        findNavController().navigate(
+//            action,
+//            NavOptions.Builder().setPopUpTo(R.id.deckFragment, true).build()
+//        )
+        Toast.makeText(appContext, "Unavailable", Toast.LENGTH_LONG).show()
     }
 
-    private fun onDeleteDeck(deck: ImmutableDeck) {
-        if (deck.cardSum!! > 0) {
+    private fun onDeleteDeck(deck: ExternalDeck) {
+        if (deck.cardCount!! > 0) {
             appContext?.let {
                 MaterialAlertDialogBuilder(it)
                     .setTitle(getString(R.string.dialog_title_delete_deck))
                     .setMessage(
-                        if (deck.cardSum > 1) {
+                        if (deck.cardCount > 1) {
                             getString(
                                 R.string.dialog_message_delete_deck,
-                                deck.cardSum.toString(),
+                                deck.cardCount.toString(),
                                 "s"
                             )
                         } else {
                             getString(
                                 R.string.dialog_message_delete_deck,
-                                deck.cardSum.toString(),
+                                deck.cardCount.toString(),
                                 ""
                             )
                         }
@@ -309,7 +294,11 @@ class DeckFragment :
     }
 
     private fun onAddNewDeck() {
-        val newDeckDialog = NewDeckDialog(null, appThemeName)
+        val newDeckDialog = NewDeckDialog(
+            parentDeckId = null,
+            deckToEdit = null,
+            appTheme = appThemeName
+        )
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
             val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
@@ -322,8 +311,12 @@ class DeckFragment :
         }
     }
 
-    private fun onEditDeck(deck: ImmutableDeck?) {
-        val newDeckDialog = NewDeckDialog(deck, appThemeName)
+    private fun onEditDeck(deck: ExternalDeck?) {
+        val newDeckDialog = NewDeckDialog(
+            parentDeckId = null,
+            deckToEdit = deck,
+            appTheme = appThemeName
+        )
         newDeckDialog.show(childFragmentManager, "Edit Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
             val result = bundle.parcelable<Deck>(NewDeckDialog.EDIT_DECK_BUNDLE_KEY)
@@ -360,7 +353,7 @@ class DeckFragment :
     }
 
     @SuppressLint("MissingInflatedId")
-    private fun onStartQuiz(deck: ImmutableDeck) {
+    private fun onStartQuiz(deck: ExternalDeck) {
         val quizMode = QuizModeBottomSheet(deck)
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
@@ -376,7 +369,7 @@ class DeckFragment :
         }
     }
 
-    private fun startQuiz(deck: ImmutableDeck, start: (ImmutableDeckWithCards) -> Unit) {
+    private fun startQuiz(deck: ExternalDeck, start: (ExternalDeckWithCardsAndContentAndDefinitions) -> Unit) {
         startQuizJob?.cancel()
         startQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -406,74 +399,74 @@ class DeckFragment :
         }
     }
 
-    private fun lunchQuiz(deckWithCards: ImmutableDeckWithCards, quizMode: String) {
-        when (quizMode) {
-            FLASH_CARD_QUIZ -> {
-                val intent = Intent(appContext, FlashCardGameActivity::class.java)
-                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
-            }
-
-            MULTIPLE_CHOICE_QUIZ -> {
-                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
-                    val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
-                    intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, deckWithCards)
-                    startActivity(intent)
-                } else {
-                    onStartingQuizError(
-                        getString(
-                            R.string.error_message_starting_quiz,
-                            "$MIN_CARD_FOR_MULTI_CHOICE_QUIZ"
-                        ), deckWithCards.deck!!
-                    )
-                }
-            }
-
-            WRITING_QUIZ -> {
-                val intent = Intent(appContext, WritingQuizGameActivity::class.java)
-                intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
-            }
-
-            MATCHING_QUIZ -> {
-                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MATCHING_QUIZ) {
-                    val intent = Intent(appContext, MatchQuizGameActivity::class.java)
-                    intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, deckWithCards)
-                    startActivity(intent)
-                } else {
-                    onStartingQuizError(
-                        getString(
-                            R.string.error_message_starting_quiz,
-                            "$MIN_CARD_FOR_MATCHING_QUIZ"
-                        ), deckWithCards.deck!!
-                    )
-                }
-            }
-
-            QUIZ -> {
-                val intent = Intent(appContext, QuizGameActivity::class.java)
-                intent.putExtra(QuizGameActivity.DECK_ID_KEY, deckWithCards)
-                startActivity(intent)
-            }
-
-            TEST -> {
-                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_TEST) {
-                    val intent = Intent(appContext, TestActivity::class.java)
-                    intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
-                    startActivity(intent)
-                } else {
-                    onStartingQuizError(
-                        getString(
-                            R.string.error_message_starting_quiz,
-                            "$MIN_CARD_FOR_TEST"
-                        ),
-                        deckWithCards.deck!!
-                    )
-                }
-
-            }
-
-        }
+    private fun lunchQuiz(deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions, quizMode: String) {
+//        when (quizMode) {
+//            FLASH_CARD_QUIZ -> {
+//                val intent = Intent(appContext, FlashCardGameActivity::class.java)
+//                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
+//                startActivity(intent)
+//            }
+//
+//            MULTIPLE_CHOICE_QUIZ -> {
+//                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {
+//                    val intent = Intent(appContext, MultiChoiceQuizGameActivity::class.java)
+//                    intent.putExtra(MultiChoiceQuizGameActivity.DECK_ID_KEY, deckWithCards)
+//                    startActivity(intent)
+//                } else {
+//                    onStartingQuizError(
+//                        getString(
+//                            R.string.error_message_starting_quiz,
+//                            "$MIN_CARD_FOR_MULTI_CHOICE_QUIZ"
+//                        ), deckWithCards.deck!!
+//                    )
+//                }
+//            }
+//
+//            WRITING_QUIZ -> {
+//                val intent = Intent(appContext, WritingQuizGameActivity::class.java)
+//                intent.putExtra(WritingQuizGameActivity.DECK_ID_KEY, deckWithCards)
+//                startActivity(intent)
+//            }
+//
+//            MATCHING_QUIZ -> {
+//                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MATCHING_QUIZ) {
+//                    val intent = Intent(appContext, MatchQuizGameActivity::class.java)
+//                    intent.putExtra(MatchQuizGameActivity.DECK_ID_KEY, deckWithCards)
+//                    startActivity(intent)
+//                } else {
+//                    onStartingQuizError(
+//                        getString(
+//                            R.string.error_message_starting_quiz,
+//                            "$MIN_CARD_FOR_MATCHING_QUIZ"
+//                        ), deckWithCards.deck!!
+//                    )
+//                }
+//            }
+//
+//            QUIZ -> {
+//                val intent = Intent(appContext, QuizGameActivity::class.java)
+//                intent.putExtra(QuizGameActivity.DECK_ID_KEY, deckWithCards)
+//                startActivity(intent)
+//            }
+//
+//            TEST -> {
+//                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_TEST) {
+//                    val intent = Intent(appContext, TestActivity::class.java)
+//                    intent.putExtra(TestActivity.DECK_ID_KEY, deckWithCards)
+//                    startActivity(intent)
+//                } else {
+//                    onStartingQuizError(
+//                        getString(
+//                            R.string.error_message_starting_quiz,
+//                            "$MIN_CARD_FOR_TEST"
+//                        ),
+//                        deckWithCards.deck!!
+//                    )
+//                }
+//
+//            }
+//
+//        }
     }
 
 

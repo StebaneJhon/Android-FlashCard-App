@@ -24,7 +24,14 @@ import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
+import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
+import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalCard
+import com.ssoaharison.recall.backend.models.ExternalCardDefinition
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -34,11 +41,11 @@ import com.ssoaharison.recall.util.ThemePicker
 class CardsRecyclerViewAdapter(
     private val context: Context,
     private val appTheme: String,
-    private val deck: ImmutableDeck,
-    private val cardList: List<ImmutableCard?>,
+    private val deck: ExternalDeck,
+    private val cardList: List<ExternalCardWithContentAndDefinitions>,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
-    private val editCardClickListener: (ImmutableCard?) -> Unit,
-    private val deleteCardClickListener: (ImmutableCard?) -> Unit,
+    private val editCardClickListener: (ExternalCardWithContentAndDefinitions) -> Unit,
+    private val deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
     private val onReadContent: (TextClickedModel) -> Unit,
     private val onReadDefinition: (TextClickedModel) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -106,11 +113,11 @@ class CardsRecyclerViewAdapter(
         fun bind(
             context: Context,
             appTheme: String,
-            deck: ImmutableDeck,
-            card: ImmutableCard?,
+            deck: ExternalDeck,
+            card: ExternalCardWithContentAndDefinitions,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
-            editCardClickListener: (ImmutableCard?) -> Unit,
-            deleteCardClickListener: (ImmutableCard?) -> Unit,
+            editCardClickListener: (ExternalCardWithContentAndDefinitions) -> Unit,
+            deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
             onReadContent: (TextClickedModel) -> Unit,
             onReadDefinition: (TextClickedModel) -> Unit,
         ) {
@@ -121,7 +128,7 @@ class CardsRecyclerViewAdapter(
                 this.onBrightTheme(boxLevels, card, context)
             }
 
-            val correctDefinition = getCorrectDefinition(card?.cardDefinition)
+            val correctDefinition = getCorrectDefinition(card.contentWithDefinitions.definitions)
             val definitionTexts = cardDefinitionsToStrings(correctDefinition)
 
             cardRoot.setOnLongClickListener { v: View ->
@@ -146,10 +153,10 @@ class CardsRecyclerViewAdapter(
                     tv.setOnClickListener {
                         it as TextView
                         val text = it.text.toString()
-                        val language = if (card?.cardDefinitionLanguage != null) card.cardDefinitionLanguage else deck.cardDefinitionDefaultLanguage
+                        val language = card.card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                         onReadDefinition(
                             TextClickedModel(
-                                TextWithLanguageModel(card?.cardId!!, text, DEFINITION, language),
+                                TextWithLanguageModel(card.card.cardId, text, DEFINITION, language),
                                 it,
                                 definitionTextColor,
                                 DEFINITION
@@ -193,10 +200,10 @@ class CardsRecyclerViewAdapter(
                     it as TextView
                     val text = it.text.toString()
                     val language =
-                        if (card?.cardContentLanguage != null) card.cardContentLanguage else deck.cardContentDefaultLanguage
+                        card.card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     onReadContent(
                         TextClickedModel(
-                            TextWithLanguageModel(card?.cardId!!, text, CONTENT, language),
+                            TextWithLanguageModel(card.card.cardId, text, CONTENT, language),
                             it,
                             contentTextColor,
                             CONTENT
@@ -222,10 +229,10 @@ class CardsRecyclerViewAdapter(
 
         private fun onBrightTheme(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
-            card: ImmutableCard?,
+            card: ExternalCardWithContentAndDefinitions?,
             context: Context
         ) {
-            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
+            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.card?.cardLevel!!)
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
             val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
             contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColor(actualBoxLevel.levelColor)
@@ -236,11 +243,11 @@ class CardsRecyclerViewAdapter(
                 ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
             cvContainerCard.backgroundTintList = cardBackgroundStateList
             cardStatus.apply {
-                text = card.cardStatus
+                text = card.card.cardLevel
                 backgroundTintList = colorStateList
             }
             onCardText.apply {
-                text = card.cardContent?.content
+                text = card.contentWithDefinitions.content.contentText
                 setTextColor(context.getColor(contentTextColor))
             }
             tvDescriptions.forEach {
@@ -250,10 +257,10 @@ class CardsRecyclerViewAdapter(
 
         private fun onDarkTheme(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
-            card: ImmutableCard?,
+            card: ExternalCardWithContentAndDefinitions,
             context: Context
         ) {
-            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.cardStatus!!)
+            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
             val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
             contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
@@ -263,11 +270,11 @@ class CardsRecyclerViewAdapter(
             val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
             cvContainerCard.backgroundTintList = colorStateList
             cardStatus.apply {
-                text = card.cardStatus
+                text = card.card.cardLevel
                 backgroundTintList = cardBackgroundStateList
             }
             onCardText.apply {
-                text = card.cardContent?.content
+                text = card.contentWithDefinitions.content.contentText
                 setTextColor(context.getColor(contentTextColor))
             }
             tvDescriptions.forEach {
@@ -276,17 +283,17 @@ class CardsRecyclerViewAdapter(
             cardStatus.setTextColor(context.getColor(R.color.black))
         }
 
-        private fun cardDefinitionsToStrings(cardDefinitions: List<CardDefinition>?): List<String> {
+        private fun cardDefinitionsToStrings(cardDefinitions: List<ExternalCardDefinition>?): List<String> {
             val definitionStrings = mutableListOf<String>()
             cardDefinitions?.let { defins ->
                 defins.forEach {
-                    definitionStrings.add(it.definition)
+                    definitionStrings.add(it.definitionText!!)
                 }
             }
             return definitionStrings
         }
 
-        private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
+        private fun getCorrectDefinition(definitions: List<ExternalCardDefinition>?): List<ExternalCardDefinition>? {
             definitions?.let { defins ->
                 return defins.filter { it.isCorrectDefinition == 1 }
             }
@@ -299,9 +306,9 @@ class CardsRecyclerViewAdapter(
             appTheme: String,
             v: View,
             @MenuRes menuRes: Int,
-            editCardClickListener: (ImmutableCard?) -> Unit,
-            deleteCardClickListener: (ImmutableCard?) -> Unit,
-            card: ImmutableCard?,
+            editCardClickListener: (ExternalCardWithContentAndDefinitions) -> Unit,
+            deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
+            card: ExternalCardWithContentAndDefinitions,
             deckThemeName: String?,
         ) {
             val themePicker = ThemePicker()
@@ -345,7 +352,14 @@ class CardsRecyclerViewAdapter(
                     }
 
                     R.id.delete_card_DM -> {
-                        deleteCardClickListener(card)
+                        val localCard = CardWithContentAndDefinitions(
+                            card = card.card.toLocal(),
+                            contentWithDefinitions = CardContentWithDefinitions(
+                                content = card.contentWithDefinitions.content.toLocal(),
+                                definitions = card.contentWithDefinitions.definitions.map { definition -> definition.toLocal() }
+                            )
+                        )
+                        deleteCardClickListener(localCard)
                         true
                     }
 

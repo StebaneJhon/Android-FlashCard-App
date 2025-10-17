@@ -68,100 +68,100 @@ class TestResultRecyclerViewAdapter(
             appTheme: String
         ) {
 
-            tvAddedCardContent.text = card.cardContent.content
-            btDelete.visibility = View.GONE
-
-            tvCardDescriptions.forEachIndexed { index, textView ->
-                if (index < card.cardDefinition.size) {
-                    textView.visibility = View.VISIBLE
-                    displayCardDefinition(context, card.cardDefinition[index], textView, appTheme)
-                } else {
-                    textView.visibility = View.GONE
-                }
-            }
+//            tvAddedCardContent.text = card.cardContent.content
+//            btDelete.visibility = View.GONE
+//
+//            tvCardDescriptions.forEachIndexed { index, textView ->
+//                if (index < card.cardDefinition.size) {
+//                    textView.visibility = View.VISIBLE
+//                    displayCardDefinition(context, card.cardDefinition[index], textView, appTheme)
+//                } else {
+//                    textView.visibility = View.GONE
+//                }
+//            }
         }
 
-        private fun displayCardDefinition(
-            context: Context,
-            definition: TestCardDefinitionModel,
-            v: TextView,
-            appTheme: String
-        ) {
-            v.visibility = View.VISIBLE
-            v.text = definition.definition.text
-            if (definition.isSelected) {
-                if (definition.isCorrect == 1 && definition.attachedCardId == definition.cardId) {
-                    onCorrectAnswer(context, v, appTheme)
-                } else {
-                    onWrongAnswer(context, v, appTheme)
-                }
-            } else {
-                onNeutralAnswer(context, v)
-            }
-        }
-
-        private fun onWrongAnswer(context: Context, v: TextView, appTheme: String) {
-            val textBackgroundColorStateList: ColorStateList?
-            val drawableBackgroundColorStateList: ColorStateList?
-            if (appTheme != DARK_THEME) {
-                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red100)
-                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red600)
-            } else {
-                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red800)
-                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red50)
-            }
-            v.backgroundTintList = textBackgroundColorStateList
-            v.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.icon_cancel,
-                0,
-                0,
-                0
-            )
-            v.setCompoundDrawablePadding(8)
-            v.setCompoundDrawableTintList(drawableBackgroundColorStateList)
-        }
-
-        private fun onCorrectAnswer(context: Context, v: TextView, appTheme: String) {
-            val textBackgroundColorStateList: ColorStateList?
-            val drawableBackgroundColorStateList: ColorStateList?
-            if (appTheme != DARK_THEME) {
-                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green100)
-                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green600)
-            } else {
-                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green800)
-                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green50)
-            }
-            v.backgroundTintList = textBackgroundColorStateList
-            v.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                R.drawable.icon_check_circle,
-                0,
-                0,
-                0
-            )
-            v.setCompoundDrawablePadding(8)
-            v.setCompoundDrawableTintList(drawableBackgroundColorStateList)
-        }
-
-        private fun onNeutralAnswer(context: Context, v: TextView) {
-            v.background.setTint(context.getColorFromAttr(com.google.android.material.R.attr.colorSurfaceContainerLow))
-            v.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                0,
-                0,
-                0,
-                0
-            )
-            v.setCompoundDrawablePadding(0)
-        }
-
-        @ColorInt
-        fun Context.getColorFromAttr(
-            @AttrRes attrColor: Int,
-            typedValue: TypedValue = TypedValue(),
-            resolveRefs: Boolean = true
-        ): Int {
-            theme.resolveAttribute(attrColor, typedValue, resolveRefs)
-            return typedValue.data
-        }
+//        private fun displayCardDefinition(
+//            context: Context,
+//            definition: TestCardDefinitionModel,
+//            v: TextView,
+//            appTheme: String
+//        ) {
+//            v.visibility = View.VISIBLE
+//            v.text = definition.definition.text
+//            if (definition.isSelected) {
+//                if (definition.isCorrect == 1 && definition.attachedCardId == definition.cardId) {
+//                    onCorrectAnswer(context, v, appTheme)
+//                } else {
+//                    onWrongAnswer(context, v, appTheme)
+//                }
+//            } else {
+//                onNeutralAnswer(context, v)
+//            }
+//        }
+//
+//        private fun onWrongAnswer(context: Context, v: TextView, appTheme: String) {
+//            val textBackgroundColorStateList: ColorStateList?
+//            val drawableBackgroundColorStateList: ColorStateList?
+//            if (appTheme != DARK_THEME) {
+//                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red100)
+//                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red600)
+//            } else {
+//                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red800)
+//                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.red50)
+//            }
+//            v.backgroundTintList = textBackgroundColorStateList
+//            v.setCompoundDrawablesRelativeWithIntrinsicBounds(
+//                R.drawable.icon_cancel,
+//                0,
+//                0,
+//                0
+//            )
+//            v.setCompoundDrawablePadding(8)
+//            v.setCompoundDrawableTintList(drawableBackgroundColorStateList)
+//        }
+//
+//        private fun onCorrectAnswer(context: Context, v: TextView, appTheme: String) {
+//            val textBackgroundColorStateList: ColorStateList?
+//            val drawableBackgroundColorStateList: ColorStateList?
+//            if (appTheme != DARK_THEME) {
+//                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green100)
+//                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green600)
+//            } else {
+//                textBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green800)
+//                drawableBackgroundColorStateList = ContextCompat.getColorStateList(context, R.color.green50)
+//            }
+//            v.backgroundTintList = textBackgroundColorStateList
+//            v.setCompoundDrawablesRelativeWithIntrinsicBounds(
+//                R.drawable.icon_check_circle,
+//                0,
+//                0,
+//                0
+//            )
+//            v.setCompoundDrawablePadding(8)
+//            v.setCompoundDrawableTintList(drawableBackgroundColorStateList)
+//        }
+//
+//        private fun onNeutralAnswer(context: Context, v: TextView) {
+//            v.background.setTint(context.getColorFromAttr(com.google.android.material.R.attr.colorSurfaceContainerLow))
+//            v.setCompoundDrawablesRelativeWithIntrinsicBounds(
+//                0,
+//                0,
+//                0,
+//                0
+//            )
+//            v.setCompoundDrawablePadding(0)
+//        }
+//
+//        @ColorInt
+//        fun Context.getColorFromAttr(
+//            @AttrRes attrColor: Int,
+//            typedValue: TypedValue = TypedValue(),
+//            resolveRefs: Boolean = true
+//        ): Int {
+//            theme.resolveAttribute(attrColor, typedValue, resolveRefs)
+//            return typedValue.data
+//        }
 
         companion object {
             fun create(parent: ViewGroup): ViewHolder {

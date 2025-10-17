@@ -37,6 +37,9 @@ import com.ssoaharison.recall.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
@@ -53,7 +56,8 @@ import java.util.Locale
 class QuizGameActivity :
     AppCompatActivity(),
     MiniGameSettingsSheet.SettingsApplication,
-    TextToSpeech.OnInitListener {
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityTestQuizGameBinding
     private val viewModel: TestQuizGameViewModel by viewModels {
@@ -67,7 +71,7 @@ class QuizGameActivity :
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var appTheme: String? = null
 
-    private var deckWithCards: ImmutableDeckWithCards? = null
+    private var deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions? = null
     private lateinit var quizGameAdapter: QuizGameAdapter
     private lateinit var quizGameProgressBarAdapter: QuizGameProgressBarAdapter
 
@@ -119,9 +123,9 @@ class QuizGameActivity :
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards?.toMutableList()
+            val cardList = it.cards.toMutableList()
             val deck = it.deck
-            if (!cardList.isNullOrEmpty() && deck != null) {
+            if (!cardList.isEmpty()) {
                 viewModel.initCardList(cardList)
                 viewModel.initOriginalCardList(cardList)
                 startTest(cardList, deck)
@@ -610,8 +614,8 @@ class QuizGameActivity :
     }
 
     private fun startTest(
-        cardList: MutableList<ImmutableCard?>,
-        deck: ImmutableDeck
+        cardList: MutableList<ExternalCardWithContentAndDefinitions>,
+        deck: ExternalDeck
     ) {
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
@@ -857,7 +861,7 @@ class QuizGameActivity :
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")

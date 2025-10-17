@@ -64,6 +64,12 @@ import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.ssoaharison.recall.backend.FlashCardApplication
+import com.ssoaharison.recall.backend.entities.Card
+import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
+import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalCard
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.util.UiState
@@ -77,10 +83,11 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.lang.IndexOutOfBoundsException
 import java.util.Locale
+import java.util.UUID
 
 class NewCardDialog(
-    private var card: ImmutableCard?,
-    private val deck: ImmutableDeck,
+    private var card: ExternalCardWithContentAndDefinitions?,
+    private val deck: ExternalDeck,
     private val action: String
 ) : AppCompatDialogFragment() {
 
@@ -708,8 +715,8 @@ class NewCardDialog(
 
     }
 
-    private fun onUpdateCard(card: ImmutableCard) {
-        binding.tieContentMultiAnswerCard.setText(card.cardContent?.content)
+    private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
+        binding.tieContentMultiAnswerCard.setText(card.contentWithDefinitions.content.contentText)
         binding.btAdd.apply {
             text = getString(R.string.bt_text_update)
             setOnClickListener {
@@ -718,12 +725,12 @@ class NewCardDialog(
         }
 
         definitionFields.forEachIndexed { index, fl ->
-            if (index < card.cardDefinition?.size!!) {
+            if (index < card.contentWithDefinitions.definitions.size) {
                 fl.fieldLy.visibility = View.VISIBLE
                 fl.chip.visibility = View.VISIBLE
                 fl.btDeleteField?.visibility = View.VISIBLE
-                fl.fieldEd.setText(card.cardDefinition[index].definition)
-                fl.chip.isChecked = isCorrect(card.cardDefinition[index].isCorrectDefinition)
+                fl.fieldEd.setText(card.contentWithDefinitions.definitions[index].definitionText)
+                fl.chip.isChecked = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition)
                 revealedDefinitionFields++
             } else {
                 fl.fieldLy.visibility = View.GONE
@@ -731,11 +738,11 @@ class NewCardDialog(
             }
         }
 
-        setCardLanguages(card)
+        setCardLanguages(card.card)
 
     }
 
-    private fun setCardLanguages(card: ImmutableCard? = null) {
+    private fun setCardLanguages(card: ExternalCard? = null) {
         val contentLanguage = getContentLanguage(card)
 
         val definitionLanguage = getDefinitionLanguage(card)
@@ -753,13 +760,13 @@ class NewCardDialog(
         }
     }
 
-    private fun getDefinitionLanguage(card: ImmutableCard?) = when {
+    private fun getDefinitionLanguage(card: ExternalCard?) = when {
         !card?.cardDefinitionLanguage.isNullOrBlank() -> card?.cardDefinitionLanguage
         !deck.cardDefinitionDefaultLanguage.isNullOrBlank() -> deck.cardDefinitionDefaultLanguage
         else -> null
     }
 
-    private fun getContentLanguage(card: ImmutableCard?) = when {
+    private fun getContentLanguage(card: ExternalCard?) = when {
         !card?.cardContentLanguage.isNullOrBlank() -> card?.cardContentLanguage
         !deck.cardContentDefaultLanguage.isNullOrBlank() -> deck.cardContentDefaultLanguage
         else -> null
@@ -805,40 +812,47 @@ class NewCardDialog(
     }
 
 
-    private fun generateCardOnUpdate(card: ImmutableCard): ImmutableCard? {
+    private fun generateCardOnUpdate(card: ExternalCardWithContentAndDefinitions): CardWithContentAndDefinitions? {
 
-        val content = getContent(card.cardId, card.cardContent?.contentId!!, card.deckId)
-            ?: return null
-        val definitions =
-            getDefinition(card.cardId, card.cardContent.contentId, card.deckId)
-                ?: return null
+        val content = getContent(
+            cardId = card.card.cardId,
+            contentId = card.contentWithDefinitions.content.contentId,
+            deckId = card.card.deckOwnerId
+        ) ?: return null
+        val definitions = getDefinition(
+            cardId = card.card.cardId,
+            contentId = card.contentWithDefinitions.content.contentId,
+            deckId = card.card.deckOwnerId
+        ) ?: return null
 
         val updateCardDefinitions = mutableListOf<CardDefinition>()
-        for (i in 0..card.cardDefinition?.size?.minus(1)!!) {
+        for (i in 0..card.contentWithDefinitions.definitions.size.minus(1)) {
             val definition = try {
                 definitions[i]
             } catch (e: IndexOutOfBoundsException) {
                 newCardViewModel.createDefinition(
                     "",
                     false,
-                    card.cardId,
-                    card.cardContent.contentId,
-                    card.deckId
+                    card.card.cardId,
+                    card.contentWithDefinitions.content.contentId,
+                    card.card.deckOwnerId
                 )
             }
 
             val updatedDefinition = CardDefinition(
-                card.cardDefinition[i].definitionId,
-                card.cardDefinition[i].cardId,
-                card.cardDefinition[i].deckId,
-                card.cardDefinition[i].contentId,
-                definition.definition,
-                definition.isCorrectDefinition
+                definitionId = card.contentWithDefinitions.definitions[i].definitionId,
+                cardOwnerId = card.contentWithDefinitions.definitions[i].cardOwnerId,
+                deckOwnerId = card.contentWithDefinitions.definitions[i].deckOwnerId,
+                contentOwnerId = card.contentWithDefinitions.definitions[i].contentOwnerId,
+                isCorrectDefinition = definition.isCorrectDefinition,
+                definitionText = definition.definitionText,
+                definitionImageName = null,
+                definitionAudioName = null,
             )
             updateCardDefinitions.add(updatedDefinition)
         }
-        if (definitions.size > card.cardDefinition.size) {
-            for (j in (card.cardDefinition.size)..definitions.size.minus(1)) {
+        if (definitions.size > card.contentWithDefinitions.definitions.size) {
+            for (j in (card.contentWithDefinitions.definitions.size)..definitions.size.minus(1)) {
                 updateCardDefinitions.add(definitions[j])
             }
         }
@@ -858,28 +872,33 @@ class NewCardDialog(
 //            return null
 //        }
 
-        return ImmutableCard(
-            card.cardId,
-            content,
-            updateCardDefinitions,
-            card.deckId,
-            card.isFavorite,
-            card.revisionTime,
-            card.missedTime,
-            card.creationDate,
-            card.lastRevisionDate,
-            card.cardStatus,
-            card.nextMissMemorisationDate,
-            card.nextRevisionDate,
-            getCardType(definitions),
-            contentLanguage,
-            definitionLanguage,
+        val updatedCard = Card(
+            cardId = card.card.cardId,
+            deckOwnerId = card.card.deckOwnerId,
+            cardLevel = card.card.cardLevel,
+            cardType = getCardType(updateCardDefinitions),
+            revisionTime = card.card.revisionTime,
+            missedTime = card.card.missedTime,
+            creationDate = card.card.creationDate,
+            lastRevisionDate = card.card.lastRevisionDate,
+            nextMissMemorisationDate = card.card.nextRevisionDate,
+            nextRevisionDate = card.card.nextRevisionDate,
+            cardContentLanguage = contentLanguage,
+            cardDefinitionLanguage = definitionLanguage
+        )
+
+        val updatedContentWithDefinitions = CardContentWithDefinitions(content = content, definitions = updateCardDefinitions)
+
+        return CardWithContentAndDefinitions(
+            card = updatedCard,
+            contentWithDefinitions = updatedContentWithDefinitions
         )
     }
 
-    private fun generateCardOnAdd(): ImmutableCard? {
-        val cardId = now()
-        val contentId = now()
+    private fun generateCardOnAdd(): CardWithContentAndDefinitions? {
+
+        val cardId = UUID.randomUUID().toString()
+        val contentId = UUID.randomUUID().toString()
         val newCardContent = getContent(cardId, contentId, deck.deckId)
         val newCardDefinition = getDefinition(cardId, contentId, deck.deckId)
 
@@ -893,22 +912,27 @@ class NewCardDialog(
             return null
         }
 
-        return ImmutableCard(
-            cardId,
-            newCardContent,
-            newCardDefinition,
-            deck.deckId,
-            isCorrect(0),
-            0,
-            0,
-            today(),
-            null,
-            L1,
-            null,
-            null,
-            getCardType(newCardDefinition),
-            contentLanguage,
-            definitionLanguage
+        val newCard = Card(
+            cardId = cardId,
+            deckOwnerId = deck.deckId,
+            cardLevel = L1,
+            cardType = getCardType(newCardDefinition),
+            revisionTime = 0,
+            missedTime = 0,
+            creationDate = today(),
+            lastRevisionDate = null,
+            nextMissMemorisationDate = null,
+            nextRevisionDate = null,
+            cardContentLanguage = contentLanguage,
+            cardDefinitionLanguage = definitionLanguage
+        )
+
+        return CardWithContentAndDefinitions(
+            card = newCard,
+            contentWithDefinitions = CardContentWithDefinitions(
+                content = newCardContent,
+                definitions = newCardDefinition
+            )
         )
     }
 
@@ -1247,7 +1271,7 @@ class NewCardDialog(
     }
 
     private fun sendCardsOnEdit(
-        card: ImmutableCard
+        card: CardWithContentAndDefinitions
     ) {
         parentFragmentManager.setFragmentResult(
             REQUEST_CODE_CARD,
@@ -1320,8 +1344,8 @@ class NewCardDialog(
     }
 
     @Throws(IOException::class)
-    private fun textFromUriToImmutableCards(uri: Uri, separator: String): List<ImmutableCard> {
-        val result: MutableList<ImmutableCard> = mutableListOf()
+    private fun textFromUriToImmutableCards(uri: Uri, separator: String): List<CardWithContentAndDefinitions> {
+        val result: MutableList<CardWithContentAndDefinitions> = mutableListOf()
         appContext?.contentResolver?.openInputStream(uri)?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 reader.forEachLine { line ->

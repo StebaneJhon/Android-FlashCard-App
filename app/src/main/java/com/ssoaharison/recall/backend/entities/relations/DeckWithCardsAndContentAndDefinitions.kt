@@ -8,11 +8,12 @@ import com.ssoaharison.recall.backend.entities.Deck
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class DeckWithCards (
+data class DeckWithCardsAndContentAndDefinitions (
     @Embedded val deck: Deck,
     @Relation(
+        entity = Card::class,
         parentColumn = "deckId",
-        entityColumn = "deckId"
+        entityColumn = "deckOwnerId"
     )
-    val cards: List<Card>
+    val cards: List<CardWithContentAndDefinitions>
 ): Parcelable

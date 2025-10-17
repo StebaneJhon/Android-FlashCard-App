@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "803b9c9587683f6ce57795948a8cdc21",
+    "identityHash": "a1e78c5241d6b69b48ba19e24394bd54",
     "entities": [
       {
         "tableName": "Card",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cardId` TEXT NOT NULL, `deckId` TEXT NOT NULL, `is_favorite` INTEGER, `revision_time` INTEGER, `missed_time` INTEGER, `creation_date` TEXT, `last_revision_date` TEXT, `card_status` TEXT, `next_miss_memorisation_date` TEXT, `next_revision_date` TEXT, `card_type` TEXT, PRIMARY KEY(`cardId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cardId` TEXT NOT NULL, `deckOwnerId` TEXT NOT NULL, `cardLevel` TEXT, `cardType` TEXT, `revisionTime` INTEGER, `missedTime` INTEGER, `creationDate` TEXT, `lastRevisionDate` TEXT, `nextMissMemorisationDate` TEXT, `nextRevisionDate` TEXT, `cardContentLanguage` TEXT, `cardDefinitionLanguage` TEXT, PRIMARY KEY(`cardId`))",
         "fields": [
           {
             "fieldPath": "cardId",
@@ -15,62 +15,68 @@
             "notNull": true
           },
           {
-            "fieldPath": "deckId",
-            "columnName": "deckId",
+            "fieldPath": "deckOwnerId",
+            "columnName": "deckOwnerId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "isFavorite",
-            "columnName": "is_favorite",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "revisionTime",
-            "columnName": "revision_time",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "missedTime",
-            "columnName": "missed_time",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "creationDate",
-            "columnName": "creation_date",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "lastRevisionDate",
-            "columnName": "last_revision_date",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "cardStatus",
-            "columnName": "card_status",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "nextMissMemorisationDate",
-            "columnName": "next_miss_memorisation_date",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "nextRevisionDate",
-            "columnName": "next_revision_date",
+            "fieldPath": "cardLevel",
+            "columnName": "cardLevel",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "cardType",
-            "columnName": "card_type",
+            "columnName": "cardType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "revisionTime",
+            "columnName": "revisionTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "missedTime",
+            "columnName": "missedTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creationDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastRevisionDate",
+            "columnName": "lastRevisionDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nextMissMemorisationDate",
+            "columnName": "nextMissMemorisationDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nextRevisionDate",
+            "columnName": "nextRevisionDate",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "cardContentLanguage",
+            "columnName": "cardContentLanguage",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "cardDefinitionLanguage",
+            "columnName": "cardDefinitionLanguage",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -86,7 +92,7 @@
       },
       {
         "tableName": "Deck",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` TEXT NOT NULL, `deck_name` TEXT, `deck_description` TEXT, `deck_first_language` TEXT, `deck_second_language` TEXT, `deck_color_code` TEXT, `card_sum` INTEGER, `deck_category` TEXT, `is_favorite` INTEGER, PRIMARY KEY(`deckId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` TEXT NOT NULL, `parentDeckId` TEXT, `deckName` TEXT NOT NULL, `deckDescription` TEXT, `cardContentDefaultLanguage` TEXT, `cardDefinitionDefaultLanguage` TEXT, `deckColorCode` TEXT, `deckCategory` TEXT, `isFavorite` INTEGER, `deckCreationDate` TEXT, PRIMARY KEY(`deckId`))",
         "fields": [
           {
             "fieldPath": "deckId",
@@ -95,51 +101,57 @@
             "notNull": true
           },
           {
-            "fieldPath": "deckName",
-            "columnName": "deck_name",
+            "fieldPath": "parentDeckId",
+            "columnName": "parentDeckId",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "deckName",
+            "columnName": "deckName",
+            "affinity": "TEXT",
+            "notNull": true
           },
           {
             "fieldPath": "deckDescription",
-            "columnName": "deck_description",
+            "columnName": "deckDescription",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "deckFirstLanguage",
-            "columnName": "deck_first_language",
+            "fieldPath": "cardContentDefaultLanguage",
+            "columnName": "cardContentDefaultLanguage",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "deckSecondLanguage",
-            "columnName": "deck_second_language",
+            "fieldPath": "cardDefinitionDefaultLanguage",
+            "columnName": "cardDefinitionDefaultLanguage",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "deckColorCode",
-            "columnName": "deck_color_code",
+            "columnName": "deckColorCode",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "cardSum",
-            "columnName": "card_sum",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
             "fieldPath": "deckCategory",
-            "columnName": "deck_category",
+            "columnName": "deckCategory",
             "affinity": "TEXT",
             "notNull": false
           },
           {
             "fieldPath": "isFavorite",
-            "columnName": "is_favorite",
+            "columnName": "isFavorite",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "deckCreationDate",
+            "columnName": "deckCreationDate",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -287,7 +299,7 @@
       },
       {
         "tableName": "CardContent",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contentId` TEXT NOT NULL, `cardId` TEXT NOT NULL, `deckId` TEXT, `content` TEXT NOT NULL, PRIMARY KEY(`contentId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contentId` TEXT NOT NULL, `cardOwnerId` TEXT NOT NULL, `deckOwnerId` TEXT NOT NULL, `contentText` TEXT, `contentImageName` TEXT, `contentAudioName` TEXT, PRIMARY KEY(`contentId`))",
         "fields": [
           {
             "fieldPath": "contentId",
@@ -296,22 +308,34 @@
             "notNull": true
           },
           {
-            "fieldPath": "cardId",
-            "columnName": "cardId",
+            "fieldPath": "cardOwnerId",
+            "columnName": "cardOwnerId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "deckId",
-            "columnName": "deckId",
+            "fieldPath": "deckOwnerId",
+            "columnName": "deckOwnerId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentText",
+            "columnName": "contentText",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "content",
-            "columnName": "content",
+            "fieldPath": "contentImageName",
+            "columnName": "contentImageName",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
+          },
+          {
+            "fieldPath": "contentAudioName",
+            "columnName": "contentAudioName",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -325,35 +349,29 @@
       },
       {
         "tableName": "CardDefinition",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`definitionId` INTEGER PRIMARY KEY AUTOINCREMENT, `cardId` TEXT NOT NULL, `deckId` TEXT, `contentId` TEXT NOT NULL, `definition` TEXT NOT NULL, `isCorrectDefinition` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`definitionId` TEXT NOT NULL, `cardOwnerId` TEXT NOT NULL, `deckOwnerId` TEXT, `contentOwnerId` TEXT NOT NULL, `isCorrectDefinition` INTEGER NOT NULL, `definitionText` TEXT, `definitionImageName` TEXT, `definitionAudioName` TEXT, PRIMARY KEY(`definitionId`))",
         "fields": [
           {
             "fieldPath": "definitionId",
             "columnName": "definitionId",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "cardId",
-            "columnName": "cardId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "deckId",
-            "columnName": "deckId",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "contentId",
-            "columnName": "contentId",
+            "fieldPath": "cardOwnerId",
+            "columnName": "cardOwnerId",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "definition",
-            "columnName": "definition",
+            "fieldPath": "deckOwnerId",
+            "columnName": "deckOwnerId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contentOwnerId",
+            "columnName": "contentOwnerId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -362,10 +380,28 @@
             "columnName": "isCorrectDefinition",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "definitionText",
+            "columnName": "definitionText",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "definitionImageName",
+            "columnName": "definitionImageName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "definitionAudioName",
+            "columnName": "definitionAudioName",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
           "columnNames": [
             "definitionId"
           ]
@@ -377,7 +413,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '803b9c9587683f6ce57795948a8cdc21')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a1e78c5241d6b69b48ba19e24394bd54')"
     ]
   }
 }

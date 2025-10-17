@@ -29,65 +29,65 @@
             android:textSize="@dimen/text_base"
             android:textStyle="bold" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_flash_card_game"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:text="@string/bt_flash_card_game_start"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            app:cornerRadius="@dimen/bt_radius"
-            android:textAlignment="textStart"
-            app:icon="@drawable/icon_flip"
-            app:iconTint="?colorOnSurface"
-            app:iconGravity="start"
-            app:iconPadding="@dimen/space_md"/>
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/bt_flash_card_game"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:backgroundTint="?colorSurfaceContainer"-->
+<!--            android:text="@string/bt_flash_card_game_start"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:fontFamily="@font/open_sans"-->
+<!--            app:cornerRadius="@dimen/bt_radius"-->
+<!--            android:textAlignment="textStart"-->
+<!--            app:icon="@drawable/icon_flip"-->
+<!--            app:iconTint="?colorOnSurface"-->
+<!--            app:iconGravity="start"-->
+<!--            app:iconPadding="@dimen/space_md"/>-->
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/multiChoiceQuizButton"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:text="@string/multiple_choice_quiz_button_text"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            android:textAlignment="textStart"
-            app:cornerRadius="@dimen/bt_radius"
-            app:icon="@drawable/icon_quiz"
-            app:iconTint="?colorOnSurface"
-            app:iconGravity="start"
-            app:iconPadding="@dimen/space_md"/>
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/multiChoiceQuizButton"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:backgroundTint="?colorSurfaceContainer"-->
+<!--            android:text="@string/multiple_choice_quiz_button_text"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:fontFamily="@font/open_sans"-->
+<!--            android:textAlignment="textStart"-->
+<!--            app:cornerRadius="@dimen/bt_radius"-->
+<!--            app:icon="@drawable/icon_quiz"-->
+<!--            app:iconTint="?colorOnSurface"-->
+<!--            app:iconGravity="start"-->
+<!--            app:iconPadding="@dimen/space_md"/>-->
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_writing_quiz_game"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:text="@string/bt_start_writing_quiz_game_text"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            android:textAlignment="textStart"
-            app:cornerRadius="@dimen/bt_radius"
-            app:icon="@drawable/icon_writing"
-            app:iconTint="?colorOnSurface"
-            app:iconGravity="start"
-            app:iconPadding="@dimen/space_md"/>
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/bt_writing_quiz_game"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:backgroundTint="?colorSurfaceContainer"-->
+<!--            android:text="@string/bt_start_writing_quiz_game_text"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:fontFamily="@font/open_sans"-->
+<!--            android:textAlignment="textStart"-->
+<!--            app:cornerRadius="@dimen/bt_radius"-->
+<!--            app:icon="@drawable/icon_writing"-->
+<!--            app:iconTint="?colorOnSurface"-->
+<!--            app:iconGravity="start"-->
+<!--            app:iconPadding="@dimen/space_md"/>-->
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_matching_quiz_game"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:text="@string/bt_match_quiz_mode_text"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            android:textAlignment="textStart"
-            app:cornerRadius="@dimen/bt_radius"
-            app:icon="@drawable/icon_dashboard"
-            app:iconTint="?colorOnSurface"
-            app:iconGravity="start"
-            app:iconPadding="@dimen/space_md"/>
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/bt_matching_quiz_game"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:backgroundTint="?colorSurfaceContainer"-->
+<!--            android:text="@string/bt_match_quiz_mode_text"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:fontFamily="@font/open_sans"-->
+<!--            android:textAlignment="textStart"-->
+<!--            app:cornerRadius="@dimen/bt_radius"-->
+<!--            app:icon="@drawable/icon_dashboard"-->
+<!--            app:iconTint="?colorOnSurface"-->
+<!--            app:iconGravity="start"-->
+<!--            app:iconPadding="@dimen/space_md"/>-->
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_quiz"
@@ -104,19 +104,19 @@
             app:iconGravity="start"
             app:iconPadding="@dimen/space_md"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_test"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
-            android:text="@string/bt_text_test"
-            android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
-            android:textAlignment="textStart"
-            app:cornerRadius="@dimen/bt_radius"
-            app:icon="@drawable/icon_fire"
-            app:iconTint="?colorOnSurface"
-            app:iconGravity="start"
-            app:iconPadding="@dimen/space_md"/>
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/bt_test"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:backgroundTint="?colorSurfaceContainer"-->
+<!--            android:text="@string/bt_text_test"-->
+<!--            android:textColor="?colorOnSurface"-->
+<!--            android:fontFamily="@font/open_sans"-->
+<!--            android:textAlignment="textStart"-->
+<!--            app:cornerRadius="@dimen/bt_radius"-->
+<!--            app:icon="@drawable/icon_fire"-->
+<!--            app:iconTint="?colorOnSurface"-->
+<!--            app:iconGravity="start"-->
+<!--            app:iconPadding="@dimen/space_md"/>-->
 
 </LinearLayout>
