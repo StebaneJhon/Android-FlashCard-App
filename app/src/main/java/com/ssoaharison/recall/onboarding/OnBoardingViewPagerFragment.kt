@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.FragmentOnBoardingViewPagerBinding
+import androidx.core.content.edit
 
 
 class OnBoardingViewPagerFragment : Fragment() {
@@ -117,11 +118,12 @@ class OnBoardingViewPagerFragment : Fragment() {
     }
 
     private fun onBoardingFinished() {
-//        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        editor.putBoolean("Finished", true)
-//        editor.apply()
-        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
+        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+        sharedPreferences.edit {
+            putBoolean("Finished", true)
+        }
+//        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
+        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_cardFragment)
     }
 
     private fun applyLayoutTransition() {

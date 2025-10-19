@@ -31,7 +31,6 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
         SpaceRepetitionAlgorithmHelper()
         viewModelScope.launch {
             val mainDeck = repository.getMainDeck()
-            val a = 1
             if (mainDeck == null) {
                 repository.insertDeck(MainDeck().getMainDeck())
             }
