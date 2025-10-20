@@ -32,6 +32,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     private var fetchJob: Job? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
+    private lateinit var deckPath: List<ExternalDeck>
+
     fun getDeckWithCards(deckId: String) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
@@ -71,6 +73,14 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
             }
         }
     }
+
+    suspend fun getDeckPath(deck: ExternalDeck, result: (List<ExternalDeck>) -> Unit) {
+        val path = repository.getDeckPath(deck)
+        deckPath = path
+        result(path)
+    }
+
+    fun deckPath() = deckPath
 
     fun insertSubdeck(subdeck: Deck) = viewModelScope.launch {
         repository.insertDeck(subdeck)

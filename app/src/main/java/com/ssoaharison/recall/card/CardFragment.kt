@@ -42,6 +42,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -86,6 +87,7 @@ class CardFragment :
     private var appContext: Context? = null
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
     private lateinit var subdeckRecyclerViewAdapter: SubdeckRecyclerViewAdapter
+    private lateinit var recyclerViewAdapterDeckPath: RecyclerViewAdapterDeckPath
     private var tts: TextToSpeech? = null
     private var startingQuizJob: Job? = null
     private var displayingCardsJob: Job? = null
@@ -268,14 +270,15 @@ class CardFragment :
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    // TODO: To be improved
-                    lifecycleScope.launch {
-                        repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            cardViewModel.getMainDeck()?.let { mainDeck ->
-                                displayData(mainDeck)
-                            }
-                        }
-                    }
+//                    lifecycleScope.launch {
+//                        repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                            cardViewModel.getMainDeck()?.let { mainDeck ->
+//                                displayData(mainDeck)
+//                            }
+//                        }
+//                    }
+                    onNavigateBack()
+
 //                    findNavController().navigate(
 //                        R.id.deckFragment,
 //                        null,
@@ -290,6 +293,19 @@ class CardFragment :
             onAction(!binding.btAddSubdeck.isVisible)
         }
 
+    }
+
+    private fun onNavigateBack() {
+        val path = cardViewModel.deckPath()
+        if (path.size > 1) {
+            displayData(path[1])
+        } else {
+            Toast.makeText(
+                appContext,
+                getString(R.string.error_message_can_not_go_further),
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
     private fun onAction(areActionsShown: Boolean) {
@@ -308,21 +324,39 @@ class CardFragment :
 //    }
 
     private fun displayData(deck: ExternalDeck) {
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cardViewModel.getDeckPath(deck) { path ->
+                    // TODO: Populate deck path
+                    recyclerViewAdapterDeckPath = RecyclerViewAdapterDeckPath(path) { pathTogo ->
+                        displayData(pathTogo)
+                    }
+                    binding.rvDeckPath.apply {
+                        adapter = recyclerViewAdapterDeckPath
+                        setHasFixedSize(true)
+                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                    }
+                }
+            }
+        }
+
         displayAllCards(deck.deckId)
         displaySubdecks(deck)
 
         binding.cardsTopAppBar.apply {
-            title = deck.deckName
+            title = null
             setNavigationOnClickListener {
 
-                // TODO: To be improved
-                lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        cardViewModel.getMainDeck()?.let { mainDeck ->
-                            displayData(mainDeck)
-                        }
-                    }
-                }
+//                lifecycleScope.launch {
+//                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                        cardViewModel.getMainDeck()?.let { mainDeck ->
+//                            displayData(mainDeck)
+//                        }
+//                    }
+//                }
+
+                onNavigateBack()
 
 //                findNavController().navigate(
 //                    R.id.deckFragment,
@@ -591,7 +625,6 @@ class CardFragment :
         }, {
             // TODO: Start Quiz
         }) {
-            // TODO: Open Subdeck
 //            deck = it
 //            displayData()
             displayData(it)

@@ -66,6 +66,9 @@ interface FlashCardDao {
     @Query("SELECT * FROM deck WHERE deckId = '000000'")
     suspend fun getMainDeck(): Deck?
 
+    @Query("SELECT * FROM deck WHERE deckId = :deckId")
+    suspend fun getDeckById(deckId: String): Deck
+
     @Query("SELECT * FROM deck WHERE parentDeckId = :deckId")
     fun getSubdecks(deckId: String): Flow<List<Deck>>
 

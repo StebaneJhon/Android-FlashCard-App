@@ -25,8 +25,16 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
-            app:navigationContentDescription="@string/bt_description_back_to_decks"
-            app:title="@string/deck_activity_title" />
+            app:navigationContentDescription="@string/bt_description_back_to_decks">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_deck_path"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:transitionGroup="true"
+                android:scrollbars="none"/>
+
+        </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 

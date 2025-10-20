@@ -58,6 +58,22 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         return flashCardDao.getMainDeck()?.toExternal(0, 0, 0)
     }
 
+    @WorkerThread
+    suspend fun getDeckById(deckId: String): ExternalDeck {
+        return flashCardDao.getDeckById(deckId).toExternal(0, 0, 0)
+    }
+
+    @WorkerThread
+    suspend fun getDeckPath(deck: ExternalDeck): List<ExternalDeck> {
+        val result = mutableListOf<ExternalDeck>(deck)
+        var actualDeck = deck
+        while (actualDeck.parentDeckId != null) {
+            actualDeck = getDeckById(actualDeck.parentDeckId)
+            result.add(actualDeck)
+        }
+        return result
+    }
+
 //    @WorkerThread
 //    suspend fun allCards(): Flow<List<ImmutableCard?>> {
 //        val cards = flashCardDao.getAllCards().map { cardList ->
