@@ -5,7 +5,7 @@
     android:id="@+id/cardsActivityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?colorSurfaceContainerLow"
+    android:background="?colorSurfaceContainerLowest"
     tools:context=".card.CardFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:background="?colorSurfaceContainerLow"
+        android:background="?colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -98,367 +98,37 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:visibility="gone"
-                    android:id="@+id/cl_deck_overview_root"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?colorSurfaceContainerLow"
-                    android:paddingStart="@dimen/space_lg"
-                    android:paddingEnd="@dimen/space_lg"
-                    android:paddingBottom="@dimen/space_lg"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
-
-                    <GridLayout
-                        android:id="@+id/gr_root_overview"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/card_info_height"
-                        android:orientation="horizontal"
-                        android:columnCount="3"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/cv_container_card_sum"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_marginEnd="@dimen/space_sm"
-                            android:padding="@dimen/space_md"
-                            android:background="@drawable/bg_10_dp_radius"
-                            android:backgroundTint="?colorSurfaceContainerLowest"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_card_sum"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:fontFamily="@font/open_sans"
-                                android:gravity="center"
-                                android:textAlignment="gravity"
-                                android:textColor="?colorOnSurface"
-                                android:textStyle="bold"
-                                app:autoSizeMaxTextSize="@dimen/text_xl3"
-                                app:autoSizeMinTextSize="@dimen/text_xl"
-                                app:autoSizeStepGranularity="2sp"
-                                app:autoSizeTextType="uniform"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_text_card_sum"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="10" />
-
-                            <TextView
-                                android:id="@+id/tv_text_card_sum"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/space_xs"
-                                android:fontFamily="@font/open_sans"
-                                android:text="@string/text_total"
-                                android:textAlignment="center"
-                                android:textColor="?colorOnSurface"
-                                android:textSize="@dimen/text_sm"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/cv_container_known_card_sum"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_marginEnd="@dimen/space_sm"
-                            android:padding="@dimen/space_md"
-                            android:background="@drawable/bg_10_dp_radius"
-                            android:backgroundTint="?colorSurfaceContainerLowest"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_known_card_sum"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:fontFamily="@font/open_sans"
-                                android:gravity="center"
-                                android:textAlignment="gravity"
-                                android:textColor="?colorOnSurface"
-                                android:textStyle="bold"
-                                app:autoSizeMaxTextSize="@dimen/text_xl3"
-                                app:autoSizeMinTextSize="@dimen/text_xl"
-                                app:autoSizeStepGranularity="2sp"
-                                app:autoSizeTextType="uniform"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_text_known_card_sum"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="5" />
-
-                            <TextView
-                                android:id="@+id/tv_text_known_card_sum"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/space_xs"
-                                android:fontFamily="@font/open_sans"
-                                android:text="@string/text_known"
-                                android:textAlignment="center"
-                                android:textColor="?colorOnSurface"
-                                android:textSize="@dimen/text_sm"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:id="@+id/cv_container_unknown_card_sum"
-                            android:layout_width="0dp"
-                            android:layout_height="0dp"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_margin="@dimen/space_xxs"
-                            android:padding="@dimen/space_md"
-                            android:background="@drawable/bg_10_dp_radius"
-                            android:backgroundTint="?colorSurfaceContainerLowest"
-                            android:gravity="center"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tv_unknown_card_sum"
-                                android:layout_width="match_parent"
-                                android:layout_height="0dp"
-                                android:fontFamily="@font/open_sans"
-                                android:gravity="center"
-                                android:textAlignment="gravity"
-                                android:textColor="?colorOnSurface"
-                                android:textStyle="bold"
-                                app:autoSizeMaxTextSize="@dimen/text_xl3"
-                                app:autoSizeMinTextSize="@dimen/text_xl"
-                                app:autoSizeStepGranularity="2sp"
-                                app:autoSizeTextType="uniform"
-                                app:layout_constraintBottom_toTopOf="@+id/tv_text_unknown_card_sum"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                tools:text="5" />
-
-                            <TextView
-                                android:id="@+id/tv_text_unknown_card_sum"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/space_xs"
-                                android:fontFamily="@font/open_sans"
-                                android:text="@string/text_unknown"
-                                android:textAlignment="center"
-                                android:textColor="?colorOnSurface"
-                                android:textSize="@dimen/text_sm"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent" />
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </GridLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/rl_container_content_language"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_10_pt_radius"
-                        android:backgroundTint="?colorSurfaceContainerLowest"
-                        android:paddingStart="@dimen/space_md"
-                        android:paddingEnd="@dimen/space_md"
-                        android:layout_marginTop="@dimen/space_sm"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/gr_root_overview">
-                        <TextView
-                            android:id="@+id/tv_content_language"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_content_language"
-                            android:textAlignment="textStart"
-                            android:fontFamily="@font/open_sans"
-                            android:textStyle="bold"
-                            android:textColor="?colorOnSurface"
-                            android:textSize="@dimen/text_sm"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/bt_content_language"
-                            style="@style/Widget.Material3.Button.TextButton.Icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginStart="@dimen/space_lg"
-                            android:layout_toEndOf="@+id/tv_content_language"
-                            android:fontFamily="@font/open_sans"
-                            android:padding="0dp"
-                            android:text="@string/text_content_language"
-                            android:textColor="?colorOnSurface"
-                            android:textSize="@dimen/text_xs"
-                            android:textAlignment="textEnd"
-                            app:icon="@drawable/icon_unfold_more"
-                            app:iconGravity="end"
-                            app:iconTint="?colorOnSurface"
-                            app:rippleColor="?colorSurfaceContainerLow"/>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/rl_container_definition_language"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_10_pt_radius"
-                        android:backgroundTint="?colorSurfaceContainerLowest"
-                        android:paddingStart="@dimen/space_md"
-                        android:paddingEnd="@dimen/space_md"
-                        android:layout_marginTop="@dimen/space_sm"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/rl_container_content_language">
-                        <TextView
-                            android:id="@+id/tv_definition_language"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_definition_language"
-                            android:textAlignment="textStart"
-                            android:fontFamily="@font/open_sans"
-                            android:textStyle="bold"
-                            android:textColor="?colorOnSurface"
-                            android:textSize="@dimen/text_sm"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerVertical="true"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/bt_definition_language"
-                            style="@style/Widget.Material3.Button.TextButton.Icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_marginStart="@dimen/space_lg"
-                            android:layout_toEndOf="@+id/tv_definition_language"
-                            android:fontFamily="@font/open_sans"
-                            android:padding="0dp"
-                            android:text="@string/text_definition_language"
-                            android:textColor="?colorOnSurface"
-                            android:textSize="@dimen/text_xs"
-                            android:textAlignment="textEnd"
-                            app:icon="@drawable/icon_unfold_more"
-                            app:iconGravity="end"
-                            app:iconTint="?colorOnSurface"
-                            app:rippleColor="?colorSurfaceContainerLow"/>
-                    </RelativeLayout>
-
-<!--                    <com.google.android.material.button.MaterialButton-->
-<!--                        style="@style/Widget.Material3.Button.TextButton"-->
-<!--                        android:id="@+id/bt_deck_details"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="@string/deck_details"-->
-<!--                        android:fontFamily="@font/open_sans"-->
-<!--                        android:textColor="?colorOnSurface"-->
-<!--                        android:textSize="@dimen/text_sm"-->
-<!--                        app:icon="@drawable/icon_expand_more"-->
-<!--                        app:iconGravity="end"-->
-<!--                        app:iconTint="?colorOnSurface"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/rl_container_definition_language"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent" />-->
-
-<!--                    <com.google.android.material.textfield.TextInputLayout-->
-<!--                        android:visibility="gone"-->
-<!--                        android:id="@+id/til_deck_name"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:fontFamily="@font/open_sans"-->
-<!--                        android:textColor="?colorOnSurface"-->
-<!--                        android:textColorHint="@color/neutral400"-->
-<!--                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"-->
-<!--                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"-->
-<!--                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"-->
-<!--                        app:boxCornerRadiusTopStart="@dimen/ed_radius"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/bt_deck_details"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent">-->
-
-<!--                        <com.google.android.material.textfield.TextInputEditText-->
-<!--                            android:id="@+id/tie_deck_name"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="match_parent"-->
-<!--                            android:autofillHints="@string/deck_name_hint"-->
-<!--                            android:fontFamily="@font/open_sans"-->
-<!--                            android:hint="@string/deck_name_hint"-->
-<!--                            android:inputType="textMultiLine"-->
-<!--                            android:maxLines="5"-->
-<!--                            android:textColor="?colorOnSurface"-->
-<!--                            android:textColorHint="?colorOnSurface" />-->
-<!--                    </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--                    <TextView-->
-<!--                        android:visibility="gone"-->
-<!--                        android:id="@+id/tv_deck_color_picker_title"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:fontFamily="@font/open_sans"-->
-<!--                        android:text="@string/category_color_picker_title"-->
-<!--                        android:textColor="?colorOnSurface"-->
-<!--                        android:textSize="@dimen/text_sm"-->
-<!--                        android:textStyle="bold"-->
-<!--                        android:layout_marginTop="@dimen/space_md"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/til_deck_name" />-->
-
-<!--                    <androidx.recyclerview.widget.RecyclerView-->
-<!--                        android:visibility="gone"-->
-<!--                        android:id="@+id/rv_deck_color_picker"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:padding="@dimen/space_xs"-->
-<!--                        android:background="@drawable/bg_10_pt_radius"-->
-<!--                        android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                        android:layout_marginTop="@dimen/space_xs"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/tv_deck_color_picker_title" />-->
-
-<!--                    <com.google.android.material.button.MaterialButton-->
-<!--                        android:visibility="gone"-->
-<!--                        android:id="@+id/bt_export"-->
-<!--                        style="@style/Widget.Material3.Button.TonalButton"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:text="@string/export"-->
-<!--                        android:textColor="?colorOnPrimary"-->
-<!--                        android:textAlignment="center"-->
-<!--                        android:backgroundTint="?colorPrimary"-->
-<!--                        app:icon="@drawable/icon_download"-->
-<!--                        app:iconTint="?colorOnPrimary"-->
-<!--                        app:iconGravity="textStart"-->
-<!--                        android:layout_marginTop="@dimen/space_md"-->
-<!--                        app:layout_constraintEnd_toEndOf="parent"-->
-<!--                        app:layout_constraintStart_toStartOf="parent"-->
-<!--                        app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />-->
-
-
-
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:text="@string/tv_deck_text"
+                    android:layout_marginHorizontal="@dimen/space_lg"
+                    android:textColor="?colorPrimary"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_sm"
+                    android:layout_marginBottom="@dimen/space_lg"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/subdeckRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:transitionGroup="true"
-                    android:background="@drawable/bg_card_recyclerview"
-                    android:backgroundTint="?colorSurfaceContainerLowest"
-                    android:padding="@dimen/space_md"
+                    android:background="?colorSurfaceContainerLowest"
                     app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tv_cards_text"
+                    android:textColor="?colorPrimary"
+                    android:fontFamily="@font/montserrat_bold"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/text_sm"
+                    android:layout_margin="@dimen/space_lg"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cardRecyclerView"
@@ -466,14 +136,12 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:transitionGroup="true"
-                    android:background="@drawable/bg_card_recyclerview"
-                    android:backgroundTint="?colorSurfaceContainerLowest"
+                    android:background="?colorSurfaceContainerLowest"
                     android:padding="@dimen/space_md"
                     app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
-
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -488,14 +156,6 @@
                 layout="@layout/ly_loading_screen" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/bt_add_subdeck"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_subdeck"
-            android:layout_marginBottom="90dp"
-            android:layout_gravity="bottom"/>
-
 
         <com.google.android.material.bottomappbar.BottomAppBar
             android:id="@+id/bottomAppBar"
@@ -506,17 +166,43 @@
             app:menu="@menu/menu_bottom_appbar_cards"
             app:navigationIcon="@drawable/icon_more"
             app:navigationIconTint="?colorOnSurface"
-            android:backgroundTint="?colorSurfaceContainerLow"
+            android:backgroundTint="?colorSurfaceContainerLowest"
             app:hideOnScroll="true"/>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_add_card"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="?colorPrimary"
-            android:contentDescription="@string/bt_description_add_new_card"
-            app:layout_anchor="@id/bottomAppBar"
-            app:srcCompat="@drawable/icon_add" />
+            android:orientation="vertical"
+            app:layout_anchorGravity="bottom|end"
+            android:gravity="end"
+            android:layout_margin="@dimen/space_lg"
+            app:layout_anchor="@id/bottomAppBar">
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/bt_add_subdeck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_subdeck"
+                android:layout_marginBottom="@dimen/space_xl" />
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/bt_add_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/add_card"
+                android:layout_marginBottom="@dimen/space_xl" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab_add_show_actions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorPrimary"
+                android:contentDescription="@string/bt_description_add_new_card"
+                app:srcCompat="@drawable/icon_add" />
+        </LinearLayout>
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 

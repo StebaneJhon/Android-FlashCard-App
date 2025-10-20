@@ -41,7 +41,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.ssoaharison.recall.R
@@ -57,22 +56,18 @@ import com.ssoaharison.recall.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
 import com.ssoaharison.recall.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAGER
 import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
-import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OnSaveDeckWithCationModel
-import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
@@ -273,16 +268,38 @@ class CardFragment :
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    findNavController().navigate(
-                        R.id.deckFragment,
-                        null,
-                        NavOptions.Builder()
-                            .setPopUpTo(R.id.cardFragment, true)
-                            .build()
-                    )
+                    // TODO: To be improved
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            cardViewModel.getMainDeck()?.let { mainDeck ->
+                                displayData(mainDeck)
+                            }
+                        }
+                    }
+//                    findNavController().navigate(
+//                        R.id.deckFragment,
+//                        null,
+//                        NavOptions.Builder()
+//                            .setPopUpTo(R.id.cardFragment, true)
+//                            .build()
+//                    )
                 }
             })
 
+        binding.fabAddShowActions.setOnClickListener {
+            onAction(!binding.btAddSubdeck.isVisible)
+        }
+
+    }
+
+    private fun onAction(areActionsShown: Boolean) {
+        binding.btAddSubdeck.isVisible = areActionsShown
+        binding.btAddCard.isVisible = areActionsShown
+        if (areActionsShown) {
+            binding.fabAddShowActions.setImageResource(R.drawable.icon_exit)
+        } else {
+            binding.fabAddShowActions.setImageResource(R.drawable.icon_add)
+        }
     }
 
 //    private fun displayData() {
@@ -297,13 +314,23 @@ class CardFragment :
         binding.cardsTopAppBar.apply {
             title = deck.deckName
             setNavigationOnClickListener {
-                findNavController().navigate(
-                    R.id.deckFragment,
-                    null,
-                    NavOptions.Builder()
-                        .setPopUpTo(R.id.cardFragment, true)
-                        .build()
-                )
+
+                // TODO: To be improved
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        cardViewModel.getMainDeck()?.let { mainDeck ->
+                            displayData(mainDeck)
+                        }
+                    }
+                }
+
+//                findNavController().navigate(
+//                    R.id.deckFragment,
+//                    null,
+//                    NavOptions.Builder()
+//                        .setPopUpTo(R.id.cardFragment, true)
+//                        .build()
+//                )
             }
 
             binding.bottomAppBar.apply {
@@ -339,8 +366,12 @@ class CardFragment :
             }
         }
 
-        binding.fabAddCard.setOnClickListener {
-            onAddNewCard()
+//        binding.fabAddCard.setOnClickListener {
+//            onAddNewCard()
+//        }
+
+        binding.btAddCard.setOnClickListener {
+            onAddNewCard(deck)
         }
 
         binding.btAddSubdeck.setOnClickListener {
@@ -403,49 +434,49 @@ class CardFragment :
 //
 //    }
 
-    private fun bindDeckDetailsPanel(deck: ExternalDeck) {
-        binding.tvCardSum.text = "${deck.cardCount}"
-        binding.tvUnknownCardSum.text = "${deck.unKnownCardCount}"
-        binding.tvKnownCardSum.text = "${deck.knownCardCount}"
-        binding.btContentLanguage.apply {
-            text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
-            setOnClickListener {
-                onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
-                    cardViewModel.updateDefaultCardContentLanguage(
-                        deck.deckId,
-                        selectedLanguage
-                    )
-                }
-            }
-        }
-        binding.rlContainerContentLanguage.setOnClickListener {
-            onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
-                cardViewModel.updateDefaultCardContentLanguage(
-                    deck.deckId,
-                    selectedLanguage
-                )
-            }
-        }
-        binding.btDefinitionLanguage.apply {
-            text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
-            setOnClickListener {
-                onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
-                    cardViewModel.updateDefaultCardDefinitionLanguage(
-                        deck.deckId,
-                        selectedLanguage
-                    )
-                }
-            }
-        }
-        binding.rlContainerDefinitionLanguage.setOnClickListener {
-            onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
-                cardViewModel.updateDefaultCardDefinitionLanguage(
-                    deck.deckId,
-                    selectedLanguage
-                )
-            }
-        }
-    }
+//    private fun bindDeckDetailsPanel(deck: ExternalDeck) {
+//        binding.tvCardSum.text = "${deck.cardCount}"
+//        binding.tvUnknownCardSum.text = "${deck.unKnownCardCount}"
+//        binding.tvKnownCardSum.text = "${deck.knownCardCount}"
+//        binding.btContentLanguage.apply {
+//            text = if (deck.cardContentDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_content_language) else deck.cardContentDefaultLanguage
+//            setOnClickListener {
+//                onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
+//                    cardViewModel.updateDefaultCardContentLanguage(
+//                        deck.deckId,
+//                        selectedLanguage
+//                    )
+//                }
+//            }
+//        }
+//        binding.rlContainerContentLanguage.setOnClickListener {
+//            onDeckLanguageClicked(binding.rlContainerContentLanguage) { selectedLanguage ->
+//                cardViewModel.updateDefaultCardContentLanguage(
+//                    deck.deckId,
+//                    selectedLanguage
+//                )
+//            }
+//        }
+//        binding.btDefinitionLanguage.apply {
+//            text = if (deck.cardDefinitionDefaultLanguage.isNullOrBlank()) context.getString(R.string.text_definition_language) else deck.cardDefinitionDefaultLanguage
+//            setOnClickListener {
+//                onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
+//                    cardViewModel.updateDefaultCardDefinitionLanguage(
+//                        deck.deckId,
+//                        selectedLanguage
+//                    )
+//                }
+//            }
+//        }
+//        binding.rlContainerDefinitionLanguage.setOnClickListener {
+//            onDeckLanguageClicked(binding.rlContainerDefinitionLanguage) { selectedLanguage ->
+//                cardViewModel.updateDefaultCardDefinitionLanguage(
+//                    deck.deckId,
+//                    selectedLanguage
+//                )
+//            }
+//        }
+//    }
 
 //    private fun displayAllCards() {
 //        displayingCardsJob?.cancel()
@@ -493,7 +524,7 @@ class CardFragment :
                         is UiState.Success -> {
 //                            deck = state.data.deck
                             populateRecyclerView(state.data.cards, state.data.deck)
-                            bindDeckDetailsPanel(state.data.deck)
+//                            bindDeckDetailsPanel(state.data.deck)
                         }
                     }
                 }
@@ -593,6 +624,7 @@ class CardFragment :
     }
 
     private fun onAddNewDeck(parentDeck: ExternalDeck) {
+        onAction(false)
         val newDeckDialog = NewDeckDialog(
             deckToEdit = null,
             parentDeckId = parentDeck.deckId,
@@ -679,7 +711,7 @@ class CardFragment :
 
                         is UiState.Error -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            onStartingQuizError(getString(R.string.error_message_empty_deck))
+                            onStartingQuizError(deck,getString(R.string.error_message_empty_deck))
                             this@launch.cancel()
                             this.cancel()
                         }
@@ -918,7 +950,10 @@ class CardFragment :
         }
     }
 
-    private fun onStartingQuizError(errorText: String) {
+    private fun onStartingQuizError(
+        deck: ExternalDeck,
+        errorText: String
+    ) {
         MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_App_MaterialAlertDialog)
             .setTitle(getString(R.string.error_title_starting_quiz))
             .setMessage(errorText)
@@ -926,7 +961,7 @@ class CardFragment :
                 dialog.dismiss()
             }
             .setPositiveButton(getString(R.string.bt_add_card)) { dialog, _ ->
-                onAddNewCard()
+                onAddNewCard(deck)
                 dialog.dismiss()
             }
             .show()
@@ -1018,8 +1053,9 @@ class CardFragment :
         tts?.stop()
     }
 
-    private fun onAddNewCard() {
-        val newCardDialog = NewCardDialog(null, cardViewModel.getActualDeck(), Constant.ADD)
+    private fun onAddNewCard(deck: ExternalDeck) {
+        onAction(false)
+        val newCardDialog = NewCardDialog(null, deck, Constant.ADD)
         newCardDialog.show(childFragmentManager, "New Card Dialog")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_CARD,

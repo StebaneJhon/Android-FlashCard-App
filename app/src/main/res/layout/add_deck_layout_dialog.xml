@@ -255,7 +255,7 @@
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_sm"
                 android:textStyle="bold"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/space_lg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />
