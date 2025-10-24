@@ -943,4 +943,11 @@
 
     <style name="Theme.NavigationdrawerViewTest.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+
+    <style name="ThemeOverlay.SearchView" parent="">
+        <item name="android:editTextColor">?colorOnSurface</item>
+
+        <item name="android:textColorHint">@color/neutral400</item>
+    </style>
+
 </resources>

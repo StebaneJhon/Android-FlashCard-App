@@ -79,7 +79,7 @@ import java.util.Locale
 
 class CardFragment :
     Fragment(),
-    MenuProvider,
+//    MenuProvider,
     TextToSpeech.OnInitListener {
 
     private var _binding: FragmentCardBinding? = null
@@ -112,9 +112,8 @@ class CardFragment :
             }
         }
 
-    @SuppressLint("RestrictedApi")
-    private var item: ActionMenuItemView? = null
-
+//    @SuppressLint("RestrictedApi")
+//    private var item: ActionMenuItemView? = null
 //    val args: CardFragmentArgs by navArgs()
 //    private lateinit var deck: ExternalDeck
 //    private lateinit var opener: String
@@ -186,8 +185,8 @@ class CardFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
-        (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
+//        activity?.addMenuProvider(this, viewLifecycleOwner, Lifecycle.State.RESUMED)
+//        (activity as AppCompatActivity).setSupportActionBar(binding.cardsTopAppBar)
 
 //        deck = args.selectedDeck
 //        opener = args.opener
@@ -366,13 +365,25 @@ class CardFragment :
 //                        .build()
 //                )
             }
-
-            binding.bottomAppBar.apply {
-                setNavigationOnClickListener {
-                    onChooseQuizMode(deck)
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.search_deck_menu -> {
+                        SearchDialog(deck).show(
+                            childFragmentManager,
+                            "Search dialog"
+                        )
+                        true
+                    }
+                    else -> false
                 }
-                setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
+            }
+        }
+        binding.bottomAppBar.apply {
+            setNavigationOnClickListener {
+                onChooseQuizMode(deck)
+            }
+            setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
 //                        R.id.bt_flash_card_game -> {
 //                            onStartQuiz { deckWithCards ->
 //                                lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
@@ -380,12 +391,12 @@ class CardFragment :
 //                            true
 //                        }
 
-                        R.id.bt_quiz -> {
-                            onStartQuiz(deck) { deckWithCards ->
-                                lunchQuiz(deckWithCards, QUIZ)
-                            }
-                            true
+                    R.id.bt_quiz -> {
+                        onStartQuiz(deck) { deckWithCards ->
+                            lunchQuiz(deckWithCards, QUIZ)
                         }
+                        true
+                    }
 
 //                        R.id.bt_test -> {
 //                            onStartQuiz { deckWithCards ->
@@ -394,8 +405,7 @@ class CardFragment :
 //                            true
 //                        }
 
-                        else -> false
-                    }
+                    else -> false
                 }
             }
         }
@@ -641,7 +651,6 @@ class CardFragment :
         parentDeck: ExternalDeck,
         deckToEdit: ExternalDeck?
     ) {
-
         val newDeckDialog = NewDeckDialog(
             deckToEdit = deckToEdit,
             parentDeckId = parentDeck.deckId,
@@ -892,7 +901,7 @@ class CardFragment :
 
     @SuppressLint("RestrictedApi")
     private fun populateRecyclerView(cardList: List<ExternalCardWithContentAndDefinitions>, deck: ExternalDeck) {
-        item = binding.cardsTopAppBar.findViewById(R.id.view_deck_menu)
+//        item = binding.cardsTopAppBar.findViewById(R.id.view_deck_menu)
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         binding.cardsActivityProgressBar.isVisible = false
@@ -935,28 +944,28 @@ class CardFragment :
                 }
             })
 
-        binding.cardRecyclerView.apply {
-            adapter = recyclerViewAdapter
-            setHasFixedSize(true)
-            layoutManager =
-                if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
-                    item?.setIcon(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.icon_grid_view
-                        )
-                    )
-                    staggeredGridLayoutManager
-                } else {
-                    item?.setIcon(
-                        ContextCompat.getDrawable(
-                            requireContext(),
-                            R.drawable.icon_view_agenda
-                        )
-                    )
-                    linearLayoutManager
-                }
-        }
+//        binding.cardRecyclerView.apply {
+//            adapter = recyclerViewAdapter
+//            setHasFixedSize(true)
+//            layoutManager =
+//                if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+//                    item?.setIcon(
+//                        ContextCompat.getDrawable(
+//                            requireContext(),
+//                            R.drawable.icon_grid_view
+//                        )
+//                    )
+//                    staggeredGridLayoutManager
+//                } else {
+//                    item?.setIcon(
+//                        ContextCompat.getDrawable(
+//                            requireContext(),
+//                            R.drawable.icon_view_agenda
+//                        )
+//                    )
+//                    linearLayoutManager
+//                }
+//        }
 
     }
 
@@ -1137,82 +1146,89 @@ class CardFragment :
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        menuInflater.inflate(R.menu.card_fragment_menu, menu)
-        val search = menu.findItem(R.id.search_deck_menu)
-        val searchView = search?.actionView as SearchView
-
-        val searchIcon: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_button)
-        searchIcon.setColorFilter(
-            ThemeUtils.getThemeAttrColor(
-                requireContext(),
-                com.google.android.material.R.attr.colorOnSurface
-            ), PorterDuff.Mode.SRC_IN
-        )
-
-        val searchIconClose: ImageView =
-            searchView.findViewById(androidx.appcompat.R.id.search_close_btn)
-        searchIconClose.setColorFilter(
-            ThemeUtils.getThemeAttrColor(
-                requireContext(),
-                com.google.android.material.R.attr.colorOnSurface
-            ), PorterDuff.Mode.SRC_IN
-        )
-
-        val searchIconMag: ImageView =
-            searchView.findViewById(androidx.appcompat.R.id.search_go_btn)
-        searchIconMag.setColorFilter(
-            ThemeUtils.getThemeAttrColor(
-                requireContext(),
-                com.google.android.material.R.attr.colorOnSurface
-            ), PorterDuff.Mode.SRC_IN
-        )
-
-        val topAppBarEditText =
-            searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
-        topAppBarEditText.apply {
-            setTextColor(
-                ThemeUtils.getThemeAttrColor(
-                    requireContext(),
-                    com.google.android.material.R.attr.colorOnSurface
-                )
-            )
-            setHintTextColor(
-                ThemeUtils.getThemeAttrColor(
-                    requireContext(),
-                    com.google.android.material.R.attr.colorOnSurfaceVariant
-                )
-            )
-            hint = getText(R.string.hint_deck_search_field)
-        }
-
-//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(p0: String?): Boolean {
-//                binding.cardsActivityProgressBar.visibility = View.VISIBLE
-//                if (p0 != null) {
-//                    searchCard(p0, deck.deckId)
-//                    binding.cardsActivityProgressBar.visibility = View.GONE
-//                }
-//                return true
-//            }
+//    @SuppressLint("RestrictedApi")
+//    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+//        menuInflater.inflate(R.menu.card_fragment_menu, menu)
+//        val search = menu.findItem(R.id.search_deck_menu)
+//        val searchView = search?.actionView as SearchView
 //
-//            override fun onQueryTextChange(p0: String?): Boolean {
-//                if (p0 != null) {
-//                    searchCard(p0, deck.deckId)
-//                    binding.cardsActivityProgressBar.visibility = View.GONE
-//                }
-//                return true
-//            }
+//        val searchIcon: ImageView = searchView.findViewById(androidx.appcompat.R.id.search_button)
+//        searchIcon.setColorFilter(
+//            ThemeUtils.getThemeAttrColor(
+//                requireContext(),
+//                com.google.android.material.R.attr.colorOnSurface
+//            ), PorterDuff.Mode.SRC_IN
+//        )
 //
+//        val searchIconClose: ImageView =
+//            searchView.findViewById(androidx.appcompat.R.id.search_close_btn)
+//        searchIconClose.setColorFilter(
+//            ThemeUtils.getThemeAttrColor(
+//                requireContext(),
+//                com.google.android.material.R.attr.colorOnSurface
+//            ), PorterDuff.Mode.SRC_IN
+//        )
 //
-//        })
-//        searchView.setOnCloseListener {
-//            displayAllCards()
-//            true
+//        val searchIconMag: ImageView =
+//            searchView.findViewById(androidx.appcompat.R.id.search_go_btn)
+//        searchIconMag.setColorFilter(
+//            ThemeUtils.getThemeAttrColor(
+//                requireContext(),
+//                com.google.android.material.R.attr.colorOnSurface
+//            ), PorterDuff.Mode.SRC_IN
+//        )
+//
+//        val topAppBarEditText =
+//            searchView.findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+//        topAppBarEditText.apply {
+//            setTextColor(
+//                ThemeUtils.getThemeAttrColor(
+//                    requireContext(),
+//                    com.google.android.material.R.attr.colorOnSurface
+//                )
+//            )
+//            setHintTextColor(
+//                ThemeUtils.getThemeAttrColor(
+//                    requireContext(),
+//                    com.google.android.material.R.attr.colorOnSurfaceVariant
+//                )
+//            )
+//            hint = getText(R.string.hint_deck_search_field)
 //        }
-    }
-
+//
+//        searchView.apply {
+//            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//                override fun onQueryTextSubmit(p0: String?): Boolean {
+//                    binding.cardsActivityProgressBar.visibility = View.VISIBLE
+//                    if (p0 != null) {
+//                        //TODO: Searching
+////                        searchCard(p0, deck.deckId)
+////                        binding.cardsActivityProgressBar.visibility = View.GONE
+//                        Toast.makeText(appContext, "Searching in development", Toast.LENGTH_LONG).show()
+//                    }
+//                    return true
+//                }
+//
+//                override fun onQueryTextChange(p0: String?): Boolean {
+//                    if (p0 != null) {
+//                        //TODO: Searching
+////                        searchCard(p0, deck.deckId)
+////                        binding.cardsActivityProgressBar.visibility = View.GONE
+//                        Toast.makeText(appContext, "Searching in development", Toast.LENGTH_LONG).show()
+//                    }
+//                    return true
+//                }
+//
+//
+//            })
+//            searchView.setOnCloseListener {
+//                displayAllCards()
+//                true
+//            }
+//        }
+//
+//    }
+//
 //    private fun searchCard(query: String, deckId: String) {
 //        val searchQuery = "%$query%"
 //        if (searchQuery.isBlank() || searchQuery.isEmpty()) {
@@ -1239,48 +1255,48 @@ class CardFragment :
         binding.tvNoCardFound.isVisible = true
     }
 
-    @SuppressLint("RestrictedApi")
-    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-        return when (menuItem.itemId) {
-            R.id.mb_export_deck -> {
-//                showExportDeckDialog()
-                true
-            }
-
-            R.id.view_deck_menu -> {
-                if (item == null) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_message_change_view_card),
-                        Toast.LENGTH_LONG
-                    ).show()
-                } else {
-                    if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
-                        changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
-                        binding.cardRecyclerView.layoutManager = linearLayoutManager
-                        item?.setIcon(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.icon_view_agenda
-                            )
-                        )
-                    } else {
-                        changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
-                        binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
-                        item?.setIcon(
-                            ContextCompat.getDrawable(
-                                requireContext(),
-                                R.drawable.icon_grid_view
-                            )
-                        )
-                    }
-                }
-                true
-            }
-
-            else -> true
-        }
-    }
+//    @SuppressLint("RestrictedApi")
+//    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+//        return when (menuItem.itemId) {
+//            R.id.mb_export_deck -> {
+////                showExportDeckDialog()
+//                true
+//            }
+//
+//            R.id.view_deck_menu -> {
+//                if (item == null) {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        getString(R.string.error_message_change_view_card),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                } else {
+//                    if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
+//                        changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+//                        binding.cardRecyclerView.layoutManager = linearLayoutManager
+//                        item?.setIcon(
+//                            ContextCompat.getDrawable(
+//                                requireContext(),
+//                                R.drawable.icon_view_agenda
+//                            )
+//                        )
+//                    } else {
+//                        changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+//                        binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
+//                        item?.setIcon(
+//                            ContextCompat.getDrawable(
+//                                requireContext(),
+//                                R.drawable.icon_grid_view
+//                            )
+//                        )
+//                    }
+//                }
+//                true
+//            }
+//
+//            else -> true
+//        }
+//    }
 
     private fun getLayoutManager(): String {
         val sharedPreferences =

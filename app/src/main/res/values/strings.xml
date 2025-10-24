@@ -306,4 +306,5 @@
     <string name="add_card">Add card</string>
     <string name="deck_location">%1$s/</string>
     <string name="error_message_can_not_go_further">Can not go further.</string>
+    <string name="view_in_development">View in development.</string>
 </resources>

@@ -326,7 +326,6 @@ class NewCardDialog(
         }
 
         if (card != null && action == Constant.UPDATE) {
-
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
             onUpdateCard(card!!)
         } else {

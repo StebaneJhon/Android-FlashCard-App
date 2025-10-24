@@ -25,6 +25,7 @@
             android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/icon_arrow_back"
             app:navigationIconTint="?colorOnSurface"
+            app:menu="@menu/card_fragment_menu"
             app:navigationContentDescription="@string/bt_description_back_to_decks">
 
             <androidx.recyclerview.widget.RecyclerView

@@ -252,7 +252,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                 ExternalCardWithContentAndDefinitions(
                     card = card.card.toExternal(),
                     contentWithDefinitions = ExternalCardContentWithDefinitions(
-                        content = card.contentWithDefinitions!!.content.toExternal(null, null),
+                        content = card.contentWithDefinitions.content.toExternal(null, null),
                         definitions = card.contentWithDefinitions.definitions.map { definition -> definition.toExternal(null, null) }
                     )
                 )
