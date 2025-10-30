@@ -117,6 +117,18 @@ object FlashCardMiniGameRef {
     const val CARD_COUNT = "Card count"
 }
 
+object AttachRef {
+    const val ATTACH_IMAGE_FROM_CAMERA = "Attach image from camera"
+    const val ATTACH_IMAGE_FROM_GALERI = "Attach image from galeri"
+    const val ATTACH_AUDIO_RECORD = "Attach audio record"
+}
+
+object ScanRef {
+    const val IMAGE_FROM_GALERI_TO_TEXT = "Image from galeri to text"
+    const val IMAGE_FROM_CAMERA_TO_TEXT = "Image from camera to text"
+    const val AUDIO_TO_TEXT = "Audio to text"
+}
+
 object DeckRef {
     const val DECK_SORT_ALPHABETICALLY = "Deck sort alphabetically"
     const val DECK_SORT_BY_CARD_SUM = "Deck sort by card sum"

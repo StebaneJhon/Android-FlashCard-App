@@ -10,12 +10,17 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -116,8 +121,18 @@ class QuizGameActivity :
             setTheme(themePicker.getDefaultTheme())
         }
 
+
         binding = ActivityTestQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        WindowCompat.enableEdgeToEdge(window)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.topToolBar) { v, windowInserts ->
+            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            WindowInsetsCompat.CONSUMED
+        }
 
         tts = TextToSpeech(this, this)
 
@@ -268,7 +283,7 @@ class QuizGameActivity :
                             backgroundTintList = MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorPrimary,
+                                    com.google.android.material.R.attr.colorPrimaryFixed,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral700
                                     )!!
@@ -305,7 +320,7 @@ class QuizGameActivity :
                             iconTint = MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorPrimary,
+                                    com.google.android.material.R.attr.colorPrimaryFixed,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral700
                                     )!!
@@ -315,7 +330,7 @@ class QuizGameActivity :
                                 MaterialColors
                                     .getColorStateList(
                                         this@QuizGameActivity,
-                                        com.google.android.material.R.attr.colorPrimary,
+                                        com.google.android.material.R.attr.colorPrimaryFixed,
                                         ContextCompat.getColorStateList(
                                             this@QuizGameActivity, R.color.neutral700
                                         )!!

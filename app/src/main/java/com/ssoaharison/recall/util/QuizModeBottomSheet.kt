@@ -1,6 +1,5 @@
 package com.ssoaharison.recall.util
 
-import android.R
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -8,13 +7,10 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.annotation.Nullable
 import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.databinding.QuizModeFragmentBinding
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.MATCHING_QUIZ

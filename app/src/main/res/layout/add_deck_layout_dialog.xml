@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="?colorSurfaceContainerLow">
+    android:backgroundTint="?colorSurfaceContainerLowest">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -61,13 +61,9 @@
                 android:id="@+id/deckNameLY"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                style="@style/Widget.App.TextInputLayout"
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
-                android:textColorHint="@color/neutral400"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
                 app:layout_constraintTop_toBottomOf="@+id/bt_exit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -76,13 +72,13 @@
                     android:id="@+id/deckNameET"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    style="@style/Widget.App.TextInputEditText"
                     android:autofillHints="@string/deck_name_hint"
                     android:fontFamily="@font/open_sans"
-                    android:hint="@string/deck_name_hint"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
+                    android:hint="@string/deck_name_hint"
+                    android:textColor="?colorOnSurface" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

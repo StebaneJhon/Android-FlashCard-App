@@ -23,7 +23,7 @@
             android:id="@+id/cardsTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/icon_arrow_back"
+            app:navigationIcon="@drawable/icon_menu"
             app:navigationIconTint="?colorOnSurface"
             app:menu="@menu/card_fragment_menu"
             app:navigationContentDescription="@string/bt_description_back_to_decks">

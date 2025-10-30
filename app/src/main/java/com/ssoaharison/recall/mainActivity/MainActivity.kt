@@ -88,7 +88,7 @@ class MainActivity :
         drawerLayout = binding.mainActivityRoot
         binding.navView.setupWithNavController(navController)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.deckFragment, R.id.settingsFragment, R.id.feedbackFragment, R.id.helpFragment, R.id.privacyPolicyFragment),
+            setOf(R.id.settingsFragment, R.id.feedbackFragment, R.id.helpFragment, R.id.privacyPolicyFragment),
             drawerLayout
         )
 //        setupActionBarWithNavController(navController, appBarConfiguration)

@@ -35,7 +35,11 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
@@ -72,6 +76,12 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
+import com.ssoaharison.recall.util.AttachRef.ATTACH_AUDIO_RECORD
+import com.ssoaharison.recall.util.AttachRef.ATTACH_IMAGE_FROM_CAMERA
+import com.ssoaharison.recall.util.AttachRef.ATTACH_IMAGE_FROM_GALERI
+import com.ssoaharison.recall.util.ScanRef.AUDIO_TO_TEXT
+import com.ssoaharison.recall.util.ScanRef.IMAGE_FROM_CAMERA_TO_TEXT
+import com.ssoaharison.recall.util.ScanRef.IMAGE_FROM_GALERI_TO_TEXT
 import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.parcelable
 import com.ssoaharison.recall.util.textToImmutableCard
@@ -101,6 +111,8 @@ class NewCardDialog(
     private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
     private lateinit var importCardsFromDeviceModel: CardImportFromDeviceModel
+    private lateinit var attachBottomSheetDialog: AttachBottomSheetDialog
+    private lateinit var scanBottomSheetDialog: ScanBottomSheetDialog
 
     private val newCardViewModel by lazy {
         val openTriviaRepository = (requireActivity().application as FlashCardApplication).openTriviaRepository
@@ -203,7 +215,7 @@ class NewCardDialog(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.QuizeoFullscreenDialogTheme)
+        setStyle(STYLE_NO_TITLE, R.style.QuizeoFullscreenDialogTheme)
     }
 
     override fun onStart() {
@@ -228,6 +240,16 @@ class NewCardDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        WindowCompat.enableEdgeToEdge(dialog?.window!!)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.ablAddNewCard) { v, windowInserts ->
+            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            WindowInsetsCompat.CONSUMED
+        }
+
         definitionFields = listOf(
             DefinitionFieldModel(
                 binding.tilDefinition1MultiAnswerCard,
@@ -290,6 +312,8 @@ class NewCardDialog(
                 binding.btDeleteField10
             ),
         )
+        attachBottomSheetDialog = AttachBottomSheetDialog()
+        scanBottomSheetDialog = ScanBottomSheetDialog()
 
         val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
@@ -375,7 +399,7 @@ class NewCardDialog(
             override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.bt_scan_image -> {
-                        showImageSelectedDialog()
+//                        showImageSelectedDialog()
                         true
                     }
 
@@ -442,6 +466,70 @@ class NewCardDialog(
 
         binding.btMoreDefinition.setOnClickListener {
             onAddMoreDefinition()
+        }
+
+        binding.btSave.setOnClickListener {
+            onPositiveAction()
+        }
+        binding.btTranslate.setOnClickListener {
+            onTranslateText(
+                binding.tieContentMultiAnswerCard.text.toString(),
+                selectedField,
+                selectedFieldLy
+            )
+        }
+        binding.btAddMedia.setOnClickListener {
+            onAttach()
+        }
+        binding.btScan.setOnClickListener {
+            onScan()
+        }
+
+    }
+
+    private fun onAttach() {
+        attachBottomSheetDialog.show(childFragmentManager, "Attach Dialog")
+        childFragmentManager.setFragmentResultListener(
+            AttachBottomSheetDialog.ATTACH_REQUEST_CODE,
+            this
+        ) {_, bundle ->
+            val attach = bundle.getString(AttachBottomSheetDialog.ATTACH_BUNDLE_KEY)
+            attach?.let {
+                when(it) {
+                    ATTACH_IMAGE_FROM_CAMERA -> {
+                        onTakePhoto()
+                    }
+                    ATTACH_IMAGE_FROM_GALERI -> {
+                        onPickPhoto()
+                    }
+                    ATTACH_AUDIO_RECORD -> {
+                        onRecordAudio()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun onScan() {
+        scanBottomSheetDialog.show(childFragmentManager, "Scan Dialog")
+        childFragmentManager.setFragmentResultListener(
+            ScanBottomSheetDialog.SCAN_REQUEST_CODE,
+            this
+        ) {_, bundle ->
+            val attach = bundle.getString(ScanBottomSheetDialog.SCAN_BUNDLE_KEY)
+            attach?.let {
+                when(it) {
+                    IMAGE_FROM_CAMERA_TO_TEXT -> {
+                        checkCameraPermission()
+                    }
+                    IMAGE_FROM_GALERI_TO_TEXT -> {
+                        onSelectImageFromGallery()
+                    }
+                    AUDIO_TO_TEXT -> {
+                        listen(actualFieldLanguage)
+                    }
+                }
+            }
         }
     }
 
@@ -555,36 +643,36 @@ class NewCardDialog(
         }
     }
 
-    private fun showImageSelectedDialog() {
-        val builder = MaterialAlertDialogBuilder(
-            requireActivity(),
-            R.style.ThemeOverlay_App_MaterialAlertDialog
-        )
-        builder.apply {
-            setTitle("Select Image")
-            setMessage("Please select an option")
-            setPositiveButton(
-                "Camera"
-            ) { dialog, _ ->
-                checkCameraPermission()
-                dialog?.dismiss()
-            }
-
-            setNeutralButton(
-                "Cancel"
-            ) { dialog, _ -> dialog?.dismiss() }
-
-            setNegativeButton(
-                "Gallery"
-            ) { dialog, _ ->
-                onSelectImageFromGallery()
-                dialog?.dismiss()
-            }
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
+//    private fun showImageSelectedDialog() {
+//        val builder = MaterialAlertDialogBuilder(
+//            requireActivity(),
+//            R.style.ThemeOverlay_App_MaterialAlertDialog
+//        )
+//        builder.apply {
+//            setTitle("Select Image")
+//            setMessage("Please select an option")
+//            setPositiveButton(
+//                "Camera"
+//            ) { dialog, _ ->
+//                checkCameraPermission()
+//                dialog?.dismiss()
+//            }
+//
+//            setNeutralButton(
+//                "Cancel"
+//            ) { dialog, _ -> dialog?.dismiss() }
+//
+//            setNegativeButton(
+//                "Gallery"
+//            ) { dialog, _ ->
+//                onSelectImageFromGallery()
+//                dialog?.dismiss()
+//            }
+//        }
+//
+//        val dialog = builder.create()
+//        dialog.show()
+//    }
 
     private fun checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(
@@ -1354,6 +1442,21 @@ class NewCardDialog(
             }
         }
         return result
+    }
+
+    fun onTakePhoto() {
+        //TODO: Implement onTakePhoto
+        Toast.makeText(appContext, "Take photo in development", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onPickPhoto() {
+        //TODO: Implement onPickPhoto
+        Toast.makeText(appContext, "Pick photo in development", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onRecordAudio() {
+        //TODO: Implement onRecordAudio
+        Toast.makeText(appContext, "Record audio in development", Toast.LENGTH_SHORT).show()
     }
 
 }

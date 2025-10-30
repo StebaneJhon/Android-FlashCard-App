@@ -307,4 +307,10 @@
     <string name="deck_location">%1$s/</string>
     <string name="error_message_can_not_go_further">Can not go further.</string>
     <string name="view_in_development">View in development.</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="pick_a_photo">Pick a photo</string>
+    <string name="record_audio">Record audio</string>
+    <string name="photo_from_camera_to_text">Photo from camera to text</string>
+    <string name="photo_from_galeri_to_text">Photo from galeri to text</string>
+    <string name="audio_to_text">Audio to text</string>
 </resources>

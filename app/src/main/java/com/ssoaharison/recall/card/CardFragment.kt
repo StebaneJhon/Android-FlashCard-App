@@ -34,6 +34,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -355,7 +356,8 @@ class CardFragment :
 //                    }
 //                }
 
-                onNavigateBack()
+//                onNavigateBack()
+                activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
 
 //                findNavController().navigate(
 //                    R.id.deckFragment,
@@ -944,28 +946,28 @@ class CardFragment :
                 }
             })
 
-//        binding.cardRecyclerView.apply {
-//            adapter = recyclerViewAdapter
-//            setHasFixedSize(true)
-//            layoutManager =
-//                if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+        binding.cardRecyclerView.apply {
+            adapter = recyclerViewAdapter
+            setHasFixedSize(true)
+            layoutManager =
+                if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
 //                    item?.setIcon(
 //                        ContextCompat.getDrawable(
 //                            requireContext(),
 //                            R.drawable.icon_grid_view
 //                        )
 //                    )
-//                    staggeredGridLayoutManager
-//                } else {
+                    staggeredGridLayoutManager
+                } else {
 //                    item?.setIcon(
 //                        ContextCompat.getDrawable(
 //                            requireContext(),
 //                            R.drawable.icon_view_agenda
 //                        )
 //                    )
-//                    linearLayoutManager
-//                }
-//        }
+                    linearLayoutManager
+                }
+        }
 
     }
 

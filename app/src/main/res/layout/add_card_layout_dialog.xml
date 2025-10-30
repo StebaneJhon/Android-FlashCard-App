@@ -9,698 +9,820 @@
     android:background="?colorSurfaceContainerLowest">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/ly_tab_add_new_card"
+        android:id="@+id/abl_add_new_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?colorSurfaceContainerLow"
+        android:layout_gravity="top"
+        android:background="?colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tab_add_new_update_card"
             style="@style/Widget.App.Toolbar.Add.Edit.Card"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
+            android:layout_height="?attr/actionBarSize"
             app:menu="@menu/menu_add_new_card_top_app_bar"
             app:navigationContentDescription="@string/bt_description_exit"
             app:navigationIcon="@drawable/icon_exit"
+            app:navigationIconTint="?colorOnSurface"
             app:title="New card" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/space_lg"
-        android:layout_marginEnd="@dimen/space_lg"
-        android:layout_marginBottom="@dimen/space_lg"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ly_tab_add_new_card">
+        app:layout_constraintTop_toBottomOf="@+id/abl_add_new_card">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_add_multi_answer_card_container"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-            <LinearLayout
-                android:id="@+id/ll_container_content_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="start"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <TextView
-                    android:id="@+id/tv_title_content_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/text_content"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_content_language"
-                    style="@style/Widget.Material3.Button.TextButton.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:padding="0dp"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:text="@string/text_content_language"
-                    android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
-                    app:icon="@drawable/icon_expand_more"
-                    app:iconTint="?colorPrimary"
-                    app:iconGravity="end" />
-            </LinearLayout>
+            android:layout_height="match_parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_content_multi_answer_card"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColorHint="@color/neutral400"
-                android:hint="@string/hint_text"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_content_multi_answer_card"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_add_multi_answer_card_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_marginHorizontal="@dimen/space_lg"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ly_tab_add_new_card">
 
-            <LinearLayout
-                android:id="@+id/ll_container_definition_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="start"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
-                <TextView
-                    android:id="@+id/tv_title_definition_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/text_definition"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_definition_language"
-                    style="@style/Widget.Material3.Button.TextButton.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:padding="0dp"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:text="@string/text_definition_language"
-                    android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
-                    app:icon="@drawable/icon_expand_more"
-                    app:iconTint="?colorPrimary"
-                    app:iconGravity="end" />
+                    <LinearLayout
+                        android:id="@+id/ll_container_content_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/tv_title_content_details"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="@string/text_content"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="@dimen/text_sm"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_content_language"
+                            style="@style/Widget.Material3.Button.TextButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/space_sm"
+                            android:fontFamily="@font/open_sans"
+                            android:padding="0dp"
+                            android:text="@string/text_content_language"
+                            android:textColor="?colorPrimary"
+                            android:textSize="@dimen/text_xs"
+                            app:icon="@drawable/icon_expand_more"
+                            app:iconGravity="end"
+                            app:iconTint="?colorPrimary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_content_multi_answer_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_content_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <LinearLayout
+                        android:id="@+id/ll_container_definition_details"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
+
+                        <TextView
+                            android:id="@+id/tv_title_definition_details"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans_bold"
+                            android:text="@string/text_definition"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="@dimen/text_sm"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/bt_definition_language"
+                            style="@style/Widget.Material3.Button.TextButton.Icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/space_sm"
+                            android:fontFamily="@font/open_sans"
+                            android:padding="0dp"
+                            android:text="@string/text_definition_language"
+                            android:textColor="?colorPrimary"
+                            android:textSize="@dimen/text_xs"
+                            app:icon="@drawable/icon_expand_more"
+                            app:iconGravity="end"
+                            app:iconTint="?colorPrimary" />
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_1_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/ll_container_definition_details">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_1_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_1_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_1_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_2_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_2"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_2_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_2_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_2_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_2"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_2_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_3_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_3"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_3_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_3_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_3_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_3"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_3_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_4_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_4"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_4_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_4_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_4_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_4"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_4_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_5_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_5_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_5"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_4_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_5_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_5_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_5_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_5"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_5_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_6_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_6_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_6"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_5_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_6_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_6_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_6_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_6"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_6_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_7_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_7_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_7"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_6_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_7_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_7_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_7_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_7"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_7_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_8_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_8_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_8"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_7_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_8_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_8_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_8_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_8"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_8_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_9_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_9_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_9"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_8_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_9_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_9_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_9_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_9"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_9_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_definition_10_multi_answer_card"
+                        style="@style/Widget.Design.TextInputLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_sm"
+                        android:layout_marginEnd="@dimen/space_xs"
+                        android:hint="@string/hint_text"
+                        android:textColorHint="@color/neutral400"
+                        android:theme="@style/App.Theme.Card_definition_field"
+                        android:visibility="gone"
+                        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+                        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+                        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                        app:endIconMode="clear_text"
+                        app:endIconTint="?colorOnSurface"
+                        app:layout_constraintEnd_toStartOf="@+id/cp_definition_10_is_true"
+                        app:layout_constraintStart_toEndOf="@+id/bt_delete_field_10"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_9_multi_answer_card">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/tie_definition_10_multi_answer_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/open_sans"
+                            android:inputType="textMultiLine"
+                            android:maxLines="10"
+                            android:textColor="?colorOnSurface"
+                            android:textColorHint="@color/neutral400" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cp_definition_10_is_true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:buttonIconTint="?colorSurfaceContainerLowest"
+                        app:buttonTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_10_multi_answer_card"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_delete_field_10"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:icon="@drawable/icon_delete"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_10_multi_answer_card"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                    <Button
+                        android:id="@+id/bt_more_definition"
+                        style="@style/Widget.Material3.Button.TextButton.Icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans"
+                        android:padding="0dp"
+                        android:text="@string/text_new_definition"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_xs"
+                        app:icon="@drawable/icon_add"
+                        app:iconTint="?colorOnSurface"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/til_definition_10_multi_answer_card" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_add"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/space_sm"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_base"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="@+id/bt_cancel"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/bt_cancel"
+                        tools:text="Add" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/bt_cancel"
+                        style="@style/Widget.Material3.Button.TextButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/open_sans_bold"
+                        android:text="@string/bt_text_cancel"
+                        android:textColor="?colorOnSurface"
+                        android:textSize="@dimen/text_base"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/bt_add"
+                        app:layout_constraintTop_toBottomOf="@+id/bt_more_definition" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_add_card_progress_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <include
+                        android:id="@+id/ly_no_card_error"
+                        layout="@layout/ly_loading_screen" />
+                </LinearLayout>
+
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_definition_1_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_container_definition_details">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_1_multi_answer_card"
-                    android:layout_width="match_parent"
+        </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.dockedtoolbar.DockedToolbarLayout
+            android:id="@+id/docked_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior">
+
+            <!-- docked toolbar sample content -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/docked_toolbar_child"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/frameLayout2"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:minWidth="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:id="@+id/cp_definition_1_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_1_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
+                    <Button
+                        android:id="@+id/bt_add_media"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/bt_text_translate"
+                        app:icon="@drawable/icon_attach" />
+                </FrameLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_2_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_2"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_1_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_2_multi_answer_card"
-                    android:layout_width="match_parent"
+                <FrameLayout
+                    android:id="@+id/frameLayout"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:minWidth="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/frameLayout2"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_2_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_2_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
+                    <Button
+                        android:id="@+id/bt_scan"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/add_card"
+                        app:icon="@drawable/icon_document_scanner" />
+                </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_2"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_2_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_3_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_3"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_2_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_3_multi_answer_card"
-                    android:layout_width="match_parent"
+                <FrameLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:minWidth="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/frameLayout"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_3_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_3_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
+                    <Button
+                        android:id="@+id/bt_translate"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:contentDescription="@string/bt_description_button_speak"
+                        app:icon="@drawable/icon_translate" />
+                </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_3"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_3_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_4_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_4"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_3_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_4_multi_answer_card"
-                    android:layout_width="match_parent"
+                <FrameLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_weight="1"
+                    android:minWidth="48dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_4_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_4_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/bt_save"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|end"
+                        android:layout_margin="@dimen/space_md"
+                        android:contentDescription="@string/add_card"
+                        app:srcCompat="@drawable/icon_check" />
+                </FrameLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_4"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_4_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_5_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_5_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_5"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_4_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_5_multi_answer_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.dockedtoolbar.DockedToolbarLayout>
 
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_5_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_5_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_5"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_5_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_6_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_6_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_6"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_5_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_6_multi_answer_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_6_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_6_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_6"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_6_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_7_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_7_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_7"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_6_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_7_multi_answer_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_7_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_7_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_7"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_7_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_8_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_8_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_8"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_7_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_8_multi_answer_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_8_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_8_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_8"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_8_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_9_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_9_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_9"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_8_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_9_multi_answer_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_9_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_9_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_9"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_9_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:visibility="gone"
-                android:id="@+id/til_definition_10_multi_answer_card"
-                style="@style/Widget.Design.TextInputLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/space_sm"
-                android:layout_marginEnd="@dimen/space_xs"
-                android:hint="@string/hint_text"
-                android:textColorHint="@color/neutral400"
-                android:theme="@style/App.Theme.Card_definition_field"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
-                app:endIconMode="clear_text"
-                app:endIconTint="?colorOnSurface"
-                app:layout_constraintEnd_toStartOf="@+id/cp_definition_10_is_true"
-                app:layout_constraintStart_toEndOf="@+id/bt_delete_field_10"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_9_multi_answer_card">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tie_definition_10_multi_answer_card"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
-                    android:inputType="textMultiLine"
-                    android:maxLines="10"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="@color/neutral400" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.checkbox.MaterialCheckBox
-                android:visibility="gone"
-                android:id="@+id/cp_definition_10_is_true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:buttonIconTint="?colorSurfaceContainerLowest"
-                app:buttonTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_10_multi_answer_card"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <com.google.android.material.button.MaterialButton
-                android:visibility="gone"
-                android:id="@+id/bt_delete_field_10"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintBottom_toBottomOf="@+id/til_definition_10_multi_answer_card"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <Button
-                android:id="@+id/bt_more_definition"
-                style="@style/Widget.Material3.Button.TextButton.Icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:padding="0dp"
-                android:text="@string/text_new_definition"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs"
-                app:icon="@drawable/icon_add"
-                app:iconTint="?colorOnSurface"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_definition_10_multi_answer_card" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_add"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/space_sm"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_base"
-                android:textStyle="bold"
-                tools:text="Add"
-                app:layout_constraintBottom_toBottomOf="@+id/bt_cancel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/bt_cancel" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_cancel"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
-                android:text="@string/bt_text_cancel"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_base"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/bt_more_definition"
-                app:layout_constraintEnd_toStartOf="@id/bt_add"
-                app:layout_constraintBottom_toBottomOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/ll_add_card_progress_bar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-        <include
-            android:id="@+id/ly_no_card_error"
-            layout="@layout/ly_loading_screen" />
-    </LinearLayout>
-
-
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

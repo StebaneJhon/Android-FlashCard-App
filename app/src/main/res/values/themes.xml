@@ -841,7 +841,7 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.Material3.BottomSheetDialog">
@@ -949,5 +949,36 @@
 
         <item name="android:textColorHint">@color/neutral400</item>
     </style>
+
+    <!-- Text fields -->
+    <style name="ShapeAppearance.App.Corner.ExtraSmall" parent="ShapeAppearance.Material3.Corner.ExtraSmall">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_base</item>
+    </style>
+
+    <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.App.Corner.ExtraSmall</item>
+        <item name="android:textColorHint">@color/red500</item>
+        <item name="boxStrokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxStrokeColor">?colorPrimary</item>
+        <item name="boxBackgroundColor">?colorSurfaceContainer</item>
+        <item name="hintEnabled">false</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputLayout" parent="">
+<!--        <item name="colorPrimary">?colorSurfaceContainerHighest</item>-->
+<!--        <item name="colorOnSurface">?colorOnSurface</item>-->
+<!--        <item name="colorError">?colorError</item>-->
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.App.TitleMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
+        <item name="editTextStyle">@style/Widget.Material3.TextInputEditText.OutlinedBox</item>
+    </style>
+
+    <style name="Widget.App.TextInputEditText" parent="ThemeOverlay.Material3.TextInputEditText">
+        <item name="android:textColorHint">?colorSurfaceContainerHighest</item>
+    </style>
+
 
 </resources>
