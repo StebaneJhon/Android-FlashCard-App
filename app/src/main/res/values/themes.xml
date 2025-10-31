@@ -978,6 +978,8 @@
 
     <style name="Widget.App.TextInputEditText" parent="ThemeOverlay.Material3.TextInputEditText">
         <item name="android:textColorHint">?colorSurfaceContainerHighest</item>
+        <item name="textAppearanceTitleMedium">@style/TextAppearance.App.TitleMedium</item>
+        <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
     </style>
 
 

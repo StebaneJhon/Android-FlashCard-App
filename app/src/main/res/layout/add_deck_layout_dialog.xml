@@ -62,8 +62,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.App.TextInputLayout"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
                 app:layout_constraintTop_toBottomOf="@+id/bt_exit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -74,11 +72,9 @@
                     android:layout_height="match_parent"
                     style="@style/Widget.App.TextInputEditText"
                     android:autofillHints="@string/deck_name_hint"
-                    android:fontFamily="@font/open_sans"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:hint="@string/deck_name_hint"
-                    android:textColor="?colorOnSurface" />
+                    android:hint="@string/deck_name_hint" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout

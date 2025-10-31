@@ -313,4 +313,5 @@
     <string name="photo_from_camera_to_text">Photo from camera to text</string>
     <string name="photo_from_galeri_to_text">Photo from galeri to text</string>
     <string name="audio_to_text">Audio to text</string>
+    <string name="home">Home</string>
 </resources>

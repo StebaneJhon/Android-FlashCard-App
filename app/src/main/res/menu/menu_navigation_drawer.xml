@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/deckFragment"
+        android:id="@+id/cardFragment"
         android:icon="@drawable/icon_nav_decks"
-        android:title="@string/deck_tab_hint"
+        android:title="@string/home"
         android:checkable="true"/>
     <item
         android:id="@+id/settingsFragment"

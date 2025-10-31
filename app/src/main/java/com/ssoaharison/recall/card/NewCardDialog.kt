@@ -22,7 +22,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.ListPopupWindow
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
@@ -252,60 +254,70 @@ class NewCardDialog(
 
         definitionFields = listOf(
             DefinitionFieldModel(
+                binding.llDefinition1Container,
                 binding.tilDefinition1MultiAnswerCard,
                 binding.tieDefinition1MultiAnswerCard,
                 binding.cpDefinition1IsTrue,
                 null
             ),
             DefinitionFieldModel(
+                binding.llDefinition2Container,
                 binding.tilDefinition2MultiAnswerCard,
                 binding.tieDefinition2MultiAnswerCard,
                 binding.cpDefinition2IsTrue,
                 binding.btDeleteField2
             ),
             DefinitionFieldModel(
+                binding.llDefinition3Container,
                 binding.tilDefinition3MultiAnswerCard,
                 binding.tieDefinition3MultiAnswerCard,
                 binding.cpDefinition3IsTrue,
                 binding.btDeleteField3
             ),
             DefinitionFieldModel(
+                binding.llDefinition4Container,
                 binding.tilDefinition4MultiAnswerCard,
                 binding.tieDefinition4MultiAnswerCard,
                 binding.cpDefinition4IsTrue,
                 binding.btDeleteField4
             ),
             DefinitionFieldModel(
+                binding.llDefinition5Container,
                 binding.tilDefinition5MultiAnswerCard,
                 binding.tieDefinition5MultiAnswerCard,
                 binding.cpDefinition5IsTrue,
                 binding.btDeleteField5
             ),
             DefinitionFieldModel(
+                binding.llDefinition6Container,
                 binding.tilDefinition6MultiAnswerCard,
                 binding.tieDefinition6MultiAnswerCard,
                 binding.cpDefinition6IsTrue,
                 binding.btDeleteField6
             ),
             DefinitionFieldModel(
+                binding.llDefinition7Container,
                 binding.tilDefinition7MultiAnswerCard,
                 binding.tieDefinition7MultiAnswerCard,
                 binding.cpDefinition7IsTrue,
                 binding.btDeleteField7
             ),
             DefinitionFieldModel(
+                binding.llDefinition8Container,
                 binding.tilDefinition8MultiAnswerCard,
                 binding.tieDefinition8MultiAnswerCard,
                 binding.cpDefinition8IsTrue,
                 binding.btDeleteField8
             ),
             DefinitionFieldModel(
+                binding.llDefinition9Container,
                 binding.tilDefinition9MultiAnswerCard,
                 binding.tieDefinition9MultiAnswerCard,
                 binding.cpDefinition9IsTrue,
                 binding.btDeleteField9
             ),
             DefinitionFieldModel(
+                binding.llDefinition10Container,
                 binding.tilDefinition10MultiAnswerCard,
                 binding.tieDefinition10MultiAnswerCard,
                 binding.cpDefinition10IsTrue,
@@ -355,12 +367,12 @@ class NewCardDialog(
         } else {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
             setCardLanguages()
-            binding.btAdd.apply {
-                text = getString(R.string.bt_text_add)
-                setOnClickListener {
-                    onPositiveAction()
-                }
-            }
+//            binding.btAdd.apply {
+//                text = getString(R.string.bt_text_add)
+//                setOnClickListener {
+//                    onPositiveAction()
+//                }
+//            }
         }
 
         binding.tabAddNewUpdateCard.setNavigationOnClickListener {
@@ -430,13 +442,14 @@ class NewCardDialog(
             }
         }
 
-        binding.btCancel.setOnClickListener {
-            initCardAdditionPanel()
-        }
+//        binding.btCancel.setOnClickListener {
+//            initCardAdditionPanel()
+//        }
 
         binding.tieContentMultiAnswerCard.apply {
             setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
+                    null,
                     binding.tilContentMultiAnswerCard,
                     v,
                     getNewContentLanguage(),
@@ -450,6 +463,7 @@ class NewCardDialog(
         definitionFields.forEach { definitionField ->
             definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
                 onActiveTopAppBarMode(
+                    definitionField.container,
                     definitionField.fieldLy,
                     v,
                     getNewDefinitionLanguage(),
@@ -460,6 +474,9 @@ class NewCardDialog(
             }
             definitionField.btDeleteField?.setOnClickListener {
                 deleteDefinitionField(definitionField.fieldEd)
+            }
+            definitionField.chip.setOnClickListener {
+                onClickChip(!chipState(definitionField.chip), definitionField.chip)
             }
         }
 
@@ -627,6 +644,7 @@ class NewCardDialog(
     }
 
     private fun onActiveTopAppBarMode(
+        container: LinearLayout?,
         ly: TextInputLayout?,
         v: View?,
         language: String?,
@@ -640,6 +658,9 @@ class NewCardDialog(
             actionMode = view?.startActionMode(callback)
             actionMode?.title = title
             actualFieldLanguage = language
+            container?.setBackgroundResource(R.drawable.bg_definition_field_focused)
+        } else {
+            container?.setBackgroundResource(R.drawable.bg_definition_field)
         }
     }
 
@@ -773,10 +794,39 @@ class NewCardDialog(
         definitionFields.forEach {
             it.fieldEd.text?.clear()
             it.fieldLy.error = null
-            it.chip.isChecked = false
+//            it.chip.isChecked = false
+            unCheckChip(it.chip)
         }
-        binding.btAdd.text = getString(R.string.bt_text_add)
+//        binding.btAdd.text = getString(R.string.bt_text_add)
         actionMode?.finish()
+    }
+
+    private fun chipState(chip: TextView): Boolean {
+        return chip.text == getString(R.string.cp_true_text)
+    }
+
+    private fun checkChip(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green200))
+            setTextColor(ContextCompat.getColor(context, R.color.green500))
+            text = getString(R.string.cp_true_text)
+        }
+    }
+
+    private fun unCheckChip(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red200))
+            setTextColor(ContextCompat.getColor(context, R.color.red500))
+            text = getString(R.string.cp_false_text)
+        }
+    }
+
+    private fun onClickChip(state: Boolean, chip: TextView) {
+        if (state) {
+            checkChip(chip)
+        } else {
+            unCheckChip(chip)
+        }
     }
 
     private fun onCloseDialog() {
@@ -804,12 +854,12 @@ class NewCardDialog(
 
     private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
         binding.tieContentMultiAnswerCard.setText(card.contentWithDefinitions.content.contentText)
-        binding.btAdd.apply {
-            text = getString(R.string.bt_text_update)
-            setOnClickListener {
-                onPositiveAction()
-            }
-        }
+//        binding.btAdd.apply {
+//            text = getString(R.string.bt_text_update)
+//            setOnClickListener {
+//                onPositiveAction()
+//            }
+//        }
 
         definitionFields.forEachIndexed { index, fl ->
             if (index < card.contentWithDefinitions.definitions.size) {
@@ -817,7 +867,11 @@ class NewCardDialog(
                 fl.chip.visibility = View.VISIBLE
                 fl.btDeleteField?.visibility = View.VISIBLE
                 fl.fieldEd.setText(card.contentWithDefinitions.definitions[index].definitionText)
-                fl.chip.isChecked = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition)
+//                fl.chip.isChecked = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition)
+                onClickChip(
+                    state = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition),
+                    chip = fl.chip
+                )
                 revealedDefinitionFields++
             } else {
                 fl.fieldLy.visibility = View.GONE
@@ -886,7 +940,8 @@ class NewCardDialog(
             !binding.tieContentMultiAnswerCard.text.isNullOrEmpty() -> return true
             else -> {
                 definitionFields.forEach {
-                    if (it.chip.isChecked) {
+
+                    if (chipState(it.chip)) {
                         return true
                     }
                     if (!it.fieldEd.text.isNullOrBlank() || !it.fieldEd.text.isNullOrEmpty()) {
@@ -1092,14 +1147,15 @@ class NewCardDialog(
             ) {
                 isText = true
             }
-            if (it.chip.isChecked && it.fieldEd.text.toString()
+
+            if (chipState(it.chip)  && it.fieldEd.text.toString()
                     .isNotEmpty() && it.fieldEd.text.toString().isNotBlank()
             ) {
                 if (isText) {
                     return false
                 }
             }
-            if (it.chip.isChecked) {
+            if (chipState(it.chip)) {
                 isTrueAnswer = true
             }
         }
@@ -1130,7 +1186,7 @@ class NewCardDialog(
                     definitionList.add(
                         newCardViewModel.createDefinition(
                             it.fieldEd.text.toString(),
-                            it.chip.isChecked,
+                            chipState(it.chip),
                             cardId,
                             contentId,
                             deckId
@@ -1369,6 +1425,7 @@ class NewCardDialog(
     private fun onAddMoreDefinition() {
         if (revealedDefinitionFields < definitionFields.size) {
             definitionFields[revealedDefinitionFields].apply {
+                container.isVisible = true
                 fieldLy.isVisible = true
                 fieldEd.isVisible = true
                 chip.isVisible = true
@@ -1407,7 +1464,7 @@ class NewCardDialog(
                 nextField.fieldEd.text?.clear()
             } else {
                 actualField.fieldEd.text?.clear()
-                clearField(definitionFields.last { it.fieldLy.isVisible })
+                clearField(definitionFields.last { it.container.isVisible })
                 break
             }
             index++
@@ -1416,16 +1473,15 @@ class NewCardDialog(
 
     private fun clearField(field: DefinitionFieldModel) {
         field.apply {
+            container.visibility = View.GONE
             btDeleteField?.visibility = View.GONE
             fieldLy.visibility = View.GONE
             fieldEd.apply {
                 visibility = View.GONE
                 text?.clear()
             }
-            chip.apply {
-                visibility = View.GONE
-                isChecked = false
-            }
+            chip.visibility = View.GONE
+            unCheckChip(chip)
         }
         revealedDefinitionFields--
     }
