@@ -60,6 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="start"
+                        android:layout_marginHorizontal="@dimen/space_sm"
                         android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -90,34 +91,51 @@
                             app:iconTint="?colorPrimary" />
                     </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_content_multi_answer_card"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/cl_container_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.App.TextInputLayout"
-                        app:endIconMode="clear_text"
-                        app:endIconTint="?colorOnSurface"
+                        android:background="@drawable/bg_definition_field"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/tie_content_multi_answer_card"
-                            android:layout_width="match_parent"
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/til_content_multi_answer_card"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            app:boxStrokeWidth="0dp"
+                            app:boxStrokeWidthFocused="0dp"
+                            android:padding="0dp"
+                            app:hintEnabled="false"
                             android:layout_height="wrap_content"
-                            android:inputType="textMultiLine"
-                            style="@style/Widget.App.TextInputEditText"
-                            android:hint="@string/til_card_content_hint"
-                            android:maxLines="10" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/tie_content_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="@string/til_card_content_hint"
+                                android:inputType="textMultiLine"
+                                android:maxLines="10" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
                     <LinearLayout
                         android:id="@+id/ll_container_definition_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="start"
+                        android:layout_marginHorizontal="@dimen/space_sm"
                         android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/til_content_multi_answer_card">
+                        app:layout_constraintTop_toBottomOf="@+id/cl_container_content">
 
                         <TextView
                             android:id="@+id/tv_title_definition_details"
@@ -179,7 +197,7 @@
 <!--                        app:layout_constraintBottom_toBottomOf="@+id/til_definition_1_multi_answer_card"-->
 <!--                        app:layout_constraintEnd_toEndOf="parent" />-->
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/ll_definition_1_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -193,37 +211,45 @@
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/til_definition_1_multi_answer_card"
                             android:layout_width="0dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
                             app:hintEnabled="false"
-                            android:layout_height="wrap_content">
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_1_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_1_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText"/>
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_1_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-                    </LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                     <com.google.android.material.button.MaterialButton
@@ -241,7 +267,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_2_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_2_container"
                         android:layout_width="0dp"
@@ -259,34 +285,42 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_2_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_2_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_2_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -303,7 +337,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_3_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_3_container"
                         android:layout_width="0dp"
@@ -321,34 +355,42 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_3_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_3_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_3_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -365,7 +407,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_4_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_4_container"
                         android:layout_width="0dp"
@@ -383,34 +425,42 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_4_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_4_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_4_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -427,7 +477,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_5_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_5_container"
                         android:layout_width="0dp"
@@ -445,34 +495,42 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_5_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_5_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_5_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -489,7 +547,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_6_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_6_container"
                         android:layout_width="0dp"
@@ -507,34 +565,42 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_6_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_6_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_6_is_true"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -551,7 +617,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_7_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_7_container"
                         android:layout_width="0dp"
@@ -568,35 +634,43 @@
                             android:id="@+id/til_definition_7_multi_answer_card"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/space_xs"
                             android:layout_weight="1"
+                            android:padding="0dp"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_7_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_7_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_7_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -613,7 +687,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_8_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_8_container"
                         android:layout_width="0dp"
@@ -631,34 +705,42 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:padding="0dp"
+                            android:layout_marginEnd="@dimen/space_xs"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_8_is_true"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_8_multi_answer_card"
+                                style="@style/Widget.App.TextInputEditText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:hint="@string/hint_text"
-                                style="@style/Widget.App.TextInputEditText" />
+                                android:hint="@string/hint_text" />
                         </com.google.android.material.textfield.TextInputLayout>
 
                         <TextView
                             android:id="@+id/cp_definition_8_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_margin="@dimen/space_xs"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
+                            android:paddingHorizontal="@dimen/space_sm"
+                            android:paddingVertical="@dimen/space_xs"
+                            android:text="@string/cp_true_text"
                             android:textAlignment="center"
                             android:textColor="@color/green500"
                             android:textSize="@dimen/text_sm"
-                            android:text="@string/cp_true_text"
-                            android:paddingHorizontal="@dimen/space_sm"
-                            android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -675,7 +757,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_9_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_9_container"
                         android:layout_width="0dp"
@@ -696,7 +778,11 @@
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
                             android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_9_is_true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_9_multi_answer_card"
@@ -709,7 +795,7 @@
                         <TextView
                             android:id="@+id/cp_definition_9_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
@@ -719,8 +805,11 @@
                             android:text="@string/cp_true_text"
                             android:paddingHorizontal="@dimen/space_sm"
                             android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            android:layout_margin="@dimen/space_xs"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <com.google.android.material.button.MaterialButton
                         android:visibility="gone"
@@ -737,7 +826,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/ll_definition_10_container" />
 
-                    <LinearLayout
+                    <androidx.constraintlayout.widget.ConstraintLayout
                         android:visibility="gone"
                         android:id="@+id/ll_definition_10_container"
                         android:layout_width="0dp"
@@ -758,7 +847,11 @@
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
                             android:padding="0dp"
-                            app:hintEnabled="false">
+                            app:hintEnabled="false"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/cp_definition_10_is_true"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/tie_definition_10_multi_answer_card"
@@ -771,7 +864,7 @@
                         <TextView
                             android:id="@+id/cp_definition_10_is_true"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="0dp"
                             android:background="@drawable/bg_radius_sm"
                             android:backgroundTint="@color/green200"
                             android:gravity="center"
@@ -781,8 +874,11 @@
                             android:text="@string/cp_true_text"
                             android:paddingHorizontal="@dimen/space_sm"
                             android:paddingVertical="@dimen/space_xs"
-                            android:layout_margin="@dimen/space_xs"/>
-                    </LinearLayout>
+                            android:layout_margin="@dimen/space_xs"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <Button
                         android:id="@+id/bt_more_definition"

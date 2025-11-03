@@ -16,8 +16,6 @@ import android.speech.RecognizerIntent
 import android.util.TypedValue
 import android.view.ActionMode
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -30,6 +28,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -46,8 +45,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.AddCardLayoutDialogBinding
@@ -395,52 +392,52 @@ class NewCardDialog(
             }
         }
 
-        val callback = object : ActionMode.Callback {
-            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                mode?.menuInflater?.inflate(
-                    R.menu.menu_add_new_card_top_app_bar_contextual_action_bar,
-                    menu
-                )
-                return true
-            }
-
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                return false
-            }
-
-            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.bt_scan_image -> {
-//                        showImageSelectedDialog()
-                        true
-                    }
-
-                    R.id.bt_mic -> {
-                        listen(actualFieldLanguage)
-                        true
-                    }
-
-                    R.id.bt_translate -> {
-                        onTranslateText(
-                            binding.tieContentMultiAnswerCard.text.toString(),
-                            selectedField,
-                            selectedFieldLy
-                        )
-                        true
-                    }
-
-                    R.id.save -> {
-                        onPositiveAction()
-                        true
-                    }
-
-                    else -> false
-                }
-            }
-
-            override fun onDestroyActionMode(mode: ActionMode?) {
-            }
-        }
+//        val callback = object : ActionMode.Callback {
+//            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+//                mode?.menuInflater?.inflate(
+//                    R.menu.menu_add_new_card_top_app_bar_contextual_action_bar,
+//                    menu
+//                )
+//                return true
+//            }
+//
+//            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
+//                return false
+//            }
+//
+//            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
+//                return when (item?.itemId) {
+//                    R.id.bt_scan_image -> {
+////                        showImageSelectedDialog()
+//                        true
+//                    }
+//
+//                    R.id.bt_mic -> {
+//                        listen(actualFieldLanguage)
+//                        true
+//                    }
+//
+//                    R.id.bt_translate -> {
+//                        onTranslateText(
+//                            binding.tieContentMultiAnswerCard.text.toString(),
+//                            selectedField,
+//                            selectedFieldLy
+//                        )
+//                        true
+//                    }
+//
+//                    R.id.save -> {
+//                        onPositiveAction()
+//                        true
+//                    }
+//
+//                    else -> false
+//                }
+//            }
+//
+//            override fun onDestroyActionMode(mode: ActionMode?) {
+//            }
+//        }
 
 //        binding.btCancel.setOnClickListener {
 //            initCardAdditionPanel()
@@ -448,28 +445,28 @@ class NewCardDialog(
 
         binding.tieContentMultiAnswerCard.apply {
             setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    null,
+                onFieldFocused(
+                    binding.clContainerContent,
                     binding.tilContentMultiAnswerCard,
                     v,
                     getNewContentLanguage(),
                     hasFocus,
-                    callback,
-                    getString(R.string.til_card_content_hint)
+//                    callback,
+//                    getString(R.string.til_card_content_hint)
                 )
             }
         }
 
         definitionFields.forEach { definitionField ->
             definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
+                onFieldFocused(
                     definitionField.container,
                     definitionField.fieldLy,
                     v,
                     getNewDefinitionLanguage(),
                     hasFocus,
-                    callback,
-                    getString(R.string.til_card_definition_hint)
+//                    callback,
+//                    getString(R.string.til_card_definition_hint)
                 )
             }
             definitionField.btDeleteField?.setOnClickListener {
@@ -643,20 +640,20 @@ class NewCardDialog(
         }
     }
 
-    private fun onActiveTopAppBarMode(
-        container: LinearLayout?,
+    private fun onFieldFocused(
+        container: ConstraintLayout?,
         ly: TextInputLayout?,
         v: View?,
         language: String?,
         hasFocus: Boolean,
-        callback: ActionMode.Callback,
-        title: String
+//        callback: ActionMode.Callback,
+//        title: String
     ) {
         if (hasFocus) {
             selectedFieldLy = ly
             selectedField = v as EditText
-            actionMode = view?.startActionMode(callback)
-            actionMode?.title = title
+//            actionMode = view?.startActionMode(callback)
+//            actionMode?.title = title
             actualFieldLanguage = language
             container?.setBackgroundResource(R.drawable.bg_definition_field_focused)
         } else {
@@ -863,9 +860,10 @@ class NewCardDialog(
 
         definitionFields.forEachIndexed { index, fl ->
             if (index < card.contentWithDefinitions.definitions.size) {
-                fl.fieldLy.visibility = View.VISIBLE
+//                fl.fieldLy.visibility = View.VISIBLE
                 fl.chip.visibility = View.VISIBLE
                 fl.btDeleteField?.visibility = View.VISIBLE
+                fl.container.visibility = View.VISIBLE
                 fl.fieldEd.setText(card.contentWithDefinitions.definitions[index].definitionText)
 //                fl.chip.isChecked = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition)
                 onClickChip(

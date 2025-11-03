@@ -720,7 +720,6 @@
     </style>
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
         <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
         <item name="android:textColor">?colorOnSurface</item>
         <item name="android:textSize">@dimen/text_base</item>
     </style>
@@ -977,8 +976,12 @@
     </style>
 
     <style name="Widget.App.TextInputEditText" parent="ThemeOverlay.Material3.TextInputEditText">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputEditText</item>
         <item name="android:textColorHint">?colorSurfaceContainerHighest</item>
-        <item name="textAppearanceTitleMedium">@style/TextAppearance.App.TitleMedium</item>
+    </style>
+
+    <style name="ThemeOverlay.App.TextInputEditText" parent="">
+        <item name="textAppearanceBodyLarge">@style/TextAppearance.App.BodyLarge</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
     </style>
 
