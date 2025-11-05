@@ -252,73 +252,43 @@ class NewCardDialog(
         definitionFields = listOf(
             DefinitionFieldModel(
                 binding.llDefinition1Container,
-                binding.lyDefinition1.tilText,
-                binding.lyDefinition1.tieText,
-                binding.lyDefinition1.btIsTrue,
-                null
+                binding.lyDefinition1,
             ),
             DefinitionFieldModel(
                 binding.llDefinition2Container,
-                binding.lyDefinition2.tilText,
-                binding.lyDefinition2.tieText,
-                binding.lyDefinition2.btIsTrue,
-                binding.lyDefinition2.btDeleteField
+                binding.lyDefinition2,
             ),
             DefinitionFieldModel(
                 binding.llDefinition3Container,
-                binding.lyDefinition3.tilText,
-                binding.lyDefinition3.tieText,
-                binding.lyDefinition3.btIsTrue,
-                binding.lyDefinition3.btDeleteField
+                binding.lyDefinition3,
             ),
             DefinitionFieldModel(
                 binding.llDefinition4Container,
-                binding.lyDefinition4.tilText,
-                binding.lyDefinition4.tieText,
-                binding.lyDefinition4.btIsTrue,
-                binding.lyDefinition4.btDeleteField
+                binding.lyDefinition4,
             ),
             DefinitionFieldModel(
                 binding.llDefinition5Container,
-                binding.lyDefinition5.tilText,
-                binding.lyDefinition5.tieText,
-                binding.lyDefinition5.btIsTrue,
-                binding.lyDefinition5.btDeleteField
+                binding.lyDefinition5,
             ),
             DefinitionFieldModel(
                 binding.llDefinition6Container,
-                binding.lyDefinition6.tilText,
-                binding.lyDefinition6.tieText,
-                binding.lyDefinition6.btIsTrue,
-                binding.lyDefinition6.btDeleteField
+                binding.lyDefinition6,
             ),
             DefinitionFieldModel(
                 binding.llDefinition7Container,
-                binding.lyDefinition7.tilText,
-                binding.lyDefinition7.tieText,
-                binding.lyDefinition7.btIsTrue,
-                binding.lyDefinition7.btDeleteField
+                binding.lyDefinition7,
             ),
             DefinitionFieldModel(
                 binding.llDefinition8Container,
-                binding.lyDefinition8.tilText,
-                binding.lyDefinition8.tieText,
-                binding.lyDefinition8.btIsTrue,
-                binding.lyDefinition8.btDeleteField
+                binding.lyDefinition8,
             ),
             DefinitionFieldModel(
                 binding.llDefinition9Container,
-                binding.lyDefinition9.tilText,
-                binding.lyDefinition9.tieText,
-                binding.lyDefinition9.btIsTrue,
-                binding.lyDefinition9.btDeleteField
+                binding.lyDefinition9,
             ),
             DefinitionFieldModel(
                 binding.llDefinition10Container,
-                binding.lyDefinition10.tilText,
-                binding.lyDefinition10.tieText,
-                binding.lyDefinition10.btIsTrue,
-                binding.lyDefinition10.btDeleteField
+                binding.lyDefinition10,
             ),
         )
         binding.lyDefinition1.btDeleteField.visibility = View.GONE
@@ -459,10 +429,10 @@ class NewCardDialog(
         }
 
         definitionFields.forEach { definitionField ->
-            definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
+            definitionField.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
                 onFieldFocused(
-                    definitionField.container,
-                    definitionField.fieldLy,
+                    definitionField.ly.clContainerDefinition,
+                    definitionField.ly.tilText,
                     v,
                     getNewDefinitionLanguage(),
                     hasFocus,
@@ -470,11 +440,11 @@ class NewCardDialog(
 //                    getString(R.string.til_card_definition_hint)
                 )
             }
-            definitionField.btDeleteField?.setOnClickListener {
-                deleteDefinitionField(definitionField.fieldEd)
+            definitionField.ly.btDeleteField.setOnClickListener {
+                deleteDefinitionField(definitionField.ly.tieText)
             }
-            definitionField.chip.setOnClickListener {
-                onClickChip(!chipState(definitionField.chip), definitionField.chip)
+            definitionField.ly.btIsTrue.setOnClickListener {
+                onClickChip(!chipState(definitionField.ly.btIsTrue), definitionField.ly.btIsTrue)
             }
         }
 
@@ -790,12 +760,10 @@ class NewCardDialog(
         binding.tieContentMultiAnswerCard.text?.clear()
         binding.tilContentMultiAnswerCard.error = null
         definitionFields.forEach {
-            it.fieldEd.text?.clear()
-            it.fieldLy.error = null
-//            it.chip.isChecked = false
-            unCheckChip(it.chip)
+            it.ly.tieText.text?.clear()
+            it.ly.tilText.error = null
+            unCheckChip(it.ly.btIsTrue)
         }
-//        binding.btAdd.text = getString(R.string.bt_text_add)
         actionMode?.finish()
     }
 
@@ -862,19 +830,21 @@ class NewCardDialog(
         definitionFields.forEachIndexed { index, fl ->
             if (index < card.contentWithDefinitions.definitions.size) {
 //                fl.fieldLy.visibility = View.VISIBLE
-                fl.chip.visibility = View.VISIBLE
-                fl.btDeleteField?.visibility = View.VISIBLE
                 fl.container.visibility = View.VISIBLE
-                fl.fieldEd.setText(card.contentWithDefinitions.definitions[index].definitionText)
+//                fl.chip.visibility = View.VISIBLE
+//                fl.btDeleteField?.visibility = View.VISIBLE
+                fl.container.visibility = View.VISIBLE
+                fl.ly.tieText.setText(card.contentWithDefinitions.definitions[index].definitionText)
 //                fl.chip.isChecked = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition)
                 onClickChip(
                     state = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition),
-                    chip = fl.chip
+                    chip = fl.ly.btIsTrue
                 )
                 revealedDefinitionFields++
             } else {
-                fl.fieldLy.visibility = View.GONE
-                fl.chip.visibility = View.GONE
+                fl.container.visibility = View.GONE
+//                fl.fieldLy.visibility = View.GONE
+//                fl.chip.visibility = View.GONE
             }
         }
 
@@ -940,10 +910,10 @@ class NewCardDialog(
             else -> {
                 definitionFields.forEach {
 
-                    if (chipState(it.chip)) {
+                    if (chipState(it.ly.btIsTrue)) {
                         return true
                     }
-                    if (!it.fieldEd.text.isNullOrBlank() || !it.fieldEd.text.isNullOrEmpty()) {
+                    if (!it.ly.tieText.text.isNullOrBlank() || !it.ly.tieText.text.isNullOrEmpty()) {
                         return true
                     }
                 }
@@ -1141,20 +1111,20 @@ class NewCardDialog(
         var isText = false
         var isTrueAnswer = false
         definitionFields.forEach {
-            if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString()
+            if (it.ly.tieText.text.toString().isNotEmpty() && it.ly.tieText.text.toString()
                     .isNotBlank()
             ) {
                 isText = true
             }
 
-            if (chipState(it.chip)  && it.fieldEd.text.toString()
-                    .isNotEmpty() && it.fieldEd.text.toString().isNotBlank()
+            if (chipState(it.ly.btIsTrue)  && it.ly.tieText.text.toString()
+                    .isNotEmpty() && it.ly.tieText.text.toString().isNotBlank()
             ) {
                 if (isText) {
                     return false
                 }
             }
-            if (chipState(it.chip)) {
+            if (chipState(it.ly.btIsTrue)) {
                 isTrueAnswer = true
             }
         }
@@ -1187,13 +1157,13 @@ class NewCardDialog(
         } else {
             definitionList.clear()
             definitionFields.forEach {
-                if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString()
+                if (it.ly.tieText.text.toString().isNotEmpty() && it.ly.tieText.text.toString()
                         .isNotBlank()
                 ) {
                     definitionList.add(
                         newCardViewModel.createDefinition(
-                            it.fieldEd.text.toString(),
-                            chipState(it.chip),
+                            it.ly.tieText.text.toString(),
+                            chipState(it.ly.btIsTrue),
                             cardId,
                             contentId,
                             deckId
@@ -1433,10 +1403,10 @@ class NewCardDialog(
         if (revealedDefinitionFields < definitionFields.size) {
             definitionFields[revealedDefinitionFields].apply {
                 container.isVisible = true
-                fieldLy.isVisible = true
-                fieldEd.isVisible = true
-                chip.isVisible = true
-                btDeleteField?.isVisible = true
+//                fieldLy.isVisible = true
+//                fieldEd.isVisible = true
+//                chip.isVisible = true
+//                btDeleteField?.isVisible = true
             }
             revealedDefinitionFields++
 
@@ -1451,7 +1421,7 @@ class NewCardDialog(
         var index = 0
         while (true) {
             val actualField = definitionFields[index]
-            if (actualField.fieldEd == field) {
+            if (actualField.ly.tieText == field) {
                 break
             }
             index++
@@ -1459,18 +1429,18 @@ class NewCardDialog(
         while (true) {
             val actualField = definitionFields[index]
             val nextField = definitionFields[index.plus(1)]
-            if (!nextField.fieldLy.isVisible) {
+            if (!nextField.ly.tieText.isVisible) {
                 clearField(actualField)
                 break
             }
             if (
-                nextField.fieldEd.text?.isNotBlank() == true &&
-                nextField.fieldEd.text?.isNotEmpty() == true
+                nextField.ly.tieText.text?.isNotBlank() == true &&
+                nextField.ly.tieText.text?.isNotEmpty() == true
             ) {
-                actualField.fieldEd.text = nextField.fieldEd.text
-                nextField.fieldEd.text?.clear()
+                actualField.ly.tieText.text = nextField.ly.tieText.text
+                nextField.ly.tieText.text?.clear()
             } else {
-                actualField.fieldEd.text?.clear()
+                actualField.ly.tieText.text?.clear()
                 clearField(definitionFields.last { it.container.isVisible })
                 break
             }
@@ -1481,14 +1451,15 @@ class NewCardDialog(
     private fun clearField(field: DefinitionFieldModel) {
         field.apply {
             container.visibility = View.GONE
-            btDeleteField?.visibility = View.GONE
-            fieldLy.visibility = View.GONE
-            fieldEd.apply {
-                visibility = View.GONE
-                text?.clear()
-            }
-            chip.visibility = View.GONE
-            unCheckChip(chip)
+//            btDeleteField?.visibility = View.GONE
+//            fieldLy.visibility = View.GONE
+            ly.tieText.text?.clear()
+//            fieldEd.apply {
+//                visibility = View.GONE
+//                text?.clear()
+//            }
+//            chip.visibility = View.GONE
+            unCheckChip(ly.btIsTrue)
         }
         revealedDefinitionFields--
     }
