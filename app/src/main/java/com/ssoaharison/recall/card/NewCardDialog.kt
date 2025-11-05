@@ -252,75 +252,76 @@ class NewCardDialog(
         definitionFields = listOf(
             DefinitionFieldModel(
                 binding.llDefinition1Container,
-                binding.tilDefinition1MultiAnswerCard,
-                binding.tieDefinition1MultiAnswerCard,
-                binding.cpDefinition1IsTrue,
+                binding.lyDefinition1.tilText,
+                binding.lyDefinition1.tieText,
+                binding.lyDefinition1.btIsTrue,
                 null
             ),
             DefinitionFieldModel(
                 binding.llDefinition2Container,
-                binding.tilDefinition2MultiAnswerCard,
-                binding.tieDefinition2MultiAnswerCard,
-                binding.cpDefinition2IsTrue,
-                binding.btDeleteField2
+                binding.lyDefinition2.tilText,
+                binding.lyDefinition2.tieText,
+                binding.lyDefinition2.btIsTrue,
+                binding.lyDefinition2.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition3Container,
-                binding.tilDefinition3MultiAnswerCard,
-                binding.tieDefinition3MultiAnswerCard,
-                binding.cpDefinition3IsTrue,
-                binding.btDeleteField3
+                binding.lyDefinition3.tilText,
+                binding.lyDefinition3.tieText,
+                binding.lyDefinition3.btIsTrue,
+                binding.lyDefinition3.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition4Container,
-                binding.tilDefinition4MultiAnswerCard,
-                binding.tieDefinition4MultiAnswerCard,
-                binding.cpDefinition4IsTrue,
-                binding.btDeleteField4
+                binding.lyDefinition4.tilText,
+                binding.lyDefinition4.tieText,
+                binding.lyDefinition4.btIsTrue,
+                binding.lyDefinition4.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition5Container,
-                binding.tilDefinition5MultiAnswerCard,
-                binding.tieDefinition5MultiAnswerCard,
-                binding.cpDefinition5IsTrue,
-                binding.btDeleteField5
+                binding.lyDefinition5.tilText,
+                binding.lyDefinition5.tieText,
+                binding.lyDefinition5.btIsTrue,
+                binding.lyDefinition5.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition6Container,
-                binding.tilDefinition6MultiAnswerCard,
-                binding.tieDefinition6MultiAnswerCard,
-                binding.cpDefinition6IsTrue,
-                binding.btDeleteField6
+                binding.lyDefinition6.tilText,
+                binding.lyDefinition6.tieText,
+                binding.lyDefinition6.btIsTrue,
+                binding.lyDefinition6.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition7Container,
-                binding.tilDefinition7MultiAnswerCard,
-                binding.tieDefinition7MultiAnswerCard,
-                binding.cpDefinition7IsTrue,
-                binding.btDeleteField7
+                binding.lyDefinition7.tilText,
+                binding.lyDefinition7.tieText,
+                binding.lyDefinition7.btIsTrue,
+                binding.lyDefinition7.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition8Container,
-                binding.tilDefinition8MultiAnswerCard,
-                binding.tieDefinition8MultiAnswerCard,
-                binding.cpDefinition8IsTrue,
-                binding.btDeleteField8
+                binding.lyDefinition8.tilText,
+                binding.lyDefinition8.tieText,
+                binding.lyDefinition8.btIsTrue,
+                binding.lyDefinition8.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition9Container,
-                binding.tilDefinition9MultiAnswerCard,
-                binding.tieDefinition9MultiAnswerCard,
-                binding.cpDefinition9IsTrue,
-                binding.btDeleteField9
+                binding.lyDefinition9.tilText,
+                binding.lyDefinition9.tieText,
+                binding.lyDefinition9.btIsTrue,
+                binding.lyDefinition9.btDeleteField
             ),
             DefinitionFieldModel(
                 binding.llDefinition10Container,
-                binding.tilDefinition10MultiAnswerCard,
-                binding.tieDefinition10MultiAnswerCard,
-                binding.cpDefinition10IsTrue,
-                binding.btDeleteField10
+                binding.lyDefinition10.tilText,
+                binding.lyDefinition10.tieText,
+                binding.lyDefinition10.btIsTrue,
+                binding.lyDefinition10.btDeleteField
             ),
         )
+        binding.lyDefinition1.btDeleteField.visibility = View.GONE
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
@@ -1158,13 +1159,21 @@ class NewCardDialog(
             }
         }
         if (!isTrueAnswer) {
-            binding.tilDefinition1MultiAnswerCard.error =
+            binding.lyDefinition1.tilText.error =
                 getString(R.string.cp_error_correct_definition)
         }
         if (!isText) {
-            binding.tilDefinition1MultiAnswerCard.error =
+            binding.lyDefinition1.tilText.error =
                 getString(R.string.til_error_card_definition)
         }
+//        if (!isTrueAnswer) {
+//            binding.tilDefinition1MultiAnswerCard.error =
+//                getString(R.string.cp_error_correct_definition)
+//        }
+//        if (!isText) {
+//            binding.tilDefinition1MultiAnswerCard.error =
+//                getString(R.string.til_error_card_definition)
+//        }
         return true
     }
 
@@ -1435,7 +1444,7 @@ class NewCardDialog(
     }
 
     private fun deleteDefinitionField(field: TextInputEditText) {
-        if (field == binding.tieDefinition10MultiAnswerCard) {
+        if (field == binding.lyDefinition10.tieText) {
             clearField(definitionFields.last())
             return
         }
