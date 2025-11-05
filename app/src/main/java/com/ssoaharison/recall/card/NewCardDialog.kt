@@ -357,11 +357,11 @@ class NewCardDialog(
             }
         }
 
-        binding.tieContentMultiAnswerCard.apply {
+        binding.lyContent.tieContentText.apply {
             setOnFocusChangeListener { v, hasFocus ->
                 onFieldFocused(
                     binding.clContainerContent,
-                    binding.tilContentMultiAnswerCard,
+                    binding.lyContent.tilContentText,
                     v,
                     getNewContentLanguage(),
                     hasFocus,
@@ -397,7 +397,7 @@ class NewCardDialog(
         }
         binding.btTranslate.setOnClickListener {
             onTranslateText(
-                binding.tieContentMultiAnswerCard.text.toString(),
+                binding.lyContent.tieContentText.text.toString(),
                 selectedField,
                 selectedFieldLy
             )
@@ -692,8 +692,8 @@ class NewCardDialog(
     }
 
     private fun initCardAdditionPanel() {
-        binding.tieContentMultiAnswerCard.text?.clear()
-        binding.tilContentMultiAnswerCard.error = null
+        binding.lyContent.tieContentText.text?.clear()
+        binding.lyContent.tieContentText.error = null
         definitionFields.forEach {
             it.ly.tieText.text?.clear()
             it.ly.tilText.error = null
@@ -754,7 +754,7 @@ class NewCardDialog(
     }
 
     private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
-        binding.tieContentMultiAnswerCard.setText(card.contentWithDefinitions.content.contentText)
+        binding.lyContent.tieContentText.setText(card.contentWithDefinitions.content.contentText)
 
         definitionFields.forEachIndexed { index, fl ->
             if (index < card.contentWithDefinitions.definitions.size) {
@@ -827,8 +827,8 @@ class NewCardDialog(
 
     private fun areThereAnOngoingCardCreation(): Boolean {
         when {
-            !binding.tieContentMultiAnswerCard.text.isNullOrBlank() -> return true
-            !binding.tieContentMultiAnswerCard.text.isNullOrEmpty() -> return true
+            !binding.lyContent.tieContentText.text.isNullOrBlank() -> return true
+            !binding.lyContent.tieContentText.text.isNullOrEmpty() -> return true
             else -> {
                 definitionFields.forEach {
 
@@ -1015,7 +1015,7 @@ class NewCardDialog(
     }
 
     private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
-        val cardContentText = binding.tieContentMultiAnswerCard.text.toString()
+        val cardContentText = binding.lyContent.tieContentText.text.toString()
         return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
             newCardViewModel.generateCardContent(
                 contentId = contentId,
@@ -1024,7 +1024,7 @@ class NewCardDialog(
                 text = cardContentText
             )
         } else {
-            binding.tilContentMultiAnswerCard.error = getString(R.string.til_error_card_content)
+            binding.lyContent.tilContentText.error = getString(R.string.til_error_card_content)
             null
         }
     }

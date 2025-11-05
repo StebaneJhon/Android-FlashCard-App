@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cl_add_card_root"
@@ -18,6 +17,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tab_add_new_update_card"
             style="@style/Widget.App.Toolbar.Add.Edit.Card"
@@ -59,8 +59,8 @@
                         android:id="@+id/ll_container_content_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
                         android:layout_marginHorizontal="@dimen/space_sm"
+                        android:gravity="start"
                         android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
@@ -99,130 +99,19 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
 
-                        <ImageView
-                            android:id="@+id/img_content_photo"
-                            android:layout_width="match_parent"
-                            android:layout_height="150dp"
-                            android:layout_margin="@dimen/space_xs"
-                            android:background="@drawable/bg_card_top_element"
-                            android:clipToOutline="true"
-                            android:scaleType="centerCrop"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toTopOf="@+id/ll_container_content_audio"
-                            android:src="@drawable/ic_launcher_background" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/bt_delete_content_image"
-                            style="?attr/materialIconButtonFilledTonalStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/space_xs"
-                            android:backgroundTint="?colorPrimary"
-                            android:clickable="false"
-                            android:contentDescription="@string/bt_description_next"
-                            android:fontFamily="@font/open_sans"
-                            android:textColor="?colorSurfaceContainerLowest"
-                            app:icon="@drawable/icon_exit"
-                            app:iconGravity="end"
-                            app:iconTint="?colorSurfaceContainerLowest"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:rippleColor="?colorSurfaceContainerHighest" />
-
-                        <LinearLayout
-                            android:id="@+id/ll_container_content_audio"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:background="@drawable/bg_radius_xs"
-                            android:backgroundTint="?colorSurfaceContainerHigh"
-                            android:layout_marginHorizontal="@dimen/space_xs"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/img_content_photo"
-                            app:layout_constraintBottom_toTopOf="@+id/tilContentMultiAnswerCard">
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bt_play_content_audio"
-                                style="?attr/materialIconButtonFilledTonalStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/space_xs"
-                                android:backgroundTint="?colorPrimary"
-                                android:clickable="false"
-                                android:contentDescription="@string/bt_description_next"
-                                app:icon="@drawable/icon_play"
-                                app:iconTint="?colorSurfaceContainerLowest"
-                                app:iconGravity="end"
-                                android:textColor="?colorSurfaceContainerLowest"
-                                android:fontFamily="@font/open_sans"
-                                app:rippleColor="?colorSurfaceContainerHighest" />
-
-                            <com.google.android.material.slider.Slider
-                                android:id="@+id/slider_content_audio"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:value="20.0"
-                                android:valueFrom="0.0"
-                                android:valueTo="100.0" />
-
-                            <com.google.android.material.button.MaterialButton
-                                android:id="@+id/bt_delete_content_audio"
-                                style="?attr/materialIconButtonFilledTonalStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/space_xs"
-                                android:backgroundTint="?colorPrimary"
-                                android:clickable="false"
-                                android:contentDescription="@string/bt_description_next"
-                                app:icon="@drawable/icon_exit"
-                                app:iconTint="?colorSurfaceContainerLowest"
-                                app:iconGravity="end"
-                                android:textColor="?colorSurfaceContainerLowest"
-                                android:fontFamily="@font/open_sans"
-                                app:rippleColor="?colorSurfaceContainerHighest" />
-
-
-                        </LinearLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:id="@+id/tilContentMultiAnswerCard"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            app:boxStrokeWidth="0dp"
-                            app:boxStrokeWidthFocused="0dp"
-                            android:padding="0dp"
-                            android:layout_margin="@dimen/space_xs"
-                            app:hintEnabled="false"
-                            android:layout_height="wrap_content"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/tieContentMultiAnswerCard"
-                                style="@style/Widget.App.TextInputEditText"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/til_card_content_hint"
-                                android:inputType="textMultiLine"
-                                android:maxLines="10" />
-                        </com.google.android.material.textfield.TextInputLayout>
+                        <include
+                            android:id="@+id/ly_content"
+                            layout="@layout/ly_card_content_field" />
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
                     <LinearLayout
                         android:id="@+id/ll_container_definition_details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
                         android:layout_marginHorizontal="@dimen/space_sm"
+                        android:gravity="start"
                         android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/cl_container_content">
@@ -257,8 +146,8 @@
                         android:id="@+id/ll_definition_1_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center"
+                        android:orientation="horizontal"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/ll_container_definition_details">
@@ -270,16 +159,16 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_2_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_1_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_1_container">
 
                         <include
                             android:id="@+id/ly_definition_2"
@@ -288,128 +177,136 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_3_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_2_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_2_container">
+
                         <include
                             android:id="@+id/ly_definition_3"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_4_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_3_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_3_container">
+
                         <include
                             android:id="@+id/ly_definition_4"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_5_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_4_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_4_container">
+
                         <include
                             android:id="@+id/ly_definition_5"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_6_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_5_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_5_container">
+
                         <include
                             android:id="@+id/ly_definition_6"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_7_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_6_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_6_container">
+
                         <include
                             android:id="@+id/ly_definition_7"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_8_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_7_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_7_container">
+
                         <include
                             android:id="@+id/ly_definition_8"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_9_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_8_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_8_container">
+
                         <include
                             android:id="@+id/ly_definition_9"
                             layout="@layout/ly_card_definition_field" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
-                        android:visibility="gone"
                         android:id="@+id/ll_definition_10_container"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/space_xs"
                         android:gravity="center"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_9_container"
-                        android:layout_marginTop="@dimen/space_xs">
+                        app:layout_constraintTop_toBottomOf="@+id/ll_definition_9_container">
+
                         <include
                             android:id="@+id/ly_definition_10"
                             layout="@layout/ly_card_definition_field" />
