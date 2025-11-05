@@ -11,7 +11,4 @@ import com.ssoaharison.recall.databinding.LyCardDefinitionFieldBinding
 data class DefinitionFieldModel(
     val container: ConstraintLayout,
     val ly: LyCardDefinitionFieldBinding,
-//    val fieldEd: TextInputEditText,
-//    val chip: TextView,
-//    val btDeleteField: MaterialButton?,
 )
