@@ -73,6 +73,8 @@ import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefin
 import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.databinding.LyCardContentFieldBinding
+import com.ssoaharison.recall.databinding.LyCardDefinitionFieldBinding
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.util.AttachRef.ATTACH_AUDIO_RECORD
@@ -106,6 +108,9 @@ class NewCardDialog(
     private var definitionList = mutableSetOf<CardDefinition>()
     private var selectedField: EditText? = null
     private var selectedFieldLy: TextInputLayout? = null
+
+    private var selectedDefinitionFieldBinding: LyCardDefinitionFieldBinding? = null
+
     private var actualFieldLanguage: String? = null
     private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
@@ -240,14 +245,14 @@ class NewCardDialog(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        WindowCompat.enableEdgeToEdge(dialog?.window!!)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.ablAddNewCard) { v, windowInserts ->
-            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
-            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = insets.top
-            }
-            WindowInsetsCompat.CONSUMED
-        }
+//        WindowCompat.enableEdgeToEdge(dialog?.window!!)
+//        ViewCompat.setOnApplyWindowInsetsListener(binding.ablAddNewCard) { v, windowInserts ->
+//            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+//            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+//                topMargin = insets.top
+//            }
+//            WindowInsetsCompat.CONSUMED
+//        }
 
         definitionFields = listOf(
             DefinitionFieldModel(
@@ -359,9 +364,9 @@ class NewCardDialog(
 
         binding.lyContent.tieContentText.apply {
             setOnFocusChangeListener { v, hasFocus ->
-                onFieldFocused(
+                onContentFieldFocused(
                     binding.clContainerContent,
-                    binding.lyContent.tilContentText,
+                    binding.lyContent,
                     v,
                     getNewContentLanguage(),
                     hasFocus,
@@ -371,9 +376,9 @@ class NewCardDialog(
 
         definitionFields.forEach { definitionField ->
             definitionField.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
-                onFieldFocused(
+                onDefinitionFieldFocused(
                     definitionField.ly.clContainerDefinition,
-                    definitionField.ly.tilText,
+                    definitionField.ly,
                     v,
                     getNewDefinitionLanguage(),
                     hasFocus,
@@ -550,18 +555,44 @@ class NewCardDialog(
         }
     }
 
-    private fun onFieldFocused(
+    private fun onDefinitionFieldFocused(
         container: ConstraintLayout?,
-        ly: TextInputLayout?,
+        ly: LyCardDefinitionFieldBinding?,
         v: View?,
         language: String?,
         hasFocus: Boolean,
     ) {
         if (hasFocus) {
-            selectedFieldLy = ly
+            selectedFieldLy = ly?.tilText
+            selectedField = v as EditText
+            selectedDefinitionFieldBinding = ly
+            actualFieldLanguage = language
+            container?.setBackgroundResource(R.drawable.bg_definition_field_focused)
+            //TODO: To be improved. Scroll to focused view.
+            v.postDelayed({
+                val y = container?.bottom?.plus(binding.dockedToolbar.height) ?: 0
+                binding.nestedScrollView.smoothScrollTo(0, maxOf(y, 0)) }, 200)
+        } else {
+            container?.setBackgroundResource(R.drawable.bg_definition_field)
+        }
+    }
+
+    private fun onContentFieldFocused(
+        container: ConstraintLayout?,
+        ly: LyCardContentFieldBinding?,
+        v: View?,
+        language: String?,
+        hasFocus: Boolean,
+    ) {
+        if (hasFocus) {
+            selectedFieldLy = ly?.tilContentText
             selectedField = v as EditText
             actualFieldLanguage = language
             container?.setBackgroundResource(R.drawable.bg_definition_field_focused)
+            //TODO: To be improved. Scroll to focused view.
+            v.postDelayed({
+                val y = container?.bottom?.plus(binding.dockedToolbar.height) ?: 0
+                binding.nestedScrollView.smoothScrollTo(0, maxOf(y, 0)) }, 200)
         } else {
             container?.setBackgroundResource(R.drawable.bg_definition_field)
         }
@@ -1388,6 +1419,7 @@ class NewCardDialog(
 
     fun onPickPhoto() {
         //TODO: Implement onPickPhoto
+        selectedDefinitionFieldBinding?.clContainerImage?.visibility = View.VISIBLE
         Toast.makeText(appContext, "Pick photo in development", Toast.LENGTH_SHORT).show()
     }
 
