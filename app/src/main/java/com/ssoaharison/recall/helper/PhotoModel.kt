@@ -1,11 +1,11 @@
-package com.ssoaharison.recall.help
+package com.ssoaharison.recall.helper
 
 import android.graphics.Bitmap
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ImageModel(
+data class PhotoModel(
     val name: String,
     val bmp: Bitmap
 ): Parcelable

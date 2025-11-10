@@ -1,5 +1,7 @@
 package com.ssoaharison.recall.backend
 
+import android.content.Context
+import android.graphics.BitmapFactory
 import androidx.annotation.WorkerThread
 import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
@@ -12,8 +14,12 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalCardContentWithDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.helper.PhotoModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import java.io.File
 
 class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
@@ -160,7 +166,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //    }
 
     @WorkerThread
-    suspend fun getExternalDeckWithCardsAndContentAndDefinitions(deckId: String): Flow<ExternalDeckWithCardsAndContentAndDefinitions> {
+    suspend fun getExternalDeckWithCardsAndContentAndDefinitions(deckId: String, context: Context): Flow<ExternalDeckWithCardsAndContentAndDefinitions> {
         val result = flashCardDao.getDeckWithCards(deckId)
         return result.map { data ->
             val cardCount = flashCardDao.countCardsInDeck(data.deck.deckId)
@@ -169,10 +175,25 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
             val externalDeck = data.deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
             val externalCardList = data.cards.map { card  ->
                 //TODO: Get image and audio
-                val externalContent = card.contentWithDefinitions.content.toExternal(null, null)
+                var photoModelContent: PhotoModel? = null
+                card.contentWithDefinitions.content.contentImageName?.let {
+                    val filePhotoContent = File(context.filesDir, card.contentWithDefinitions.content.contentImageName)
+                    val bytesPhotoContent = filePhotoContent.readBytes()
+                    val bmpPhotoContent = BitmapFactory.decodeByteArray(bytesPhotoContent, 0, bytesPhotoContent.size)
+                    photoModelContent = PhotoModel(filePhotoContent.name, bmpPhotoContent)
+                }
+
+                val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, null)
                 val externalDefinitions = card.contentWithDefinitions.definitions.map { definition ->
                     //TODO: Get image and audio
-                    definition.toExternal(null, null)
+                    var photoModelDefinition: PhotoModel? = null
+                    definition.definitionImageName?.let {
+                        val filePhotoDefinition = File(context.filesDir, definition.definitionImageName)
+                        val bytesPhotoDefinition = filePhotoDefinition.readBytes()
+                        val bmpPhotoDefinition = BitmapFactory.decodeByteArray(bytesPhotoDefinition, 0, bytesPhotoDefinition.size)
+                        photoModelDefinition = PhotoModel(filePhotoDefinition.name, bmpPhotoDefinition)
+                    }
+                    definition.toExternal(photoModelDefinition, null)
                 }
                 val externalCard = card.card.toExternal()
                 ExternalCardWithContentAndDefinitions(

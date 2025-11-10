@@ -82,13 +82,14 @@
                 android:id="@+id/cl_container_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_definition_field"
+                android:gravity="center"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
 
                 <include
                     android:id="@+id/ly_content"
-                    layout="@layout/ly_card_content_field" />
+                    layout="@layout/ly_add_card_field" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -141,7 +142,7 @@
 
                 <include
                     android:id="@+id/ly_definition_1"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -159,7 +160,7 @@
 
                 <include
                     android:id="@+id/ly_definition_2"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,7 +178,7 @@
 
                 <include
                     android:id="@+id/ly_definition_3"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -194,7 +195,7 @@
 
                 <include
                     android:id="@+id/ly_definition_4"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -211,7 +212,7 @@
 
                 <include
                     android:id="@+id/ly_definition_5"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -228,7 +229,7 @@
 
                 <include
                     android:id="@+id/ly_definition_6"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -245,7 +246,7 @@
 
                 <include
                     android:id="@+id/ly_definition_7"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -262,7 +263,7 @@
 
                 <include
                     android:id="@+id/ly_definition_8"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -279,7 +280,7 @@
 
                 <include
                     android:id="@+id/ly_definition_9"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -296,7 +297,7 @@
 
                 <include
                     android:id="@+id/ly_definition_10"
-                    layout="@layout/ly_card_definition_field" />
+                    layout="@layout/ly_add_card_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button

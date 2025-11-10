@@ -555,7 +555,7 @@ class CardFragment :
         displayingCardsJob?.cancel()
         displayingCardsJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getDeckWithCards(deckId)
+                cardViewModel.getDeckWithCards(deckId, appContext!!)
                 cardViewModel.deckWithAllCards.collect { state ->
                     when (state) {
                         is UiState.Loading -> {
@@ -746,7 +746,7 @@ class CardFragment :
         startingQuizJob?.cancel()
         startingQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getDeckWithCards(deck.deckId)
+                cardViewModel.getDeckWithCards(deck.deckId, appContext!!)
                 cardViewModel.deckWithAllCards.collect { state ->
                     when (state) {
                         is UiState.Loading -> {

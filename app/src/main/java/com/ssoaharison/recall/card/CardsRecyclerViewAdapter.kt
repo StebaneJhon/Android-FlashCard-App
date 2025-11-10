@@ -10,6 +10,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
@@ -18,20 +20,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
-import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.toLocal
+import com.ssoaharison.recall.databinding.LyCardDefinitionBinding
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -72,17 +71,17 @@ class CardsRecyclerViewAdapter(
 
     class CardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-        private val onCardText: TextView = view.findViewById(R.id.tv_card_content)
-        private val cardDescription1: TextView = view.findViewById(R.id.tv_card_description1)
-        private val cardDescription2: TextView = view.findViewById(R.id.tv_card_description2)
-        private val cardDescription3: TextView = view.findViewById(R.id.tv_card_description3)
-        private val cardDescription4: TextView = view.findViewById(R.id.tv_card_description4)
-        private val cardDescription5: TextView = view.findViewById(R.id.tv_card_description5)
-        private val cardDescription6: TextView = view.findViewById(R.id.tv_card_description6)
-        private val cardDescription7: TextView = view.findViewById(R.id.tv_card_description7)
-        private val cardDescription8: TextView = view.findViewById(R.id.tv_card_description8)
-        private val cardDescription9: TextView = view.findViewById(R.id.tv_card_description9)
-        private val cardDescription10: TextView = view.findViewById(R.id.tv_card_description10)
+        private val content: View = view.findViewById(R.id.in_content)
+        private val cardDefinition1: View = view.findViewById(R.id.in_definition_1)
+        private val cardDefinition2: View = view.findViewById(R.id.in_definition_2)
+        private val cardDefinition3: View = view.findViewById(R.id.in_definition_3)
+        private val cardDefinition4: View = view.findViewById(R.id.in_definition_4)
+        private val cardDefinition5: View = view.findViewById(R.id.in_definition_5)
+        private val cardDefinition6: View = view.findViewById(R.id.in_definition_6)
+        private val cardDefinition7: View = view.findViewById(R.id.in_definition_7)
+        private val cardDefinition8: View = view.findViewById(R.id.in_definition_8)
+        private val cardDefinition9: View = view.findViewById(R.id.in_definition_9)
+        private val cardDefinition10: View = view.findViewById(R.id.in_definition_10)
         private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
         private val popUpBT: Button = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
@@ -90,20 +89,32 @@ class CardsRecyclerViewAdapter(
         private val cardDescriptionError: TextView =
             view.findViewById(R.id.tv_card_description_error)
 
-        private val tvDescriptions = listOf(
-            cardDescription1,
-            cardDescription2,
-            cardDescription3,
-            cardDescription4,
-            cardDescription5,
-            cardDescription6,
-            cardDescription7,
-            cardDescription8,
-            cardDescription9,
-            cardDescription10,
+        private val descriptionBinding = listOf(
+            cardDefinition1,
+            cardDefinition2,
+            cardDefinition3,
+            cardDefinition4,
+            cardDefinition5,
+            cardDefinition6,
+            cardDefinition7,
+            cardDefinition8,
+            cardDefinition9,
+            cardDefinition10,
+        )
+        private val descriptionContainer = listOf(
+            view.findViewById<FrameLayout>(R.id.container_definition_1),
+            view.findViewById<FrameLayout>(R.id.container_definition_2),
+            view.findViewById<FrameLayout>(R.id.container_definition_3),
+            view.findViewById<FrameLayout>(R.id.container_definition_4),
+            view.findViewById<FrameLayout>(R.id.container_definition_5),
+            view.findViewById<FrameLayout>(R.id.container_definition_6),
+            view.findViewById<FrameLayout>(R.id.container_definition_7),
+            view.findViewById<FrameLayout>(R.id.container_definition_8),
+            view.findViewById<FrameLayout>(R.id.container_definition_9),
+            view.findViewById<FrameLayout>(R.id.container_definition_10),
         )
 
-        val spaceRepetitionAlgorithmHelper = SpaceRepetitionAlgorithmHelper()
+        private val spaceRepetitionAlgorithmHelper = SpaceRepetitionAlgorithmHelper()
 
         private val ICON_MARGIN = 5
 
@@ -129,7 +140,7 @@ class CardsRecyclerViewAdapter(
             }
 
             val correctDefinition = getCorrectDefinition(card.contentWithDefinitions.definitions)
-            val definitionTexts = cardDefinitionsToStrings(correctDefinition)
+//            val definitionTexts = cardDefinitionsToStrings(correctDefinition)
 
             cardRoot.setOnLongClickListener { v: View ->
                 showMenu(
@@ -145,39 +156,54 @@ class CardsRecyclerViewAdapter(
                 true
             }
 
-            tvDescriptions.forEachIndexed { index, tv ->
-                if (index < definitionTexts.size) {
-                    tv.visibility = View.VISIBLE
+            descriptionBinding.forEachIndexed { index, descriptionView ->
+                if (index <  correctDefinition!!.size) {
+                    descriptionContainer[index].visibility = View.VISIBLE
                     cardDescriptionError.visibility = View.GONE
-                    tv.text = definitionTexts[index]
-                    tv.setOnClickListener {
-                        it as TextView
-                        val text = it.text.toString()
-                        val language = card.card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
-                        onReadDefinition(
-                            TextClickedModel(
-                                TextWithLanguageModel(card.card.cardId, text, DEFINITION, language),
-                                it,
-                                definitionTextColor,
-                                DEFINITION
-                            )
-                        )
+                    if (correctDefinition[index].definitionText != null) {
+                        val tvDefinition: TextView = descriptionView.findViewById(R.id.tv_definition)
+                        tvDefinition.text = correctDefinition[index].definitionText
                     }
-                    tv.setOnLongClickListener { v: View ->
-                        showMenu(
-                            context,
-                            appTheme,
-                            v,
-                            R.menu.card_popup_menu,
-                            editCardClickListener,
-                            deleteCardClickListener,
-                            card,
-                            deck.deckColorCode
-                        )
-                        true
+
+                    if ( card.contentWithDefinitions.definitions[index].definitionImage != null) {
+                        val imageView: ImageView = descriptionView.findViewById(R.id.img_photo)
+                        imageView.apply {
+                            setImageBitmap(correctDefinition[index].definitionImage?.bmp)
+                            visibility = View.VISIBLE
+                        }
                     }
+
+
+//                    descriptionView.text = definitionTexts[index]
+//                    descriptionView.setOnClickListener {
+//                        it as TextView
+//                        val text = it.text.toString()
+//                        val language = card.card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
+//                        onReadDefinition(
+//                            TextClickedModel(
+//                                TextWithLanguageModel(card.card.cardId, text, DEFINITION, language),
+//                                it,
+//                                definitionTextColor,
+//                                DEFINITION
+//                            )
+//                        )
+//                    }
+//                    descriptionView.setOnLongClickListener { v: View ->
+//                        showMenu(
+//                            context,
+//                            appTheme,
+//                            v,
+//                            R.menu.card_popup_menu,
+//                            editCardClickListener,
+//                            deleteCardClickListener,
+//                            card,
+//                            deck.deckColorCode
+//                        )
+//                        true
+//                    }
                 } else {
-                    tv.visibility = View.GONE
+//                    descriptionView.visibility = View.GONE
+                    descriptionContainer[index].visibility = View.GONE
                 }
             }
 
@@ -195,7 +221,7 @@ class CardsRecyclerViewAdapter(
             }
 
 
-            onCardText.apply {
+            content.apply {
                 setOnClickListener {
                     it as TextView
                     val text = it.text.toString()
@@ -246,12 +272,22 @@ class CardsRecyclerViewAdapter(
                 text = card.card.cardLevel
                 backgroundTintList = colorStateList
             }
-            onCardText.apply {
-                text = card.contentWithDefinitions.content.contentText
-                setTextColor(context.getColor(contentTextColor))
+            // TODO: Include Audio
+
+            if (card.contentWithDefinitions.content.contentText != null) {
+                content.findViewById<TextView>(R.id.tv_content).apply {
+                    text = card.contentWithDefinitions.content.contentText
+                    setTextColor(context.getColor(contentTextColor))
+                }
             }
-            tvDescriptions.forEach {
-                it.setTextColor(context.getColor(definitionTextColor))
+            if (card.contentWithDefinitions.content.contentImage != null) {
+                content.findViewById<ImageView>(R.id.img_photo).apply {
+                    setImageBitmap(card.contentWithDefinitions.content.contentImage.bmp)
+                    visibility = View.VISIBLE
+                }
+            }
+            descriptionBinding.forEach {
+                it.findViewById<TextView>(R.id.tv_definition).setTextColor(context.getColor(definitionTextColor))
             }
         }
 
@@ -273,12 +309,24 @@ class CardsRecyclerViewAdapter(
                 text = card.card.cardLevel
                 backgroundTintList = cardBackgroundStateList
             }
-            onCardText.apply {
-                text = card.contentWithDefinitions.content.contentText
-                setTextColor(context.getColor(contentTextColor))
+
+            // TODO: Include Audio
+
+            if (card.contentWithDefinitions.content.contentText != null) {
+                content.findViewById<TextView>(R.id.tv_content).apply {
+                    text = card.contentWithDefinitions.content.contentText
+                    setTextColor(context.getColor(contentTextColor))
+                }
             }
-            tvDescriptions.forEach {
-                it.setTextColor(context.getColor(definitionTextColor))
+            if (card.contentWithDefinitions.content.contentImage != null) {
+                content.findViewById<ImageView>(R.id.img_photo).apply {
+                    setImageBitmap(card.contentWithDefinitions.content.contentImage.bmp)
+                    visibility = View.VISIBLE
+                }
+            }
+
+            descriptionBinding.forEach {
+                it.findViewById<TextView>(R.id.tv_definition).setTextColor(context.getColor(definitionTextColor))
             }
             cardStatus.setTextColor(context.getColor(R.color.black))
         }

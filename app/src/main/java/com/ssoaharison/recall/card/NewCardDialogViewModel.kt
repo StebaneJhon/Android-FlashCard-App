@@ -76,7 +76,7 @@ class NewCardDialogViewModel(
             val newCardId = UUID.randomUUID().toString()
             val contentId = UUID.randomUUID().toString()
             val formatedQuestion = reformatText(result.question)
-            val newCardContent = generateCardContent(formatedQuestion, newCardId, contentId, deckId)
+            val newCardContent = generateCardContent(formatedQuestion, null, null, newCardId, contentId, deckId)
             val newCardDefinitions = generateCardDefinitions(
                 result.correctAnswer,
                 result.incorrectAnswers,
@@ -122,12 +122,14 @@ class NewCardDialogViewModel(
         deckId: String
     ): List<CardDefinition> {
         val newCardDefinitions = arrayListOf<CardDefinition>()
-        newCardDefinitions.add(createDefinition(correctAnswer, true, cardId, contentId, deckId))
+        newCardDefinitions.add(createDefinition(correctAnswer, null, null, true, cardId, contentId, deckId))
         incorrectAnswers.forEach { incorrectAnswer ->
             val reformatedText = reformatText(incorrectAnswer)
             newCardDefinitions.add(
                 createDefinition(
                     reformatedText,
+                    null,
+                    null,
                     false,
                     cardId,
                     contentId,
@@ -140,6 +142,8 @@ class NewCardDialogViewModel(
 
     fun createDefinition(
         text: String,
+        imageName: String?,
+        audioName: String?,
         isCorrect: Boolean,
         cardId: String,
         contentId: String,
@@ -152,13 +156,15 @@ class NewCardDialogViewModel(
             contentOwnerId = contentId,
             isCorrectDefinition = isCorrectRevers(isCorrect),
             definitionText = text,
-            definitionImageName = null,
-            definitionAudioName = null,
+            definitionImageName = imageName,
+            definitionAudioName = audioName,
         )
     }
 
     fun generateCardContent(
         text: String,
+        imageName: String?,
+        audioName: String?,
         cardId: String,
         contentId: String,
         deckId: String
@@ -168,8 +174,8 @@ class NewCardDialogViewModel(
             cardOwnerId = cardId,
             deckOwnerId = deckId,
             contentText = text,
-            contentImageName = null,
-            contentAudioName = null
+            contentImageName = imageName,
+            contentAudioName = audioName
         )
     }
 

@@ -18,13 +18,14 @@
         app:iconTint="?colorOnSurface" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_container_definition"
+        android:id="@+id/cl_container_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/space_xs"
         android:layout_marginEnd="@dimen/space_xs"
         android:background="@drawable/bg_definition_field"
-        android:padding="@dimen/space_xs">
+        android:paddingStart="@dimen/space_xs"
+        android:paddingVertical="@dimen/space_xs">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_container_image"
@@ -162,6 +163,7 @@
             android:gravity="center"
             android:paddingHorizontal="@dimen/space_sm"
             android:paddingVertical="@dimen/space_xs"
+            android:layout_marginEnd="@dimen/space_xs"
             android:text="@string/cp_true_text"
             android:textAlignment="center"
             android:textColor="@color/green500"

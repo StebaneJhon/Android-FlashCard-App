@@ -1,5 +1,6 @@
 package com.ssoaharison.recall.deck
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -69,12 +70,12 @@ class DeckViewModel(
     private var _deckWithAllCards = MutableStateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>>(UiState.Loading)
     val deckWithAllCards: StateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>> = _deckWithAllCards.asStateFlow()
 
-    fun getDeckWithCards(deckId: String) {
+    fun getDeckWithCards(deckId: String, context: Context) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId).collect { deckWithCards ->
+                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId, context).collect { deckWithCards ->
                     if (deckWithCards.cards.isEmpty()) {
                         _deckWithAllCards.value = UiState.Error("Empty deck")
                     } else {

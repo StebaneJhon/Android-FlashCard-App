@@ -373,7 +373,7 @@ class DeckFragment :
         startQuizJob?.cancel()
         startQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                deckViewModel.getDeckWithCards(deck.deckId)
+                deckViewModel.getDeckWithCards(deck.deckId, appContext!!)
                 deckViewModel.deckWithAllCards.collect { state ->
                     when (state) {
                         is UiState.Loading -> {

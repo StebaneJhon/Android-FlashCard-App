@@ -1,5 +1,6 @@
 package com.ssoaharison.recall.card
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -34,12 +35,12 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     private lateinit var deckPath: List<ExternalDeck>
 
-    fun getDeckWithCards(deckId: String) {
+    fun getDeckWithCards(deckId: String, context: Context) {
         fetchJob?.cancel()
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId).collect {
+                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId, context).collect {
                     actualDeck = it.deck
                     if (it.cards.isEmpty()) {
                         _deckWithAllCards.value = UiState.Error("Empty deck")

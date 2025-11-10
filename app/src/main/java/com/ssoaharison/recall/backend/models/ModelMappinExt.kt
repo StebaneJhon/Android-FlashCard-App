@@ -10,7 +10,7 @@ import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefiniti
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.entities.relations.DeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.help.AudioModel
-import com.ssoaharison.recall.help.ImageModel
+import com.ssoaharison.recall.helper.PhotoModel
 
 //fun ImmutableDeck.toLocal() = Deck(
 //    deckId = deckId,
@@ -168,7 +168,7 @@ fun ExternalCardDefinition.toLocal() = CardDefinition(
 @JvmName("externalCardDefinitionToLocal")
 fun List<ExternalCardDefinition>.toLocal() = map(ExternalCardDefinition::toLocal)
 
-fun CardDefinition.toExternal(imageModel: ImageModel?, audioModel: AudioModel?) = ExternalCardDefinition(
+fun CardDefinition.toExternal(imageModel: PhotoModel?, audioModel: AudioModel?) = ExternalCardDefinition(
     definitionId = definitionId,
     cardOwnerId = cardOwnerId,
     deckOwnerId = deckOwnerId,
@@ -180,7 +180,7 @@ fun CardDefinition.toExternal(imageModel: ImageModel?, audioModel: AudioModel?) 
 )
 
 @JvmName("localCardDefinitionToExternal")
-fun List<CardDefinition>.toExternal(imageModel: ImageModel?, audioModel: AudioModel?) = map { definition -> definition.toExternal(imageModel, audioModel)}
+fun List<CardDefinition>.toExternal(imageModel: PhotoModel?, audioModel: AudioModel?) = map { definition -> definition.toExternal(imageModel, audioModel)}
 
 fun ExternalCardContent.toLocal() = CardContent(
     contentId = contentId,
@@ -194,7 +194,7 @@ fun ExternalCardContent.toLocal() = CardContent(
 @JvmName("externalCardContentToLocal")
 fun List<ExternalCardContent>.toLocal() = map(ExternalCardContent::toLocal)
 
-fun CardContent.toExternal(imageModel: ImageModel?, audioModel: AudioModel?) = ExternalCardContent(
+fun CardContent.toExternal(imageModel: PhotoModel?, audioModel: AudioModel?) = ExternalCardContent(
     contentId = contentId,
     cardOwnerId = cardOwnerId,
     deckOwnerId = deckOwnerId,
@@ -204,7 +204,7 @@ fun CardContent.toExternal(imageModel: ImageModel?, audioModel: AudioModel?) = E
 )
 
 @JvmName("localCardContentToExternal")
-fun List<CardContent>.toExternal(imageModel: ImageModel?, audioModel: AudioModel?) = map { content -> content.toExternal(imageModel, audioModel)}
+fun List<CardContent>.toExternal(imageModel: PhotoModel?, audioModel: AudioModel?) = map { content -> content.toExternal(imageModel, audioModel)}
 
 @JvmName("externalCardContentWithDefinitionsToLocal")
 fun ExternalCardContentWithDefinitions.toLocal() = CardContentWithDefinitions(
