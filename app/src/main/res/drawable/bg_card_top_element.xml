@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <corners
-        android:bottomLeftRadius="@dimen/radius_xs"
-        android:bottomRightRadius="@dimen/radius_xs"
-        android:topLeftRadius="@dimen/radius_sm"
-        android:topRightRadius="@dimen/radius_sm"
+        android:radius="@dimen/radius_xs"
         />
 </shape>

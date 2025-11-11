@@ -214,7 +214,7 @@ class NewCardDialog(
             if (isPhotoSaved) {
                 selectedField?.let { field ->
                     field.imageName = fileImageName
-                    onSetFieldPhoto(selectedField!!, it)
+                    onSetFieldPhoto(field, it)
                 }
             }
         }
@@ -406,7 +406,7 @@ class NewCardDialog(
                 )
             }
             btDeleteImage.setOnClickListener {
-                onDeleteImage(binding.lyContent)
+                onDeleteImage(contentField)
             }
             btDeleteAudio.setOnClickListener {
                 onDeleteAudio(binding.lyContent)
@@ -433,7 +433,7 @@ class NewCardDialog(
                 onDeleteAudio(definitionField.ly)
             }
             definitionField.ly.btDeleteImage.setOnClickListener {
-                onDeleteImage(definitionField.ly)
+                onDeleteImage(definitionField)
             }
         }
 
@@ -860,12 +860,31 @@ class NewCardDialog(
     }
 
     private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
-        binding.lyContent.tieText.setText(card.contentWithDefinitions.content.contentText)
+
+        card.contentWithDefinitions.content.contentText?.let {
+            binding.lyContent.tieText.setText(it)
+        }
+        card.contentWithDefinitions.content.contentImage?.let {
+            binding.lyContent.imgPhoto.setImageBitmap(it.bmp)
+            binding.lyContent.clContainerImage.visibility = View.VISIBLE
+        }
+        card.contentWithDefinitions.content.contentAudio?.let {
+            // TODO: Include audio content
+        }
 
         definitionFields.forEachIndexed { index, fl ->
             if (index < card.contentWithDefinitions.definitions.size) {
                 fl.container.visibility = View.VISIBLE
-                fl.ly.tieText.setText(card.contentWithDefinitions.definitions[index].definitionText)
+                card.contentWithDefinitions.definitions[index].definitionText?.let {
+                    fl.ly.tieText.setText(it)
+                }
+                card.contentWithDefinitions.definitions[index].definitionImage?.let {
+                    fl.ly.imgPhoto.setImageBitmap(it.bmp)
+                    fl.ly.clContainerImage.visibility = View.VISIBLE
+                }
+                card.contentWithDefinitions.definitions[index].definitionAudio?.let {
+                    //TODO: Include audio definition
+                }
                 onClickChip(
                     state = isCorrect(card.contentWithDefinitions.definitions[index].isCorrectDefinition),
                     chip = fl.ly.btIsTrue
@@ -953,7 +972,7 @@ class NewCardDialog(
 
 
     private fun generateCardOnUpdate(card: ExternalCardWithContentAndDefinitions): CardWithContentAndDefinitions? {
-
+        //TODO: Update image error
         val content = getContent(
             cardId = card.card.cardId,
             contentId = card.contentWithDefinitions.content.contentId,
@@ -966,33 +985,50 @@ class NewCardDialog(
         ) ?: return null
 
         val updateCardDefinitions = mutableListOf<CardDefinition>()
-        for (i in 0..card.contentWithDefinitions.definitions.size.minus(1)) {
-            val definition = try {
-                definitions[i]
-            } catch (e: IndexOutOfBoundsException) {
-                newCardViewModel.createDefinition(
-                    "",
-                    null,
-                    null,
-                    false,
-                    card.card.cardId,
-                    card.contentWithDefinitions.content.contentId,
-                    card.card.deckOwnerId
+        card.contentWithDefinitions.definitions.forEachIndexed { index, definition ->
+            if (index < definitions.size) {
+                val updatedDefinition = CardDefinition(
+                    definitionId = card.contentWithDefinitions.definitions[index].definitionId,
+                    cardOwnerId = card.contentWithDefinitions.definitions[index].cardOwnerId,
+                    deckOwnerId = card.contentWithDefinitions.definitions[index].deckOwnerId,
+                    contentOwnerId = card.contentWithDefinitions.definitions[index].contentOwnerId,
+                    isCorrectDefinition = definitions[index].isCorrectDefinition,
+                    definitionText = definitions[index].definitionText,
+                    definitionImageName = definitions[index].definitionImageName,
+                    definitionAudioName = definitions[index].definitionAudioName,
                 )
+                updateCardDefinitions.add(updatedDefinition)
             }
-
-            val updatedDefinition = CardDefinition(
-                definitionId = card.contentWithDefinitions.definitions[i].definitionId,
-                cardOwnerId = card.contentWithDefinitions.definitions[i].cardOwnerId,
-                deckOwnerId = card.contentWithDefinitions.definitions[i].deckOwnerId,
-                contentOwnerId = card.contentWithDefinitions.definitions[i].contentOwnerId,
-                isCorrectDefinition = definition.isCorrectDefinition,
-                definitionText = definition.definitionText,
-                definitionImageName = definition.definitionImageName,
-                definitionAudioName = definition.definitionAudioName,
-            )
-            updateCardDefinitions.add(updatedDefinition)
         }
+
+
+//        for (i in 0..card.contentWithDefinitions.definitions.size.minus(1)) {
+//            val definition = try {
+//                definitions[i]
+//            } catch (e: IndexOutOfBoundsException) {
+//                newCardViewModel.createDefinition(
+//                    "",
+//                    null,
+//                    null,
+//                    false,
+//                    card.card.cardId,
+//                    card.contentWithDefinitions.content.contentId,
+//                    card.card.deckOwnerId
+//                )
+//            }
+//
+//            val updatedDefinition = CardDefinition(
+//                definitionId = card.contentWithDefinitions.definitions[i].definitionId,
+//                cardOwnerId = card.contentWithDefinitions.definitions[i].cardOwnerId,
+//                deckOwnerId = card.contentWithDefinitions.definitions[i].deckOwnerId,
+//                contentOwnerId = card.contentWithDefinitions.definitions[i].contentOwnerId,
+//                isCorrectDefinition = definition.isCorrectDefinition,
+//                definitionText = definition.definitionText,
+//                definitionImageName = definition.definitionImageName,
+//                definitionAudioName = definition.definitionAudioName,
+//            )
+//            updateCardDefinitions.add(updatedDefinition)
+//        }
         if (definitions.size > card.contentWithDefinitions.definitions.size) {
             for (j in (card.contentWithDefinitions.definitions.size)..definitions.size.minus(1)) {
                 updateCardDefinitions.add(definitions[j])
@@ -1031,6 +1067,11 @@ class NewCardDialog(
 
         val updatedContentWithDefinitions =
             CardContentWithDefinitions(content = content, definitions = updateCardDefinitions)
+
+        val newCard = CardWithContentAndDefinitions(
+            card = updatedCard,
+            contentWithDefinitions = updatedContentWithDefinitions
+        )
 
         return CardWithContentAndDefinitions(
             card = updatedCard,
@@ -1443,6 +1484,7 @@ class NewCardDialog(
     }
 
     private fun deleteDefinitionField(field: TextInputEditText) {
+        // TODO: On delete field with image and audio
         if (field == binding.lyDefinition10.tieText) {
             clearField(definitionFields.last())
             return
@@ -1533,9 +1575,24 @@ class NewCardDialog(
         selectedField.llContainerAudio.visibility = View.GONE
     }
 
-    fun onDeleteImage(selectedField: LyAddCardFieldBinding) {
-        //TODO: Implement Delete Image
-        selectedField.clContainerImage.visibility = View.GONE
+    fun onDeleteImage(actualField: FieldModel) {
+        if (actualField.container.id == contentField.container.id) {
+            contentField.imageName?.let {
+                deleteImageFromInternalStorage(it)
+            }
+            contentField.imageName = null
+            contentField.ly.clContainerImage.visibility = View.GONE
+        } else {
+            definitionFields.forEach { field ->
+                if (actualField.container.id == field.container.id) {
+                    field.imageName?.let {
+                        deleteImageFromInternalStorage(it)
+                    }
+                    field.imageName = null
+                    field.ly.clContainerImage.visibility = View.GONE
+                }
+            }
+        }
     }
 
     private fun saveImageToInternalStorage(filename: String, bmp: Bitmap): Boolean {
@@ -1547,6 +1604,15 @@ class NewCardDialog(
             }
             true
         } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun deleteImageFromInternalStorage(filename: String): Boolean {
+        return try {
+            appContext!!.deleteFile(filename)
+        } catch (e: Exception) {
             e.printStackTrace()
             false
         }

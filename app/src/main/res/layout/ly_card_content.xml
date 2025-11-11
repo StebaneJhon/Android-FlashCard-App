@@ -14,7 +14,7 @@
         android:background="@drawable/bg_card_top_element"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
-        android:layout_marginBottom="@dimen/space_xs"
+        android:layout_marginBottom="@dimen/space_xxs"
         android:src="@drawable/ic_launcher_background" />
 
     <LinearLayout
@@ -22,7 +22,7 @@
         android:id="@+id/ll_container_audio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/space_xs"
+        android:layout_marginBottom="@dimen/space_xxs"
         android:background="@drawable/bg_radius_xs"
         android:backgroundTint="?colorSurfaceContainerHigh"
         android:gravity="center_vertical"

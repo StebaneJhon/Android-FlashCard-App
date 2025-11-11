@@ -14,6 +14,7 @@ import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.entities.relations.DeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -108,9 +109,9 @@ interface FlashCardDao {
 
     @Query(
         "SELECT * FROM card " +
-        "JOIN cardContent ON cardContent.cardOwnerId = card.cardId " +
-        "JOIN cardDefinition ON cardDefinition.cardOwnerId = card.cardId " +
-        "WHERE cardContent.contentText LIKE :searchQuery AND card.deckOwnerId = :deckId OR cardDefinition.definitionText LIKE :searchQuery AND card.deckOwnerId = :deckId OR card.cardType LIKE :searchQuery AND card.deckOwnerId = :deckId"
+                "JOIN cardContent ON cardContent.cardOwnerId = card.cardId " +
+                "JOIN cardDefinition ON cardDefinition.cardOwnerId = card.cardId " +
+                "WHERE cardContent.contentText LIKE :searchQuery AND card.deckOwnerId = :deckId OR cardDefinition.definitionText LIKE :searchQuery AND card.deckOwnerId = :deckId OR card.cardType LIKE :searchQuery AND card.deckOwnerId = :deckId"
     )
     fun searchCard(searchQuery: String, deckId: String): Flow<List<CardWithContentAndDefinitions>>
 
@@ -125,6 +126,9 @@ interface FlashCardDao {
 
     @Query("SELECT COUNT(*) FROM card WHERE cardLevel <> 'L1' ")
     suspend fun getKnownCardCount(): Int
+
+    @Query("SELECT * FROM carddefinition WHERE cardOwnerId = :cardId")
+    suspend fun getCardDefinitionsByCardId(cardId: String): List<CardDefinition>
 
     @Query("SELECT * FROM spaceRepetitionBox")
     fun getBox(): Flow<List<SpaceRepetitionBox>>
@@ -166,29 +170,78 @@ interface FlashCardDao {
 
     @Transaction
     suspend fun updateCardWithContentAndDefinition(cardWithContentAndDefinitions: CardWithContentAndDefinitions) {
-        cardWithContentAndDefinitions.contentWithDefinitions?.content.let { content ->
-            updateCardContent(content!!)
+
+        updateCardContent(cardWithContentAndDefinitions.contentWithDefinitions.content)
+        val storedCardDefinitions = getCardDefinitionsByCardId(cardWithContentAndDefinitions.card.cardId)
+        val newDefinitions: MutableList<CardDefinition> = mutableListOf()
+        val deletedDefinitions: MutableList<CardDefinition> = mutableListOf()
+        val updatedDefinitions: MutableList<CardDefinition> = mutableListOf()
+
+        cardWithContentAndDefinitions.contentWithDefinitions.definitions.forEach { newDefinition ->
+            var isNew = true
+            storedCardDefinitions.forEach { storedDefinition ->
+                if (newDefinition.definitionId == storedDefinition.definitionId) {
+                    isNew = false
+                }
+            }
+            if (isNew) {
+                newDefinitions.add(newDefinition)
+            }
         }
-        cardWithContentAndDefinitions.contentWithDefinitions?.definitions.let { definitions ->
-            definitions?.forEach { actualDefinition ->
-                when {
-                    actualDefinition.definitionText != null && actualDefinition.definitionText.isEmpty()  -> {
-                        deleteCardDefinition(actualDefinition)
-                    }
 
-                    actualDefinition.definitionId == null -> {
-                        insertCardDefinition(actualDefinition)
-                    }
-
-                    else -> {
-                        updateCardDefinition(actualDefinition)
-                    }
+        storedCardDefinitions.forEach { storedDefinition ->
+            cardWithContentAndDefinitions.contentWithDefinitions.definitions.forEach { newDefinition ->
+                if (storedDefinition.definitionId == newDefinition.definitionId && (
+                        storedDefinition.definitionText != newDefinition.definitionText ||
+                        storedDefinition.definitionAudioName != newDefinition.definitionAudioName ||
+                        storedDefinition.definitionImageName != newDefinition.definitionImageName
+                        )
+                    ) {
+                    updatedDefinitions.add(newDefinition)
                 }
             }
         }
+
+        storedCardDefinitions.forEach { storedDefinition ->
+            var found = false
+            cardWithContentAndDefinitions.contentWithDefinitions.definitions.forEach { newDefinition ->
+                if (storedDefinition.definitionId == newDefinition.definitionId) {
+                    found = true
+                }
+            }
+            if (!found) {
+                deletedDefinitions.add(storedDefinition)
+            }
+        }
+
+        newDefinitions.forEach { definition ->
+            insertCardDefinition(definition)
+        }
+        deletedDefinitions.forEach { definition ->
+            deleteCardDefinition(definition)
+        }
+        updatedDefinitions.forEach { definition ->
+            updateCardDefinition(definition)
+        }
+
+//        cardWithContentAndDefinitions.contentWithDefinitions.definitions.forEach { actualDefinition ->
+//
+//            when {
+//                actualDefinition.definitionText != null && actualDefinition.definitionText.isEmpty() -> {
+//                    deleteCardDefinition(actualDefinition)
+//                }
+//
+//                actualDefinition.definitionId == null -> {
+//                    insertCardDefinition(actualDefinition)
+//                }
+//
+//                else -> {
+//                    updateCardDefinition(actualDefinition)
+//                }
+//            }
+//        }
         updateCard(cardWithContentAndDefinitions.card)
     }
-
     @Query("UPDATE card SET cardContentLanguage = :language WHERE cardId = :cardId")
     suspend fun updateCardContentLanguage(cardId: String, language: String)
 
@@ -249,4 +302,5 @@ interface FlashCardDao {
         deleteCardsWithContentAndDefinition(deckWithCards.cards!!)
         deleteDeck(deckWithCards.deck)
     }
+
 }
