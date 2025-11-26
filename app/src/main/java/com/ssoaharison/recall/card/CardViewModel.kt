@@ -119,8 +119,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateCardWithContentAndDefinition(card)
     }
 
-    fun deleteCard(card: CardWithContentAndDefinitions) = viewModelScope.launch {
-        repository.deleteCardWithContentAndDefinitions(card)
+    fun deleteCard(card: CardWithContentAndDefinitions, context: Context) = viewModelScope.launch {
+        repository.deleteCardWithContentAndDefinitions(card, context)
     }
 
     fun searchCard(searchQuery: String, deckId: String): LiveData<List<ExternalCardWithContentAndDefinitions>> {

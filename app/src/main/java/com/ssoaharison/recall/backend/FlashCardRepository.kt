@@ -394,7 +394,21 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //    }
 
     @WorkerThread
-    suspend fun deleteCardWithContentAndDefinitions(cardWithContentAndDefinitions: CardWithContentAndDefinitions) {
+    suspend fun deleteCardWithContentAndDefinitions(cardWithContentAndDefinitions: CardWithContentAndDefinitions,context: Context) {
+        cardWithContentAndDefinitions.contentWithDefinitions.content.contentImageName?.let { imageName ->
+            context.deleteFile(imageName)
+        }
+        cardWithContentAndDefinitions.contentWithDefinitions.content.contentAudioName?.let { audioName ->
+            // TODO: Delete Audio from storage
+        }
+        cardWithContentAndDefinitions.contentWithDefinitions.definitions.forEach { definition ->
+            definition.definitionImageName?.let { imageName ->
+                context.deleteFile(imageName)
+            }
+            definition.definitionAudioName?.let { audioName ->
+                // TODO: Delete Audio from storage
+            }
+        }
         flashCardDao.deleteCardWithContentAndDefinition(cardWithContentAndDefinitions)
     }
 

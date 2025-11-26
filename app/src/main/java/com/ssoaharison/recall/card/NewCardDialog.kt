@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
@@ -307,6 +308,89 @@ class NewCardDialog(
 //            WindowInsetsCompat.CONSUMED
 //        }
 
+        initFields()
+
+        attachBottomSheetDialog = AttachBottomSheetDialog()
+        scanBottomSheetDialog = ScanBottomSheetDialog()
+
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val listPopupWindow = ListPopupWindow(appContext!!, null)
+        listPopupWindow.setBackgroundDrawable(
+            ResourcesCompat.getDrawable(
+                resources,
+                R.drawable.filter_spinner_dropdown_background,
+                requireActivity().theme
+            )
+        )
+
+        binding.btContentLanguage.setOnClickListener { button ->
+            listPopupWindow.apply {
+                anchorView = binding.llContainerContentDetails
+                setAdapter(arrayAdapterSupportedLanguages)
+                setOnItemClickListener { _, _, position, _ ->
+                    (button as MaterialButton).text = supportedLanguages[position]
+                    dismiss()
+                }
+                show()
+            }
+        }
+
+        binding.btDefinitionLanguage.setOnClickListener { button ->
+            listPopupWindow.apply {
+                anchorView = binding.llContainerDefinitionDetails
+                setAdapter(arrayAdapterSupportedLanguages)
+                setOnItemClickListener { _, _, position, _ ->
+                    (button as MaterialButton).text = supportedLanguages[position]
+                    dismiss()
+                }
+                show()
+            }
+        }
+
+        binding.tabAddNewUpdateCard.setNavigationOnClickListener {
+            onCloseDialog()
+        }
+
+        binding.tabAddNewUpdateCard.setOnMenuItemClickListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.save -> {
+                    onPositiveAction()
+                    true
+                }
+
+                R.id.bt_import_card -> {
+                    showCardImportSourceDialog()
+                    true
+                }
+
+                else -> false
+            }
+        }
+
+        binding.btMoreDefinition.setOnClickListener {
+            onAddMoreDefinition()
+        }
+
+        binding.btSave.setOnClickListener {
+            onPositiveAction()
+        }
+        binding.btTranslate.setOnClickListener {
+            onTranslateText(
+                binding.lyContent.tieText.text.toString(),
+                selectedField?.ly?.tieText,
+                selectedField?.ly?.tilText
+            )
+        }
+        binding.btAddMedia.setOnClickListener {
+            onAttach()
+        }
+        binding.btScan.setOnClickListener {
+            onScan()
+        }
+
+    }
+
+    private fun initFields() {
         definitionFields = mutableListOf(
             FieldModel(
                 binding.llDefinition1Container,
@@ -355,42 +439,6 @@ class NewCardDialog(
             btDeleteField.visibility = View.GONE
             btIsTrue.visibility = View.GONE
         }
-        attachBottomSheetDialog = AttachBottomSheetDialog()
-        scanBottomSheetDialog = ScanBottomSheetDialog()
-
-        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
-        val listPopupWindow = ListPopupWindow(appContext!!, null)
-        listPopupWindow.setBackgroundDrawable(
-            ResourcesCompat.getDrawable(
-                resources,
-                R.drawable.filter_spinner_dropdown_background,
-                requireActivity().theme
-            )
-        )
-
-        binding.btContentLanguage.setOnClickListener { button ->
-            listPopupWindow.apply {
-                anchorView = binding.llContainerContentDetails
-                setAdapter(arrayAdapterSupportedLanguages)
-                setOnItemClickListener { _, _, position, _ ->
-                    (button as MaterialButton).text = supportedLanguages[position]
-                    dismiss()
-                }
-                show()
-            }
-        }
-
-        binding.btDefinitionLanguage.setOnClickListener { button ->
-            listPopupWindow.apply {
-                anchorView = binding.llContainerDefinitionDetails
-                setAdapter(arrayAdapterSupportedLanguages)
-                setOnItemClickListener { _, _, position, _ ->
-                    (button as MaterialButton).text = supportedLanguages[position]
-                    dismiss()
-                }
-                show()
-            }
-        }
 
         if (card != null && action == Constant.UPDATE) {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
@@ -398,26 +446,6 @@ class NewCardDialog(
         } else {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
             setCardLanguages()
-        }
-
-        binding.tabAddNewUpdateCard.setNavigationOnClickListener {
-            onCloseDialog()
-        }
-
-        binding.tabAddNewUpdateCard.setOnMenuItemClickListener { menuItem ->
-            when (menuItem.itemId) {
-                R.id.save -> {
-                    onPositiveAction()
-                    true
-                }
-
-                R.id.bt_import_card -> {
-                    showCardImportSourceDialog()
-                    true
-                }
-
-                else -> false
-            }
         }
 
         binding.lyContent.apply {
@@ -460,28 +488,6 @@ class NewCardDialog(
             definitionField.ly.btDeleteImage.setOnClickListener {
                 onDeleteImage(definitionField)
             }
-        }
-
-
-        binding.btMoreDefinition.setOnClickListener {
-            onAddMoreDefinition()
-        }
-
-        binding.btSave.setOnClickListener {
-            onPositiveAction()
-        }
-        binding.btTranslate.setOnClickListener {
-            onTranslateText(
-                binding.lyContent.tieText.text.toString(),
-                selectedField?.ly?.tieText,
-                selectedField?.ly?.tilText
-            )
-        }
-        binding.btAddMedia.setOnClickListener {
-            onAttach()
-        }
-        binding.btScan.setOnClickListener {
-            onScan()
         }
 
     }
@@ -823,13 +829,24 @@ class NewCardDialog(
     }
 
     private fun initCardAdditionPanel() {
+        // TODO: Clear Audio
         binding.lyContent.tieText.text?.clear()
+        contentField.imageName = null
+        contentField.audioName = null
+        contentField.ly.clContainerImage.visibility = View.GONE
+        contentField.ly.imgPhoto.setImageBitmap(null)
         binding.lyContent.tieText.error = null
         definitionFields.forEach {
+            it.container.visibility = View.GONE
             it.ly.tieText.text?.clear()
+            it.imageName = null
+            it.audioName = null
+            it.ly.clContainerImage.visibility = View.GONE
+            it.ly.imgPhoto.setImageBitmap(null)
             it.ly.tilText.error = null
             unCheckChip(it.ly.btIsTrue)
         }
+        definitionFields.first().container.visibility = View.VISIBLE
         actionMode?.finish()
     }
 
@@ -891,6 +908,7 @@ class NewCardDialog(
         }
         card.contentWithDefinitions.content.contentImage?.let {
             binding.lyContent.imgPhoto.setImageBitmap(it.bmp)
+            contentField.imageName = it.name
             binding.lyContent.clContainerImage.visibility = View.VISIBLE
         }
         card.contentWithDefinitions.content.contentAudio?.let {
@@ -906,6 +924,7 @@ class NewCardDialog(
                 card.contentWithDefinitions.definitions[index].definitionImage?.let {
                     fl.ly.imgPhoto.setImageBitmap(it.bmp)
                     fl.ly.clContainerImage.visibility = View.VISIBLE
+                    fl.imageName = it.name
                 }
                 card.contentWithDefinitions.definitions[index].definitionAudio?.let {
                     //TODO: Include audio definition
@@ -926,15 +945,12 @@ class NewCardDialog(
 
     private fun setCardLanguages(card: ExternalCard? = null) {
         val contentLanguage = getContentLanguage(card)
-
         val definitionLanguage = getDefinitionLanguage(card)
-
         if (contentLanguage != null) {
             binding.btContentLanguage.text = contentLanguage
         } else {
             binding.btContentLanguage.text = getString(R.string.text_content_language)
         }
-
         if (definitionLanguage != null) {
             binding.btDefinitionLanguage.text = definitionLanguage
         } else {
@@ -1092,11 +1108,6 @@ class NewCardDialog(
 
         val updatedContentWithDefinitions =
             CardContentWithDefinitions(content = content, definitions = updateCardDefinitions)
-
-        val newCard = CardWithContentAndDefinitions(
-            card = updatedCard,
-            contentWithDefinitions = updatedContentWithDefinitions
-        )
 
         return CardWithContentAndDefinitions(
             card = updatedCard,
@@ -1544,11 +1555,18 @@ class NewCardDialog(
         }
     }
 
+
     private fun clearField(field: FieldModel) {
         field.apply {
             container.visibility = View.GONE
             ly.tieText.text?.clear()
             unCheckChip(ly.btIsTrue)
+            field.imageName?.let {
+                onDeleteImage(field)
+            }
+            field.audioName?.let {
+                // TODO: Delete audio
+            }
         }
         revealedDefinitionFields--
     }

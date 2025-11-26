@@ -920,7 +920,7 @@ class CardFragment :
                 onEditCard(deck = deck, card = selectedCard)
             },
             { selectedCard ->
-                cardViewModel.deleteCard(selectedCard)
+                cardViewModel.deleteCard(selectedCard, appContext!!)
             },
             { text ->
                 if (tts?.isSpeaking == true) {
