@@ -9,11 +9,14 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.util.TypedValue
 import android.view.ActionMode
@@ -25,8 +28,10 @@ import android.widget.EditText
 import android.widget.ListPopupWindow
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
+import androidx.activity.result.registerForActivityResult
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
@@ -231,6 +236,26 @@ class NewCardDialog(
                 getString(R.string.error_message_permission_not_granted_camera),
                 Toast.LENGTH_LONG
             ).show()
+        }
+    }
+
+    private var onAttachPhotoFromGallery = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            val btm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                ImageDecoder.decodeBitmap(ImageDecoder.createSource(requireContext().contentResolver, uri))
+            } else {
+                MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+            }
+            val imageName = "${UUID.randomUUID()}.jpg"
+            val isImageSaved = saveImageToInternalStorage(imageName,btm)
+            if (isImageSaved) {
+                selectedField?.let { field ->
+                    field.imageName = imageName
+                    onSetFieldPhoto(field, btm)
+                }
+            }
+        } else {
+            Toast.makeText(requireContext(), "Could not get image", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -472,7 +497,7 @@ class NewCardDialog(
                 when (it) {
                     ATTACH_IMAGE_FROM_CAMERA -> {
                         if(selectedField != null) {
-                            onTakePhoto(selectedField?.ly!!)
+                            onTakePhoto()
                         } else {
                             Toast.makeText(requireContext(), getString(R.string.error_message_no_field_selected),
                                 Toast.LENGTH_LONG).show()
@@ -481,7 +506,7 @@ class NewCardDialog(
 
                     ATTACH_IMAGE_FROM_GALERI -> {
                         if(selectedField != null) {
-                            onPickPhoto(selectedField?.ly!!)
+                            onPickPhoto()
                         } else {
                             Toast.makeText(requireContext(), getString(R.string.error_message_no_field_selected),
                                 Toast.LENGTH_LONG).show()
@@ -1545,9 +1570,8 @@ class NewCardDialog(
         return result
     }
 
-    fun onTakePhoto(selectedField: LyAddCardFieldBinding) {
-        //TODO: Implement onTakePhoto
-//        Toast.makeText(appContext, "Take photo in development", Toast.LENGTH_SHORT).show()
+    fun onTakePhoto() {
+        //TODO: Improve onTakePhoto
         checkCameraPermission(
             {
                 attachPhotoFromCamera.launch()
@@ -1558,10 +1582,8 @@ class NewCardDialog(
         )
     }
 
-    fun onPickPhoto(selectedField: LyAddCardFieldBinding) {
-        //TODO: Implement onPickPhoto
-        selectedField.clContainerImage.visibility = View.VISIBLE
-        Toast.makeText(appContext, "Pick photo in development", Toast.LENGTH_SHORT).show()
+    fun onPickPhoto() {
+        onAttachPhotoFromGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
     fun onRecordAudio(selectedField: LyAddCardFieldBinding) {
