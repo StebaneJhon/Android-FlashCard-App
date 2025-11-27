@@ -66,6 +66,7 @@ class NewCardDialogViewModel(
             }
         }
     }
+    
 
     suspend fun resultsToImmutableCards(
         deckId: String,

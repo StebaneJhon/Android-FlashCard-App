@@ -1519,6 +1519,42 @@ class NewCardDialog(
         }
     }
 
+//    private fun deleteDefinitionField(field: TextInputEditText) {
+//        // TODO: On delete field with image and audio
+//        if (field == binding.lyDefinition10.tieText) {
+//            clearField(definitionFields.last())
+//            return
+//        }
+//        var index = 0
+//        while (true) {
+//            val actualField = definitionFields[index]
+//            if (actualField.ly.tieText == field) {
+//                break
+//            }
+//            index++
+//        }
+//        while (true) {
+//            val actualField = definitionFields[index]
+//            val nextField = definitionFields[index.plus(1)]
+//            if (!nextField.ly.tieText.isVisible) {
+//                clearField(actualField)
+//                break
+//            }
+//            if (
+//                nextField.ly.tieText.text?.isNotBlank() == true &&
+//                nextField.ly.tieText.text?.isNotEmpty() == true
+//            ) {
+//                actualField.ly.tieText.text = nextField.ly.tieText.text
+//                nextField.ly.tieText.text?.clear()
+//            } else {
+//                actualField.ly.tieText.text?.clear()
+//                clearField(definitionFields.last { it.container.isVisible })
+//                break
+//            }
+//            index++
+//        }
+//    }
+
     private fun deleteDefinitionField(field: TextInputEditText) {
         // TODO: On delete field with image and audio
         if (field == binding.lyDefinition10.tieText) {
@@ -1536,25 +1572,49 @@ class NewCardDialog(
         while (true) {
             val actualField = definitionFields[index]
             val nextField = definitionFields[index.plus(1)]
-            if (!nextField.ly.tieText.isVisible) {
+            if (!nextField.container.isVisible) {
                 clearField(actualField)
                 break
             }
             if (
                 nextField.ly.tieText.text?.isNotBlank() == true &&
-                nextField.ly.tieText.text?.isNotEmpty() == true
+                nextField.ly.tieText.text?.isNotEmpty() == true ||
+                nextField.imageName != null ||
+                nextField.audioName != null
             ) {
                 actualField.ly.tieText.text = nextField.ly.tieText.text
+                nextField.imageName?.let { name ->
+                    actualField.imageName = name
+                    actualField.ly.clContainerImage.visibility = View.VISIBLE
+                    val filePhotoDefinition = File(requireContext().filesDir, name)
+                    val bytesPhotoDefinition = filePhotoDefinition.readBytes()
+                    val bmpPhotoDefinition = BitmapFactory.decodeByteArray(bytesPhotoDefinition, 0, bytesPhotoDefinition.size)
+                    actualField.ly.imgPhoto.setImageBitmap(bmpPhotoDefinition)
+                }
+                nextField.audioName?.let { name ->
+                    // TODO: Move audio content from next field to actual field
+                    actualField.ly.llContainerAudio.visibility = View.VISIBLE
+                    actualField.audioName = name
+                }
                 nextField.ly.tieText.text?.clear()
+                nextField.audioName = null
+                nextField.imageName = null
+                nextField.ly.imgPhoto.setImageBitmap(null)
+                nextField.ly.clContainerImage.visibility = View.GONE
+                nextField.ly.llContainerAudio.visibility = View.GONE
             } else {
                 actualField.ly.tieText.text?.clear()
+                actualField.audioName = null
+                actualField.imageName = null
+                actualField.ly.imgPhoto.setImageBitmap(null)
+                actualField.ly.clContainerImage.visibility = View.GONE
+                actualField.ly.llContainerAudio.visibility = View.GONE
                 clearField(definitionFields.last { it.container.isVisible })
                 break
             }
             index++
         }
     }
-
 
     private fun clearField(field: FieldModel) {
         field.apply {
