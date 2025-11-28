@@ -315,4 +315,5 @@
     <string name="audio_to_text">Audio to text</string>
     <string name="home">Home</string>
     <string name="error_message_no_field_selected">Please select a field.</string>
+    <string name="error_message_max_10_definitions">Max 10 definitions allowed.</string>
 </resources>

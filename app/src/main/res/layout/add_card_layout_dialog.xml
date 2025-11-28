@@ -130,7 +130,16 @@
                     app:iconTint="?colorPrimary" />
             </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_definitionFields"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_container_definition_details" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:visibility="gone"
                 android:id="@+id/ll_definition_1_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -313,7 +322,7 @@
                 app:icon="@drawable/icon_add"
                 app:iconTint="?colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_definition_10_container" />
+                app:layout_constraintTop_toBottomOf="@+id/rv_definitionFields" />
 
             <View
                 android:id="@+id/vw_bottom_space"

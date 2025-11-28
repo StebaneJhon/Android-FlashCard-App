@@ -174,7 +174,6 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
             val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(data.deck.deckId)
             val externalDeck = data.deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
             val externalCardList = data.cards.map { card  ->
-                //TODO: Get image and audio
                 var photoModelContent: PhotoModel? = null
                 card.contentWithDefinitions.content.contentImageName?.let {
                     val filePhotoContent = File(context.filesDir, card.contentWithDefinitions.content.contentImageName)
@@ -182,10 +181,10 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                     val bmpPhotoContent = BitmapFactory.decodeByteArray(bytesPhotoContent, 0, bytesPhotoContent.size)
                     photoModelContent = PhotoModel(filePhotoContent.name, bmpPhotoContent)
                 }
-
+                //TODO: Get audio
                 val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, null)
+
                 val externalDefinitions = card.contentWithDefinitions.definitions.map { definition ->
-                    //TODO: Get image and audio
                     var photoModelDefinition: PhotoModel? = null
                     definition.definitionImageName?.let {
                         val filePhotoDefinition = File(context.filesDir, definition.definitionImageName)
@@ -193,6 +192,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                         val bmpPhotoDefinition = BitmapFactory.decodeByteArray(bytesPhotoDefinition, 0, bytesPhotoDefinition.size)
                         photoModelDefinition = PhotoModel(filePhotoDefinition.name, bmpPhotoDefinition)
                     }
+                    //TODO: Get audio
                     definition.toExternal(photoModelDefinition, null)
                 }
                 val externalCard = card.card.toExternal()
