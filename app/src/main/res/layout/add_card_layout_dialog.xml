@@ -42,93 +42,96 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/space_lg">
 
-            <LinearLayout
-                android:id="@+id/ll_container_content_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/space_sm"
-                android:gravity="start"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+<!--            <LinearLayout-->
+<!--                android:visibility="gone"-->
+<!--                android:id="@+id/ll_container_content_details"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="@dimen/space_sm"-->
+<!--                android:gravity="start"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent">-->
 
-                <TextView
-                    android:id="@+id/tv_title_content_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/text_content"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_title_content_details"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/open_sans_bold"-->
+<!--                    android:text="@string/text_content"-->
+<!--                    android:textColor="?colorOnSurface"-->
+<!--                    android:textSize="@dimen/text_sm"-->
+<!--                    android:textStyle="bold" />-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_content_language"
-                    style="@style/Widget.Material3.Button.TextButton.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:fontFamily="@font/open_sans"
-                    android:padding="0dp"
-                    android:text="@string/text_content_language"
-                    android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
-                    app:icon="@drawable/icon_expand_more"
-                    app:iconGravity="end"
-                    app:iconTint="?colorPrimary" />
-            </LinearLayout>
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/bt_content_language"-->
+<!--                    style="@style/Widget.Material3.Button.TextButton.Icon"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="@dimen/space_sm"-->
+<!--                    android:fontFamily="@font/open_sans"-->
+<!--                    android:padding="0dp"-->
+<!--                    android:text="@string/text_content_language"-->
+<!--                    android:textColor="?colorPrimary"-->
+<!--                    android:textSize="@dimen/text_xs"-->
+<!--                    app:icon="@drawable/icon_expand_more"-->
+<!--                    app:iconGravity="end"-->
+<!--                    app:iconTint="?colorPrimary" />-->
+<!--            </LinearLayout>-->
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_container_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">
+<!--            <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--                android:visibility="gone"-->
+<!--                android:id="@+id/cl_container_content"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/ll_container_content_details">-->
 
-                <include
-                    android:id="@+id/ly_content"
-                    layout="@layout/ly_add_card_field" />
+<!--                <include-->
+<!--                    android:id="@+id/ly_content"-->
+<!--                    layout="@layout/ly_add_card_content_field" />-->
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+<!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 
-            <LinearLayout
-                android:id="@+id/ll_container_definition_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/space_sm"
-                android:gravity="start"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cl_container_content">
+<!--            <LinearLayout-->
+<!--                android:visibility="gone"-->
+<!--                android:id="@+id/ll_container_definition_details"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginHorizontal="@dimen/space_sm"-->
+<!--                android:gravity="start"-->
+<!--                android:orientation="horizontal"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/cl_container_content">-->
 
-                <TextView
-                    android:id="@+id/tv_title_definition_details"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
-                    android:text="@string/text_definition"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_title_definition_details"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:fontFamily="@font/open_sans_bold"-->
+<!--                    android:text="@string/text_definition"-->
+<!--                    android:textColor="?colorOnSurface"-->
+<!--                    android:textSize="@dimen/text_sm"-->
+<!--                    android:textStyle="bold" />-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_definition_language"
-                    style="@style/Widget.Material3.Button.TextButton.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/space_sm"
-                    android:fontFamily="@font/open_sans"
-                    android:padding="0dp"
-                    android:text="@string/text_definition_language"
-                    android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
-                    app:icon="@drawable/icon_expand_more"
-                    app:iconGravity="end"
-                    app:iconTint="?colorPrimary" />
-            </LinearLayout>
+<!--                <com.google.android.material.button.MaterialButton-->
+<!--                    android:id="@+id/bt_definition_language"-->
+<!--                    style="@style/Widget.Material3.Button.TextButton.Icon"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="@dimen/space_sm"-->
+<!--                    android:fontFamily="@font/open_sans"-->
+<!--                    android:padding="0dp"-->
+<!--                    android:text="@string/text_definition_language"-->
+<!--                    android:textColor="?colorPrimary"-->
+<!--                    android:textSize="@dimen/text_xs"-->
+<!--                    app:icon="@drawable/icon_expand_more"-->
+<!--                    app:iconGravity="end"-->
+<!--                    app:iconTint="?colorPrimary" />-->
+<!--            </LinearLayout>-->
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_definitionFields"
@@ -151,7 +154,7 @@
 
                 <include
                     android:id="@+id/ly_definition_1"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -169,7 +172,7 @@
 
                 <include
                     android:id="@+id/ly_definition_2"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -187,7 +190,7 @@
 
                 <include
                     android:id="@+id/ly_definition_3"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -204,7 +207,7 @@
 
                 <include
                     android:id="@+id/ly_definition_4"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -221,7 +224,7 @@
 
                 <include
                     android:id="@+id/ly_definition_5"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -238,7 +241,7 @@
 
                 <include
                     android:id="@+id/ly_definition_6"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -255,7 +258,7 @@
 
                 <include
                     android:id="@+id/ly_definition_7"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -272,7 +275,7 @@
 
                 <include
                     android:id="@+id/ly_definition_8"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -289,7 +292,7 @@
 
                 <include
                     android:id="@+id/ly_definition_9"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -306,7 +309,7 @@
 
                 <include
                     android:id="@+id/ly_definition_10"
-                    layout="@layout/ly_add_card_field" />
+                    layout="@layout/ly_add_card_definition_field" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button

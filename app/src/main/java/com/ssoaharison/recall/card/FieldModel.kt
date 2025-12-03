@@ -1,11 +1,11 @@
 package com.ssoaharison.recall.card
 
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.ssoaharison.recall.databinding.LyAddCardFieldBinding
+import com.ssoaharison.recall.databinding.LyAddCardDefinitionFieldBinding
 
 data class FieldModel(
     val container: ConstraintLayout,
-    val ly: LyAddCardFieldBinding,
+    val ly: LyAddCardDefinitionFieldBinding,
     var imageName: String? = null,
     var audioName: String? = null
 )

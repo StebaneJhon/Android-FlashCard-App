@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
@@ -63,7 +62,6 @@ import com.ssoaharison.recall.util.Constant
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -80,7 +78,7 @@ import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefin
 import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.databinding.LyAddCardFieldBinding
+import com.ssoaharison.recall.databinding.LyAddCardContentFieldBinding
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.helper.PhotoModel
@@ -135,8 +133,8 @@ class NewCardDialog(
     private var actionMode: ActionMode? = null
     private var uri: Uri? = null
     private var revealedDefinitionFields: Int = 1
-    private lateinit var definitionFields: MutableList<FieldModel>
-    private lateinit var contentField: FieldModel
+//    private lateinit var definitionFields: MutableList<FieldModel>
+//    private lateinit var contentField: FieldModel
 
     private lateinit var recyclerViewAdapterDefinitionFields: RecyclerViewDefinitionFields
 
@@ -226,23 +224,26 @@ class NewCardDialog(
                 if (isPhotoSaved) {
                     val newPhoto = PhotoModel(fileImageName!!, it)
                     newCardViewModel.getActiveFieldIndex()?.let { activeFieldIndex ->
-                        if (activeFieldIndex < 0) {
+                        if (activeFieldIndex == 1) {
                             newCardViewModel.updateContentField(
-                                newCardViewModel.contentField.value.copy(
+                                (newCardViewModel.definitionFields.value[1] as AddCardItemModel.ContentFieldModel).copy(
                                     contentImage = newPhoto
-                                )
-                            )
-                            newCardViewModel.contentField.value.contentImage?.let { image ->
-                                binding.lyContent.clContainerImage.visibility = View.VISIBLE
-                                binding.lyContent.imgPhoto.setImageBitmap(image.bmp)
-                            }
+                                ))
+//                            newCardViewModel.updateContentField(
+//                                newCardViewModel.contentField.value.copy(
+//                                    contentImage = newPhoto
+//                                )
+//                            )
+//                            newCardViewModel.contentField.value.contentImage?.let { image ->
+//                                binding.lyContent.clContentContainerImage.visibility = View.VISIBLE
+//                                binding.lyContent.imgContentPhoto.setImageBitmap(image.bmp)
+//                            }
                         } else {
                             newCardViewModel.updateDefinitionField(
-                                newCardViewModel.definitionFields.value[activeFieldIndex].copy(
+                                (newCardViewModel.definitionFields.value[activeFieldIndex] as AddCardItemModel.DefinitionFieldModel).copy(
                                     definitionImage = newPhoto
                                 ), activeFieldIndex
                             )
-                            recyclerViewAdapterDefinitionFields.notifyDataSetChanged()
                         }
                     }
 //                selectedField?.let { field ->
@@ -285,23 +286,26 @@ class NewCardDialog(
                 if (isImageSaved) {
                     val newPhoto = PhotoModel(imageName, btm)
                     newCardViewModel.getActiveFieldIndex()?.let { activeFieldIndex ->
-                        if (activeFieldIndex < 0) {
+                        if (activeFieldIndex == 1) {
                             newCardViewModel.updateContentField(
-                                newCardViewModel.contentField.value.copy(
+                                (newCardViewModel.definitionFields.value[1] as AddCardItemModel.ContentFieldModel).copy(
                                     contentImage = newPhoto
-                                )
-                            )
-                            newCardViewModel.contentField.value.contentImage?.let { image ->
-                                binding.lyContent.clContainerImage.visibility = View.VISIBLE
-                                binding.lyContent.imgPhoto.setImageBitmap(image.bmp)
-                            }
+                                ))
+//                            newCardViewModel.updateContentField(
+//                                newCardViewModel.contentField.value.copy(
+//                                    contentImage = newPhoto
+//                                )
+//                            )
+//                            newCardViewModel.contentField.value.contentImage?.let { image ->
+//                                binding.lyContent.clContentContainerImage.visibility = View.VISIBLE
+//                                binding.lyContent.imgContentPhoto.setImageBitmap(image.bmp)
+//                            }
                         } else {
                             newCardViewModel.updateDefinitionField(
-                                newCardViewModel.definitionFields.value[activeFieldIndex].copy(
+                                (newCardViewModel.definitionFields.value[activeFieldIndex] as AddCardItemModel.DefinitionFieldModel).copy(
                                     definitionImage = newPhoto
                                 ), activeFieldIndex
                             )
-                            recyclerViewAdapterDefinitionFields.notifyDataSetChanged()
                         }
                     }
                 }
@@ -363,8 +367,7 @@ class NewCardDialog(
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
-        val arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
         listPopupWindow.setBackgroundDrawable(
             ResourcesCompat.getDrawable(
@@ -374,29 +377,29 @@ class NewCardDialog(
             )
         )
 
-        binding.btContentLanguage.setOnClickListener { button ->
-            listPopupWindow.apply {
-                anchorView = binding.llContainerContentDetails
-                setAdapter(arrayAdapterSupportedLanguages)
-                setOnItemClickListener { _, _, position, _ ->
-                    (button as MaterialButton).text = supportedLanguages[position]
-                    dismiss()
-                }
-                show()
-            }
-        }
+//        binding.btContentLanguage.setOnClickListener { button ->
+//            listPopupWindow.apply {
+//                anchorView = binding.llContainerContentDetails
+//                setAdapter(arrayAdapterSupportedLanguages)
+//                setOnItemClickListener { _, _, position, _ ->
+//                    (button as MaterialButton).text = supportedLanguages[position]
+//                    dismiss()
+//                }
+//                show()
+//            }
+//        }
 
-        binding.btDefinitionLanguage.setOnClickListener { button ->
-            listPopupWindow.apply {
-                anchorView = binding.llContainerDefinitionDetails
-                setAdapter(arrayAdapterSupportedLanguages)
-                setOnItemClickListener { _, _, position, _ ->
-                    (button as MaterialButton).text = supportedLanguages[position]
-                    dismiss()
-                }
-                show()
-            }
-        }
+//        binding.btDefinitionLanguage.setOnClickListener { button ->
+//            listPopupWindow.apply {
+//                anchorView = binding.llContainerDefinitionDetails
+//                setAdapter(arrayAdapterSupportedLanguages)
+//                setOnItemClickListener { _, _, position, _ ->
+//                    (button as MaterialButton).text = supportedLanguages[position]
+//                    dismiss()
+//                }
+//                show()
+//            }
+//        }
 
         binding.tabAddNewUpdateCard.setNavigationOnClickListener {
             onCloseDialog()
@@ -419,6 +422,7 @@ class NewCardDialog(
         }
 
         binding.btMoreDefinition.setOnClickListener {
+//            binding.lyContent.tieContentText.clearFocus()
             onAddMoreDefinition()
         }
 
@@ -426,11 +430,11 @@ class NewCardDialog(
             onPositiveAction()
         }
         binding.btTranslate.setOnClickListener {
-            onTranslateText(
-                binding.lyContent.tieText.text.toString(),
-                selectedField?.ly?.tieText,
-                selectedField?.ly?.tilText
-            )
+//            onTranslateText(
+//                binding.lyContent.tieContentText.text.toString(),
+//                selectedField?.ly?.tieText,
+//                selectedField?.ly?.tilText
+//            )
         }
         binding.btAddMedia.setOnClickListener {
             onAttach()
@@ -486,10 +490,30 @@ class NewCardDialog(
 //        )
 //        contentField = FieldModel(binding.clContainerContent, binding.lyContent)
 //        binding.lyDefinition1.btDeleteField.visibility = View.GONE
-        binding.lyContent.apply {
-            btDeleteField.visibility = View.GONE
-            btIsTrue.visibility = View.GONE
-        }
+//        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
+//            if (hasFocus && v.id == binding.lyContent.tieContentText.id) {
+//                onFieldFocused(
+//                    binding.clContainerContent,
+//                    binding.lyContent,
+//                    v,
+//                    getNewContentLanguage(),
+//                    hasFocus,
+//                )
+//                newCardViewModel.changeFieldFocus(-1)
+//            } else {
+//                v.clearFocus()
+//            }
+//        }
+//        binding.lyContent.tieContentText.addTextChangedListener { text ->
+//            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
+//        }
+//            btDeleteImage.setOnClickListener {
+//                onDeleteImage(contentField)
+//            }
+//            btDeleteAudio.setOnClickListener {
+//                onDeleteAudio(binding.lyContent)
+//            }
+
 
         if (card != null && action == Constant.UPDATE) {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
@@ -499,33 +523,6 @@ class NewCardDialog(
             onAddCard()
             setCardLanguages()
         }
-
-
-        binding.lyContent.apply {
-            tieText.setOnFocusChangeListener { v, hasFocus ->
-
-                onFieldFocused(
-                    binding.clContainerContent,
-                    binding.lyContent,
-                    v,
-                    getNewContentLanguage(),
-                    hasFocus,
-                )
-                newCardViewModel.changeFieldFocus(-1)
-            }
-            tieText.addTextChangedListener { text ->
-                newCardViewModel.updateContentField(
-                    newCardViewModel.contentField.value.copy(contentText = text.toString())
-                )
-            }
-//            btDeleteImage.setOnClickListener {
-//                onDeleteImage(contentField)
-//            }
-//            btDeleteAudio.setOnClickListener {
-//                onDeleteAudio(binding.lyContent)
-//            }
-        }
-
 //        definitionFields.forEach { definitionField ->
 //            definitionField.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
 //                onFieldFocused(
@@ -587,7 +584,7 @@ class NewCardDialog(
 
                     ATTACH_AUDIO_RECORD -> {
                         if (selectedField != null) {
-                            onRecordAudio(selectedField?.ly!!)
+                            onRecordAudio(newCardViewModel.getActiveFieldIndex())
                         } else {
                             Toast.makeText(
                                 requireContext(),
@@ -737,22 +734,21 @@ class NewCardDialog(
 
     private fun onFieldFocused(
         container: ConstraintLayout,
-        ly: LyAddCardFieldBinding,
+        ly: LyAddCardContentFieldBinding,
         v: View?,
         language: String?,
         hasFocus: Boolean,
     ) {
         if (hasFocus) {
-            selectedField = FieldModel(container = container, ly = ly)
             actualFieldLanguage = language
-            ly.clContainerField.setBackgroundResource(R.drawable.bg_definition_field_focused)
+            ly.clContentContainerField.setBackgroundResource(R.drawable.bg_definition_field_focused)
             //TODO: To be improved. Scroll to focused view.
             v?.postDelayed({
-                val y = ly.clContainerField.bottom.plus(binding.dockedToolbar.height)
+                val y = ly.clContentContainerField.bottom.plus(binding.dockedToolbar.height)
                 binding.nestedScrollView.smoothScrollTo(0, maxOf(y, 0))
             }, 200)
         } else {
-            ly.clContainerField.setBackgroundResource(R.drawable.bg_definition_field)
+            ly.clContentContainerField.setBackgroundResource(R.drawable.bg_definition_field)
         }
     }
 
@@ -917,12 +913,12 @@ class NewCardDialog(
 //        }
 //        definitionFields.first().container.visibility = View.VISIBLE
 //        actionMode?.finish()
-        binding.lyContent.tieText.text?.clear()
-        binding.lyContent.imgPhoto.setImageBitmap(null)
-        binding.lyContent.clContainerImage.visibility = View.GONE
-        newCardViewModel.clearContentField()
-        newCardViewModel.clearDefinitionFields()
-        recyclerViewAdapterDefinitionFields.notifyDataSetChanged()
+//        binding.lyContent.tieContentText.text?.clear()
+//        binding.lyContent.imgContentPhoto.setImageBitmap(null)
+//        binding.lyContent.clContentContainerImage.visibility = View.GONE
+//        newCardViewModel.clearContentField()
+//        newCardViewModel.clearDefinitionFields()
+        newCardViewModel.clearFields(requireContext(), deck)
     }
 
     private fun chipState(chip: TextView): Boolean {
@@ -954,58 +950,73 @@ class NewCardDialog(
     }
 
     private fun onCloseDialog() {
-        if (!areThereAnOngoingCardCreation()) {
-            sendCardsOnSave(newCardViewModel.getAddedCardSum())
-            dismiss()
-        } else {
-            MaterialAlertDialogBuilder(
-                requireActivity(),
-                R.style.ThemeOverlay_App_MaterialAlertDialog
-            )
-                .setTitle(getString(R.string.title_unsaved_cards))
-                .setMessage(getString(R.string.message_unsaved_cards))
-                .setPositiveButton(getString(R.string.button_keep_add)) { dialog, _ ->
-                    dialog?.dismiss()
-                }
-                .setNegativeButton(getString(R.string.bt_description_exit)) { _, _ ->
-                    sendCardsOnSave(newCardViewModel.getAddedCardSum())
-                    dismiss()
-                }
-                .show()
-        }
+        sendCardsOnSave(newCardViewModel.getAddedCardSum())
+        dismiss()
+//        if (!areThereAnOngoingCardCreation()) {
+//            sendCardsOnSave(newCardViewModel.getAddedCardSum())
+//            dismiss()
+//        } else {
+//            MaterialAlertDialogBuilder(
+//                requireActivity(),
+//                R.style.ThemeOverlay_App_MaterialAlertDialog
+//            )
+//                .setTitle(getString(R.string.title_unsaved_cards))
+//                .setMessage(getString(R.string.message_unsaved_cards))
+//                .setPositiveButton(getString(R.string.button_keep_add)) { dialog, _ ->
+//                    dialog?.dismiss()
+//                }
+//                .setNegativeButton(getString(R.string.bt_description_exit)) { _, _ ->
+//                    sendCardsOnSave(newCardViewModel.getAddedCardSum())
+//                    dismiss()
+//                }
+//                .show()
+//        }
 
     }
 
     private fun onAddCard() {
-        newCardViewModel.initContentField(null)
-        lifecycleScope.launch {
-            newCardViewModel.initDefinitionFields(null)
-            newCardViewModel.definitionFields.collect { definitionFields ->
-                displayDefinitionFields(definitionFields)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.definitionFields.collect { definitionFields ->
+                    displayDefinitionFields(definitionFields)
+                }
             }
         }
+        newCardViewModel.initAddCardItemFields(
+            context = requireContext(),
+            card = null,
+            deck = deck
+        )
+//        newCardViewModel.initContentField(null)
+//        newCardViewModel.initDefinitionFields(null)
     }
 
     private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
-        newCardViewModel.initContentField(card.contentWithDefinitions.content)
-        card.contentWithDefinitions.content.contentText?.let {
-            binding.lyContent.tieText.setText(it)
-        }
-        card.contentWithDefinitions.content.contentImage?.let {
-            binding.lyContent.imgPhoto.setImageBitmap(it.bmp)
-            contentField.imageName = it.name
-            binding.lyContent.clContainerImage.visibility = View.VISIBLE
-        }
-        card.contentWithDefinitions.content.contentAudio?.let {
-            // TODO: Include audio content
-        }
+//        newCardViewModel.initContentField(card.contentWithDefinitions.content)
+//
+//        card.contentWithDefinitions.content.contentText?.let {
+//            binding.lyContent.tieContentText.setText(it)
+//        }
+//        card.contentWithDefinitions.content.contentImage?.let {
+//            binding.lyContent.imgContentPhoto.setImageBitmap(it.bmp)
+//            binding.lyContent.clContentContainerImage.visibility = View.VISIBLE
+//        }
+//        card.contentWithDefinitions.content.contentAudio?.let {
+//            // TODO: Include audio content
+//        }
 
         lifecycleScope.launch {
-            newCardViewModel.initDefinitionFields(card.contentWithDefinitions.definitions)
-            newCardViewModel.definitionFields.collect { definitionFields ->
-                displayDefinitionFields(definitionFields)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.definitionFields.collect { definitionFields ->
+                    displayDefinitionFields(definitionFields)
+                }
             }
         }
+        newCardViewModel.initAddCardItemFields(
+            context = requireContext(),
+            card = card,
+            deck = deck,
+            )
 
 
 //        definitionFields.forEachIndexed { index, fl ->
@@ -1036,20 +1047,30 @@ class NewCardDialog(
 
     }
 
-    private fun displayDefinitionFields(definitionFields: ArrayList<DefinitionFieldModel>) {
+    private fun displayDefinitionFields(fields: List<AddCardItemModel>) {
         recyclerViewAdapterDefinitionFields = RecyclerViewDefinitionFields(
-            requireContext(),
-            definitionFields,
-            { field ->
+            context = requireContext(),
+            fields = fields,
+            onDeleteDefinitionField = { field ->
                 newCardViewModel.deleteDefinitionField(field)
-                recyclerViewAdapterDefinitionFields.notifyDataSetChanged()
             },
-            { field, index ->
+            onEditDefinitionField = { field, index ->
                 newCardViewModel.updateDefinitionField(field, index)
-            }, { index ->
+            },
+            onEditContentField = { newField ->
+                newCardViewModel.updateContentField(newField)
+            },
+            onEditContentLanguage = {
+                // TODO: Handle Language selection
+            },
+            onEditDefinitionLanguage = {
+                // TODO: Handle Language selection
+            },
+            onFocused = { index ->
                 newCardViewModel.changeFieldFocus(index)
             }
         )
+
         binding.rvDefinitionFields.apply {
             adapter = recyclerViewAdapterDefinitionFields
             setHasFixedSize(true)
@@ -1058,18 +1079,18 @@ class NewCardDialog(
     }
 
     private fun setCardLanguages(card: ExternalCard? = null) {
-        val contentLanguage = getContentLanguage(card)
-        val definitionLanguage = getDefinitionLanguage(card)
-        if (contentLanguage != null) {
-            binding.btContentLanguage.text = contentLanguage
-        } else {
-            binding.btContentLanguage.text = getString(R.string.text_content_language)
-        }
-        if (definitionLanguage != null) {
-            binding.btDefinitionLanguage.text = definitionLanguage
-        } else {
-            binding.btDefinitionLanguage.text = getString(R.string.text_definition_language)
-        }
+//        val contentLanguage = getContentLanguage(card)
+//        val definitionLanguage = getDefinitionLanguage(card)
+//        if (contentLanguage != null) {
+//            binding.btContentLanguage.text = contentLanguage
+//        } else {
+//            binding.btContentLanguage.text = getString(R.string.text_content_language)
+//        }
+//        if (definitionLanguage != null) {
+//            binding.btDefinitionLanguage.text = definitionLanguage
+//        } else {
+//            binding.btDefinitionLanguage.text = getString(R.string.text_definition_language)
+//        }
     }
 
     private fun getDefinitionLanguage(card: ExternalCard?) = when {
@@ -1106,20 +1127,20 @@ class NewCardDialog(
         return true
     }
 
-    private fun areThereAnOngoingCardCreation(): Boolean {
-        when {
-            newCardViewModel.contentField.value.contentText != null -> return true
-            newCardViewModel.contentField.value.contentImage != null -> return true
-            else -> {
-                newCardViewModel.definitionFields.value.forEach {
-                    if (it.definitionText != null || it.definitionImage != null) {
-                        return true
-                    }
-                }
-            }
-        }
-        return false
-    }
+//    private fun areThereAnOngoingCardCreation(): Boolean {
+//        when {
+//            newCardViewModel.contentField.value.contentText != null -> return true
+//            newCardViewModel.contentField.value.contentImage != null -> return true
+//            else -> {
+//                newCardViewModel.definitionFields.value.forEach {
+//                    if (it.definitionText != null || it.definitionImage != null) {
+//                        return true
+//                    }
+//                }
+//            }
+//        }
+//        return false
+//    }
 
 
     private fun generateCardOnUpdate(card: ExternalCardWithContentAndDefinitions): CardWithContentAndDefinitions? {
@@ -1267,32 +1288,33 @@ class NewCardDialog(
     }
 
     private fun getNewContentLanguage(): String? {
-        val addedContentLanguage = binding.btContentLanguage.text
-        if (addedContentLanguage.toString() !in supportedLanguages) {
-            val defaultContentLanguage = deck.cardContentDefaultLanguage
-            return if (defaultContentLanguage.isNullOrBlank()) {
-                null
-            } else {
-                defaultContentLanguage
-            }
-        } else {
-            return addedContentLanguage.toString()
-        }
+//        val addedContentLanguage = binding.btContentLanguage.text
+//        if (addedContentLanguage.toString() !in supportedLanguages) {
+//            val defaultContentLanguage = deck.cardContentDefaultLanguage
+//            return if (defaultContentLanguage.isNullOrBlank()) {
+//                null
+//            } else {
+//                defaultContentLanguage
+//            }
+//        } else {
+//            return addedContentLanguage.toString()
+//        }
+        return null
     }
 
     private fun getNewDefinitionLanguage(): String? {
-        val addedDefinitionLanguage = binding.btDefinitionLanguage.text
-        if (addedDefinitionLanguage.toString() !in supportedLanguages) {
-            val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
-            return if (defaultDefinitionLanguage.isNullOrBlank()) {
-                null
-            } else {
-                defaultDefinitionLanguage
-            }
-        } else {
-            return addedDefinitionLanguage.toString()
-        }
-
+//        val addedDefinitionLanguage = binding.btDefinitionLanguage.text
+//        if (addedDefinitionLanguage.toString() !in supportedLanguages) {
+//            val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
+//            return if (defaultDefinitionLanguage.isNullOrBlank()) {
+//                null
+//            } else {
+//                defaultDefinitionLanguage
+//            }
+//        } else {
+//            return addedDefinitionLanguage.toString()
+//        }
+        return null
     }
 
     private fun getCardType(definitions: List<CardDefinition>): String {
@@ -1314,10 +1336,9 @@ class NewCardDialog(
     }
 
     private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
-        val field = newCardViewModel.contentField
-        val cardContentText = newCardViewModel.contentField.value.contentText
-        val cardContentImageName = newCardViewModel.contentField.value.contentImage?.name
-//        val cardContentAudioName = contentField.audioName
+        val contentField = (newCardViewModel.definitionFields.value[1] as AddCardItemModel.ContentFieldModel)
+        val cardContentText = contentField.contentText
+        val cardContentImageName = contentField.contentImage?.name
         return if (cardContentText != null) {
             newCardViewModel.generateCardContent(
                 contentId = contentId,
@@ -1328,7 +1349,7 @@ class NewCardDialog(
                 text = cardContentText
             )
         } else {
-            binding.lyContent.tilText.error = getString(R.string.til_error_card_content)
+//            binding.lyContent.tilContentText.error = getString(R.string.til_error_card_content)
             null
         }
     }
@@ -1336,33 +1357,33 @@ class NewCardDialog(
     private fun isDefinitionError(): Boolean {
         var isText = false
         var isTrueAnswer = false
-        definitionFields.forEach {
-            if (it.ly.tieText.text.toString().isNotEmpty() && it.ly.tieText.text.toString()
-                    .isNotBlank()
-            ) {
-                isText = true
-            }
-
-            if (chipState(it.ly.btIsTrue) && it.ly.tieText.text.toString()
-                    .isNotEmpty() && it.ly.tieText.text.toString().isNotBlank()
-            ) {
-                if (isText) {
-                    return false
-                }
-            }
-            if (chipState(it.ly.btIsTrue)) {
-                isTrueAnswer = true
-            }
-        }
-        if (!isTrueAnswer) {
-            binding.lyDefinition1.tilText.error =
-                getString(R.string.cp_error_correct_definition)
-        }
-        if (!isText) {
-            binding.lyDefinition1.tilText.error =
-                getString(R.string.til_error_card_definition)
-        }
-        return true
+//        definitionFields.forEach {
+//            if (it.ly.tieText.text.toString().isNotEmpty() && it.ly.tieText.text.toString()
+//                    .isNotBlank()
+//            ) {
+//                isText = true
+//            }
+//
+//            if (chipState(it.ly.btIsTrue) && it.ly.tieText.text.toString()
+//                    .isNotEmpty() && it.ly.tieText.text.toString().isNotBlank()
+//            ) {
+//                if (isText) {
+//                    return false
+//                }
+//            }
+//            if (chipState(it.ly.btIsTrue)) {
+//                isTrueAnswer = true
+//            }
+//        }
+//        if (!isTrueAnswer) {
+//            binding.lyDefinition1.tilText.error =
+//                getString(R.string.cp_error_correct_definition)
+//        }
+//        if (!isText) {
+//            binding.lyDefinition1.tilText.error =
+//                getString(R.string.til_error_card_definition)
+//        }
+        return false
     }
 
     private fun getDefinition(
@@ -1393,7 +1414,8 @@ class NewCardDialog(
 //            }
 //        }
         val definitions = arrayListOf<CardDefinition>()
-        newCardViewModel.definitionFields.value.forEach { definitionField ->
+        for (i in 3..newCardViewModel.definitionFields.value.size.minus(1)) {
+            val definitionField = (newCardViewModel.definitionFields.value[i] as AddCardItemModel.DefinitionFieldModel)
             val definition = newCardViewModel.definitionFieldToCardDefinition(
                 definitionField,
                 cardId,
@@ -1640,7 +1662,6 @@ class NewCardDialog(
 //        }
         if (newCardViewModel.getDefinitionFieldCount() < 10) {
             newCardViewModel.addDefinitionField(null)
-            recyclerViewAdapterDefinitionFields.notifyDataSetChanged()
         } else {
             Toast.makeText(
                 requireContext(),
@@ -1686,70 +1707,70 @@ class NewCardDialog(
 //        }
 //    }
 
-    private fun deleteDefinitionField(field: TextInputEditText) {
-        // TODO: On delete field with image and audio
-        if (field == binding.lyDefinition10.tieText) {
-            clearField(definitionFields.last())
-            return
-        }
-        var index = 0
-        while (true) {
-            val actualField = definitionFields[index]
-            if (actualField.ly.tieText == field) {
-                break
-            }
-            index++
-        }
-        while (true) {
-            val actualField = definitionFields[index]
-            val nextField = definitionFields[index.plus(1)]
-            if (!nextField.container.isVisible) {
-                clearField(actualField)
-                break
-            }
-            if (
-                nextField.ly.tieText.text?.isNotBlank() == true &&
-                nextField.ly.tieText.text?.isNotEmpty() == true ||
-                nextField.imageName != null ||
-                nextField.audioName != null
-            ) {
-                actualField.ly.tieText.text = nextField.ly.tieText.text
-                nextField.imageName?.let { name ->
-                    actualField.imageName = name
-                    actualField.ly.clContainerImage.visibility = View.VISIBLE
-                    val filePhotoDefinition = File(requireContext().filesDir, name)
-                    val bytesPhotoDefinition = filePhotoDefinition.readBytes()
-                    val bmpPhotoDefinition = BitmapFactory.decodeByteArray(
-                        bytesPhotoDefinition,
-                        0,
-                        bytesPhotoDefinition.size
-                    )
-                    actualField.ly.imgPhoto.setImageBitmap(bmpPhotoDefinition)
-                }
-                nextField.audioName?.let { name ->
-                    // TODO: Move audio content from next field to actual field
-                    actualField.ly.llContainerAudio.visibility = View.VISIBLE
-                    actualField.audioName = name
-                }
-                nextField.ly.tieText.text?.clear()
-                nextField.audioName = null
-                nextField.imageName = null
-                nextField.ly.imgPhoto.setImageBitmap(null)
-                nextField.ly.clContainerImage.visibility = View.GONE
-                nextField.ly.llContainerAudio.visibility = View.GONE
-            } else {
-                actualField.ly.tieText.text?.clear()
-                actualField.audioName = null
-                actualField.imageName = null
-                actualField.ly.imgPhoto.setImageBitmap(null)
-                actualField.ly.clContainerImage.visibility = View.GONE
-                actualField.ly.llContainerAudio.visibility = View.GONE
-                clearField(definitionFields.last { it.container.isVisible })
-                break
-            }
-            index++
-        }
-    }
+//    private fun deleteDefinitionField(field: TextInputEditText) {
+//        // TODO: On delete field with image and audio
+//        if (field == binding.lyDefinition10.tieText) {
+//            clearField(definitionFields.last())
+//            return
+//        }
+//        var index = 0
+//        while (true) {
+//            val actualField = definitionFields[index]
+//            if (actualField.ly.tieText == field) {
+//                break
+//            }
+//            index++
+//        }
+//        while (true) {
+//            val actualField = definitionFields[index]
+//            val nextField = definitionFields[index.plus(1)]
+//            if (!nextField.container.isVisible) {
+//                clearField(actualField)
+//                break
+//            }
+//            if (
+//                nextField.ly.tieText.text?.isNotBlank() == true &&
+//                nextField.ly.tieText.text?.isNotEmpty() == true ||
+//                nextField.imageName != null ||
+//                nextField.audioName != null
+//            ) {
+//                actualField.ly.tieText.text = nextField.ly.tieText.text
+//                nextField.imageName?.let { name ->
+//                    actualField.imageName = name
+//                    actualField.ly.clContainerImage.visibility = View.VISIBLE
+//                    val filePhotoDefinition = File(requireContext().filesDir, name)
+//                    val bytesPhotoDefinition = filePhotoDefinition.readBytes()
+//                    val bmpPhotoDefinition = BitmapFactory.decodeByteArray(
+//                        bytesPhotoDefinition,
+//                        0,
+//                        bytesPhotoDefinition.size
+//                    )
+//                    actualField.ly.imgPhoto.setImageBitmap(bmpPhotoDefinition)
+//                }
+//                nextField.audioName?.let { name ->
+//                    // TODO: Move audio content from next field to actual field
+//                    actualField.ly.llContainerAudio.visibility = View.VISIBLE
+//                    actualField.audioName = name
+//                }
+//                nextField.ly.tieText.text?.clear()
+//                nextField.audioName = null
+//                nextField.imageName = null
+//                nextField.ly.imgPhoto.setImageBitmap(null)
+//                nextField.ly.clContainerImage.visibility = View.GONE
+//                nextField.ly.llContainerAudio.visibility = View.GONE
+//            } else {
+//                actualField.ly.tieText.text?.clear()
+//                actualField.audioName = null
+//                actualField.imageName = null
+//                actualField.ly.imgPhoto.setImageBitmap(null)
+//                actualField.ly.clContainerImage.visibility = View.GONE
+//                actualField.ly.llContainerAudio.visibility = View.GONE
+//                clearField(definitionFields.last { it.container.isVisible })
+//                break
+//            }
+//            index++
+//        }
+//    }
 
     private fun clearField(field: FieldModel) {
         field.apply {
@@ -1757,7 +1778,7 @@ class NewCardDialog(
             ly.tieText.text?.clear()
             unCheckChip(ly.btIsTrue)
             field.imageName?.let {
-                onDeleteImage(field)
+//                onDeleteImage(field)
             }
             field.audioName?.let {
                 // TODO: Delete audio
@@ -1799,34 +1820,42 @@ class NewCardDialog(
         onAttachPhotoFromGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
     }
 
-    fun onRecordAudio(selectedField: LyAddCardFieldBinding) {
+    fun onRecordAudio(selectedFieldPosition: Int?) {
         //TODO: Implement onRecordAudio
-        selectedField.llContainerAudio.visibility = View.VISIBLE
+        if (selectedFieldPosition != null) {
+            if (selectedFieldPosition < 0) {
+                // TODO: Content field
+//                binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+            } else {
+                // TODO: Definition field
+                //            selectedField.llContainerAudio.visibility = View.VISIBLE
+            }
+        }
+
         Toast.makeText(appContext, "Record audio in development", Toast.LENGTH_SHORT).show()
     }
 
-    fun onDeleteAudio(selectedField: LyAddCardFieldBinding) {
+    fun onDeleteAudio(selectedFieldPosition: Int) {
         //TODO: Implement Delete audio
-        selectedField.llContainerAudio.visibility = View.GONE
+        if (selectedFieldPosition < 0) {
+            // TODO: Content field
+//            binding.lyContent.llContentContainerAudio.visibility = View.GONE
+        } else {
+            // TODO: Definition field
+//            selectedField.llContainerAudio.visibility = View.VISIBLE
+        }
+
+        Toast.makeText(appContext, "Delete audio in development", Toast.LENGTH_SHORT).show()
     }
 
-    fun onDeleteImage(actualField: FieldModel) {
-        if (actualField.container.id == contentField.container.id) {
-            contentField.imageName?.let {
-                deleteImageFromInternalStorage(it)
-            }
-            contentField.imageName = null
-            contentField.ly.clContainerImage.visibility = View.GONE
+    fun onDeleteImage(fieldPosition: Int) {
+        val imageName = if (fieldPosition == 1) {
+            (newCardViewModel.definitionFields.value[1] as AddCardItemModel.ContentFieldModel).contentImage?.name
         } else {
-            definitionFields.forEach { field ->
-                if (actualField.container.id == field.container.id) {
-                    field.imageName?.let {
-                        deleteImageFromInternalStorage(it)
-                    }
-                    field.imageName = null
-                    field.ly.clContainerImage.visibility = View.GONE
-                }
-            }
+            (newCardViewModel.definitionFields.value[fieldPosition] as AddCardItemModel.DefinitionFieldModel).definitionImage?.name
+        }
+        imageName?.let {
+            deleteImageFromInternalStorage(it)
         }
     }
 
@@ -1853,20 +1882,21 @@ class NewCardDialog(
         }
     }
 
-    fun onSetFieldPhoto(actualField: FieldModel, imageBitmap: Bitmap?) {
-        if (actualField.container.id == contentField.container.id) {
-            contentField.imageName = actualField.imageName
-            contentField.ly.clContainerImage.visibility = View.VISIBLE
-            contentField.ly.imgPhoto.setImageBitmap(imageBitmap)
-        } else {
-            definitionFields.forEachIndexed { index, field ->
-                if (actualField.container.id == field.container.id) {
-                    definitionFields[index] = actualField
-                    field.ly.clContainerImage.visibility = View.VISIBLE
-                    field.ly.imgPhoto.setImageBitmap(imageBitmap)
-                }
-            }
-        }
-    }
+//    fun onSetFieldPhoto(actualField: FieldModel, imageBitmap: Bitmap?) {
+//
+//        if (actualField.container.id == contentField.container.id) {
+//            contentField.imageName = actualField.imageName
+//            contentField.ly.clContainerImage.visibility = View.VISIBLE
+//            contentField.ly.imgPhoto.setImageBitmap(imageBitmap)
+//        } else {
+//            definitionFields.forEachIndexed { index, field ->
+//                if (actualField.container.id == field.container.id) {
+//                    definitionFields[index] = actualField
+//                    field.ly.clContainerImage.visibility = View.VISIBLE
+//                    field.ly.imgPhoto.setImageBitmap(imageBitmap)
+//                }
+//            }
+//        }
+//    }
 
 }
