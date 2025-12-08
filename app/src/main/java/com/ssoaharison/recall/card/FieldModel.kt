@@ -6,6 +6,4 @@ import com.ssoaharison.recall.databinding.LyAddCardDefinitionFieldBinding
 data class FieldModel(
     val container: ConstraintLayout,
     val ly: LyAddCardDefinitionFieldBinding,
-    var imageName: String? = null,
-    var audioName: String? = null
 )

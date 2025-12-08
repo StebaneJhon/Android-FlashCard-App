@@ -20,6 +20,7 @@ import com.ssoaharison.recall.backend.models.ExternalCardContent
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.helper.PhotoModel
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
 import com.ssoaharison.recall.util.UiState
@@ -47,6 +48,7 @@ class NewCardDialogViewModel(
     private var _openTriviaResponse = MutableStateFlow<UiState<QuizQuestions>>(UiState.Loading)
     val openTriviaResponse: StateFlow<UiState<QuizQuestions>> =
         _openTriviaResponse.asStateFlow()
+
     fun getOpenTriviaQuestions(
         amount: Int,
         category: Int,
@@ -71,25 +73,22 @@ class NewCardDialogViewModel(
         }
     }
 
-//    private var _contentField = MutableStateFlow<ContentFieldModel>(ContentFieldModel(null, null, null, false))
-//    val contentField: StateFlow<ContentFieldModel> = _contentField.asStateFlow()
+    private var _contentField =
+        MutableStateFlow<ContentFieldModel>(ContentFieldModel(null, null, null, false))
+    val contentField: StateFlow<ContentFieldModel> = _contentField.asStateFlow()
 
 
-    private var _definitionFields = MutableStateFlow<List<AddCardItemModel>>(listOf())
-    val definitionFields: StateFlow<List<AddCardItemModel>> = _definitionFields.asStateFlow()
+    private var _definitionFields = MutableStateFlow<MutableList<DefinitionFieldModel>>(mutableListOf())
+    val definitionFields: StateFlow<MutableList<DefinitionFieldModel>> = _definitionFields.asStateFlow()
 
 
-//    fun initContentField(content: ExternalCardContent?) {
-//        _contentField.value = if (content == null) {
-//            ContentFieldModel(null, null, null, false)
-//        } else {
-//            ContentFieldModel(content.contentId, content.contentText, content.contentImage, false)
-//        }
-//    }
-
-//    fun clearContentField() {
-//        initContentField(null)
-//    }
+    fun initContentField(content: ExternalCardContent?) {
+        _contentField.value = if (content == null) {
+            ContentFieldModel(null, null, null, false)
+        } else {
+            ContentFieldModel(content.contentId, content.contentText, content.contentImage, false)
+        }
+    }
 
 //    fun initDefinitionFields(cardDefinitions: List<ExternalCardDefinition>?) {
 //        if (cardDefinitions != null) {
@@ -102,63 +101,30 @@ class NewCardDialogViewModel(
 //
 //    }
 
-    fun initAddCardItemFields(context: Context, card: ExternalCardWithContentAndDefinitions?, deck: ExternalDeck) {
+
+    fun initAddCardFields(card: ExternalCardWithContentAndDefinitions?) {
         if (card != null) {
-            addContentLanguageField(context, card.card.cardContentLanguage ?: deck.cardContentDefaultLanguage)
-            addContentField(card.contentWithDefinitions.content)
-            addDefinitionLanguageField(context, card.card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage)
+            initContentField(card.contentWithDefinitions.content)
+            _contentField.update {
+                ContentFieldModel(
+                    contentId = card.contentWithDefinitions.content.contentId,
+                    contentText = card.contentWithDefinitions.content.contentText,
+                    contentImage = card.contentWithDefinitions.content.contentImage,
+                    hasFocus = false
+                )
+            }
             card.contentWithDefinitions.definitions.forEach { definition ->
                 addDefinitionField(definition)
             }
         } else {
-            addContentLanguageField(context, deck.cardContentDefaultLanguage)
-            addContentField(null)
-            addDefinitionLanguageField(context, deck.cardDefinitionDefaultLanguage)
+            ContentFieldModel(null, null, null, false)
             addDefinitionField(null)
         }
     }
 
-    fun addContentLanguageField(context: Context, contentLanguage: String?) {
-        _definitionFields.update { items ->
-            items + AddCardItemModel.LanguageModel(
-                type = context.getString(R.string.text_content),
-                language = contentLanguage
-            )
-        }
-    }
-
-    fun addDefinitionLanguageField(context: Context, definitionLanguage: String?) {
-        _definitionFields.update { items ->
-            items + AddCardItemModel.LanguageModel(
-                type = context.getString(R.string.text_definition),
-                language = definitionLanguage
-            )
-        }
-    }
-
-    fun addContentField(content: ExternalCardContent?) {
-        val newContentField = if (content == null) {
-            AddCardItemModel.ContentFieldModel(
-                contentId = null,
-                contentText = null,
-                contentImage = null,
-                hasFocus = false
-            )
-        } else {
-            AddCardItemModel.ContentFieldModel(
-                contentId = content.contentId,
-                contentText = content.contentText,
-                contentImage = content.contentImage,
-                hasFocus = false
-            )
-        }
-        _definitionFields.update { items ->
-            items + newContentField
-        }
-    }
     fun addDefinitionField(definition: ExternalCardDefinition?) {
         val newDefinitionFieldModel = if (definition == null) {
-            AddCardItemModel.DefinitionFieldModel(
+            DefinitionFieldModel(
                 definitionId = UUID.randomUUID().toString(),
                 definitionText = null,
                 definitionImage = null,
@@ -166,7 +132,7 @@ class NewCardDialogViewModel(
                 hasFocus = false
             )
         } else {
-            AddCardItemModel.DefinitionFieldModel(
+            DefinitionFieldModel(
                 definitionId = definition.definitionId,
                 definitionText = definition.definitionText,
                 definitionImage = definition.definitionImage,
@@ -175,81 +141,112 @@ class NewCardDialogViewModel(
             )
         }
         _definitionFields.update { fields ->
-            fields + newDefinitionFieldModel
+            (fields + newDefinitionFieldModel) as MutableList<DefinitionFieldModel>
         }
-
-//        val updated = _definitionFields.value.toMutableList()
-//        updated.add(newDefinitionFieldModel)
-//        _definitionFields.value = updated
-//        _definitionFields.value.add(newDefinitionFieldModel)
     }
 
     fun deleteDefinitionField(id: String) {
         _definitionFields.update { fields ->
-            val newFields = mutableListOf<AddCardItemModel.DefinitionFieldModel>()
-            fields.forEachIndexed { index, item ->
-                if (index > 2 && (item as AddCardItemModel.DefinitionFieldModel).definitionId != id) {
-                    newFields.add(item)
-                }
-            }
-            newFields.toList()
+            fields.filter { it.definitionId != id } as MutableList<DefinitionFieldModel>
         }
-//        _definitionFields.value.remove(definitionFieldModel)
     }
 
-    fun clearFields(context: Context, deck: ExternalDeck) {
-        _definitionFields.update { listOf() }
-        initAddCardItemFields(
-            context = context,
-            card = null,
-            deck = deck
-        )
+    fun clearFields() {
+        _contentField.update {
+            ContentFieldModel(
+                contentId = null,
+                contentText = null,
+                contentImage = null,
+                hasFocus = false
+            )
+        }
+        _definitionFields.update {
+            mutableListOf(
+                DefinitionFieldModel(
+                    definitionId = UUID.randomUUID().toString(),
+                    definitionText = null,
+                    definitionImage = null,
+                    isCorrectDefinition = true,
+                    hasFocus = false
+                )
+            )
+        }
     }
 
-    fun updateDefinitionField(updatedDefinitionField: AddCardItemModel.DefinitionFieldModel, index: Int) {
+    fun updateDefinitionField(updatedDefinitionField: DefinitionFieldModel, id: String) {
         _definitionFields.update { fields ->
-            val newFields = fields.toMutableList()
-            for (i in 3..newFields.size.minus(1)) {
-                if (i == index) {
-                    newFields[i] = updatedDefinitionField
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index] = updatedDefinitionField
                 }
             }
-            newFields.toList()
-        }
-//        _definitionFields.value[index].definitionImage = updatedDefinitionField.definitionImage
-//        _definitionFields.value[index].definitionText = updatedDefinitionField.definitionText
-    }
-
-    fun updateContentField(updatedContentField: AddCardItemModel.ContentFieldModel) {
-        _definitionFields.update { items ->
-            val newItems = items.toMutableList()
-            newItems[1] = updatedContentField
-            newItems.toList()
+            fields
         }
     }
 
-    fun updateContentLanguage(updatedLanguage: AddCardItemModel.LanguageModel) {
-        _definitionFields.update { items ->
-            val newItems = items.toMutableList()
-            newItems[0] = updatedLanguage
-            newItems.toList()
+    fun updateDefinitionStatus(id: String, status: Boolean) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index].isCorrectDefinition = status
+                }
+            }
+            fields
         }
     }
 
-    fun updateDefinitionLanguage(updatedLanguage: AddCardItemModel.LanguageModel) {
-        _definitionFields.update { items ->
-            val newItems = items.toMutableList()
-            newItems[2] = updatedLanguage
-            newItems.toList()
+    fun updateDefinitionImage(id: String, image: PhotoModel) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index].definitionImage = image
+                }
+            }
+            fields
         }
+    }
+
+    fun deleteDefinitionImageField(id: String) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index].definitionImage = null
+                }
+            }
+            fields
+        }
+    }
+
+    fun updateDefinitionText(id: String, text: String) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index].definitionText = text
+                }
+            }
+            fields
+        }
+    }
+
+    fun updateContentField(updatedContentField: ContentFieldModel) {
+        _contentField.update { updatedContentField }
+    }
+
+    fun getDefinitionStatusById(id: String): Boolean? {
+        _definitionFields.value.forEach { fieldModel ->
+            if (fieldModel.definitionId == id) {
+                return fieldModel.isCorrectDefinition
+            }
+        }
+        return null
     }
 
     fun getDefinitionFieldCount() = _definitionFields.value.size
 
-    fun getDefinitionFieldByAt(index: Int) = _definitionFields.value[index]
+    fun getDefinitionFieldAt(index: Int) = _definitionFields.value[index]
 
     fun definitionFieldToCardDefinition(
-        field: AddCardItemModel.DefinitionFieldModel,
+        field: DefinitionFieldModel,
         cardId: String,
         contentId: String,
         deckId: String
@@ -266,53 +263,35 @@ class NewCardDialogViewModel(
         )
     }
 
-    fun changeFieldFocus(index: Int) {
-        if (index == 1) {
-            _definitionFields.update { fields ->
-                val newFields = fields.toMutableList()
-                (newFields[1] as AddCardItemModel.ContentFieldModel).hasFocus = true
-                for (i in 3..newFields.size.minus(1)) {
-                    (newFields[i] as AddCardItemModel.DefinitionFieldModel).hasFocus = false
-                }
-//                newFields.forEach{ field ->
-//                    field.hasFocus = false
-//                }
-                newFields.toList()
+    fun focusToContent() {
+        _definitionFields.update { fields ->
+            val newField = fields.toMutableList()
+            newField.forEach { field ->
+                field.hasFocus = false
             }
-//            _definitionFields.value.forEach { field ->
-//                field.hasFocus = false
-//            }
-//            _contentField.value.hasFocus = true
-//            _contentField.value.hasFocus = true
-        } else {
-//            _contentField.value.hasFocus = false
-//            _contentField.value.hasFocus = false
-            _definitionFields.update { fields ->
-                val newFields = fields.toMutableList()
-                (newFields[1] as AddCardItemModel.ContentFieldModel).hasFocus = false
-                for (i in 3..newFields.size.minus(1)) {
-                    (newFields[i] as AddCardItemModel.DefinitionFieldModel).hasFocus = i == index
-                }
-//                newFields.forEachIndexed { i, _ ->
-//                    newFields[i].hasFocus = i == index
-//                }
-                newFields.toList()
-            }
-//            _definitionFields.value.forEachIndexed { i,  field ->
-//                field.hasFocus = i == index
-//            }
+            newField
         }
+        _contentField.update { field -> field.copy(hasFocus = true) }
+    }
+
+    fun changeFieldFocus(index: Int) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { i, field ->
+                fields[i].hasFocus = i == index
+            }
+            fields
+        }
+        _contentField.update { field -> field.copy(hasFocus = false) }
     }
 
     fun getActiveFieldIndex(): Int? {
-        if ((_definitionFields.value[1] as AddCardItemModel.ContentFieldModel).hasFocus)
-            return 1
-        else {
-            for (i in 3.._definitionFields.value.size.minus(1)) {
-                if ((_definitionFields.value[i] as AddCardItemModel.DefinitionFieldModel).hasFocus) {
-                    return i
-                }
+        definitionFields.value.forEachIndexed { index, field ->
+            if (field.hasFocus) {
+                return index
             }
+        }
+        if (contentField.value.hasFocus) {
+            return -1
         }
         return null
     }
@@ -326,7 +305,8 @@ class NewCardDialogViewModel(
             val newCardId = UUID.randomUUID().toString()
             val contentId = UUID.randomUUID().toString()
             val formatedQuestion = reformatText(result.question)
-            val newCardContent = generateCardContent(formatedQuestion, null, null, newCardId, contentId, deckId)
+            val newCardContent =
+                generateCardContent(formatedQuestion, null, null, newCardId, contentId, deckId)
             val newCardDefinitions = generateCardDefinitions(
                 result.correctAnswer,
                 result.incorrectAnswers,
@@ -372,7 +352,17 @@ class NewCardDialogViewModel(
         deckId: String
     ): List<CardDefinition> {
         val newCardDefinitions = arrayListOf<CardDefinition>()
-        newCardDefinitions.add(createDefinition(correctAnswer, null, null, true, cardId, contentId, deckId))
+        newCardDefinitions.add(
+            createDefinition(
+                correctAnswer,
+                null,
+                null,
+                true,
+                cardId,
+                contentId,
+                deckId
+            )
+        )
         incorrectAnswers.forEach { incorrectAnswer ->
             val reformatedText = reformatText(incorrectAnswer)
             newCardDefinitions.add(
@@ -470,7 +460,7 @@ private fun reformatText(text: String) =
 class NewCardDialogViewModelFactory(
     private val openTriviaRepository: OpenTriviaRepository,
     private val repository: FlashCardRepository
-): ViewModelProvider.Factory {
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NewCardDialogViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
