@@ -20,6 +20,7 @@ import com.ssoaharison.recall.backend.models.ExternalCardContent
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
@@ -129,6 +130,7 @@ class NewCardDialogViewModel(
                 definitionId = UUID.randomUUID().toString(),
                 definitionText = null,
                 definitionImage = null,
+                definitionAudio = null,
                 isCorrectDefinition = true,
                 hasFocus = false
             )
@@ -137,6 +139,7 @@ class NewCardDialogViewModel(
                 definitionId = definition.definitionId,
                 definitionText = definition.definitionText,
                 definitionImage = definition.definitionImage,
+                definitionAudio = definition.definitionAudio,
                 isCorrectDefinition = isCorrect(definition.isCorrectDefinition),
                 hasFocus = false
             )
@@ -168,6 +171,7 @@ class NewCardDialogViewModel(
                     definitionId = UUID.randomUUID().toString(),
                     definitionText = null,
                     definitionImage = null,
+                    definitionAudio = null,
                     isCorrectDefinition = true,
                     hasFocus = false
                 )
@@ -202,6 +206,17 @@ class NewCardDialogViewModel(
             fields.forEachIndexed { index, field ->
                 if (field.definitionId == id) {
                     fields[index].definitionImage = image
+                }
+            }
+            fields
+        }
+    }
+
+    fun updateDefinitionAudio(id: String, audio: AudioModel) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index].definitionAudio = audio
                 }
             }
             fields
@@ -261,7 +276,7 @@ class NewCardDialogViewModel(
             isCorrectDefinition = isCorrectRevers(field.isCorrectDefinition),
             definitionText = field.definitionText,
             definitionImageName = field.definitionImage?.name,
-            definitionAudioName = null
+            definitionAudioName = field.definitionAudio?.file?.name,
         )
     }
 

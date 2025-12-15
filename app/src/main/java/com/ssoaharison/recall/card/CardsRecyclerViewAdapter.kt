@@ -180,6 +180,17 @@ class CardsRecyclerViewAdapter(
                         }
                     }
 
+                    val audioContainer: LinearLayout = descriptionView.findViewById(R.id.ll_container_audio)
+                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play_audio)
+                    if (card.contentWithDefinitions.definitions[index].definitionAudio != null) {
+                        audioContainer.visibility = View.VISIBLE
+                        btPlayDefinitionAudio.setOnClickListener {
+                            onPlayAudio(card.contentWithDefinitions.definitions[index].definitionAudio ?: return@setOnClickListener)
+                        }
+                    } else {
+                        audioContainer.visibility = View.GONE
+                    }
+
 
 //                    descriptionView.text = definitionTexts[index]
 //                    descriptionView.setOnClickListener {
@@ -280,7 +291,6 @@ class CardsRecyclerViewAdapter(
                 text = card.card.cardLevel
                 backgroundTintList = colorStateList
             }
-            // TODO: Include Audio
             if (card.contentWithDefinitions.content.contentAudio != null) {
                 content.findViewById<LinearLayout>(R.id.ll_container_audio).visibility = View.VISIBLE
                 content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {

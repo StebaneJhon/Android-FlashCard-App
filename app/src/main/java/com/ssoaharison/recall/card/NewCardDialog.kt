@@ -361,8 +361,7 @@ class NewCardDialog(
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
-        val arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
         listPopupWindow.setBackgroundDrawable(
             ResourcesCompat.getDrawable(
@@ -510,15 +509,10 @@ class NewCardDialog(
                 player.playFile(audio.file ?: return@setOnClickListener)
             }
         }
-        // TODO: Delete Audio button implementation
         binding.lyContent.btContentDeleteAudio.setOnClickListener {
             newCardViewModel.contentField.value.contentAudio?.let { audio ->
-                try {
-                    appContext!!.deleteFile(audio.file.name)
+                if (deleteAudioFromInternalStorage(audio)) {
                     onRemoveContentFieldAudio()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    Toast.makeText(appContext, "Could not delete audio", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -979,7 +973,9 @@ class NewCardDialog(
                         fieldModel.definitionImage?.let { image ->
                             deleteImageFromInternalStorage(image.name)
                         }
-                        // TODO: Delete audio
+                        fieldModel.definitionAudio?.let { audio ->
+                            deleteAudioFromInternalStorage(audio)
+                        }
                     }
                     sendCardsOnSave(newCardViewModel.getAddedCardSum())
                     dismiss()
@@ -1069,6 +1065,12 @@ class NewCardDialog(
                     fieldView.ly.clContainerImage.visibility = View.GONE
                     fieldView.ly.imgPhoto.setImageBitmap(null)
                 }
+                if (actualDefinitionFieldModel.definitionAudio != null) {
+                    fieldView.ly.llContainerAudio.visibility = View.VISIBLE
+                } else {
+                    fieldView.ly.llContainerAudio.visibility = View.GONE
+                }
+
                 if (actualDefinitionFieldModel.isCorrectDefinition) {
                     // TODO: On correct definition
                 } else {
@@ -1110,7 +1112,9 @@ class NewCardDialog(
                         newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
                             deleteImageFromInternalStorage(imageName)
                         }
-                        // TODO: Delete audio
+                        newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                            deleteAudioFromInternalStorage(audioModel)
+                        }
                         newCardViewModel.deleteDefinitionField(actualDefinitionFieldModel.definitionId)
 
                     }
@@ -1122,6 +1126,26 @@ class NewCardDialog(
                     }
                     newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
                     onRemoveDefinitionFieldPhoto(fieldView)
+                }
+
+                fieldView.ly.btPlayAudio.setOnClickListener {
+                    newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                        player.playFile(audioModel.file)
+                    }
+                }
+
+                fieldView.ly.btDeleteAudio.setOnClickListener {
+                    newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                        if (deleteAudioFromInternalStorage(audioModel)) {
+                            onRemoveDefinitionFieldAudio(definitionFields[index])
+                        }
+                    }
+                }
+                newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                    fieldView.ly.btPlayAudio.setOnClickListener {
+                        player.playFile(audioModel.file)
+                    }
+
                 }
 
                 if (actualDefinitionFieldModel.hasFocus) {
@@ -1883,10 +1907,8 @@ class NewCardDialog(
     }
 
     fun onRecordAudio(selectedFieldPosition: Int?) {
-        //TODO: Implement onRecordAudio
         if (selectedFieldPosition != null) {
             if (selectedFieldPosition < 0) {
-                // TODO: Content field
                 if (!recorder.isRecording()) {
                     binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
                     Toast.makeText(requireContext(), "Started recording", Toast.LENGTH_LONG).show()
@@ -1907,8 +1929,24 @@ class NewCardDialog(
                 }
 
             } else {
-                // TODO: Definition field
-                //            selectedField.llContainerAudio.visibility = View.VISIBLE
+                if(!recorder.isRecording()) {
+                    val audioName = "${UUID.randomUUID()}.mp3"
+                    File(appContext?.cacheDir, audioName).also {
+                        recorder.start(it)
+                        val newAudio = AudioModel(
+                            file = it,
+                        )
+                        newCardViewModel.updateDefinitionAudio(
+                            id = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition).definitionId,
+                            audio = newAudio
+                        )
+                        onSetDefinitionFieldAudio(definitionFields[selectedFieldPosition])
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Stoped recording", Toast.LENGTH_SHORT).show()
+                    recorder.stop()
+                }
+
             }
         }
 
@@ -1961,14 +1999,33 @@ class NewCardDialog(
         }
     }
 
+    private fun deleteAudioFromInternalStorage(audio: AudioModel): Boolean {
+        // TODO: Audio deletion not working
+        return try {
+            appContext!!.deleteFile(audio.file.name)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(appContext, "Could not delete audio", Toast.LENGTH_SHORT).show()
+            false
+        }
+    }
+
     fun onSetDefinitionFieldPhoto(actualField: FieldModel, imageBitmap: Bitmap?) {
         actualField.ly.clContainerImage.visibility = View.VISIBLE
         actualField.ly.imgPhoto.setImageBitmap(imageBitmap)
     }
 
+    fun onSetDefinitionFieldAudio(actualField: FieldModel) {
+        actualField.ly.llContainerAudio.visibility = View.VISIBLE
+    }
+
     fun onRemoveDefinitionFieldPhoto(actualField: FieldModel) {
         actualField.ly.clContainerImage.visibility = View.GONE
         actualField.ly.imgPhoto.setImageBitmap(null)
+    }
+
+    fun onRemoveDefinitionFieldAudio(actualField: FieldModel) {
+        actualField.ly.llContainerAudio.visibility = View.GONE
     }
 
     fun onRemoveContentFieldAudio() {

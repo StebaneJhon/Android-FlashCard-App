@@ -199,7 +199,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                         photoModelDefinition = PhotoModel(filePhotoDefinition.name, bmpPhotoDefinition)
                     }
                     //TODO: Get audio
-                    definition.toExternal(photoModelDefinition, null)
+                    var audioModelDefinition: AudioModel? = null
+                    definition.definitionAudioName?.let { audioName ->
+                        val fileAudioDefinition = File(context.cacheDir, audioName)
+                        audioModelDefinition = AudioModel(fileAudioDefinition)
+                    }
+                    definition.toExternal(photoModelDefinition, audioModelDefinition)
                 }
                 val externalCard = card.card.toExternal()
                 ExternalCardWithContentAndDefinitions(
