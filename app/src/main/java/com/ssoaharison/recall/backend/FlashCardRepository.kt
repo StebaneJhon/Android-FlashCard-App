@@ -14,6 +14,7 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalCardContentWithDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -182,7 +183,12 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                     photoModelContent = PhotoModel(filePhotoContent.name, bmpPhotoContent)
                 }
                 //TODO: Get audio
-                val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, null)
+                var audioModelContent: AudioModel? = null
+                card.contentWithDefinitions.content.contentAudioName?.let { audioName ->
+                    val fileAudioContent = File(context.cacheDir, audioName)
+                    audioModelContent = AudioModel(fileAudioContent)
+                }
+                val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, audioModelContent)
 
                 val externalDefinitions = card.contentWithDefinitions.definitions.map { definition ->
                     var photoModelDefinition: PhotoModel? = null

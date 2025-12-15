@@ -68,6 +68,7 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OnSaveDeckWithCationModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemePicker
@@ -101,6 +102,10 @@ class CardFragment :
 //    private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
 //    private lateinit var appThemeName: String
+
+    private val player by lazy {
+        AndroidAudioPlayer(requireContext())
+    }
 
     private val cardViewModel by lazy {
         val repository = (requireActivity().application as FlashCardApplication).repository
@@ -943,6 +948,14 @@ class CardFragment :
                         language = text.text.language,
                         type = text.type
                     )
+                }
+            }, { audio ->
+                lifecycleScope.launch {
+                    if (!player.isPlaying()) {
+                        player.playFile(audio.file)
+                    } else {
+                        player.stop()
+                    }
                 }
             })
 

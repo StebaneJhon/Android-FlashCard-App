@@ -9,7 +9,7 @@ import com.ssoaharison.recall.backend.entities.User
 import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.entities.relations.DeckWithCardsAndContentAndDefinitions
-import com.ssoaharison.recall.help.AudioModel
+import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 
 //fun ImmutableDeck.toLocal() = Deck(
@@ -162,7 +162,7 @@ fun ExternalCardDefinition.toLocal() = CardDefinition(
     isCorrectDefinition = isCorrectDefinition,
     definitionText = definitionText,
     definitionImageName = definitionImage?.name,
-    definitionAudioName = definitionAudio?.name
+    definitionAudioName = definitionAudio?.file?.name
 )
 
 @JvmName("externalCardDefinitionToLocal")
@@ -188,7 +188,7 @@ fun ExternalCardContent.toLocal() = CardContent(
     deckOwnerId = deckOwnerId,
     contentText = contentText,
     contentImageName = contentImage?.name,
-    contentAudioName = contentAudio?.name
+    contentAudioName = contentAudio?.file?.name
 )
 
 @JvmName("externalCardContentToLocal")

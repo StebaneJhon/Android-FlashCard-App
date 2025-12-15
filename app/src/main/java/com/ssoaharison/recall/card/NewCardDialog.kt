@@ -81,7 +81,10 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.databinding.LyAddCardContentFieldBinding
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
+import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
+import com.ssoaharison.recall.helper.record.AndroidAudioRecorder
 import com.ssoaharison.recall.util.AttachRef.ATTACH_AUDIO_RECORD
 import com.ssoaharison.recall.util.AttachRef.ATTACH_IMAGE_FROM_CAMERA
 import com.ssoaharison.recall.util.AttachRef.ATTACH_IMAGE_FROM_GALERI
@@ -118,6 +121,14 @@ class NewCardDialog(
     private lateinit var importCardsFromDeviceModel: CardImportFromDeviceModel
     private lateinit var attachBottomSheetDialog: AttachBottomSheetDialog
     private lateinit var scanBottomSheetDialog: ScanBottomSheetDialog
+
+    private val recorder by lazy {
+        AndroidAudioRecorder(requireContext())
+    }
+
+    private val player by lazy {
+        AndroidAudioPlayer(requireContext())
+    }
 
     private val newCardViewModel by lazy {
         val openTriviaRepository =
@@ -494,7 +505,23 @@ class NewCardDialog(
         binding.lyContent.btContentDeleteImage.setOnClickListener {
             onRemoveContentFieldPhoto()
         }
+        binding.lyContent.btContentPlayAudio.setOnClickListener {
+            newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                player.playFile(audio.file ?: return@setOnClickListener)
+            }
+        }
         // TODO: Delete Audio button implementation
+        binding.lyContent.btContentDeleteAudio.setOnClickListener {
+            newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                try {
+                    appContext!!.deleteFile(audio.file.name)
+                    onRemoveContentFieldAudio()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Toast.makeText(appContext, "Could not delete audio", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
 
         if (card != null && action == Constant.UPDATE) {
@@ -565,15 +592,17 @@ class NewCardDialog(
                     }
 
                     ATTACH_AUDIO_RECORD -> {
-                        if (selectedField != null) {
-                            onRecordAudio(newCardViewModel.getActiveFieldIndex())
-                        } else {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.error_message_no_field_selected),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
+                        onRecordAudio(newCardViewModel.getActiveFieldIndex())
+
+//                        if (selectedField != null) {
+//                            onRecordAudio(newCardViewModel.getActiveFieldIndex())
+//                        } else {
+//                            Toast.makeText(
+//                                requireContext(),
+//                                getString(R.string.error_message_no_field_selected),
+//                                Toast.LENGTH_LONG
+//                            ).show()
+//                        }
                     }
                 }
             }
@@ -1372,11 +1401,12 @@ class NewCardDialog(
         val contentField = newCardViewModel.contentField.value
         val cardContentText = contentField.contentText
         val cardContentImageName = contentField.contentImage?.name
+        val cardContentAudioName = contentField.contentAudio?.file?.name
         return if (cardContentText != null) {
             newCardViewModel.generateCardContent(
                 contentId = contentId,
                 imageName = cardContentImageName,
-                audioName = null,
+                audioName = cardContentAudioName,
                 cardId = cardId,
                 deckId = deckId,
                 text = cardContentText
@@ -1857,14 +1887,32 @@ class NewCardDialog(
         if (selectedFieldPosition != null) {
             if (selectedFieldPosition < 0) {
                 // TODO: Content field
-//                binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+                if (!recorder.isRecording()) {
+                    binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+                    Toast.makeText(requireContext(), "Started recording", Toast.LENGTH_LONG).show()
+                    val audioName = "${UUID.randomUUID()}.mp3"
+                    File(appContext?.cacheDir, audioName).also {
+                        recorder.start(it)
+                        val newAudio = AudioModel(
+                            file = it,
+                        )
+                        newCardViewModel.updateContentField(updatedContentField = newCardViewModel.contentField.value.copy(
+                            contentAudio = newAudio
+                        ))
+                        onSetContentFieldAudio()
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Stoped recording", Toast.LENGTH_SHORT).show()
+                    recorder.stop()
+                }
+
             } else {
                 // TODO: Definition field
                 //            selectedField.llContainerAudio.visibility = View.VISIBLE
             }
         }
 
-        Toast.makeText(appContext, "Record audio in development", Toast.LENGTH_SHORT).show()
+//        Toast.makeText(appContext, "Record audio in development", Toast.LENGTH_SHORT).show()
     }
 
     fun onDeleteAudio(selectedFieldPosition: Int) {
@@ -1923,6 +1971,10 @@ class NewCardDialog(
         actualField.ly.imgPhoto.setImageBitmap(null)
     }
 
+    fun onRemoveContentFieldAudio() {
+        binding.lyContent.llContentContainerAudio.visibility = View.GONE
+    }
+
     fun onSetContentFieldPhoto(imageBitmap: Bitmap) {
         binding.lyContent.clContentContainerImage.visibility = View.VISIBLE
         binding.lyContent.imgContentPhoto.setImageBitmap(imageBitmap)
@@ -1931,6 +1983,10 @@ class NewCardDialog(
     fun onRemoveContentFieldPhoto() {
         binding.lyContent.clContentContainerImage.visibility = View.GONE
         binding.lyContent.imgContentPhoto.setImageBitmap(null)
+    }
+
+    fun onSetContentFieldAudio() {
+        binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
     }
 
 }

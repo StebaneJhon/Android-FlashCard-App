@@ -1,13 +1,14 @@
-package com.example.protoypehierarchicaldb.helper.playback
+package com.ssoaharison.recall.helper.playback
 
 import android.content.Context
 import android.media.MediaPlayer
 import androidx.core.net.toUri
+import com.example.protoypehierarchicaldb.helper.playback.AudioPlayer
 import java.io.File
 
 class AndroidAudioPlayer(
     private val context: Context
-): AudioPlayer  {
+): AudioPlayer {
 
     private var player: MediaPlayer? = null
     private var isPlaying: Boolean = false

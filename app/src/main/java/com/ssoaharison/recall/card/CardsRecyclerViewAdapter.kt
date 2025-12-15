@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
@@ -19,6 +20,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
@@ -31,6 +33,8 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.databinding.LyCardDefinitionBinding
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -47,6 +51,7 @@ class CardsRecyclerViewAdapter(
     private val deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
     private val onReadContent: (TextClickedModel) -> Unit,
     private val onReadDefinition: (TextClickedModel) -> Unit,
+    private val onPlayAudio: (AudioModel) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -63,6 +68,7 @@ class CardsRecyclerViewAdapter(
                 deleteCardClickListener,
                 onReadContent,
                 onReadDefinition,
+                onPlayAudio,
             )
 
     override fun getItemCount(): Int {
@@ -131,12 +137,13 @@ class CardsRecyclerViewAdapter(
             deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
             onReadContent: (TextClickedModel) -> Unit,
             onReadDefinition: (TextClickedModel) -> Unit,
+            onPlayAudio: (AudioModel) -> Unit
         ) {
 
             if (appTheme == DARK_THEME) {
-                this.onDarkTheme(boxLevels, card, context)
+                this.onDarkTheme(boxLevels, card, context, onPlayAudio)
             } else {
-                this.onBrightTheme(boxLevels, card, context)
+                this.onBrightTheme(boxLevels, card, context, onPlayAudio)
             }
 
             val correctDefinition = getCorrectDefinition(card.contentWithDefinitions.definitions)
@@ -256,7 +263,8 @@ class CardsRecyclerViewAdapter(
         private fun onBrightTheme(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             card: ExternalCardWithContentAndDefinitions?,
-            context: Context
+            context: Context,
+            onPlayAudio: (AudioModel) -> Unit
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.card?.cardLevel!!)
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
@@ -273,6 +281,12 @@ class CardsRecyclerViewAdapter(
                 backgroundTintList = colorStateList
             }
             // TODO: Include Audio
+            if (card.contentWithDefinitions.content.contentAudio != null) {
+                content.findViewById<LinearLayout>(R.id.ll_container_audio).visibility = View.VISIBLE
+                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
+                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
+                }
+            }
 
             if (card.contentWithDefinitions.content.contentText != null) {
                 content.findViewById<TextView>(R.id.tv_content).apply {
@@ -294,7 +308,8 @@ class CardsRecyclerViewAdapter(
         private fun onDarkTheme(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             card: ExternalCardWithContentAndDefinitions,
-            context: Context
+            context: Context,
+            onPlayAudio: (AudioModel) -> Unit
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
@@ -311,7 +326,12 @@ class CardsRecyclerViewAdapter(
             }
 
             // TODO: Include Audio
-
+            if (card.contentWithDefinitions.content.contentAudio != null) {
+                content.findViewById<LinearLayout>(R.id.ll_container_audio).visibility = View.VISIBLE
+                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
+                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
+                }
+            }
             if (card.contentWithDefinitions.content.contentText != null) {
                 content.findViewById<TextView>(R.id.tv_content).apply {
                     text = card.contentWithDefinitions.content.contentText
