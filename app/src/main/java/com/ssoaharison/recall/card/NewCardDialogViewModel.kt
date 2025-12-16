@@ -78,11 +78,9 @@ class NewCardDialogViewModel(
         MutableStateFlow<ContentFieldModel>(ContentFieldModel(null, null, null, null, false))
     val contentField: StateFlow<ContentFieldModel> = _contentField.asStateFlow()
 
-
-    private var _definitionFields = MutableStateFlow<MutableList<DefinitionFieldModel>>(mutableListOf())
-    val definitionFields: StateFlow<MutableList<DefinitionFieldModel>> = _definitionFields.asStateFlow()
-
-
+    fun updateContentField(updatedContentField: ContentFieldModel) {
+        _contentField.update { updatedContentField }
+    }
     fun initContentField(content: ExternalCardContent?) {
         _contentField.value = if (content == null) {
             ContentFieldModel(null, null, null, null, false)
@@ -90,6 +88,26 @@ class NewCardDialogViewModel(
             ContentFieldModel(content.contentId, content.contentText, content.contentImage, content.contentAudio, false)
         }
     }
+
+    fun deleteContentImageField() {
+        _contentField.update { field ->
+            field.contentImage = null
+            field
+        }
+    }
+
+    fun deleteContentAudioField() {
+        _contentField.update { field ->
+            field.contentAudio = null
+            field
+        }
+    }
+
+
+
+
+    private var _definitionFields = MutableStateFlow<MutableList<DefinitionFieldModel>>(mutableListOf())
+    val definitionFields: StateFlow<MutableList<DefinitionFieldModel>> = _definitionFields.asStateFlow()
 
 //    fun initDefinitionFields(cardDefinitions: List<ExternalCardDefinition>?) {
 //        if (cardDefinitions != null) {
@@ -234,6 +252,17 @@ class NewCardDialogViewModel(
         }
     }
 
+    fun deleteDefinitionAudioField(id: String) {
+        _definitionFields.update { fields ->
+            fields.forEachIndexed { index, field ->
+                if (field.definitionId == id) {
+                    fields[index].definitionAudio = null
+                }
+            }
+            fields
+        }
+    }
+
     fun updateDefinitionText(id: String, text: String) {
         _definitionFields.update { fields ->
             fields.forEachIndexed { index, field ->
@@ -243,10 +272,6 @@ class NewCardDialogViewModel(
             }
             fields
         }
-    }
-
-    fun updateContentField(updatedContentField: ContentFieldModel) {
-        _contentField.update { updatedContentField }
     }
 
     fun getDefinitionStatusById(id: String): Boolean? {

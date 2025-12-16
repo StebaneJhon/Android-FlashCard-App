@@ -185,7 +185,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                 //TODO: Get audio
                 var audioModelContent: AudioModel? = null
                 card.contentWithDefinitions.content.contentAudioName?.let { audioName ->
-                    val fileAudioContent = File(context.cacheDir, audioName)
+                    val fileAudioContent = File(context.filesDir, audioName)
                     audioModelContent = AudioModel(fileAudioContent)
                 }
                 val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, audioModelContent)
@@ -201,7 +201,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                     //TODO: Get audio
                     var audioModelDefinition: AudioModel? = null
                     definition.definitionAudioName?.let { audioName ->
-                        val fileAudioDefinition = File(context.cacheDir, audioName)
+                        val fileAudioDefinition = File(context.filesDir, audioName)
                         audioModelDefinition = AudioModel(fileAudioDefinition)
                     }
                     definition.toExternal(photoModelDefinition, audioModelDefinition)

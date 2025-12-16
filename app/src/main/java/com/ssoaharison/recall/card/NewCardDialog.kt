@@ -502,16 +502,22 @@ class NewCardDialog(
             newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
         }
         binding.lyContent.btContentDeleteImage.setOnClickListener {
-            onRemoveContentFieldPhoto()
+            newCardViewModel.contentField.value.contentImage?.let { image ->
+                if (deleteImageFromInternalStorage( image.name)) {
+                    newCardViewModel.deleteContentImageField()
+                    onRemoveContentFieldPhoto()
+                }
+            }
         }
         binding.lyContent.btContentPlayAudio.setOnClickListener {
             newCardViewModel.contentField.value.contentAudio?.let { audio ->
-                player.playFile(audio.file ?: return@setOnClickListener)
+                player.playFile(audio.file)
             }
         }
         binding.lyContent.btContentDeleteAudio.setOnClickListener {
             newCardViewModel.contentField.value.contentAudio?.let { audio ->
                 if (deleteAudioFromInternalStorage(audio)) {
+                    newCardViewModel.deleteContentAudioField()
                     onRemoveContentFieldAudio()
                 }
             }
@@ -1122,10 +1128,11 @@ class NewCardDialog(
 
                 fieldView.ly.btDeleteImage.setOnClickListener {
                     newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
-                        deleteImageFromInternalStorage(imageName)
+                        if(deleteImageFromInternalStorage(imageName)) {
+                            newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
+                            onRemoveDefinitionFieldPhoto(fieldView)
+                        }
                     }
-                    newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
-                    onRemoveDefinitionFieldPhoto(fieldView)
                 }
 
                 fieldView.ly.btPlayAudio.setOnClickListener {
@@ -1137,6 +1144,7 @@ class NewCardDialog(
                 fieldView.ly.btDeleteAudio.setOnClickListener {
                     newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
                         if (deleteAudioFromInternalStorage(audioModel)) {
+                            newCardViewModel.deleteDefinitionAudioField(actualDefinitionFieldModel.definitionId)
                             onRemoveDefinitionFieldAudio(definitionFields[index])
                         }
                     }
@@ -1913,7 +1921,7 @@ class NewCardDialog(
                     binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
                     Toast.makeText(requireContext(), "Started recording", Toast.LENGTH_LONG).show()
                     val audioName = "${UUID.randomUUID()}.mp3"
-                    File(appContext?.cacheDir, audioName).also {
+                    File(appContext?.filesDir, audioName).also {
                         recorder.start(it)
                         val newAudio = AudioModel(
                             file = it,
@@ -1931,7 +1939,7 @@ class NewCardDialog(
             } else {
                 if(!recorder.isRecording()) {
                     val audioName = "${UUID.randomUUID()}.mp3"
-                    File(appContext?.cacheDir, audioName).also {
+                    File(appContext?.filesDir, audioName).also {
                         recorder.start(it)
                         val newAudio = AudioModel(
                             file = it,
@@ -2000,7 +2008,6 @@ class NewCardDialog(
     }
 
     private fun deleteAudioFromInternalStorage(audio: AudioModel): Boolean {
-        // TODO: Audio deletion not working
         return try {
             appContext!!.deleteFile(audio.file.name)
         } catch (e: Exception) {

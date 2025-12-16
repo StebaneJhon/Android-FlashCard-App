@@ -7,7 +7,6 @@
     android:orientation="vertical">
 
     <ImageView
-        android:visibility="gone"
         android:id="@+id/img_photo"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -18,7 +17,6 @@
         android:src="@drawable/ic_launcher_background" />
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/ll_container_audio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
