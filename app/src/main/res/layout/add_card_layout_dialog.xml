@@ -347,6 +347,7 @@
         android:id="@+id/docked_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="?colorSurfaceContainerLowest"
         android:layout_gravity="bottom">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -371,7 +372,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_text_translate"
-                    app:icon="@drawable/icon_attach" />
+                    app:icon="@drawable/icon_attach"
+                    android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 
             <FrameLayout
@@ -391,7 +393,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="@string/add_card"
-                    app:icon="@drawable/icon_document_scanner" />
+                    app:icon="@drawable/icon_document_scanner"
+                    android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 
             <FrameLayout
@@ -410,7 +413,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_description_button_speak"
-                    app:icon="@drawable/icon_translate" />
+                    app:icon="@drawable/icon_translate"
+                    android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 
             <FrameLayout

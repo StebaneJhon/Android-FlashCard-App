@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/space_lg">
+
+    <TextView
+        android:id="@+id/tv_timer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="00:00.0"
+        android:textSize="@dimen/text_xl3"
+        android:textAlignment="center"
+        android:textColor="?colorOnSurface"
+        android:layout_marginBottom="@dimen/space_xl"
+        app:layout_constraintBottom_toTopOf="@+id/waveformView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.ssoaharison.recall.appView.WaveformView
+        android:id="@+id/waveformView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/wave_view_max_height"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.499" />
+
+    <Button
+        android:id="@+id/bt_done"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_lg"
+        android:backgroundTint="?colorSurfaceContainerHigh"
+        android:contentDescription="@string/next"
+        android:paddingHorizontal="@dimen/space_md"
+        android:paddingVertical="@dimen/space_xs"
+        app:icon="@drawable/icon_check"
+        app:iconGravity="textStart"
+        app:iconTint="?colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_play_pause"
+        app:layout_constraintStart_toEndOf="@+id/bt_play_pause"
+        app:layout_constraintTop_toTopOf="@+id/bt_play_pause" />
+
+    <Button
+        android:id="@+id/bt_play_pause"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xl"
+        android:backgroundTint="?colorOnSurface"
+        android:contentDescription="@string/next"
+        app:icon="@drawable/icon_play"
+        app:iconGravity="textStart"
+        app:iconTint="?colorSurfaceContainerLowest"
+        android:paddingHorizontal="@dimen/space_xl"
+        android:paddingVertical="@dimen/space_lg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/waveformView" />
+
+    <Button
+        android:id="@+id/bt_cancel"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_lg"
+        android:backgroundTint="?colorSurfaceContainerHigh"
+        android:contentDescription="@string/next"
+        android:paddingHorizontal="@dimen/space_md"
+        android:paddingVertical="@dimen/space_xs"
+        app:icon="@drawable/icon_exit"
+        app:iconGravity="textStart"
+        app:iconTint="?colorOnSurface"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_play_pause"
+        app:layout_constraintEnd_toStartOf="@+id/bt_play_pause"
+        app:layout_constraintTop_toTopOf="@+id/bt_play_pause" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

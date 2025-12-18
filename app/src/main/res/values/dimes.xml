@@ -22,7 +22,7 @@
 
     <dimen name="radius_xs">2dp</dimen>
     <dimen name="radius_sm">6dp</dimen>
-    <dimen name="radius_base">10dp</dimen>
+    <dimen name="radius_base">16dp</dimen>
     <dimen name="radius_lg">14dp</dimen>
     <dimen name="radius_xl">18dp</dimen>
     <dimen name="bt_radius">4dp</dimen>
@@ -49,5 +49,7 @@
     <dimen name="card_info_height">85dp</dimen>
 
     <dimen name="progression_region_height">9dp</dimen>
+
+    <dimen name="wave_view_max_height">400px</dimen>
     
 </resources>
