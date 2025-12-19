@@ -317,6 +317,7 @@ class NewCardDialog(
         const val REQUEST_CODE_CARD = "0"
         const val REQUEST_CODE_CARD_IMPORT_SOURCE = "3"
         const val REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE = "4"
+        const val REQUEST_CODE_AUDIO_RECORDER = "5"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -1915,48 +1916,83 @@ class NewCardDialog(
     }
 
     fun onRecordAudio(selectedFieldPosition: Int?) {
+
         if (selectedFieldPosition != null) {
-            if (selectedFieldPosition < 0) {
-                if (!recorder.isRecording()) {
-                    binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
-                    Toast.makeText(requireContext(), "Started recording", Toast.LENGTH_LONG).show()
-                    val audioName = "${UUID.randomUUID()}.mp3"
-                    File(appContext?.filesDir, audioName).also {
-                        recorder.start(it)
-                        val newAudio = AudioModel(
-                            file = it,
-                        )
+            val audioRecorder = AudioRecorderDialog()
+            audioRecorder.show(childFragmentManager, "AudioRecorderDialog")
+            childFragmentManager.setFragmentResultListener(
+                REQUEST_CODE_AUDIO_RECORDER, this ) {_, bundle ->
+
+                val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    bundle.getParcelable(AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY, AudioModel::class.java)
+                } else {
+                    bundle.getParcelable<AudioModel>(AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY)
+                }
+
+                result?.let { newAudio ->
+                    // TODO: Update audio field
+                    if (selectedFieldPosition < 0) {
+                        binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
                         newCardViewModel.updateContentField(updatedContentField = newCardViewModel.contentField.value.copy(
                             contentAudio = newAudio
                         ))
                         onSetContentFieldAudio()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Stoped recording", Toast.LENGTH_SHORT).show()
-                    recorder.stop()
-                }
-
-            } else {
-                if(!recorder.isRecording()) {
-                    val audioName = "${UUID.randomUUID()}.mp3"
-                    File(appContext?.filesDir, audioName).also {
-                        recorder.start(it)
-                        val newAudio = AudioModel(
-                            file = it,
-                        )
+                    } else {
                         newCardViewModel.updateDefinitionAudio(
                             id = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition).definitionId,
                             audio = newAudio
                         )
                         onSetDefinitionFieldAudio(definitionFields[selectedFieldPosition])
                     }
-                } else {
-                    Toast.makeText(requireContext(), "Stoped recording", Toast.LENGTH_SHORT).show()
-                    recorder.stop()
                 }
-
             }
+        } else {
+            Toast.makeText(appContext, getString(R.string.error_message_no_field_selected), Toast.LENGTH_SHORT).show()
         }
+
+
+//        if (selectedFieldPosition != null) {
+//            if (selectedFieldPosition < 0) {
+//                if (!recorder.isRecording()) {
+//                    binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+//                    Toast.makeText(requireContext(), "Started recording", Toast.LENGTH_LONG).show()
+//                    val audioName = "${UUID.randomUUID()}.mp3"
+//                    File(appContext?.filesDir, audioName).also {
+//                        recorder.start(it)
+//                        val newAudio = AudioModel(
+//                            file = it,
+//                        )
+//                        newCardViewModel.updateContentField(updatedContentField = newCardViewModel.contentField.value.copy(
+//                            contentAudio = newAudio
+//                        ))
+//                        onSetContentFieldAudio()
+//                    }
+//                } else {
+//                    Toast.makeText(requireContext(), "Stoped recording", Toast.LENGTH_SHORT).show()
+//                    recorder.stop()
+//                }
+//
+//            } else {
+//                if(!recorder.isRecording()) {
+//                    val audioName = "${UUID.randomUUID()}.mp3"
+//                    File(appContext?.filesDir, audioName).also {
+//                        recorder.start(it)
+//                        val newAudio = AudioModel(
+//                            file = it,
+//                        )
+//                        newCardViewModel.updateDefinitionAudio(
+//                            id = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition).definitionId,
+//                            audio = newAudio
+//                        )
+//                        onSetDefinitionFieldAudio(definitionFields[selectedFieldPosition])
+//                    }
+//                } else {
+//                    Toast.makeText(requireContext(), "Stoped recording", Toast.LENGTH_SHORT).show()
+//                    recorder.stop()
+//                }
+//
+//            }
+//        }
 
 //        Toast.makeText(appContext, "Record audio in development", Toast.LENGTH_SHORT).show()
     }

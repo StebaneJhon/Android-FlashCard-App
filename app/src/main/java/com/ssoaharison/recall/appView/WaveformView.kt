@@ -15,8 +15,8 @@ class WaveformView(context: Context, attrs: AttributeSet?) : View(context, attrs
     private var spikes = ArrayList<RectF>()
 
     private var radius = 6f
-    private var w = 9f
-    private var d = 6f
+    private var spikeWidth = 9f
+    private var gap = 6f
 
     private var screenWidth = 0f
     private var screenHeight = 400f
@@ -25,10 +25,6 @@ class WaveformView(context: Context, attrs: AttributeSet?) : View(context, attrs
 
     init {
         paint.color = Color.rgb(12, 10, 9)
-
-        screenWidth = resources.displayMetrics.widthPixels.toFloat()
-
-        maxSpikes = (screenWidth / (w+d)).toInt()
     }
 
     fun addAmplitude(amp: Float) {
@@ -38,9 +34,9 @@ class WaveformView(context: Context, attrs: AttributeSet?) : View(context, attrs
         spikes.clear()
         var amps = amplitudes.takeLast(maxSpikes)
         for (i in amps.indices) {
-            var left = screenWidth - i*(w+d)
+            var left = screenWidth - i*(spikeWidth+gap)
             var top = screenHeight/2 - amps[i]/2
-            var right = left + w
+            var right = left + spikeWidth
             var bottom = top + amps[i]
 
             spikes.add(RectF(left, top, right, bottom))
@@ -57,6 +53,13 @@ class WaveformView(context: Context, attrs: AttributeSet?) : View(context, attrs
         invalidate()
 
         return amps
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        screenWidth = w.toFloat()
+        screenHeight = h.toFloat()
+        maxSpikes = (screenWidth / (spikeWidth+gap)).toInt()
     }
 
     override fun draw(canvas: Canvas) {

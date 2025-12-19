@@ -13,6 +13,8 @@ class AndroidAudioRecorder(
 
     private var recorder: MediaRecorder? = null
     private var isRecording: Boolean = false
+    private var isPaused: Boolean = false
+
 
     private fun createRecorder(): MediaRecorder {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -33,18 +35,38 @@ class AndroidAudioRecorder(
             start()
 
             isRecording = true
+            isPaused = false
             recorder = this
         }
+    }
+
+    override fun pause() {
+        isPaused = true
+        recorder?.pause()
+    }
+
+    override fun resume() {
+        isPaused = false
+        recorder?.resume()
     }
 
     override fun stop() {
         recorder?.stop()
         recorder?.reset()
         recorder = null
+        isPaused = false
         isRecording = false
     }
 
     override fun isRecording(): Boolean {
         return isRecording
+    }
+
+    override fun isPaused(): Boolean {
+        return isPaused
+    }
+
+    override fun getMaxAmplitude(): Float {
+        return recorder?.maxAmplitude?.toFloat() ?: 0F
     }
 }

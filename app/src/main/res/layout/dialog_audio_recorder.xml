@@ -46,7 +46,7 @@
         app:layout_constraintStart_toEndOf="@+id/bt_play_pause"
         app:layout_constraintTop_toTopOf="@+id/bt_play_pause" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_play_pause"
         style="?attr/materialIconButtonFilledStyle"
         android:layout_width="wrap_content"
