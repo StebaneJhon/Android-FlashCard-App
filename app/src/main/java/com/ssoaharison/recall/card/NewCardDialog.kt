@@ -12,6 +12,7 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
+import android.icu.text.DecimalFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -95,6 +96,7 @@ import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.parcelable
 import com.ssoaharison.recall.util.textToImmutableCard
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
@@ -114,7 +116,6 @@ class NewCardDialog(
     private var appContext: Context? = null
     var imm: InputMethodManager? = null
     private var selectedField: FieldModel? = null
-
     private var actualFieldLanguage: String? = null
     private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
@@ -362,7 +363,8 @@ class NewCardDialog(
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
-        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
         listPopupWindow.setBackgroundDrawable(
             ResourcesCompat.getDrawable(
@@ -504,17 +506,50 @@ class NewCardDialog(
         }
         binding.lyContent.btContentDeleteImage.setOnClickListener {
             newCardViewModel.contentField.value.contentImage?.let { image ->
-                if (deleteImageFromInternalStorage( image.name)) {
+                if (deleteImageFromInternalStorage(image.name)) {
                     newCardViewModel.deleteContentImageField()
                     onRemoveContentFieldPhoto()
                 }
             }
         }
         binding.lyContent.btContentPlayAudio.setOnClickListener {
-            newCardViewModel.contentField.value.contentAudio?.let { audio ->
-                player.playFile(audio.file)
+            when {
+                player.hasPlayed() && !player.isPlaying() -> {
+                    binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_pause)
+                    player.play()
+                    lifecycleScope.launch {
+                        binding.lyContent.sliderContentAudio.valueTo = player.getDuration()
+                        while (player.isPlaying()) {
+                            binding.lyContent.sliderContentAudio.value = player.getCurrentPosition()
+                            delay(1000L)
+                        }
+                    }
+                }
+                player.hasPlayed() && player.isPlaying() -> {
+                    binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_play)
+                    player.pause()
+                }
+                !player.hasPlayed() && !player.isPlaying() -> {
+                    newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                        binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_pause)
+                        player.playFile(audio.file)
+                        lifecycleScope.launch {
+                            binding.lyContent.sliderContentAudio.valueTo = player.getDuration()
+                            while (player.isPlaying()) {
+                                binding.lyContent.sliderContentAudio.value = player.getCurrentPosition()
+                                delay(1000L)
+                            }
+                        }
+                    }
+                    player.onCompletion {
+                        binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_play)
+                    }
+                }
             }
+
         }
+
+
         binding.lyContent.btContentDeleteAudio.setOnClickListener {
             newCardViewModel.contentField.value.contentAudio?.let { audio ->
                 if (deleteAudioFromInternalStorage(audio)) {
@@ -523,7 +558,6 @@ class NewCardDialog(
                 }
             }
         }
-
 
         if (card != null && action == Constant.UPDATE) {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
@@ -1027,7 +1061,6 @@ class NewCardDialog(
         newCardViewModel.initAddCardFields(card = card)
 
 
-
 //        definitionFields.forEachIndexed { index, fl ->
 //            if (index < card.contentWithDefinitions.definitions.size) {
 //                fl.container.visibility = View.VISIBLE
@@ -1107,7 +1140,9 @@ class NewCardDialog(
                     )
                     newCardViewModel.updateDefinitionStatus(
                         id = actualDefinitionFieldModel.definitionId,
-                        status = !newCardViewModel.getDefinitionStatusById(actualDefinitionFieldModel.definitionId)!!
+                        status = !newCardViewModel.getDefinitionStatusById(
+                            actualDefinitionFieldModel.definitionId
+                        )!!
                     )
                 }
 
@@ -1129,7 +1164,7 @@ class NewCardDialog(
 
                 fieldView.ly.btDeleteImage.setOnClickListener {
                     newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
-                        if(deleteImageFromInternalStorage(imageName)) {
+                        if (deleteImageFromInternalStorage(imageName)) {
                             newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
                             onRemoveDefinitionFieldPhoto(fieldView)
                         }
@@ -1921,10 +1956,14 @@ class NewCardDialog(
             val audioRecorder = AudioRecorderDialog()
             audioRecorder.show(childFragmentManager, "AudioRecorderDialog")
             childFragmentManager.setFragmentResultListener(
-                REQUEST_CODE_AUDIO_RECORDER, this ) {_, bundle ->
+                REQUEST_CODE_AUDIO_RECORDER, this
+            ) { _, bundle ->
 
                 val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    bundle.getParcelable(AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY, AudioModel::class.java)
+                    bundle.getParcelable(
+                        AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY,
+                        AudioModel::class.java
+                    )
                 } else {
                     bundle.getParcelable<AudioModel>(AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY)
                 }
@@ -1933,9 +1972,11 @@ class NewCardDialog(
                     // TODO: Update audio field
                     if (selectedFieldPosition < 0) {
                         binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
-                        newCardViewModel.updateContentField(updatedContentField = newCardViewModel.contentField.value.copy(
-                            contentAudio = newAudio
-                        ))
+                        newCardViewModel.updateContentField(
+                            updatedContentField = newCardViewModel.contentField.value.copy(
+                                contentAudio = newAudio
+                            )
+                        )
                         onSetContentFieldAudio()
                     } else {
                         newCardViewModel.updateDefinitionAudio(
@@ -1947,7 +1988,11 @@ class NewCardDialog(
                 }
             }
         } else {
-            Toast.makeText(appContext, getString(R.string.error_message_no_field_selected), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                appContext,
+                getString(R.string.error_message_no_field_selected),
+                Toast.LENGTH_SHORT
+            ).show()
         }
 
 
@@ -2011,7 +2056,8 @@ class NewCardDialog(
     }
 
     fun onDeleteImage(fieldPosition: Int) {
-        val imageName = if (fieldPosition == -1) { newCardViewModel.contentField.value.contentImage?.name
+        val imageName = if (fieldPosition == -1) {
+            newCardViewModel.contentField.value.contentImage?.name
         } else {
             newCardViewModel.definitionFields.value[fieldPosition].definitionImage?.name
         }
@@ -2087,6 +2133,20 @@ class NewCardDialog(
 
     fun onSetContentFieldAudio() {
         binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+    }
+
+
+    private fun dateFormat(duration: Int): String {
+        var d = duration / 1000
+        var s = d % 60
+        var m = (d / 60 % 60)
+        var h = ((d - m * 60) / 360).toInt()
+        val f: DecimalFormat = DecimalFormat("00")
+        var str = "$m:${f.format(s)}"
+        if (h > 0) {
+            str = "$h:$str"
+        }
+        return str
     }
 
 }

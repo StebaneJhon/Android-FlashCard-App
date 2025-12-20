@@ -12,9 +12,11 @@ class AndroidAudioPlayer(
 
     private var player: MediaPlayer? = null
     private var isPlaying: Boolean = false
+    private var hasPlayed: Boolean = false
 
     override fun playFile(file: File) {
         isPlaying = true
+        hasPlayed = true
         MediaPlayer.create(context, file.toUri()).apply {
             player = this
             start()
@@ -26,9 +28,41 @@ class AndroidAudioPlayer(
         player?.release()
         player = null
         isPlaying = false
+        hasPlayed = false
+    }
+
+    override fun pause() {
+        player?.pause()
+        isPlaying = false
+    }
+
+    override fun play() {
+        player?.start()
+        isPlaying = true
     }
 
     override fun isPlaying(): Boolean {
         return isPlaying
     }
+
+    override fun hasPlayed(): Boolean {
+        return hasPlayed
+    }
+
+    override fun getDuration(): Float {
+        return player?.duration?.toFloat() ?: 0f
+    }
+
+    override fun getCurrentPosition(): Float {
+        return player?.currentPosition?.toFloat() ?: 0f
+    }
+
+    override fun onCompletion(listener: () -> Unit) {
+        player?.setOnCompletionListener {
+            stop()
+            listener()
+        }
+
+    }
+
 }

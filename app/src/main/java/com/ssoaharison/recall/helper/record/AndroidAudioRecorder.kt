@@ -15,7 +15,6 @@ class AndroidAudioRecorder(
     private var isRecording: Boolean = false
     private var isPaused: Boolean = false
 
-
     private fun createRecorder(): MediaRecorder {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             MediaRecorder(context)
