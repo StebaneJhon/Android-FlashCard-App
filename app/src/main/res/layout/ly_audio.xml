@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/ll_container_audio"
+    android:id="@+id/ll_audio_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_radius_xs"
-    android:backgroundTint="?colorSurfaceContainerHigh">
+    android:backgroundTint="?colorSurfaceContainer"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="@dimen/space_xxs">
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/bt_play_audio"
+        android:id="@+id/bt_play"
         style="?attr/materialIconButtonFilledStyle"
         android:layout_width="@dimen/height_sm"
         android:layout_height="@dimen/height_sm"
@@ -17,24 +20,52 @@
         app:iconSize="@dimen/icon_sm"
         android:gravity="center"
         app:iconGravity="textEnd"
-        app:iconTint="?colorSurfaceContainerLowest"
+        app:iconTint="?colorOnSurface"
+        android:backgroundTint="?colorSurfaceContainerHigh"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.google.android.material.slider.Slider
-        android:id="@+id/slider_audio"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:value="20.0"
-        android:valueFrom="0.0"
-        android:valueTo="100.0"
+    <SeekBar
+        android:id="@+id/slider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:progress="40"
+        android:progressTint="?colorOnSurface"
+        android:thumbTint="?colorOnSurface"
+        android:progressBackgroundTint="?colorSurfaceContainerHighest"
         app:layout_constraintStart_toEndOf="@+id/bt_play_audio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:thumbWidth="@dimen/space_xs"
-        app:thumbHeight="@dimen/height_sm"
         app:trackHeight="@dimen/space_sm" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tv_length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textColor="?colorOnSurface"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_xxs"
+        android:layout_marginHorizontal="@dimen/space_xs"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_delete"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="@dimen/height_sm"
+        android:layout_height="@dimen/height_sm"
+        android:contentDescription="@string/play_audio"
+        app:icon="@drawable/icon_exit"
+        app:iconSize="@dimen/icon_sm"
+        android:gravity="center"
+        app:iconGravity="textEnd"
+        app:iconTint="?colorOnSurface"
+        android:backgroundTint="?colorSurfaceContainerHigh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+</LinearLayout>

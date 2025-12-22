@@ -967,9 +967,6 @@
     </style>
 
     <style name="ThemeOverlay.App.TextInputLayout" parent="">
-<!--        <item name="colorPrimary">?colorSurfaceContainerHighest</item>-->
-<!--        <item name="colorOnSurface">?colorOnSurface</item>-->
-<!--        <item name="colorError">?colorError</item>-->
         <item name="textAppearanceTitleMedium">@style/TextAppearance.App.TitleMedium</item>
         <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
         <item name="editTextStyle">@style/Widget.Material3.TextInputEditText.OutlinedBox</item>
