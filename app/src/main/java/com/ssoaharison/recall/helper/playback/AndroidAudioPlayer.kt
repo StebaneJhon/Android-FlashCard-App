@@ -49,12 +49,12 @@ class AndroidAudioPlayer(
         return hasPlayed
     }
 
-    override fun getDuration(): Float {
-        return player?.duration?.toFloat() ?: 0f
+    override fun getDuration(): Int {
+        return player?.duration ?: 0
     }
 
-    override fun getCurrentPosition(): Float {
-        return player?.currentPosition?.toFloat() ?: 0f
+    override fun getCurrentPosition(): Int {
+        return player?.currentPosition ?: 0
     }
 
     override fun onCompletion(listener: () -> Unit) {

@@ -512,45 +512,12 @@ class NewCardDialog(
                 }
             }
         }
-        binding.lyContent.btContentPlayAudio.setOnClickListener {
-            when {
-                player.hasPlayed() && !player.isPlaying() -> {
-                    binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_pause)
-                    player.play()
-                    lifecycleScope.launch {
-                        binding.lyContent.sliderContentAudio.valueTo = player.getDuration()
-                        while (player.isPlaying()) {
-                            binding.lyContent.sliderContentAudio.value = player.getCurrentPosition()
-                            delay(1000L)
-                        }
-                    }
-                }
-                player.hasPlayed() && player.isPlaying() -> {
-                    binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_play)
-                    player.pause()
-                }
-                !player.hasPlayed() && !player.isPlaying() -> {
-                    newCardViewModel.contentField.value.contentAudio?.let { audio ->
-                        binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_pause)
-                        player.playFile(audio.file)
-                        lifecycleScope.launch {
-                            binding.lyContent.sliderContentAudio.valueTo = player.getDuration()
-                            while (player.isPlaying()) {
-                                binding.lyContent.sliderContentAudio.value = player.getCurrentPosition()
-                                delay(1000L)
-                            }
-                        }
-                    }
-                    player.onCompletion {
-                        binding.lyContent.btContentPlayAudio.setIconResource(R.drawable.icon_play)
-                    }
-                }
-            }
-
+        binding.lyContent.lyContentAudio.btPlay.setOnClickListener {
+            playPauseContendAudio()
         }
 
 
-        binding.lyContent.btContentDeleteAudio.setOnClickListener {
+        binding.lyContent.lyContentAudio.btDelete.setOnClickListener {
             newCardViewModel.contentField.value.contentAudio?.let { audio ->
                 if (deleteAudioFromInternalStorage(audio)) {
                     newCardViewModel.deleteContentAudioField()
@@ -591,6 +558,46 @@ class NewCardDialog(
 //            }
 //        }
 
+    }
+
+    private fun playPauseContendAudio() {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+    //                        binding.lyContent.lyContentAudio.slider.max = player.getDuration()
+                    while (player.isPlaying()) {
+                        binding.lyContent.lyContentAudio.slider.progress =
+                            player.getCurrentPosition()
+                        delay(1000L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                    binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                    player.playFile(audio.file)
+                    lifecycleScope.launch {
+                        binding.lyContent.lyContentAudio.slider.max = player.getDuration()
+                        while (player.isPlaying()) {
+                            binding.lyContent.lyContentAudio.slider.progress =
+                                player.getCurrentPosition()
+                            delay(1000L)
+                        }
+                    }
+                }
+                player.onCompletion {
+                    binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                }
+            }
+        }
     }
 
     private fun onAttach() {
@@ -787,14 +794,14 @@ class NewCardDialog(
     ) {
         if (hasFocus) {
             actualFieldLanguage = language
-            ly.clContentContainerField.setBackgroundResource(R.drawable.bg_definition_field_focused)
+            ly.llContentField.setBackgroundResource(R.drawable.bg_add_card_field_focused)
             //TODO: To be improved. Scroll to focused view.
             v?.postDelayed({
-                val y = ly.clContentContainerField.bottom.plus(binding.dockedToolbar.height)
+                val y = ly.llContentField.bottom.plus(binding.dockedToolbar.height)
                 binding.nestedScrollView.smoothScrollTo(0, maxOf(y, 0))
             }, 200)
         } else {
-            ly.clContentContainerField.setBackgroundResource(R.drawable.bg_definition_field)
+            ly.llContentField.setBackgroundResource(R.drawable.bg_add_card_field)
         }
     }
 
@@ -1171,13 +1178,13 @@ class NewCardDialog(
                     }
                 }
 
-                fieldView.ly.btPlayAudio.setOnClickListener {
+                fieldView.ly.lyContentAudio.btPlay.setOnClickListener {
                     newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
-                        player.playFile(audioModel.file)
+                        playPauseDefinitionAudio(fieldView, audioModel)
                     }
                 }
 
-                fieldView.ly.btDeleteAudio.setOnClickListener {
+                fieldView.ly.lyContentAudio.btDelete.setOnClickListener {
                     newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
                         if (deleteAudioFromInternalStorage(audioModel)) {
                             newCardViewModel.deleteDefinitionAudioField(actualDefinitionFieldModel.definitionId)
@@ -1185,12 +1192,11 @@ class NewCardDialog(
                         }
                     }
                 }
-                newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
-                    fieldView.ly.btPlayAudio.setOnClickListener {
-                        player.playFile(audioModel.file)
-                    }
-
-                }
+//                newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+//                    fieldView.ly.lyContentAudio.btPlay.setOnClickListener {
+//                        player.playFile(audioModel.file)
+//                    }
+//                }
 
                 if (actualDefinitionFieldModel.hasFocus) {
                     fieldView.ly.tieText.requestFocus()
@@ -1204,6 +1210,45 @@ class NewCardDialog(
 
             } else {
                 fieldView.container.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun playPauseDefinitionAudio(
+        fieldView: FieldModel,
+        audioModel: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        fieldView.ly.lyContentAudio.slider.progress =
+                            player.getCurrentPosition()
+                        delay(1000L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                player.playFile(audioModel.file)
+                lifecycleScope.launch {
+                    fieldView.ly.lyContentAudio.slider.max = player.getDuration()
+                    while (player.isPlaying()) {
+                        fieldView.ly.lyContentAudio.slider.progress = player.getCurrentPosition()
+                        delay(1000L)
+                    }
+                }
+                player.onCompletion {
+                    fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                }
             }
         }
     }

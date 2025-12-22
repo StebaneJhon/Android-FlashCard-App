@@ -20,8 +20,8 @@
     <dimen name="text_xl2">24sp</dimen>
     <dimen name="text_xl3">30sp</dimen>
 
-    <dimen name="radius_xs">2dp</dimen>
-    <dimen name="radius_sm">6dp</dimen>
+    <dimen name="radius_xs">4dp</dimen>
+    <dimen name="radius_sm">8dp</dimen>
     <dimen name="radius_base">16dp</dimen>
     <dimen name="radius_lg">14dp</dimen>
     <dimen name="radius_xl">18dp</dimen>

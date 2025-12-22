@@ -23,18 +23,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/space_sm"
-        android:layout_marginEnd="@dimen/space_sm"
-        android:background="@drawable/bg_definition_field"
-        android:paddingHorizontal="@dimen/space_sm"
-        android:paddingVertical="@dimen/space_sm">
+        android:background="@drawable/bg_add_card_field">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:visibility="gone"
             android:id="@+id/cl_container_image"
             android:layout_width="0dp"
             android:layout_height="150dp"
-            android:layout_marginEnd="@dimen/space_xxs"
-            android:layout_marginBottom="@dimen/space_xxs"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginStart="@dimen/space_sm"
             app:layout_constraintBottom_toTopOf="@+id/ll_container_audio"
             app:layout_constraintEnd_toStartOf="@+id/bt_is_true"
             app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +41,7 @@
                 android:id="@+id/img_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_card_top_element"
+                android:background="@drawable/bg_radius_sm"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
                 android:src="@drawable/ic_launcher_background"
@@ -56,17 +53,16 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_delete_image"
                 style="?attr/materialIconButtonFilledTonalStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/height_sm"
+                android:layout_height="@dimen/height_sm"
                 android:layout_margin="@dimen/space_xs"
-                android:backgroundTint="?colorPrimary"
+                android:backgroundTint="?colorSurfaceContainerHigh"
                 android:clickable="false"
                 android:contentDescription="@string/bt_description_next"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorSurfaceContainerLowest"
                 app:icon="@drawable/icon_exit"
-                app:iconGravity="end"
-                app:iconTint="?colorSurfaceContainerLowest"
+                app:iconGravity="textEnd"
+                app:iconTint="?colorOnSurface"
+                app:iconSize="@dimen/icon_sm"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:rippleColor="?colorSurfaceContainerHighest" />
@@ -74,62 +70,84 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/ll_container_audio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/space_xxs"
-            android:layout_marginBottom="@dimen/space_xxs"
-            android:background="@drawable/bg_radius_xs"
-            android:backgroundTint="?colorSurfaceContainerHigh"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
+            android:backgroundTint="?colorSurfaceContainer"
+            android:background="@drawable/bg_radius_sm"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_xxs"
+            android:layout_marginStart="@dimen/space_sm"
+            android:layout_marginTop="@dimen/space_sm"
             app:layout_constraintBottom_toTopOf="@+id/til_text"
             app:layout_constraintEnd_toStartOf="@+id/bt_is_true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_container_image">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_play_audio"
-                style="?attr/materialIconButtonFilledTonalStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_xs"
-                android:backgroundTint="?colorPrimary"
-                android:clickable="false"
-                android:contentDescription="@string/bt_description_next"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorSurfaceContainerLowest"
-                app:icon="@drawable/icon_play"
-                app:iconGravity="end"
-                app:iconTint="?colorSurfaceContainerLowest"
-                app:rippleColor="?colorSurfaceContainerHighest" />
-
-            <com.google.android.material.slider.Slider
-                android:id="@+id/slider_audio"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:value="20.0"
-                android:valueFrom="0.0"
-                android:valueTo="100.0" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_delete_audio"
-                style="?attr/materialIconButtonFilledTonalStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_xs"
-                android:backgroundTint="?colorPrimary"
-                android:clickable="false"
-                android:contentDescription="@string/bt_description_next"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorSurfaceContainerLowest"
-                app:icon="@drawable/icon_exit"
-                app:iconGravity="end"
-                app:iconTint="?colorSurfaceContainerLowest"
-                app:rippleColor="?colorSurfaceContainerHighest" />
+            <include
+                android:id="@+id/ly_content_audio"
+                layout="@layout/ly_audio_field" />
         </LinearLayout>
+
+<!--        <LinearLayout-->
+<!--            android:visibility="gone"-->
+<!--            android:id="@+id/ll_container_audio"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="@dimen/space_xxs"-->
+<!--            android:layout_marginBottom="@dimen/space_xxs"-->
+<!--            android:background="@drawable/bg_radius_xs"-->
+<!--            android:backgroundTint="?colorSurfaceContainerHigh"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintBottom_toTopOf="@+id/til_text"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/bt_is_true"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/cl_container_image">-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/bt_play_audio"-->
+<!--                style="?attr/materialIconButtonFilledTonalStyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="@dimen/space_xs"-->
+<!--                android:backgroundTint="?colorPrimary"-->
+<!--                android:clickable="false"-->
+<!--                android:contentDescription="@string/bt_description_next"-->
+<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:textColor="?colorSurfaceContainerLowest"-->
+<!--                app:icon="@drawable/icon_play"-->
+<!--                app:iconGravity="end"-->
+<!--                app:iconTint="?colorSurfaceContainerLowest"-->
+<!--                app:rippleColor="?colorSurfaceContainerHighest" />-->
+
+<!--            <com.google.android.material.slider.Slider-->
+<!--                android:id="@+id/slider_audio"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:value="20.0"-->
+<!--                android:valueFrom="0.0"-->
+<!--                android:valueTo="100.0" />-->
+
+<!--            <com.google.android.material.button.MaterialButton-->
+<!--                android:id="@+id/bt_delete_audio"-->
+<!--                style="?attr/materialIconButtonFilledTonalStyle"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="@dimen/space_xs"-->
+<!--                android:backgroundTint="?colorPrimary"-->
+<!--                android:clickable="false"-->
+<!--                android:contentDescription="@string/bt_description_next"-->
+<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:textColor="?colorSurfaceContainerLowest"-->
+<!--                app:icon="@drawable/icon_exit"-->
+<!--                app:iconGravity="end"-->
+<!--                app:iconTint="?colorSurfaceContainerLowest"-->
+<!--                app:rippleColor="?colorSurfaceContainerHighest" />-->
+<!--        </LinearLayout>-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_text"
@@ -149,7 +167,7 @@
                 android:id="@+id/tie_text"
                 style="@style/Widget.App.TextInputEditText"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="@string/til_card_content_hint"
                 android:inputType="textMultiLine"
                 android:maxLines="10" />
@@ -159,11 +177,14 @@
             android:id="@+id/bt_is_true"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:background="@drawable/bg_radius_xs"
+            android:background="@drawable/bg_radius_sm"
             android:backgroundTint="@color/green100"
             android:gravity="center"
             android:paddingHorizontal="@dimen/space_sm"
             android:paddingVertical="@dimen/space_xs"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm"
+            android:layout_marginEnd="@dimen/space_sm"
             android:text="@string/cp_true_text"
             android:textAlignment="center"
             android:textColor="@color/green500"

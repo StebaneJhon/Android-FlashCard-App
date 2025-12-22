@@ -10,7 +10,7 @@ interface AudioPlayer {
     fun play()
     fun isPlaying(): Boolean
     fun hasPlayed(): Boolean
-    fun getDuration(): Float
-    fun getCurrentPosition(): Float
+    fun getDuration(): Int
+    fun getCurrentPosition(): Int
     fun onCompletion(listener: () -> Unit)
 }
