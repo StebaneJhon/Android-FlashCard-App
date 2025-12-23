@@ -82,10 +82,12 @@ class NewCardDialogViewModel(
         _contentField.update { updatedContentField }
     }
     fun initContentField(content: ExternalCardContent?) {
-        _contentField.value = if (content == null) {
-            ContentFieldModel(null, null, null, null, false)
-        } else {
-            ContentFieldModel(content.contentId, content.contentText, content.contentImage, content.contentAudio, false)
+        _contentField.update {
+            if (content == null) {
+                ContentFieldModel(null, null, null, null, false)
+            } else {
+                ContentFieldModel(content.contentId, content.contentText, content.contentImage, content.contentAudio, false)
+            }
         }
     }
 
@@ -124,15 +126,16 @@ class NewCardDialogViewModel(
     fun initAddCardFields(card: ExternalCardWithContentAndDefinitions?) {
         if (card != null) {
             initContentField(card.contentWithDefinitions.content)
-            _contentField.update {
-                ContentFieldModel(
-                    contentId = card.contentWithDefinitions.content.contentId,
-                    contentText = card.contentWithDefinitions.content.contentText,
-                    contentImage = card.contentWithDefinitions.content.contentImage,
-                    contentAudio = card.contentWithDefinitions.content.contentAudio,
-                    hasFocus = false
-                )
-            }
+//            _contentField.update {
+//                ContentFieldModel(
+//                    contentId = card.contentWithDefinitions.content.contentId,
+//                    contentText = card.contentWithDefinitions.content.contentText,
+//                    contentImage = card.contentWithDefinitions.content.contentImage,
+//                    contentAudio = card.contentWithDefinitions.content.contentAudio,
+//                    hasFocus = false
+//                )
+//            }
+            _definitionFields.update { mutableListOf() }
             card.contentWithDefinitions.definitions.forEach { definition ->
                 addDefinitionField(definition)
             }

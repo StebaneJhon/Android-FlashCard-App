@@ -237,7 +237,7 @@ class NewCardDialog(
                                     contentImage = newPhoto
                                 )
                             )
-                            onSetContentFieldPhoto(newPhoto.bmp)
+//                            onSetContentFieldPhoto(newPhoto.bmp)
                         } else {
                             newCardViewModel.updateDefinitionImage(
                                 id = newCardViewModel.getDefinitionFieldAt(activeFieldIndex).definitionId,
@@ -291,7 +291,7 @@ class NewCardDialog(
                                     contentImage = newPhoto
                                 )
                             )
-                            onSetContentFieldPhoto(newPhoto.bmp)
+//                            onSetContentFieldPhoto(newPhoto.bmp)
                         } else {
                             newCardViewModel.updateDefinitionImage(
                                 id = newCardViewModel.getDefinitionFieldAt(activeFieldIndex).definitionId,
@@ -487,44 +487,60 @@ class NewCardDialog(
         )
 //        contentField = FieldModel(binding.clContainerContent, binding.lyContent)
 //        binding.lyDefinition1.btDeleteField.visibility = View.GONE
-        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                onFieldFocused(
-                    binding.clContainerContent,
-                    binding.lyContent,
-                    v,
-                    getNewContentLanguage(),
-                    hasFocus,
-                )
-                newCardViewModel.focusToContent()
-            } else {
-                v.clearFocus()
-            }
-        }
-        binding.lyContent.tieContentText.addTextChangedListener { text ->
-            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
-        }
-        binding.lyContent.btContentDeleteImage.setOnClickListener {
-            newCardViewModel.contentField.value.contentImage?.let { image ->
-                if (deleteImageFromInternalStorage(image.name)) {
-                    newCardViewModel.deleteContentImageField()
-                    onRemoveContentFieldPhoto()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.definitionFields.collect { fields ->
+                    displayDefinitionFields(fields)
                 }
             }
         }
-        binding.lyContent.lyContentAudio.btPlay.setOnClickListener {
-            playPauseContendAudio()
-        }
-
-
-        binding.lyContent.lyContentAudio.btDelete.setOnClickListener {
-            newCardViewModel.contentField.value.contentAudio?.let { audio ->
-                if (deleteAudioFromInternalStorage(audio)) {
-                    newCardViewModel.deleteContentAudioField()
-                    onRemoveContentFieldAudio()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.contentField.collect { content ->
+                    displayContentField(content)
                 }
             }
         }
+
+//        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
+//            if (hasFocus) {
+//                onFieldFocused(
+//                    binding.clContainerContent,
+//                    binding.lyContent,
+//                    v,
+//                    getNewContentLanguage(),
+//                    hasFocus,
+//                )
+//                newCardViewModel.focusToContent()
+//            } else {
+//                v.clearFocus()
+//            }
+//        }
+//        binding.lyContent.tieContentText.addTextChangedListener { text ->
+//            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
+//        }
+//        binding.lyContent.btContentDeleteImage.setOnClickListener {
+//            newCardViewModel.contentField.value.contentImage?.let { image ->
+//                if (deleteImageFromInternalStorage(image.name)) {
+//                    newCardViewModel.deleteContentImageField()
+//                    onRemoveContentFieldPhoto()
+//                }
+//            }
+//        }
+//        binding.lyContent.lyContentAudio.btPlay.setOnClickListener {
+//            playPauseContendAudio()
+//        }
+//
+//
+//        binding.lyContent.lyContentAudio.btDelete.setOnClickListener {
+//            newCardViewModel.contentField.value.contentAudio?.let { audio ->
+//                if (deleteAudioFromInternalStorage(audio)) {
+//                    newCardViewModel.deleteContentAudioField()
+//                    onRemoveContentFieldAudio()
+//                }
+//            }
+//        }
 
         if (card != null && action == Constant.UPDATE) {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
@@ -532,7 +548,6 @@ class NewCardDialog(
         } else {
             binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
             onAddCard()
-            setCardLanguages()
         }
 //        definitionFields.forEach { definitionField ->
 //            definitionField.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
@@ -566,7 +581,7 @@ class NewCardDialog(
                 binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
                 player.play()
                 lifecycleScope.launch {
-    //                        binding.lyContent.lyContentAudio.slider.max = player.getDuration()
+                    //                        binding.lyContent.lyContentAudio.slider.max = player.getDuration()
                     while (player.isPlaying()) {
                         binding.lyContent.lyContentAudio.slider.progress =
                             player.getCurrentPosition()
@@ -1034,14 +1049,22 @@ class NewCardDialog(
     }
 
     private fun onAddCard() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                newCardViewModel.definitionFields.collect { fields ->
-                    displayDefinitionFields(fields)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                newCardViewModel.definitionFields.collect { fields ->
+//                    displayDefinitionFields(fields)
+//                }
+//            }
+//        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                newCardViewModel.contentField.collect { content ->
+//                    displayContentField(content)
+//                }
+//            }
+//        }
         newCardViewModel.initAddCardFields(card = null)
+        setCardLanguages()
     }
 
     private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
@@ -1058,13 +1081,20 @@ class NewCardDialog(
 //            // TODO: Include audio content
 //        }
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                newCardViewModel.definitionFields.collect { fields ->
-                    displayDefinitionFields(fields)
-                }
-            }
-        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                newCardViewModel.definitionFields.collect { fields ->
+//                    displayDefinitionFields(fields)
+//                }
+//            }
+//        }
+//        lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                newCardViewModel.contentField.collect { content ->
+//                    displayContentField(content)
+//                }
+//            }
+//        }
         newCardViewModel.initAddCardFields(card = card)
 
 
@@ -1093,6 +1123,60 @@ class NewCardDialog(
 //        }
 
         setCardLanguages(card.card)
+
+    }
+
+    fun displayContentField(content: ContentFieldModel) {
+
+        content.contentText?.let { text ->
+            binding.lyContent.tieContentText.setText(text)
+            binding.lyContent.tieContentText.setSelection(text.length)
+        }
+
+        if (content.contentImage != null) {
+            onSetContentFieldPhoto(content.contentImage!!.bmp)
+            binding.lyContent.btContentDeleteImage.setOnClickListener {
+                if (deleteImageFromInternalStorage(content.contentImage!!.name)) {
+                    newCardViewModel.deleteContentImageField()
+                    onRemoveContentFieldPhoto()
+                }
+            }
+        } else {
+            onRemoveContentFieldAudio()
+        }
+
+        if (content.contentAudio != null) {
+            onSetContentFieldAudio()
+            binding.lyContent.lyContentAudio.btPlay.setOnClickListener {
+                playPauseContendAudio()
+            }
+            binding.lyContent.lyContentAudio.btDelete.setOnClickListener {
+                if (deleteAudioFromInternalStorage(content.contentAudio!!)) {
+                    newCardViewModel.deleteContentAudioField()
+                    onRemoveContentFieldAudio()
+                }
+            }
+        } else {
+            onRemoveContentFieldAudio()
+        }
+
+        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                onFieldFocused(
+                    binding.clContainerContent,
+                    binding.lyContent,
+                    v,
+                    getNewContentLanguage(),
+                    hasFocus,
+                )
+                newCardViewModel.focusToContent()
+            } else {
+                v.clearFocus()
+            }
+        }
+        binding.lyContent.tieContentText.addTextChangedListener { text ->
+            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
+        }
 
     }
 
@@ -1254,28 +1338,20 @@ class NewCardDialog(
     }
 
     private fun setCardLanguages(card: ExternalCard? = null) {
-//        val contentLanguage = getContentLanguage(card)
-//        val definitionLanguage = getDefinitionLanguage(card)
-//        if (contentLanguage != null) {
-//            binding.btContentLanguage.text = contentLanguage
-//        } else {
-//            binding.btContentLanguage.text = getString(R.string.text_content_language)
-//        }
-//        if (definitionLanguage != null) {
-//            binding.btDefinitionLanguage.text = definitionLanguage
-//        } else {
-//            binding.btDefinitionLanguage.text = getString(R.string.text_definition_language)
-//        }
+        val contentLanguage = getContentLanguage(card)
+        val definitionLanguage = getDefinitionLanguage(card)
+        binding.btContentLanguage.text = contentLanguage ?: getString(R.string.text_content_language)
+        binding.btDefinitionLanguage.text = definitionLanguage ?: getString(R.string.text_definition_language)
     }
 
     private fun getDefinitionLanguage(card: ExternalCard?) = when {
-        !card?.cardDefinitionLanguage.isNullOrBlank() -> card?.cardDefinitionLanguage
+        !card?.cardDefinitionLanguage.isNullOrBlank() -> card.cardDefinitionLanguage
         !deck.cardDefinitionDefaultLanguage.isNullOrBlank() -> deck.cardDefinitionDefaultLanguage
         else -> null
     }
 
     private fun getContentLanguage(card: ExternalCard?) = when {
-        !card?.cardContentLanguage.isNullOrBlank() -> card?.cardContentLanguage
+        !card?.cardContentLanguage.isNullOrBlank() -> card.cardContentLanguage
         !deck.cardContentDefaultLanguage.isNullOrBlank() -> deck.cardContentDefaultLanguage
         else -> null
     }
@@ -1463,33 +1539,21 @@ class NewCardDialog(
     }
 
     private fun getNewContentLanguage(): String? {
-//        val addedContentLanguage = binding.btContentLanguage.text
-//        if (addedContentLanguage.toString() !in supportedLanguages) {
-//            val defaultContentLanguage = deck.cardContentDefaultLanguage
-//            return if (defaultContentLanguage.isNullOrBlank()) {
-//                null
-//            } else {
-//                defaultContentLanguage
-//            }
-//        } else {
-//            return addedContentLanguage.toString()
-//        }
-        return null
+        val addedContentLanguage = binding.btContentLanguage.text
+        return if (addedContentLanguage.toString() !in supportedLanguages) {
+            deck.cardContentDefaultLanguage
+        } else {
+            addedContentLanguage.toString()
+        }
     }
 
     private fun getNewDefinitionLanguage(): String? {
-//        val addedDefinitionLanguage = binding.btDefinitionLanguage.text
-//        if (addedDefinitionLanguage.toString() !in supportedLanguages) {
-//            val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
-//            return if (defaultDefinitionLanguage.isNullOrBlank()) {
-//                null
-//            } else {
-//                defaultDefinitionLanguage
-//            }
-//        } else {
-//            return addedDefinitionLanguage.toString()
-//        }
-        return null
+        val addedDefinitionLanguage = binding.btDefinitionLanguage.text
+        return if (addedDefinitionLanguage.toString() !in supportedLanguages) {
+            deck.cardDefinitionDefaultLanguage
+        } else {
+            addedDefinitionLanguage.toString()
+        }
     }
 
     private fun getCardType(definitions: List<CardDefinition>): String {
