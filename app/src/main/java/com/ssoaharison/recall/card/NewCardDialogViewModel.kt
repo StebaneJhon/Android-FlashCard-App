@@ -290,6 +290,16 @@ class NewCardDialogViewModel(
 
     fun getDefinitionFieldAt(index: Int) = _definitionFields.value[index]
 
+    fun getDefinitionTexts(): List<String>? {
+        val result = mutableListOf<String>()
+        definitionFields.value.forEach {
+            if (it.definitionText != null) {
+                result.add(it.definitionText!!)
+            }
+        }
+        return if (result.isEmpty()) null else result
+    }
+
     fun definitionFieldToCardDefinition(
         field: DefinitionFieldModel,
         cardId: String,

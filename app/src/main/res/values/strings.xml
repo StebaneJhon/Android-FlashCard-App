@@ -317,4 +317,6 @@
     <string name="error_message_no_field_selected">Please select a field.</string>
     <string name="error_message_max_10_definitions">Max 10 definitions allowed.</string>
     <string name="play_audio">Play audio</string>
+    <string name="translate">Translate</string>
+    <string name="no_definition_found">No definition found.</string>
 </resources>

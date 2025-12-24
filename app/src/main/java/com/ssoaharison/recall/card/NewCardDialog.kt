@@ -237,7 +237,6 @@ class NewCardDialog(
                                     contentImage = newPhoto
                                 )
                             )
-//                            onSetContentFieldPhoto(newPhoto.bmp)
                         } else {
                             newCardViewModel.updateDefinitionImage(
                                 id = newCardViewModel.getDefinitionFieldAt(activeFieldIndex).definitionId,
@@ -291,7 +290,6 @@ class NewCardDialog(
                                     contentImage = newPhoto
                                 )
                             )
-//                            onSetContentFieldPhoto(newPhoto.bmp)
                         } else {
                             newCardViewModel.updateDefinitionImage(
                                 id = newCardViewModel.getDefinitionFieldAt(activeFieldIndex).definitionId,
@@ -319,6 +317,7 @@ class NewCardDialog(
         const val REQUEST_CODE_CARD_IMPORT_SOURCE = "3"
         const val REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE = "4"
         const val REQUEST_CODE_AUDIO_RECORDER = "5"
+        const val REQUEST_CODE_TRANSLATION_OPTION = "9"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -427,11 +426,11 @@ class NewCardDialog(
             onPositiveAction()
         }
         binding.btTranslate.setOnClickListener {
-//            onTranslateText(
-//                binding.lyContent.tieContentText.text.toString(),
-//                selectedField?.ly?.tieText,
-//                selectedField?.ly?.tilText
-//            )
+            //TODO: Fix translation
+
+            onTranslateText(
+                newCardViewModel.getActiveFieldIndex()
+            )
         }
         binding.btAddMedia.setOnClickListener {
             onAttach()
@@ -1133,6 +1132,24 @@ class NewCardDialog(
             binding.lyContent.tieContentText.setSelection(text.length)
         }
 
+        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                onFieldFocused(
+                    binding.clContainerContent,
+                    binding.lyContent,
+                    v,
+                    getNewContentLanguage(),
+                    hasFocus,
+                )
+                newCardViewModel.focusToContent()
+            } else {
+                v.clearFocus()
+            }
+        }
+        binding.lyContent.tieContentText.addTextChangedListener { text ->
+            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
+        }
+
         if (content.contentImage != null) {
             onSetContentFieldPhoto(content.contentImage!!.bmp)
             binding.lyContent.btContentDeleteImage.setOnClickListener {
@@ -1160,24 +1177,6 @@ class NewCardDialog(
             onRemoveContentFieldAudio()
         }
 
-        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                onFieldFocused(
-                    binding.clContainerContent,
-                    binding.lyContent,
-                    v,
-                    getNewContentLanguage(),
-                    hasFocus,
-                )
-                newCardViewModel.focusToContent()
-            } else {
-                v.clearFocus()
-            }
-        }
-        binding.lyContent.tieContentText.addTextChangedListener { text ->
-            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
-        }
-
     }
 
     private fun displayDefinitionFields(fields: List<DefinitionFieldModel>) {
@@ -1185,21 +1184,22 @@ class NewCardDialog(
             if (index < fields.size) {
                 fieldView.container.visibility = View.VISIBLE
                 val actualDefinitionFieldModel = fields[index]
+
                 actualDefinitionFieldModel.definitionText?.let { text ->
                     fieldView.ly.tieText.setText(text)
                     fieldView.ly.tieText.setSelection(text.length)
                 }
+
                 if (actualDefinitionFieldModel.definitionImage != null) {
-                    fieldView.ly.clContainerImage.visibility = View.VISIBLE
-                    fieldView.ly.imgPhoto.setImageBitmap(actualDefinitionFieldModel.definitionImage!!.bmp)
+                    onSetDefinitionFieldPhoto(fieldView, actualDefinitionFieldModel.definitionImage!!.bmp)
                 } else {
-                    fieldView.ly.clContainerImage.visibility = View.GONE
-                    fieldView.ly.imgPhoto.setImageBitmap(null)
+                    onRemoveDefinitionFieldPhoto(fieldView)
                 }
+
                 if (actualDefinitionFieldModel.definitionAudio != null) {
-                    fieldView.ly.llContainerAudio.visibility = View.VISIBLE
+                    onSetDefinitionFieldAudio(fieldView)
                 } else {
-                    fieldView.ly.llContainerAudio.visibility = View.GONE
+                    onRemoveDefinitionFieldAudio(fieldView)
                 }
 
                 if (actualDefinitionFieldModel.isCorrectDefinition) {
@@ -1276,11 +1276,6 @@ class NewCardDialog(
                         }
                     }
                 }
-//                newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
-//                    fieldView.ly.lyContentAudio.btPlay.setOnClickListener {
-//                        player.playFile(audioModel.file)
-//                    }
-//                }
 
                 if (actualDefinitionFieldModel.hasFocus) {
                     fieldView.ly.tieText.requestFocus()
@@ -1710,34 +1705,146 @@ class NewCardDialog(
     }
 
     private fun onTranslateText(
-        text: String,
-        actualField: EditText?,
-        ly: TextInputLayout?
+        selectedFieldPosition: Int?,
+//        text: String,
+//        actualField: EditText?,
+//        ly: TextInputLayout?
     ) {
-        ly?.error = null
-        animProgressBar(ly)
-        actualField?.setText(getString(R.string.message_translation_in_progress))
-        val definitionLanguage = getNewDefinitionLanguage()
-        val contentLanguage = getNewContentLanguage()
+        if (selectedFieldPosition != null) {
 
-        LanguageUtil().startTranslation(
-            text = text,
-            definitionLanguage = definitionLanguage,
-            contentLanguage = contentLanguage,
-            onStartTranslation = { translationLanguages ->
-                translate(
-                    fl = translationLanguages.fl,
-                    tl = translationLanguages.tl,
-                    actualField = actualField,
-                    ly = ly,
-                    text = text,
+            val definitionLanguage = getNewDefinitionLanguage()
+            val contentLanguage = getNewContentLanguage()
+
+            if (selectedFieldPosition < 0) {
+                val definitionTexts = newCardViewModel.getDefinitionTexts()
+                if (definitionTexts != null) {
+                    TranslationOptionsDialog.newInstance(definitionTexts).show(childFragmentManager, TranslationOptionsDialog.TAG)
+                    childFragmentManager.setFragmentResultListener(
+                        REQUEST_CODE_TRANSLATION_OPTION, this
+                    ) {_, bundle ->
+                        val result = bundle.getString(TranslationOptionsDialog.TRANSLATION_OPTIONS_BUNDLE_KEY)
+                        result?.let { text ->
+                            animProgressBar(binding.lyContent.tilContentText)
+                            LanguageUtil().startTranslation(
+                                text = text,
+                                definitionLanguage = contentLanguage,
+                                contentLanguage = definitionLanguage,
+                                onStartTranslation = { translationLanguages ->
+                                    translate(
+                                        fl = translationLanguages.fl,
+                                        tl = translationLanguages.tl,
+                                        actualField = binding.lyContent.tieContentText,
+                                        ly = binding.lyContent.tilContentText,
+                                        text = text,
+                                        result = {translation ->
+                                            binding.lyContent.tieContentText.setText(translation)
+                                            setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                        }
+                                    )
+                                },
+                                onLanguageDetectionLanguageNotSupported = {
+                                    showSnackBar(R.string.error_message_language_not_supported)
+                                },
+                            )
+                        }
+                    }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.no_definition_found),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                val field = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition)
+                val fieldView = definitionFields[selectedFieldPosition]
+                val text = newCardViewModel.contentField.value.contentText
+
+                animProgressBar(fieldView.ly.tilText)
+                LanguageUtil().startTranslation(
+                    text = text!!,
+                    definitionLanguage = definitionLanguage,
+                    contentLanguage = contentLanguage,
+                    onStartTranslation = { translationLanguages ->
+                        translate(
+                            fl = translationLanguages.fl,
+                            tl = translationLanguages.tl,
+                            actualField = binding.lyContent.tieContentText,
+                            ly = binding.lyContent.tilContentText,
+                            text = text,
+                            result = { translation ->
+                                definitionFields[selectedFieldPosition].ly.tieText.setText(translation)
+                                setEditTextEndIconOnClick(fieldView.ly.tilText)
+                            }
+                        )
+                    },
+                    onLanguageDetectionLanguageNotSupported = {
+                        showSnackBar(R.string.error_message_language_not_supported)
+                    },
                 )
-            },
-            onLanguageDetectionLanguageNotSupported = {
-                showSnackBar(R.string.error_message_language_not_supported)
-            },
-        )
+            }
+
+
+//            ly?.error = null
+//            animProgressBar(ly)
+//            actualField?.setText(getString(R.string.message_translation_in_progress))
+//
+//            LanguageUtil().startTranslation(
+//                text = text,
+//                definitionLanguage = definitionLanguage,
+//                contentLanguage = contentLanguage,
+//                onStartTranslation = { translationLanguages ->
+//                    translate(
+//                        fl = translationLanguages.fl,
+//                        tl = translationLanguages.tl,
+//                        actualField = actualField,
+//                        ly = ly,
+//                        text = text,
+//                    )
+//                },
+//                onLanguageDetectionLanguageNotSupported = {
+//                    showSnackBar(R.string.error_message_language_not_supported)
+//                },
+//            )
+        } else {
+            Toast.makeText(
+                appContext,
+                getString(R.string.error_message_no_field_selected),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
     }
+
+//    private fun onTranslateText(
+//        text: String,
+//        actualField: EditText?,
+//        ly: TextInputLayout?
+//    ) {
+//        ly?.error = null
+//        animProgressBar(ly)
+//        actualField?.setText(getString(R.string.message_translation_in_progress))
+//        val definitionLanguage = getNewDefinitionLanguage()
+//        val contentLanguage = getNewContentLanguage()
+//
+//        LanguageUtil().startTranslation(
+//            text = text,
+//            definitionLanguage = definitionLanguage,
+//            contentLanguage = contentLanguage,
+//            onStartTranslation = { translationLanguages ->
+//                translate(
+//                    fl = translationLanguages.fl,
+//                    tl = translationLanguages.tl,
+//                    actualField = actualField,
+//                    ly = ly,
+//                    text = text,
+//                )
+//            },
+//            onLanguageDetectionLanguageNotSupported = {
+//                showSnackBar(R.string.error_message_language_not_supported)
+//            },
+//        )
+//    }
 
     private fun showSnackBar(
         @StringRes messageRes: Int
@@ -1754,7 +1861,8 @@ class NewCardDialog(
         tl: String?,
         actualField: EditText?,
         ly: TextInputLayout?,
-        text: String
+        text: String,
+        result: (String) -> Unit
     ) {
         val languageUtil = LanguageUtil()
         languageUtil.prepareTranslation(
@@ -1762,16 +1870,16 @@ class NewCardDialog(
             fl = fl,
             tl = tl,
             onDownloadingLanguageMode = {
-                actualField?.setText(getString(R.string.message_translation_downloading_language_model))
+//                result(getString(R.string.message_translation_downloading_language_model))
+//                actualField?.setText(getString(R.string.message_translation_downloading_language_model))
             },
             onMissingCardDefinitionLanguage = {
                 setEditTextEndIconOnClick(ly)
-                ly?.error =
-                    appContext?.getString(R.string.error_message_no_card_definition_language)
-                showSnackBar(R.string.error_message_no_card_definition_language)
+//                ly?.error = appContext?.getString(R.string.error_message_no_card_definition_language)
+//                showSnackBar(R.string.error_message_no_card_definition_language)
             },
             onModelDownloadingFailure = {
-                ly?.error = getString(R.string.error_translation_unknown)
+//                ly?.error = getString(R.string.error_translation_unknown)
             },
             onSuccess = { translatorModel ->
                 languageUtil.translate(
@@ -1779,23 +1887,23 @@ class NewCardDialog(
                     conditions = translatorModel.condition,
                     text = text,
                     onSuccess = { translation ->
-                        actualField?.setText(translation)
-                        setEditTextEndIconOnClick(ly)
+                        result(translation)
+//                        actualField?.setText(translation)
+//                        setEditTextEndIconOnClick(ly)
                     },
                     onTranslationFailure = { exception ->
-                        ly?.error = exception.toString()
-                        setEditTextEndIconOnClick(ly)
+//                        ly?.error = exception.toString()
+//                        setEditTextEndIconOnClick(ly)
                     },
                     onModelDownloadingFailure = {
-                        setEditTextEndIconOnClick(ly)
-                        ly?.error =
-                            getString(R.string.error_translation_language_model_not_downloaded)
+//                        setEditTextEndIconOnClick(ly)
+//                        ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
                     },
                 )
             },
             onNoInternet = {
-                setEditTextEndIconOnClick(ly)
-                ly?.error = getString(R.string.error_translation_no_internet)
+//                setEditTextEndIconOnClick(ly)
+//                ly?.error = getString(R.string.error_translation_no_internet)
             },
             onInternetViaCellular = { translatorModel ->
                 MaterialAlertDialogBuilder(
@@ -1805,8 +1913,8 @@ class NewCardDialog(
                     .setTitle(getString(R.string.title_no_wifi))
                     .setMessage(getString(R.string.message_no_wifi))
                     .setNegativeButton(getString(R.string.option2_no_wifi)) { dialog, _ ->
-                        setEditTextEndIconOnClick(ly)
-                        actualField?.text?.clear()
+//                        setEditTextEndIconOnClick(ly)
+//                        actualField?.text?.clear()
                         dialog.dismiss()
                     }
                     .setPositiveButton(getString(R.string.option1_no_wifi)) { dialog, _ ->
@@ -1815,17 +1923,17 @@ class NewCardDialog(
                             conditions = translatorModel.condition,
                             text = text,
                             onSuccess = { translation ->
-                                actualField?.setText(translation)
-                                setEditTextEndIconOnClick(ly)
+                                result(translation)
+//                                actualField?.setText(translation)
+//                                setEditTextEndIconOnClick(ly)
                             },
                             onTranslationFailure = { exception ->
-                                ly?.error = exception.toString()
-                                setEditTextEndIconOnClick(ly)
+//                                ly?.error = exception.toString()
+//                                setEditTextEndIconOnClick(ly)
                             },
                             onModelDownloadingFailure = {
-                                setEditTextEndIconOnClick(ly)
-                                ly?.error =
-                                    getString(R.string.error_translation_language_model_not_downloaded)
+//                                setEditTextEndIconOnClick(ly)
+//                                ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
                             },
                         )
                         dialog.dismiss()
