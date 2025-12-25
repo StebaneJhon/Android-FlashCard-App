@@ -79,7 +79,6 @@ import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefin
 import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.databinding.LyAddCardContentFieldBinding
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.helper.AudioModel
@@ -151,7 +150,27 @@ class NewCardDialog(
                 val image: InputImage
                 try {
                     image = InputImage.fromFilePath(requireContext(), uri!!)
-                    detectTextFromAnImageWithMLKit(image)
+                    detectTextFromAnImageWithMLKit(image) { text ->
+                        newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
+                            when {
+                                activeFieldIndex == null -> {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.error_message_no_field_selected),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                                activeFieldIndex < 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+
+                                activeFieldIndex >= 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+                            }
+                        }
+                    }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -164,12 +183,33 @@ class NewCardDialog(
                 val image: InputImage
                 try {
                     image = InputImage.fromFilePath(requireContext(), imageUri)
-                    detectTextFromAnImageWithMLKit(image)
+                    detectTextFromAnImageWithMLKit(image) { text ->
+                        newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
+                            when {
+                                activeFieldIndex == null -> {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.error_message_no_field_selected),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                                activeFieldIndex < 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+
+                                activeFieldIndex >= 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+                            }
+                        }
+                    }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
             }
         }
+
     private var micListener =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
             if (resultData.resultCode == RESULT_OK) {
@@ -182,7 +222,25 @@ class NewCardDialog(
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    selectedField?.ly?.tieText?.setText(result[0])
+                    newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
+                        when {
+                            activeFieldIndex == null -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_message_no_field_selected),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                            activeFieldIndex < 0 -> {
+                                setFieldText(result[0], activeFieldIndex)
+                            }
+
+                            activeFieldIndex >= 0 -> {
+                                setFieldText(result[0], activeFieldIndex)
+                            }
+                        }
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -358,7 +416,9 @@ class NewCardDialog(
 //        }
 
         imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
         initFields()
+
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
@@ -494,6 +554,7 @@ class NewCardDialog(
                 }
             }
         }
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newCardViewModel.contentField.collect { content ->
@@ -687,7 +748,24 @@ class NewCardDialog(
                     }
 
                     AUDIO_TO_TEXT -> {
-                        listen(actualFieldLanguage)
+                        val fieldIndex = newCardViewModel.getActiveFieldIndex()
+                        when {
+                            fieldIndex == null -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_message_no_field_selected),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                            fieldIndex < 0 -> {
+                                listen(getNewContentLanguage())
+                            }
+
+                            fieldIndex >= 0 -> {
+                                listen(getNewDefinitionLanguage())
+                            }
+                        }
                     }
                 }
             }
@@ -800,22 +878,19 @@ class NewCardDialog(
     }
 
     private fun onFieldFocused(
-        container: ConstraintLayout,
-        ly: LyAddCardContentFieldBinding,
+        fieldViewContainer: ConstraintLayout,
         v: View?,
-        language: String?,
         hasFocus: Boolean,
     ) {
         if (hasFocus) {
-            actualFieldLanguage = language
-            ly.llContentField.setBackgroundResource(R.drawable.bg_add_card_field_focused)
+            fieldViewContainer.setBackgroundResource(R.drawable.bg_add_card_field_focused)
             //TODO: To be improved. Scroll to focused view.
             v?.postDelayed({
-                val y = ly.llContentField.bottom.plus(binding.dockedToolbar.height)
+                val y = fieldViewContainer.bottom.plus(binding.dockedToolbar.height)
                 binding.nestedScrollView.smoothScrollTo(0, maxOf(y, 0))
             }, 200)
         } else {
-            ly.llContentField.setBackgroundResource(R.drawable.bg_add_card_field)
+            fieldViewContainer.setBackgroundResource(R.drawable.bg_add_card_field)
         }
     }
 
@@ -936,7 +1011,8 @@ class NewCardDialog(
 
     private fun detectTextFromAnImageWithMLKit(
         image: InputImage,
-        language: String? = actualFieldLanguage
+        language: String? = actualFieldLanguage,
+        onTextDetected: (String) -> Unit
     ) {
         val recognizer = if (language.isNullOrBlank()) {
             getRecognizer(LanguageUtil().getLanguageByCode(Locale.getDefault().language))
@@ -952,13 +1028,39 @@ class NewCardDialog(
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    selectedField?.ly?.tieText?.setText(visionText.text)
+                    onTextDetected(visionText.text)
                 }
             }
             .addOnFailureListener { e ->
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
             }
     }
+
+//    private fun detectTextFromAnImageWithMLKit(
+//        image: InputImage,
+//        language: String? = actualFieldLanguage
+//    ) {
+//        val recognizer = if (language.isNullOrBlank()) {
+//            getRecognizer(LanguageUtil().getLanguageByCode(Locale.getDefault().language))
+//        } else {
+//            getRecognizer(language)
+//        }
+//        recognizer.process(image)
+//            .addOnSuccessListener { visionText ->
+//                if (visionText.text.isBlank()) {
+//                    Toast.makeText(
+//                        requireContext(),
+//                        getString(R.string.error_message_no_text_detected),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                } else {
+//                    selectedField?.ly?.tieText?.setText(visionText.text)
+//                }
+//            }
+//            .addOnFailureListener { e ->
+//                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+//            }
+//    }
 
     private fun initCardAdditionPanel() {
         // TODO: Clear Audio
@@ -1135,14 +1237,24 @@ class NewCardDialog(
         binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 onFieldFocused(
-                    binding.clContainerContent,
-                    binding.lyContent,
-                    v,
-                    getNewContentLanguage(),
-                    hasFocus,
+                    fieldViewContainer = binding.lyContent.llContentField,
+                    v = v,
+                    hasFocus = true,
                 )
+//                onFieldFocused(
+//                    binding.clContainerContent,
+//                    binding.lyContent,
+//                    v,
+//                    getNewContentLanguage(),
+//                    hasFocus,
+//                )
                 newCardViewModel.focusToContent()
             } else {
+                onFieldFocused(
+                    fieldViewContainer = binding.lyContent.llContentField,
+                    v = v,
+                    hasFocus = false,
+                )
                 v.clearFocus()
             }
         }
@@ -1191,7 +1303,10 @@ class NewCardDialog(
                 }
 
                 if (actualDefinitionFieldModel.definitionImage != null) {
-                    onSetDefinitionFieldPhoto(fieldView, actualDefinitionFieldModel.definitionImage!!.bmp)
+                    onSetDefinitionFieldPhoto(
+                        fieldView,
+                        actualDefinitionFieldModel.definitionImage!!.bmp
+                    )
                 } else {
                     onRemoveDefinitionFieldPhoto(fieldView)
                 }
@@ -1215,7 +1330,19 @@ class NewCardDialog(
                 }
                 fieldView.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {
+                        onFieldFocused(
+                            fieldViewContainer = fieldView.ly.clContainerField,
+                            v = v,
+                            hasFocus = true,
+                        )
                         newCardViewModel.changeFieldFocus(index)
+                    } else {
+                        onFieldFocused(
+                            fieldViewContainer = fieldView.ly.clContainerField,
+                            v = v,
+                            hasFocus = false,
+                        )
+                        v.clearFocus()
                     }
                 }
 
@@ -1335,8 +1462,10 @@ class NewCardDialog(
     private fun setCardLanguages(card: ExternalCard? = null) {
         val contentLanguage = getContentLanguage(card)
         val definitionLanguage = getDefinitionLanguage(card)
-        binding.btContentLanguage.text = contentLanguage ?: getString(R.string.text_content_language)
-        binding.btDefinitionLanguage.text = definitionLanguage ?: getString(R.string.text_definition_language)
+        binding.btContentLanguage.text =
+            contentLanguage ?: getString(R.string.text_content_language)
+        binding.btDefinitionLanguage.text =
+            definitionLanguage ?: getString(R.string.text_definition_language)
     }
 
     private fun getDefinitionLanguage(card: ExternalCard?) = when {
@@ -1718,11 +1847,13 @@ class NewCardDialog(
             if (selectedFieldPosition < 0) {
                 val definitionTexts = newCardViewModel.getDefinitionTexts()
                 if (definitionTexts != null) {
-                    TranslationOptionsDialog.newInstance(definitionTexts).show(childFragmentManager, TranslationOptionsDialog.TAG)
+                    TranslationOptionsDialog.newInstance(definitionTexts)
+                        .show(childFragmentManager, TranslationOptionsDialog.TAG)
                     childFragmentManager.setFragmentResultListener(
                         REQUEST_CODE_TRANSLATION_OPTION, this
-                    ) {_, bundle ->
-                        val result = bundle.getString(TranslationOptionsDialog.TRANSLATION_OPTIONS_BUNDLE_KEY)
+                    ) { _, bundle ->
+                        val result =
+                            bundle.getString(TranslationOptionsDialog.TRANSLATION_OPTIONS_BUNDLE_KEY)
                         result?.let { text ->
                             animProgressBar(binding.lyContent.tilContentText)
                             LanguageUtil().startTranslation(
@@ -1736,7 +1867,7 @@ class NewCardDialog(
                                         actualField = binding.lyContent.tieContentText,
                                         ly = binding.lyContent.tilContentText,
                                         text = text,
-                                        result = {translation ->
+                                        result = { translation ->
                                             binding.lyContent.tieContentText.setText(translation)
                                             setEditTextEndIconOnClick(binding.lyContent.tilContentText)
                                         }
@@ -1773,7 +1904,9 @@ class NewCardDialog(
                             ly = binding.lyContent.tilContentText,
                             text = text,
                             result = { translation ->
-                                definitionFields[selectedFieldPosition].ly.tieText.setText(translation)
+                                definitionFields[selectedFieldPosition].ly.tieText.setText(
+                                    translation
+                                )
                                 setEditTextEndIconOnClick(fieldView.ly.tilText)
                             }
                         )
@@ -2350,6 +2483,20 @@ class NewCardDialog(
 
     fun onSetContentFieldAudio() {
         binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+    }
+
+    private fun setFieldText(text: String, fieldIndex: Int) {
+        if (fieldIndex == -1) {
+            newCardViewModel.updateContentField(
+                updatedContentField = newCardViewModel.contentField.value.copy(contentText = text)
+            )
+        } else {
+            newCardViewModel.updateDefinitionText(
+                id = newCardViewModel.getDefinitionFieldAt(fieldIndex).definitionId,
+                text = text
+            )
+            definitionFields[fieldIndex].ly.tieText.setText(text)
+        }
     }
 
 
