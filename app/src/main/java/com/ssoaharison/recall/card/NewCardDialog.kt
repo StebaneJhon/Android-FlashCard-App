@@ -486,8 +486,6 @@ class NewCardDialog(
             onPositiveAction()
         }
         binding.btTranslate.setOnClickListener {
-            //TODO: Fix translation
-
             onTranslateText(
                 newCardViewModel.getActiveFieldIndex()
             )
@@ -799,8 +797,7 @@ class NewCardDialog(
             REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE,
             this
         ) { _, bundle ->
-            val result =
-                bundle.parcelable<CardImportFromDeviceModel>(ImportCardsFromDeviceDialog.EXPORT_CARD_FROM_DEVICE_BUNDLE_KEY)
+            val result = bundle.parcelable<CardImportFromDeviceModel>(ImportCardsFromDeviceDialog.EXPORT_CARD_FROM_DEVICE_BUNDLE_KEY)
             if (result != null) {
                 importCardsFromDeviceModel = result
                 openFile.launch(arrayOf("text/*"))
@@ -1088,6 +1085,12 @@ class NewCardDialog(
 //        newCardViewModel.clearContentField()
 //        newCardViewModel.clearDefinitionFields()
         newCardViewModel.clearFields()
+        definitionFields.first().ly.llErrorContainer.visibility = View.GONE
+        binding.lyContent.llError.visibility = View.GONE
+        binding.lyContent.tieContentText.text?.clear()
+        definitionFields.forEach { fieldView ->
+            fieldView.ly.tieText.text?.clear()
+        }
     }
 
     private fun chipState(chip: TextView): Boolean {
@@ -1228,7 +1231,6 @@ class NewCardDialog(
     }
 
     fun displayContentField(content: ContentFieldModel) {
-
         content.contentText?.let { text ->
             binding.lyContent.tieContentText.setText(text)
             binding.lyContent.tieContentText.setSelection(text.length)
@@ -1271,7 +1273,7 @@ class NewCardDialog(
                 }
             }
         } else {
-            onRemoveContentFieldAudio()
+            onRemoveContentFieldPhoto()
         }
 
         if (content.contentAudio != null) {
@@ -1703,7 +1705,11 @@ class NewCardDialog(
         val cardContentText = contentField.contentText
         val cardContentImageName = contentField.contentImage?.name
         val cardContentAudioName = contentField.contentAudio?.file?.name
-        return if (cardContentText != null) {
+        return if (
+            (cardContentText != null && cardContentText.isNotEmpty() && cardContentText.isNotBlank())||
+            cardContentImageName != null ||
+            cardContentAudioName != null
+            ) {
             newCardViewModel.generateCardContent(
                 contentId = contentId,
                 imageName = cardContentImageName,
@@ -1713,18 +1719,54 @@ class NewCardDialog(
                 text = cardContentText
             )
         } else {
-//            binding.lyContent.tilContentText.error = getString(R.string.til_error_card_content)
+            binding.lyContent.llError.visibility = View.VISIBLE
+            binding.lyContent.viewError.tvErrorMessage.text = getString(R.string.til_error_card_content)
             null
         }
     }
 
     private fun isDefinitionError(): Boolean {
         var isText = false
+        var isAudio = false
+        var isImage = false
         var isTrueAnswer = false
+
+        newCardViewModel.definitionFields.value.forEach { field ->
+            if (field.definitionText != null && field.definitionText!!.isNotEmpty() && field.definitionText!!.isNotBlank()) {
+                isText = true
+            }
+            if (field.definitionImage != null) {
+                isImage = true
+            }
+            if (field.definitionAudio != null) {
+                isAudio = true
+            }
+            if ((isText || isImage || isAudio) && field.isCorrectDefinition) {
+                isTrueAnswer = true
+            }
+        }
+        // TODO: Show errors
+        if (!isText && !isImage && !isAudio) {
+            definitionFields.first().ly.llErrorContainer.visibility = View.VISIBLE
+            definitionFields.first().ly.viewError.tvErrorMessage.text = getString(R.string.til_error_card_definition)
+            return true
+        }
+        if (!isTrueAnswer) {
+            definitionFields.first().ly.llErrorContainer.visibility = View.VISIBLE
+            definitionFields.first().ly.viewError.tvErrorMessage.text = getString(R.string.cp_error_correct_definition)
+            return true
+        }
+
+        return false
+    }
+
+//    private fun isDefinitionError(): Boolean {
+//        var isText = false
+//        var isAudio = false
+//        var isImage = false
+//        var isTrueAnswer = false
 //        definitionFields.forEach {
-//            if (it.ly.tieText.text.toString().isNotEmpty() && it.ly.tieText.text.toString()
-//                    .isNotBlank()
-//            ) {
+//            if (it.ly.tieText.text.toString().isNotEmpty() && it.ly.tieText.text.toString().isNotBlank()) {
 //                isText = true
 //            }
 //
@@ -1747,8 +1789,8 @@ class NewCardDialog(
 //            binding.lyDefinition1.tilText.error =
 //                getString(R.string.til_error_card_definition)
 //        }
-        return false
-    }
+//        return false
+//    }
 
     private fun getDefinition(
         cardId: String,
@@ -1777,6 +1819,7 @@ class NewCardDialog(
 //                }
 //            }
 //        }
+        if(isDefinitionError()) return null
         val definitions = arrayListOf<CardDefinition>()
         newCardViewModel.definitionFields.value.forEach { definitionField ->
             val definition = newCardViewModel.definitionFieldToCardDefinition(

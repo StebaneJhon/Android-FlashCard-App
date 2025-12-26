@@ -9,7 +9,6 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="gone"
         android:id="@+id/cl_content_container_image"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -96,7 +95,6 @@
 <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/ll_content_container_audio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -183,7 +181,7 @@
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:hintEnabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/ll_error"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -196,5 +194,21 @@
             android:inputType="textMultiLine"
             android:maxLines="10" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="@dimen/space_sm"
+        android:layout_marginBottom="@dimen/space_sm"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <include
+            android:id="@+id/view_error"
+            layout="@layout/ly_field_error"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

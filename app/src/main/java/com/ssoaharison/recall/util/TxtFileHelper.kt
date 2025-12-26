@@ -27,8 +27,8 @@ fun cardToText(card: ExternalCardWithContentAndDefinitions, separator: String): 
 
 fun textToImmutableCard(text: String, separator: String, deckId: String): CardWithContentAndDefinitions {
     val textData = text.split(separator)
-    val textContent = textData.first()
-    val textDefinition = textData.last()
+    val textContent = textData.first().trim()
+    val textDefinition = textData.last().trim()
     val cardId = UUID.randomUUID().toString()
     val contentId = UUID.randomUUID().toString()
     val cardContent = CardContent(

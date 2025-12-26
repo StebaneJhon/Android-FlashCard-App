@@ -360,8 +360,7 @@ class NewCardDialogViewModel(
             val newCardId = UUID.randomUUID().toString()
             val contentId = UUID.randomUUID().toString()
             val formatedQuestion = reformatText(result.question)
-            val newCardContent =
-                generateCardContent(formatedQuestion, null, null, newCardId, contentId, deckId)
+            val newCardContent = generateCardContent(formatedQuestion, null, null, newCardId, contentId, deckId)
             val newCardDefinitions = generateCardDefinitions(
                 result.correctAnswer,
                 result.incorrectAnswers,
@@ -457,7 +456,7 @@ class NewCardDialogViewModel(
     }
 
     fun generateCardContent(
-        text: String,
+        text: String?,
         imageName: String?,
         audioName: String?,
         cardId: String,

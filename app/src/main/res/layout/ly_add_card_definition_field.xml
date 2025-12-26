@@ -26,6 +26,7 @@
         android:background="@drawable/bg_add_card_field">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:visibility="gone"
             android:id="@+id/cl_container_image"
             android:layout_width="0dp"
             android:layout_height="150dp"
@@ -70,6 +71,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
+            android:visibility="gone"
             android:id="@+id/ll_container_audio"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -159,7 +161,7 @@
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/ll_error_container"
             app:layout_constraintEnd_toStartOf="@+id/bt_is_true"
             app:layout_constraintStart_toStartOf="parent">
 
@@ -177,14 +179,13 @@
             android:id="@+id/bt_is_true"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
+            android:layout_marginEnd="@dimen/space_sm"
+            android:layout_marginVertical="@dimen/space_sm"
             android:background="@drawable/bg_radius_sm"
             android:backgroundTint="@color/green100"
             android:gravity="center"
             android:paddingHorizontal="@dimen/space_sm"
             android:paddingVertical="@dimen/space_xs"
-            android:layout_marginTop="@dimen/space_sm"
-            android:layout_marginBottom="@dimen/space_sm"
-            android:layout_marginEnd="@dimen/space_sm"
             android:text="@string/cp_true_text"
             android:textAlignment="center"
             android:textColor="@color/green500"
@@ -193,7 +194,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/ll_error_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_sm"
+            android:layout_marginBottom="@dimen/space_sm"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/bt_is_true"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <include
+                android:id="@+id/view_error"
+                layout="@layout/ly_field_error" />
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </LinearLayout>

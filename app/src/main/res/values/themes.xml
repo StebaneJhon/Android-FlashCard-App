@@ -2,7 +2,7 @@
     <!-- Base application theme. -->
 
     <style name="Common.App.Theme.FlashCard.Light" parent="Theme.Material3.Light.NoActionBar">
-        <item name="colorError">@color/red700</item>
+        <item name="colorError">@color/red600</item>
         <item name="colorOnError">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
         <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>
@@ -962,7 +962,7 @@
         <item name="boxStrokeWidth">0dp</item>
         <item name="boxStrokeWidthFocused">2dp</item>
         <item name="boxStrokeColor">?colorPrimary</item>
-        <item name="boxBackgroundColor">?colorSurfaceContainer</item>
+        <item name="boxBackgroundColor">?colorSurfaceContainerLow</item>
         <item name="hintEnabled">false</item>
     </style>
 
