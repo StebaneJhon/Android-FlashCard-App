@@ -414,7 +414,9 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_translate"
-                    android:backgroundTint="?colorSurfaceContainerLow"/>
+                    android:backgroundTint="?colorSurfaceContainerLow"
+                    android:enabled="false"
+                    android:clickable="false"/>
             </FrameLayout>
 
             <FrameLayout

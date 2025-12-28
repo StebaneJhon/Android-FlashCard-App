@@ -1251,6 +1251,11 @@ class NewCardDialog(
 //                    hasFocus,
 //                )
                 newCardViewModel.focusToContent()
+                if (newCardViewModel.hasDefinitionText()) {
+                    enableTranslateButton(true)
+                } else {
+                    enableTranslateButton(false)
+                }
             } else {
                 onFieldFocused(
                     fieldViewContainer = binding.lyContent.llContentField,
@@ -1258,6 +1263,7 @@ class NewCardDialog(
                     hasFocus = false,
                 )
                 v.clearFocus()
+                enableTranslateButton(false)
             }
         }
         binding.lyContent.tieContentText.addTextChangedListener { text ->
@@ -1291,6 +1297,11 @@ class NewCardDialog(
             onRemoveContentFieldAudio()
         }
 
+    }
+
+    private fun enableTranslateButton(enable: Boolean) {
+        binding.btTranslate.isEnabled = enable
+        binding.btTranslate.isClickable = enable
     }
 
     private fun displayDefinitionFields(fields: List<DefinitionFieldModel>) {
@@ -1332,6 +1343,11 @@ class NewCardDialog(
                 }
                 fieldView.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {
+                        if (newCardViewModel.hasContentText()) {
+                            enableTranslateButton(true)
+                        } else {
+                            enableTranslateButton(false)
+                        }
                         onFieldFocused(
                             fieldViewContainer = fieldView.ly.clContainerField,
                             v = v,
@@ -1345,6 +1361,7 @@ class NewCardDialog(
                             hasFocus = false,
                         )
                         v.clearFocus()
+                        enableTranslateButton(false)
                     }
                 }
 
@@ -1890,37 +1907,71 @@ class NewCardDialog(
             if (selectedFieldPosition < 0) {
                 val definitionTexts = newCardViewModel.getDefinitionTexts()
                 if (definitionTexts != null) {
-                    TranslationOptionsDialog.newInstance(definitionTexts)
-                        .show(childFragmentManager, TranslationOptionsDialog.TAG)
-                    childFragmentManager.setFragmentResultListener(
-                        REQUEST_CODE_TRANSLATION_OPTION, this
-                    ) { _, bundle ->
-                        val result =
-                            bundle.getString(TranslationOptionsDialog.TRANSLATION_OPTIONS_BUNDLE_KEY)
-                        result?.let { text ->
-                            animProgressBar(binding.lyContent.tilContentText)
-                            LanguageUtil().startTranslation(
-                                text = text,
-                                definitionLanguage = contentLanguage,
-                                contentLanguage = definitionLanguage,
-                                onStartTranslation = { translationLanguages ->
-                                    translate(
-                                        fl = translationLanguages.fl,
-                                        tl = translationLanguages.tl,
-                                        actualField = binding.lyContent.tieContentText,
-                                        ly = binding.lyContent.tilContentText,
-                                        text = text,
-                                        result = { translation ->
+                    if (definitionTexts.size > 1) {
+                        TranslationOptionsDialog.newInstance(definitionTexts)
+                            .show(childFragmentManager, TranslationOptionsDialog.TAG)
+                        childFragmentManager.setFragmentResultListener(
+                            REQUEST_CODE_TRANSLATION_OPTION, this
+                        ) { _, bundle ->
+                            val result = bundle.getString(TranslationOptionsDialog.TRANSLATION_OPTIONS_BUNDLE_KEY)
+                            result?.let { text ->
+                                animProgressBar(binding.lyContent.tilContentText)
+                                LanguageUtil().startTranslation(
+                                    text = text,
+                                    definitionLanguage = contentLanguage,
+                                    contentLanguage = definitionLanguage,
+                                    onStartTranslation = { translationLanguages ->
+                                        translate(
+                                            fl = translationLanguages.fl,
+                                            tl = translationLanguages.tl,
+                                            actualField = binding.lyContent.tieContentText,
+                                            ly = binding.lyContent.tilContentText,
+                                            text = text,
+                                            result = { translation ->
+                                                if (translation == null) {
+                                                    setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                                } else {
+                                                    binding.lyContent.tieContentText.setText(translation)
+                                                    binding.lyContent.tieContentText.setSelection(translation.length)
+                                                    setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                                }
+                                            }
+                                        )
+                                    },
+                                    onLanguageDetectionLanguageNotSupported = {
+                                        showSnackBar(R.string.error_message_language_not_supported)
+                                    },
+                                )
+                            }
+                        }
+                    } else {
+                        animProgressBar(binding.lyContent.tilContentText)
+                        LanguageUtil().startTranslation(
+                            text = definitionTexts.first(),
+                            definitionLanguage = contentLanguage,
+                            contentLanguage = definitionLanguage,
+                            onStartTranslation = { translationLanguages ->
+                                translate(
+                                    fl = translationLanguages.fl,
+                                    tl = translationLanguages.tl,
+                                    actualField = binding.lyContent.tieContentText,
+                                    ly = binding.lyContent.tilContentText,
+                                    text = definitionTexts.first(),
+                                    result = { translation ->
+                                        if (translation == null) {
+                                            setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                        } else {
                                             binding.lyContent.tieContentText.setText(translation)
+                                            binding.lyContent.tieContentText.setSelection(translation.length)
                                             setEditTextEndIconOnClick(binding.lyContent.tilContentText)
                                         }
-                                    )
-                                },
-                                onLanguageDetectionLanguageNotSupported = {
-                                    showSnackBar(R.string.error_message_language_not_supported)
-                                },
-                            )
-                        }
+                                    }
+                                )
+                            },
+                            onLanguageDetectionLanguageNotSupported = {
+                                showSnackBar(R.string.error_message_language_not_supported)
+                            },
+                        )
                     }
                 } else {
                     Toast.makeText(
@@ -1947,10 +1998,13 @@ class NewCardDialog(
                             ly = binding.lyContent.tilContentText,
                             text = text,
                             result = { translation ->
-                                definitionFields[selectedFieldPosition].ly.tieText.setText(
-                                    translation
-                                )
-                                setEditTextEndIconOnClick(fieldView.ly.tilText)
+                                if (translation == null) {
+                                    setEditTextEndIconOnClick(fieldView.ly.tilText)
+                                } else {
+                                    definitionFields[selectedFieldPosition].ly.tieText.setText(translation)
+                                    definitionFields[selectedFieldPosition].ly.tieText.setSelection(translation.length)
+                                    setEditTextEndIconOnClick(fieldView.ly.tilText)
+                                }
                             }
                         )
                     },
@@ -2038,7 +2092,7 @@ class NewCardDialog(
         actualField: EditText?,
         ly: TextInputLayout?,
         text: String,
-        result: (String) -> Unit
+        result: (String?) -> Unit
     ) {
         val languageUtil = LanguageUtil()
         languageUtil.prepareTranslation(
@@ -2052,10 +2106,12 @@ class NewCardDialog(
             onMissingCardDefinitionLanguage = {
                 setEditTextEndIconOnClick(ly)
 //                ly?.error = appContext?.getString(R.string.error_message_no_card_definition_language)
-//                showSnackBar(R.string.error_message_no_card_definition_language)
+                showSnackBar(R.string.error_message_no_card_definition_language)
             },
             onModelDownloadingFailure = {
 //                ly?.error = getString(R.string.error_translation_unknown)
+                result(null)
+                showSnackBar(R.string.error_translation_failed)
             },
             onSuccess = { translatorModel ->
                 languageUtil.translate(
@@ -2070,16 +2126,22 @@ class NewCardDialog(
                     onTranslationFailure = { exception ->
 //                        ly?.error = exception.toString()
 //                        setEditTextEndIconOnClick(ly)
+                        result(null)
+                        showSnackBar(R.string.error_translation_failed)
                     },
                     onModelDownloadingFailure = {
 //                        setEditTextEndIconOnClick(ly)
 //                        ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                        result(null)
+                        showSnackBar(R.string.error_translation_language_model_not_downloaded)
                     },
                 )
             },
             onNoInternet = {
 //                setEditTextEndIconOnClick(ly)
 //                ly?.error = getString(R.string.error_translation_no_internet)
+                result(null)
+                showSnackBar(R.string.error_translation_no_internet)
             },
             onInternetViaCellular = { translatorModel ->
                 MaterialAlertDialogBuilder(
@@ -2091,6 +2153,7 @@ class NewCardDialog(
                     .setNegativeButton(getString(R.string.option2_no_wifi)) { dialog, _ ->
 //                        setEditTextEndIconOnClick(ly)
 //                        actualField?.text?.clear()
+                        result(null)
                         dialog.dismiss()
                     }
                     .setPositiveButton(getString(R.string.option1_no_wifi)) { dialog, _ ->
@@ -2106,10 +2169,14 @@ class NewCardDialog(
                             onTranslationFailure = { exception ->
 //                                ly?.error = exception.toString()
 //                                setEditTextEndIconOnClick(ly)
+                                result(null)
+                                showSnackBar(R.string.error_translation_failed)
                             },
                             onModelDownloadingFailure = {
 //                                setEditTextEndIconOnClick(ly)
 //                                ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                                result(null)
+                                showSnackBar(R.string.error_translation_language_model_not_downloaded)
                             },
                         )
                         dialog.dismiss()

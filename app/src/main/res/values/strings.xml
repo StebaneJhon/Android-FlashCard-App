@@ -211,7 +211,7 @@
     <string name="message_translation_downloading_language_model">Downloading language model. This may take some time! Please be patient.</string>
     <string name="message_translation_in_progress">Translation in progress…</string>
     <string name="error_translation_language_model_not_downloaded">Failed to download language model. Please try again.</string>
-    <string name="error_translation_unknown">Unknown error occurred while translating. Please try again.</string>
+    <string name="error_translation_failed">Error occurred while translating. Please try again.</string>
     <string name="error_translation_no_internet">You need internet the first time you translate into a new language. Please get access to an internet connection.</string>
     <string name="title_no_wifi">No wifi</string>
     <string name="message_no_wifi">This action may need significant amount of data.</string>

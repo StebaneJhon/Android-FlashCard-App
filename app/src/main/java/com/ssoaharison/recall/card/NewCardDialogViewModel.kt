@@ -29,6 +29,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -298,6 +299,19 @@ class NewCardDialogViewModel(
             }
         }
         return if (result.isEmpty()) null else result
+    }
+
+    fun hasDefinitionText(): Boolean {
+        definitionFields.value.forEach { field ->
+            if (field.definitionText != null && field.definitionText!!.isNotBlank() && field.definitionText!!.isNotEmpty()) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun hasContentText(): Boolean {
+        return contentField.value.contentText != null && contentField.value.contentText!!.isNotBlank() && contentField.value.contentText!!.isNotEmpty()
     }
 
     fun definitionFieldToCardDefinition(
