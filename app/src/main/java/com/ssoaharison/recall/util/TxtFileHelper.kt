@@ -37,7 +37,8 @@ fun textToImmutableCard(text: String, separator: String, deckId: String): CardWi
         deckOwnerId = deckId,
         contentText = textContent,
         contentImageName = null,
-        contentAudioName = null
+        contentAudioName = null,
+        contentAudioDuration = null,
     )
 
     val cardDefinition = listOf(
@@ -50,6 +51,7 @@ fun textToImmutableCard(text: String, separator: String, deckId: String): CardWi
             definitionText = textDefinition,
             definitionImageName = null,
             definitionAudioName = null,
+            definitionAudioDuration = null,
         )
     )
 

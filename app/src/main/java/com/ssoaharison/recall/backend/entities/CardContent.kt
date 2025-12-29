@@ -14,5 +14,6 @@ data class CardContent(
     val deckOwnerId: String,
     val contentText: String?,
     val contentImageName: String?,
-    val contentAudioName: String?
+    val contentAudioName: String?,
+    val contentAudioDuration: String?
 ): Parcelable

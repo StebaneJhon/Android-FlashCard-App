@@ -25,7 +25,7 @@ import com.ssoaharison.recall.backend.entities.WeeklyReview
         SpaceRepetitionBox::class,
         CardContent::class,
         CardDefinition::class,],
-    version = 1,
+    version = 2,
 )
 abstract class FlashCardDatabase : RoomDatabase() {
 

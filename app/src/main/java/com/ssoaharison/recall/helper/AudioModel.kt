@@ -6,7 +6,7 @@ import java.io.File
 
 @Parcelize
 data class AudioModel(
-//    val name: String,
-    val file: File,
-//    val duration: Float
+    val name: String,
+//    val file: File,
+    val duration: String
 ): Parcelable

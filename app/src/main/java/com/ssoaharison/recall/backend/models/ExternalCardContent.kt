@@ -12,5 +12,5 @@ data class ExternalCardContent(
     val deckOwnerId: String,
     val contentText: String?,
     val contentImage: PhotoModel?,
-    val contentAudio: AudioModel?
+    val contentAudio: AudioModel?,
 ): Parcelable

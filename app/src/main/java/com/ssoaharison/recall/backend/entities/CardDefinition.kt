@@ -17,4 +17,5 @@ data class CardDefinition(
     val definitionText: String?,
     val definitionImageName: String?,
     val definitionAudioName: String?,
+    val definitionAudioDuration: String?
 ): Parcelable

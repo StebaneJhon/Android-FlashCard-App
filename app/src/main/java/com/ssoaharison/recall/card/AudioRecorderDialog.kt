@@ -69,7 +69,7 @@ class AudioRecorderDialog: DialogFragment() {
         }
         binding.btDone.setOnClickListener {
             onStopRecorder()
-            onDone(newAudioModel)
+            onDone(AudioModel(audioName, audioRecorderViewModel.getAudioDuration()))
             dismiss()
         }
         binding.btCancel.setOnClickListener {
@@ -87,7 +87,7 @@ class AudioRecorderDialog: DialogFragment() {
 
             File(requireContext().filesDir, audioName).also {
                 recorder.start(it)
-                newAudioModel = AudioModel(it)
+//                newAudioModel = AudioModel(it, audioRecorderViewModel.getAudioDuration())
             }
             binding.btPlayPause.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_pause)
             audioRecorderViewModel.startTimer()

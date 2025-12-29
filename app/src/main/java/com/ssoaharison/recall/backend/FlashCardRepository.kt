@@ -182,11 +182,10 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                     val bmpPhotoContent = BitmapFactory.decodeByteArray(bytesPhotoContent, 0, bytesPhotoContent.size)
                     photoModelContent = PhotoModel(filePhotoContent.name, bmpPhotoContent)
                 }
-                //TODO: Get audio
                 var audioModelContent: AudioModel? = null
                 card.contentWithDefinitions.content.contentAudioName?.let { audioName ->
-                    val fileAudioContent = File(context.filesDir, audioName)
-                    audioModelContent = AudioModel(fileAudioContent)
+                    //TODO: Set audio duration
+                    audioModelContent = AudioModel(audioName, card.contentWithDefinitions.content.contentAudioDuration!!)
                 }
                 val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, audioModelContent)
 
@@ -198,11 +197,10 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
                         val bmpPhotoDefinition = BitmapFactory.decodeByteArray(bytesPhotoDefinition, 0, bytesPhotoDefinition.size)
                         photoModelDefinition = PhotoModel(filePhotoDefinition.name, bmpPhotoDefinition)
                     }
-                    //TODO: Get audio
                     var audioModelDefinition: AudioModel? = null
                     definition.definitionAudioName?.let { audioName ->
-                        val fileAudioDefinition = File(context.filesDir, audioName)
-                        audioModelDefinition = AudioModel(fileAudioDefinition)
+                        // TODO Set Audio duration
+                        audioModelDefinition = AudioModel(audioName, definition.definitionAudioDuration!!)
                     }
                     definition.toExternal(photoModelDefinition, audioModelDefinition)
                 }

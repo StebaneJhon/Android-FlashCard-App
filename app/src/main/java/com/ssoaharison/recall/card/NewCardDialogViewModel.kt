@@ -328,7 +328,8 @@ class NewCardDialogViewModel(
             isCorrectDefinition = isCorrectRevers(field.isCorrectDefinition),
             definitionText = field.definitionText,
             definitionImageName = field.definitionImage?.name,
-            definitionAudioName = field.definitionAudio?.file?.name,
+            definitionAudioName = field.definitionAudio?.name,
+            definitionAudioDuration = field.definitionAudio?.duration
         )
     }
 
@@ -374,7 +375,7 @@ class NewCardDialogViewModel(
             val newCardId = UUID.randomUUID().toString()
             val contentId = UUID.randomUUID().toString()
             val formatedQuestion = reformatText(result.question)
-            val newCardContent = generateCardContent(formatedQuestion, null, null, newCardId, contentId, deckId)
+            val newCardContent = generateCardContent(formatedQuestion, null, null, null, newCardId, contentId, deckId)
             val newCardDefinitions = generateCardDefinitions(
                 result.correctAnswer,
                 result.incorrectAnswers,
@@ -425,6 +426,7 @@ class NewCardDialogViewModel(
                 correctAnswer,
                 null,
                 null,
+                null,
                 true,
                 cardId,
                 contentId,
@@ -436,6 +438,7 @@ class NewCardDialogViewModel(
             newCardDefinitions.add(
                 createDefinition(
                     reformatedText,
+                    null,
                     null,
                     null,
                     false,
@@ -452,6 +455,7 @@ class NewCardDialogViewModel(
         text: String,
         imageName: String?,
         audioName: String?,
+        audioDuration: String?,
         isCorrect: Boolean,
         cardId: String,
         contentId: String,
@@ -466,6 +470,7 @@ class NewCardDialogViewModel(
             definitionText = text,
             definitionImageName = imageName,
             definitionAudioName = audioName,
+            definitionAudioDuration = audioDuration,
         )
     }
 
@@ -473,6 +478,7 @@ class NewCardDialogViewModel(
         text: String?,
         imageName: String?,
         audioName: String?,
+        audioDuration: String?,
         cardId: String,
         contentId: String,
         deckId: String
@@ -483,7 +489,8 @@ class NewCardDialogViewModel(
             deckOwnerId = deckId,
             contentText = text,
             contentImageName = imageName,
-            contentAudioName = audioName
+            contentAudioName = audioName,
+            contentAudioDuration = audioDuration,
         )
     }
 

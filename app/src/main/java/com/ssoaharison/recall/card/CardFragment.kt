@@ -76,6 +76,7 @@ import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Locale
 
 
@@ -952,7 +953,9 @@ class CardFragment :
             }, { audio ->
                 lifecycleScope.launch {
                     if (!player.isPlaying()) {
-                        player.playFile(audio.file)
+                        // TODO: Update
+                        val audioFile = File(context?.filesDir, audio.name)
+                        player.playFile(audioFile)
                     } else {
                         player.stop()
                     }

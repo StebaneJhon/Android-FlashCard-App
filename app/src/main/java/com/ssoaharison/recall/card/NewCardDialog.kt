@@ -654,9 +654,10 @@ class NewCardDialog(
             }
 
             !player.hasPlayed() && !player.isPlaying() -> {
-                newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                newCardViewModel.contentField.value.contentAudio?.let { audioModel ->
                     binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
-                    player.playFile(audio.file)
+                    val audioFile = File(context?.filesDir, audioModel.name)
+                    player.playFile(audioFile)
                     lifecycleScope.launch {
                         binding.lyContent.lyContentAudio.slider.max = player.getDuration()
                         while (player.isPlaying()) {
@@ -707,7 +708,11 @@ class NewCardDialog(
                     }
 
                     ATTACH_AUDIO_RECORD -> {
-                        onRecordAudio(newCardViewModel.getActiveFieldIndex())
+                        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                            checkRecordAudioPermission()
+                        } else {
+                            onRecordAudio(newCardViewModel.getActiveFieldIndex())
+                        }
 
 //                        if (selectedField != null) {
 //                            onRecordAudio(newCardViewModel.getActiveFieldIndex())
@@ -1283,7 +1288,7 @@ class NewCardDialog(
         }
 
         if (content.contentAudio != null) {
-            onSetContentFieldAudio()
+            onSetContentFieldAudio(content.contentAudio?.duration!!)
             binding.lyContent.lyContentAudio.btPlay.setOnClickListener {
                 playPauseContendAudio()
             }
@@ -1325,7 +1330,7 @@ class NewCardDialog(
                 }
 
                 if (actualDefinitionFieldModel.definitionAudio != null) {
-                    onSetDefinitionFieldAudio(fieldView)
+                    onSetDefinitionFieldAudio(fieldView, actualDefinitionFieldModel.definitionAudio!!.duration)
                 } else {
                     onRemoveDefinitionFieldAudio(fieldView)
                 }
@@ -1463,7 +1468,8 @@ class NewCardDialog(
 
             !player.hasPlayed() && !player.isPlaying() -> {
                 fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
-                player.playFile(audioModel.file)
+                val audioFile = File(context?.filesDir, audioModel.name)
+                player.playFile(audioFile)
                 lifecycleScope.launch {
                     fieldView.ly.lyContentAudio.slider.max = player.getDuration()
                     while (player.isPlaying()) {
@@ -1721,7 +1727,8 @@ class NewCardDialog(
         val contentField = newCardViewModel.contentField.value
         val cardContentText = contentField.contentText
         val cardContentImageName = contentField.contentImage?.name
-        val cardContentAudioName = contentField.contentAudio?.file?.name
+        val cardContentAudioName = contentField.contentAudio?.name
+        val cardContentAudioDuration = contentField.contentAudio?.duration
         return if (
             (cardContentText != null && cardContentText.isNotEmpty() && cardContentText.isNotBlank())||
             cardContentImageName != null ||
@@ -1731,6 +1738,7 @@ class NewCardDialog(
                 contentId = contentId,
                 imageName = cardContentImageName,
                 audioName = cardContentAudioName,
+                audioDuration = cardContentAudioDuration,
                 cardId = cardId,
                 deckId = deckId,
                 text = cardContentText
@@ -1856,7 +1864,7 @@ class NewCardDialog(
                 Manifest.permission.RECORD_AUDIO
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            checkPermission()
+            checkRecordAudioPermission()
         } else {
             val languageExtra =
                 if (language != null) LanguageUtil().getLanguageCodeForSpeechAndText(
@@ -1886,7 +1894,7 @@ class NewCardDialog(
         }
     }
 
-    private fun checkPermission() {
+    private fun checkRecordAudioPermission() {
         ActivityCompat.requestPermissions(
             requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO),
             RECORD_AUDIO_REQUEST_CODE
@@ -2437,13 +2445,13 @@ class NewCardDialog(
                                 contentAudio = newAudio
                             )
                         )
-                        onSetContentFieldAudio()
+                        onSetContentFieldAudio(newAudio.duration)
                     } else {
                         newCardViewModel.updateDefinitionAudio(
                             id = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition).definitionId,
                             audio = newAudio
                         )
-                        onSetDefinitionFieldAudio(definitionFields[selectedFieldPosition])
+                        onSetDefinitionFieldAudio(definitionFields[selectedFieldPosition], newAudio.duration)
                     }
                 }
             }
@@ -2551,7 +2559,7 @@ class NewCardDialog(
 
     private fun deleteAudioFromInternalStorage(audio: AudioModel): Boolean {
         return try {
-            appContext!!.deleteFile(audio.file.name)
+            appContext!!.deleteFile(audio.name)
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(appContext, "Could not delete audio", Toast.LENGTH_SHORT).show()
@@ -2564,7 +2572,8 @@ class NewCardDialog(
         actualField.ly.imgPhoto.setImageBitmap(imageBitmap)
     }
 
-    fun onSetDefinitionFieldAudio(actualField: FieldModel) {
+    fun onSetDefinitionFieldAudio(actualField: FieldModel, duration: String) {
+        actualField.ly.lyContentAudio.tvLength.text = duration
         actualField.ly.llContainerAudio.visibility = View.VISIBLE
     }
 
@@ -2591,7 +2600,8 @@ class NewCardDialog(
         binding.lyContent.imgContentPhoto.setImageBitmap(null)
     }
 
-    fun onSetContentFieldAudio() {
+    fun onSetContentFieldAudio(duration: String) {
+        binding.lyContent.lyContentAudio.tvLength.text = duration
         binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
     }
 

@@ -162,7 +162,8 @@ fun ExternalCardDefinition.toLocal() = CardDefinition(
     isCorrectDefinition = isCorrectDefinition,
     definitionText = definitionText,
     definitionImageName = definitionImage?.name,
-    definitionAudioName = definitionAudio?.file?.name
+    definitionAudioName = definitionAudio?.name,
+    definitionAudioDuration = definitionAudio?.duration
 )
 
 @JvmName("externalCardDefinitionToLocal")
@@ -188,7 +189,8 @@ fun ExternalCardContent.toLocal() = CardContent(
     deckOwnerId = deckOwnerId,
     contentText = contentText,
     contentImageName = contentImage?.name,
-    contentAudioName = contentAudio?.file?.name
+    contentAudioName = contentAudio?.name,
+    contentAudioDuration = contentAudio?.duration
 )
 
 @JvmName("externalCardContentToLocal")

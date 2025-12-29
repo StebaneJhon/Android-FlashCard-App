@@ -17,6 +17,8 @@ class AudioRecorderViewModel: ViewModel() {
     private val _time = MutableStateFlow("00:00.0")
     val time: StateFlow<String> = _time.asStateFlow()
 
+    private var audioDuration = ""
+
 
     private var delay = 100L
 
@@ -28,6 +30,7 @@ class AudioRecorderViewModel: ViewModel() {
             _time.update {
                 formatTime(duration)
             }
+            audioDuration = time.value.dropLast(3)
         }
     }
 
@@ -53,4 +56,6 @@ class AudioRecorderViewModel: ViewModel() {
             "%02d:%02d:%02d".format(minutes, seconds, mills/10)
         }
     }
+
+    fun getAudioDuration() = audioDuration
 }
