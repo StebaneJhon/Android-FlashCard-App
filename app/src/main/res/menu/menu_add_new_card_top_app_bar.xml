@@ -14,6 +14,8 @@
         android:id="@+id/save"
         android:title="@string/bt_save"
         android:contentDescription="@string/content_description_save"
+        android:icon="@drawable/icon_check"
+        android:iconTint="?colorOnSurface"
         app:showAsAction="ifRoom" />
 
 </menu>
