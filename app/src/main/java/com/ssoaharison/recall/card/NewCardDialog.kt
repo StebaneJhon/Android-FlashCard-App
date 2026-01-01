@@ -81,6 +81,7 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OpenTriviaQuizModel
+import com.ssoaharison.recall.helper.AppMath
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
@@ -641,9 +642,9 @@ class NewCardDialog(
                 lifecycleScope.launch {
                     //                        binding.lyContent.lyContentAudio.slider.max = player.getDuration()
                     while (player.isPlaying()) {
-                        binding.lyContent.lyContentAudio.slider.progress =
-                            player.getCurrentPosition()
-                        delay(1000L)
+                        val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                        binding.lyContent.lyContentAudio.lpiAudioProgression.progress = progress
+                        delay(100L)
                     }
                 }
             }
@@ -659,11 +660,10 @@ class NewCardDialog(
                     val audioFile = File(context?.filesDir, audioModel.name)
                     player.playFile(audioFile)
                     lifecycleScope.launch {
-                        binding.lyContent.lyContentAudio.slider.max = player.getDuration()
                         while (player.isPlaying()) {
-                            binding.lyContent.lyContentAudio.slider.progress =
-                                player.getCurrentPosition()
-                            delay(1000L)
+                            val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                            binding.lyContent.lyContentAudio.lpiAudioProgression.progress = progress
+                            delay(100L)
                         }
                     }
                 }
@@ -1454,9 +1454,9 @@ class NewCardDialog(
                 player.play()
                 lifecycleScope.launch {
                     while (player.isPlaying()) {
-                        fieldView.ly.lyContentAudio.slider.progress =
-                            player.getCurrentPosition()
-                        delay(1000L)
+                        val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                        fieldView.ly.lyContentAudio.lpiAudioProgression.progress = progress
+                        delay(100L)
                     }
                 }
             }
@@ -1471,10 +1471,10 @@ class NewCardDialog(
                 val audioFile = File(context?.filesDir, audioModel.name)
                 player.playFile(audioFile)
                 lifecycleScope.launch {
-                    fieldView.ly.lyContentAudio.slider.max = player.getDuration()
                     while (player.isPlaying()) {
-                        fieldView.ly.lyContentAudio.slider.progress = player.getCurrentPosition()
-                        delay(1000L)
+                        val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                        fieldView.ly.lyContentAudio.lpiAudioProgression.progress = progress
+                        delay(100L)
                     }
                 }
                 player.onCompletion {

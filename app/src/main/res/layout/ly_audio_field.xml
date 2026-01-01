@@ -24,29 +24,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:rippleColor="?colorSurfaceContainerHighest"/>
 
-    <SeekBar
-        android:id="@+id/slider"
-        android:layout_width="wrap_content"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/lpi_audio_progression"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:progressTint="?colorOnSurface"
-        android:thumbTint="?colorOnSurface"
-        android:progressBackgroundTint="?colorSurfaceContainerHighest"
+        android:max="100"
+        app:trackColor="?colorSurfaceContainerHigh"
+        app:indicatorColor="?colorPrimary"
         app:layout_constraintStart_toEndOf="@+id/bt_play_audio"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:thumbWidth="@dimen/space_xs"
-        app:trackHeight="@dimen/space_sm" />
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/tv_length"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:text="00:00"
         android:textColor="?colorOnSurface"
         android:textAlignment="center"
-        android:textSize="@dimen/text_xxs"
+        android:gravity="center"
+        android:textSize="@dimen/text_xs"
         android:layout_marginHorizontal="@dimen/space_xs"/>
 
     <com.google.android.material.button.MaterialButton
