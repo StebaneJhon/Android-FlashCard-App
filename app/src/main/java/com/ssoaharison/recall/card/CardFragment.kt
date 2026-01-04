@@ -950,8 +950,13 @@ class CardFragment :
                         type = text.type
                     )
                 }
-            }, { audio ->
+            }, { audio, view ->
                 lifecycleScope.launch {
+
+                    when {
+                        player.hasPlayed() &&
+                    }
+
                     if (!player.isPlaying()) {
                         // TODO: Update
                         val audioFile = File(context?.filesDir, audio.name)

@@ -26,12 +26,14 @@ import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.toLocal
+import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.databinding.LyCardDefinitionBinding
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
@@ -51,7 +53,7 @@ class CardsRecyclerViewAdapter(
     private val deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
     private val onReadContent: (TextClickedModel) -> Unit,
     private val onReadDefinition: (TextClickedModel) -> Unit,
-    private val onPlayAudio: (AudioModel) -> Unit,
+    private val onPlayAudio: (AudioModel, LinearLayout) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -138,7 +140,7 @@ class CardsRecyclerViewAdapter(
             deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
             onReadContent: (TextClickedModel) -> Unit,
             onReadDefinition: (TextClickedModel) -> Unit,
-            onPlayAudio: (AudioModel) -> Unit
+            onPlayAudio: (AudioModel, LinearLayout) -> Unit
         ) {
 
             if (appTheme == DARK_THEME) {
@@ -184,10 +186,11 @@ class CardsRecyclerViewAdapter(
                     val audioContainer: LinearLayout = descriptionView.findViewById(R.id.ll_definition_container_audio)
 //                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play_audio)
                     val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play)
+                    val lpiAudioProgression: LinearLayout? = descriptionView.findViewById(R.id.ly_content_audio)
                     if (card.contentWithDefinitions.definitions[index].definitionAudio != null) {
                         audioContainer.visibility = View.VISIBLE
                         btPlayDefinitionAudio.setOnClickListener {
-                            onPlayAudio(card.contentWithDefinitions.definitions[index].definitionAudio ?: return@setOnClickListener)
+                            onPlayAudio(card.contentWithDefinitions.definitions[index].definitionAudio!!, lpiAudioProgression ?: return@setOnClickListener)
                         }
                     } else {
                         audioContainer.visibility = View.GONE
@@ -277,7 +280,7 @@ class CardsRecyclerViewAdapter(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             card: ExternalCardWithContentAndDefinitions?,
             context: Context,
-            onPlayAudio: (AudioModel) -> Unit
+            onPlayAudio: (AudioModel, LinearLayout) -> Unit
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.card?.cardLevel!!)
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
@@ -300,7 +303,7 @@ class CardsRecyclerViewAdapter(
 //                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
 //                }
                 content.findViewById<MaterialButton>(R.id.bt_play).setOnClickListener {
-                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
+                    onPlayAudio(card.contentWithDefinitions.content.contentAudio, content.findViewById<LinearLayout>(R.id.ly_content_audio))
                 }
             }
 
@@ -325,7 +328,7 @@ class CardsRecyclerViewAdapter(
             boxLevels: List<ImmutableSpaceRepetitionBox>,
             card: ExternalCardWithContentAndDefinitions,
             context: Context,
-            onPlayAudio: (AudioModel) -> Unit
+            onPlayAudio: (AudioModel, LinearLayout) -> Unit
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
 //            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
@@ -350,7 +353,7 @@ class CardsRecyclerViewAdapter(
 //                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
 //                }
                 content.findViewById<MaterialButton>(R.id.bt_play).setOnClickListener {
-                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
+                    onPlayAudio(card.contentWithDefinitions.content.contentAudio, content.findViewById<LinearLayout>(R.id.ly_content_audio))
                 }
             }
             if (card.contentWithDefinitions.content.contentText != null) {
