@@ -20,6 +20,7 @@ import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -45,6 +46,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.databinding.FragmentCardBinding
@@ -60,6 +62,7 @@ import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
@@ -68,6 +71,8 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
 import com.ssoaharison.recall.deck.OnSaveDeckWithCationModel
+import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
@@ -75,6 +80,7 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Locale
@@ -99,6 +105,8 @@ class CardFragment :
     private lateinit var arrayAdapterSupportedLanguages: ArrayAdapter<String>
     private lateinit var listPopupWindow: ListPopupWindow
     var deckExportModel: DeckExportModel? = null
+    var lastPlayedAudioFile: AudioModel? = null
+    var lastPlayedAudioViw: LinearLayout? = null
 
 //    private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
@@ -113,7 +121,8 @@ class CardFragment :
         ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
 
-    private var createFile = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+    private var createFile =
+        registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
             if (uri != null && deckExportModel != null) {
                 cardsToTextToUri(uri, deckExportModel?.separator!!)
             }
@@ -199,16 +208,17 @@ class CardFragment :
 //        opener = args.opener
 
 
-
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
-        arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                 cardViewModel.getMainDeck()?.let { mainDeck ->
-                     displayData(mainDeck)
-                 }
+                cardViewModel.getMainDeck()?.let { mainDeck ->
+                    displayData(mainDeck)
+                }
             }
         }
 
@@ -341,7 +351,8 @@ class CardFragment :
                     binding.rvDeckPath.apply {
                         adapter = recyclerViewAdapterDeckPath
                         setHasFixedSize(true)
-                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                        layoutManager =
+                            LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
                     }
                 }
             }
@@ -382,6 +393,7 @@ class CardFragment :
                         )
                         true
                     }
+
                     else -> false
                 }
             }
@@ -614,15 +626,17 @@ class CardFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getSubdecks(deck.deckId)
                 cardViewModel.subdecks.collect { state ->
-                    when(state) {
+                    when (state) {
                         is UiState.Error -> {
                             // TODO: On no deck
                             binding.subdeckRecyclerView.isVisible = false
                         }
+
                         is UiState.Loading -> {
                             // TODO: On loading
                             val b = 2
                         }
+
                         is UiState.Success -> {
                             populateSubdecksRecyclerView(deck = deck, subdecks = state.data)
                         }
@@ -636,17 +650,18 @@ class CardFragment :
         deck: ExternalDeck,
         subdecks: List<ExternalDeck>
     ) {
-        subdeckRecyclerViewAdapter = SubdeckRecyclerViewAdapter(subdecks, appContext!!, "WHITE THEM", {
-            onEditDeck(parentDeck = deck, deckToEdit = it)
-        }, {
-            onDeleteSubdeck(it)
-        }, {
-            // TODO: Start Quiz
-        }) {
+        subdeckRecyclerViewAdapter =
+            SubdeckRecyclerViewAdapter(subdecks, appContext!!, "WHITE THEM", {
+                onEditDeck(parentDeck = deck, deckToEdit = it)
+            }, {
+                onDeleteSubdeck(it)
+            }, {
+                // TODO: Start Quiz
+            }) {
 //            deck = it
 //            displayData()
-            displayData(it)
-        }
+                displayData(it)
+            }
         binding.subdeckRecyclerView.apply {
             isVisible = true
             adapter = subdeckRecyclerViewAdapter
@@ -682,7 +697,8 @@ class CardFragment :
         )
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
-            val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
+            val result =
+                bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
             result?.let {
                 cardViewModel.insertSubdeck(it.deck)
             }
@@ -748,7 +764,10 @@ class CardFragment :
         }
     }
 
-    private fun onStartQuiz(deck: ExternalDeck, start: (ExternalDeckWithCardsAndContentAndDefinitions) -> Unit) {
+    private fun onStartQuiz(
+        deck: ExternalDeck,
+        start: (ExternalDeckWithCardsAndContentAndDefinitions) -> Unit
+    ) {
         startingQuizJob?.cancel()
         startingQuizJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -761,7 +780,7 @@ class CardFragment :
 
                         is UiState.Error -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            onStartingQuizError(deck,getString(R.string.error_message_empty_deck))
+                            onStartingQuizError(deck, getString(R.string.error_message_empty_deck))
                             this@launch.cancel()
                             this.cancel()
                         }
@@ -779,7 +798,10 @@ class CardFragment :
 
     }
 
-    private fun lunchQuiz(deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions, quizMode: String) {
+    private fun lunchQuiz(
+        deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions,
+        quizMode: String
+    ) {
         when (quizMode) {
 //            FLASH_CARD_QUIZ -> {
 //                val intent = Intent(appContext, FlashCardGameActivity::class.java)
@@ -908,7 +930,10 @@ class CardFragment :
 //    }
 
     @SuppressLint("RestrictedApi")
-    private fun populateRecyclerView(cardList: List<ExternalCardWithContentAndDefinitions>, deck: ExternalDeck) {
+    private fun populateRecyclerView(
+        cardList: List<ExternalCardWithContentAndDefinitions>,
+        deck: ExternalDeck
+    ) {
 //        item = binding.cardsTopAppBar.findViewById(R.id.view_deck_menu)
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
@@ -936,7 +961,8 @@ class CardFragment :
                         deck = deck,
                         textAndView = text,
                         language = text.text.language,
-                        type = text.type)
+                        type = text.type
+                    )
                 }
             },
             { text ->
@@ -951,19 +977,25 @@ class CardFragment :
                     )
                 }
             }, { audio, view ->
-                lifecycleScope.launch {
-
-                    when {
-                        player.hasPlayed() &&
-                    }
-
-                    if (!player.isPlaying()) {
-                        // TODO: Update
-                        val audioFile = File(context?.filesDir, audio.name)
-                        player.playFile(audioFile)
-                    } else {
+                // TODO: Check if audio is playing
+                if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
+                    lifecycleScope.launch {
+                        lastPlayedAudioViw?.findViewById<MaterialButton>(R.id.bt_play)
+                            ?.setIconResource(R.drawable.icon_play)
+                        lastPlayedAudioViw?.findViewById<LinearProgressIndicator>(R.id.lpi_audio_progression)?.progress =
+                            0
+                        lastPlayedAudioViw = null
+                        lastPlayedAudioFile = null
                         player.stop()
+                        delay(100L)
+                        val newProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.lpi_audio_progression)
+                        playPauseAudio(view, newProgressIndicator, audio)
+                        lastPlayedAudioFile = audio
+                        lastPlayedAudioViw = view
                     }
+                } else {
+                    val newProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.lpi_audio_progression)
+                    playPauseAudio(view, newProgressIndicator, audio)
                 }
             })
 
@@ -990,6 +1022,62 @@ class CardFragment :
                 }
         }
 
+    }
+
+    private fun playPauseAudio(
+        view: LinearLayout,
+        newProgressIndicator: LinearProgressIndicator,
+        audio: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                // Resume audio
+                view.findViewById<MaterialButton>(R.id.bt_play)
+                    .setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        newProgressIndicator.progress = progress
+                        delay(100L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                // Pause audio
+                view.findViewById<MaterialButton>(R.id.bt_play)
+                    .setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                // Play audio
+                view.findViewById<MaterialButton>(R.id.bt_play)
+                    .setIconResource(R.drawable.icon_pause)
+                val audioFile = File(context?.filesDir, audio.name)
+                player.playFile(audioFile)
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        newProgressIndicator.progress = progress
+                        delay(100L)
+                    }
+                }
+                player.onCompletion {
+                    lastPlayedAudioFile = null
+                    lastPlayedAudioViw = null
+                    view.findViewById<MaterialButton>(R.id.bt_play)
+                        .setIconResource(R.drawable.icon_play)
+                }
+            }
+        }
     }
 
     private fun onDeckLanguageClicked(
@@ -1157,7 +1245,8 @@ class CardFragment :
             REQUEST_CODE_CARD,
             this
         ) { _, bundle ->
-            val result = bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
+            val result =
+                bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let {
                 cardViewModel.updateCard(it)
                 Toast.makeText(

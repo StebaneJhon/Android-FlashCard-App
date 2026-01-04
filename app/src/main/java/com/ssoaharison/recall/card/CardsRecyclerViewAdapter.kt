@@ -245,20 +245,19 @@ class CardsRecyclerViewAdapter(
 
 
             content.apply {
-                setOnClickListener {
-                    it as TextView
-                    val text = it.text.toString()
-                    val language =
-                        card.card.cardContentLanguage ?: deck.cardContentDefaultLanguage
-                    onReadContent(
-                        TextClickedModel(
-                            TextWithLanguageModel(card.card.cardId, text, CONTENT, language),
-                            it,
-                            R.color.red950,
-                            CONTENT
-                        )
-                    )
-                }
+//                setOnClickListener {
+//                    it as TextView
+//                    val text = it.text.toString()
+//                    val language = card.card.cardContentLanguage ?: deck.cardContentDefaultLanguage
+//                    onReadContent(
+//                        TextClickedModel(
+//                            TextWithLanguageModel(card.card.cardId, text, CONTENT, language),
+//                            it,
+//                            R.color.red950,
+//                            CONTENT
+//                        )
+//                    )
+//                }
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
