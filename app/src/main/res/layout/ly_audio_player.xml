@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center"
+    android:padding="@dimen/space_xxs">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_play"
+        style="?attr/materialIconButtonFilledStyle"
+        android:layout_width="@dimen/height_sm"
+        android:layout_height="@dimen/height_sm"
+        android:contentDescription="@string/play_audio"
+        app:icon="@drawable/icon_play"
+        app:iconSize="@dimen/icon_sm"
+        android:gravity="center"
+        app:iconGravity="textEnd"
+        app:iconTint="?colorOnSurface"
+        android:backgroundTint="?colorSurfaceContainerHigh"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:rippleColor="?colorSurfaceContainerHighest"/>
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/lpi_audio_progression"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:max="100"
+        app:trackColor="?colorSurfaceContainerHigh"
+        app:indicatorColor="?colorPrimary"
+        app:layout_constraintStart_toEndOf="@+id/bt_play_audio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_length"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="00:00"
+        android:textColor="?colorOnSurface"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:textSize="@dimen/text_xs"
+        android:layout_marginHorizontal="@dimen/space_xs"/>
+
+</LinearLayout>

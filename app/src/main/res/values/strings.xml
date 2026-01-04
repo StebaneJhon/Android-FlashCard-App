@@ -319,4 +319,5 @@
     <string name="play_audio">Play audio</string>
     <string name="translate">Translate</string>
     <string name="no_definition_found">No definition found.</string>
+    <string name="card_level">Level %1$s</string>
 </resources>

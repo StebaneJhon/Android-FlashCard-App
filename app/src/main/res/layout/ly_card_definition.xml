@@ -11,11 +11,27 @@
         android:id="@+id/img_photo"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:background="@drawable/bg_card_top_element"
+        android:background="@drawable/bg_radius_xs"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
         android:layout_marginBottom="@dimen/space_xxs"
         android:src="@drawable/ic_launcher_background" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_definition_container_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:backgroundTint="?colorSurfaceContainer"
+        android:background="@drawable/bg_radius_xs"
+        android:layout_marginBottom="@dimen/space_xxs">
+
+        <include
+            android:id="@+id/ly_definition_audio"
+            layout="@layout/ly_audio_player" />
+    </LinearLayout>
 
     <LinearLayout
         android:visibility="gone"

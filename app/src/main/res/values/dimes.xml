@@ -10,6 +10,8 @@
 
     <dimen name="height_sm">30dp</dimen>
     <dimen name="width_sm">30dp</dimen>
+    <dimen name="height_xxs">10dp</dimen>
+    <dimen name="width_xxs">10dp</dimen>
 
     <dimen name="text_xxs">10sp</dimen>
     <dimen name="text_xs">12sp</dimen>

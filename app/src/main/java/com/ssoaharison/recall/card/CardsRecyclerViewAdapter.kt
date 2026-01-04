@@ -88,7 +88,8 @@ class CardsRecyclerViewAdapter(
         private val cardDefinition8: View = view.findViewById(R.id.in_definition_8)
         private val cardDefinition9: View = view.findViewById(R.id.in_definition_9)
         private val cardDefinition10: View = view.findViewById(R.id.in_definition_10)
-        private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
+//        private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
+        private val cardStatus: LinearLayout = view.findViewById(R.id.in_level)
         private val popUpBT: Button = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
         private val cvContainerCard: ConstraintLayout = view.findViewById(R.id.cl_container_card)
@@ -124,8 +125,8 @@ class CardsRecyclerViewAdapter(
 
         private val ICON_MARGIN = 5
 
-        var contentTextColor: Int = R.color.red950
-        var definitionTextColor: Int = R.color.red900
+//        var contentTextColor: Int = R.color.red950
+//        var definitionTextColor: Int = R.color.red900
 
         fun bind(
             context: Context,
@@ -180,8 +181,9 @@ class CardsRecyclerViewAdapter(
                         }
                     }
 
-                    val audioContainer: LinearLayout = descriptionView.findViewById(R.id.ll_container_audio)
-                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play_audio)
+                    val audioContainer: LinearLayout = descriptionView.findViewById(R.id.ll_definition_container_audio)
+//                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play_audio)
+                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play)
                     if (card.contentWithDefinitions.definitions[index].definitionAudio != null) {
                         audioContainer.visibility = View.VISIBLE
                         btPlayDefinitionAudio.setOnClickListener {
@@ -249,7 +251,7 @@ class CardsRecyclerViewAdapter(
                         TextClickedModel(
                             TextWithLanguageModel(card.card.cardId, text, CONTENT, language),
                             it,
-                            contentTextColor,
+                            R.color.red950,
                             CONTENT
                         )
                     )
@@ -279,21 +281,25 @@ class CardsRecyclerViewAdapter(
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.card?.cardLevel!!)
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
-            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColor(actualBoxLevel.levelColor)
-            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorVariant(actualBoxLevel.levelColor)
+//            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
+//            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColor(actualBoxLevel.levelColor)
+//            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorVariant(actualBoxLevel.levelColor)
 
             val colorStateList = ContextCompat.getColorStateList(context, statusColor)
-            val cardBackgroundStateList =
-                ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
-            cvContainerCard.backgroundTintList = cardBackgroundStateList
+//            val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
+//            cvContainerCard.backgroundTintList = cardBackgroundStateList
             cardStatus.apply {
-                text = card.card.cardLevel
-                backgroundTintList = colorStateList
+                findViewById<View>(R.id.vw_level_color).backgroundTintList = colorStateList
+                findViewById<TextView>(R.id.tv_level_text).text = context.getString(R.string.card_level, card.card.cardLevel)
+//                text = card.card.cardLevel
+//                backgroundTintList = colorStateList
             }
             if (card.contentWithDefinitions.content.contentAudio != null) {
-                content.findViewById<LinearLayout>(R.id.ll_container_audio).visibility = View.VISIBLE
-                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
+                content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility = View.VISIBLE
+//                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
+//                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
+//                }
+                content.findViewById<MaterialButton>(R.id.bt_play).setOnClickListener {
                     onPlayAudio(card.contentWithDefinitions.content.contentAudio)
                 }
             }
@@ -301,7 +307,7 @@ class CardsRecyclerViewAdapter(
             if (card.contentWithDefinitions.content.contentText != null) {
                 content.findViewById<TextView>(R.id.tv_content).apply {
                     text = card.contentWithDefinitions.content.contentText
-                    setTextColor(context.getColor(contentTextColor))
+//                    setTextColor(context.getColor(contentTextColor))
                 }
             }
             if (card.contentWithDefinitions.content.contentImage != null) {
@@ -310,9 +316,9 @@ class CardsRecyclerViewAdapter(
                     visibility = View.VISIBLE
                 }
             }
-            descriptionBinding.forEach {
-                it.findViewById<TextView>(R.id.tv_definition).setTextColor(context.getColor(definitionTextColor))
-            }
+//            descriptionBinding.forEach {
+//                it.findViewById<TextView>(R.id.tv_definition).setTextColor(context.getColor(definitionTextColor))
+//            }
         }
 
         private fun onDarkTheme(
@@ -322,30 +328,35 @@ class CardsRecyclerViewAdapter(
             onPlayAudio: (AudioModel) -> Unit
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
-            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
-            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
-            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLightVariant(actualBoxLevel.levelColor)
+//            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+//            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
+//            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLightVariant(actualBoxLevel.levelColor)
 
-            val colorStateList = ContextCompat.getColorStateList(context, statusColor)
+//            val colorStateList = ContextCompat.getColorStateList(context, statusColor)
             val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
-            cvContainerCard.backgroundTintList = colorStateList
+//            cvContainerCard.backgroundTintList = colorStateList
             cardStatus.apply {
-                text = card.card.cardLevel
-                backgroundTintList = cardBackgroundStateList
+                findViewById<View>(R.id.vw_level_color).backgroundTintList = cardBackgroundStateList
+                findViewById<TextView>(R.id.tv_level_text).text = context.getString(R.string.card_level, card.card.cardLevel)
+//                text = context.getString(R.string.card_level, card.card.cardLevel)
+//                backgroundTintList = cardBackgroundStateList
             }
 
             // TODO: Include Audio
             if (card.contentWithDefinitions.content.contentAudio != null) {
-                content.findViewById<LinearLayout>(R.id.ll_container_audio).visibility = View.VISIBLE
-                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
+                content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility = View.VISIBLE
+//                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
+//                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
+//                }
+                content.findViewById<MaterialButton>(R.id.bt_play).setOnClickListener {
                     onPlayAudio(card.contentWithDefinitions.content.contentAudio)
                 }
             }
             if (card.contentWithDefinitions.content.contentText != null) {
                 content.findViewById<TextView>(R.id.tv_content).apply {
                     text = card.contentWithDefinitions.content.contentText
-                    setTextColor(context.getColor(contentTextColor))
+//                    setTextColor(context.getColor(contentTextColor))
                 }
             }
             if (card.contentWithDefinitions.content.contentImage != null) {
@@ -355,10 +366,10 @@ class CardsRecyclerViewAdapter(
                 }
             }
 
-            descriptionBinding.forEach {
-                it.findViewById<TextView>(R.id.tv_definition).setTextColor(context.getColor(definitionTextColor))
-            }
-            cardStatus.setTextColor(context.getColor(R.color.black))
+//            descriptionBinding.forEach {
+//                it.findViewById<TextView>(R.id.tv_definition).setTextColor(context.getColor(definitionTextColor))
+//            }
+//            cardStatus.setTextColor(context.getColor(R.color.black))
         }
 
         private fun cardDefinitionsToStrings(cardDefinitions: List<ExternalCardDefinition>?): List<String> {

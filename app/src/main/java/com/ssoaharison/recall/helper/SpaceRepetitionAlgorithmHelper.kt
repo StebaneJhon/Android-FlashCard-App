@@ -69,13 +69,13 @@ class SpaceRepetitionAlgorithmHelper{
     }
 
     private val colors = mapOf(
-        RED to R.color.red800,
-        ORANGE to R.color.orange800,
-        BROWNE to R.color.amber800,
-        YELLOW700 to R.color.yellow800,
-        YELLOW500 to R.color.lime800,
-        GREEN500 to R.color.green800,
-        GREEN700 to R.color.emerald800
+        RED to R.color.red600,
+        ORANGE to R.color.orange600,
+        BROWNE to R.color.amber600,
+        YELLOW700 to R.color.yellow600,
+        YELLOW500 to R.color.lime600,
+        GREEN500 to R.color.green600,
+        GREEN700 to R.color.emerald600
     )
 
     private val carBackgroundColors = mapOf(
