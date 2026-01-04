@@ -186,9 +186,11 @@ class CardsRecyclerViewAdapter(
                     val audioContainer: LinearLayout = descriptionView.findViewById(R.id.ll_definition_container_audio)
 //                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play_audio)
                     val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play)
+                    val tvAudioLength: TextView = descriptionView.findViewById(R.id.tv_length)
                     val lpiAudioProgression: LinearLayout? = descriptionView.findViewById(R.id.ly_content_audio)
                     if (card.contentWithDefinitions.definitions[index].definitionAudio != null) {
                         audioContainer.visibility = View.VISIBLE
+                        tvAudioLength.text = card.contentWithDefinitions.definitions[index].definitionAudio?.duration
                         btPlayDefinitionAudio.setOnClickListener {
                             onPlayAudio(card.contentWithDefinitions.definitions[index].definitionAudio!!, lpiAudioProgression ?: return@setOnClickListener)
                         }
@@ -298,6 +300,7 @@ class CardsRecyclerViewAdapter(
             }
             if (card.contentWithDefinitions.content.contentAudio != null) {
                 content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility = View.VISIBLE
+                content.findViewById<TextView>(R.id.tv_length).text = card.contentWithDefinitions.content.contentAudio.duration
 //                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
 //                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
 //                }
