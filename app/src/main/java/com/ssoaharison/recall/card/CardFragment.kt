@@ -329,7 +329,6 @@ class CardFragment :
     private fun onNavigateBack() {
         val path = cardViewModel.deckPath()
         if (path.size > 1) {
-//            displayData(path[1])
             deckPathViewModel.setCurrentDeck(path[1])
             switchTheme()
         } else {

@@ -13,23 +13,23 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
         android:background="?colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/cardsTopAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:menu="@menu/card_fragment_menu"
-            app:navigationContentDescription="@string/bt_description_back_to_decks"
-            app:navigationIcon="@drawable/icon_menu"
-            app:navigationIconTint="?colorOnSurface">
-
-        </com.google.android.material.appbar.MaterialToolbar>
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/cardsTopAppBar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Search decks or cards"
+                android:textAppearance="@style/TextAppearance.App.Hint"
+                android:backgroundTint="?colorSurfaceContainerLow"
+                app:navigationIcon="@drawable/icon_menu"
+                app:navigationIconTint="?colorOnSurface"
+                app:menu="@menu/card_fragment_menu">
+            </com.google.android.material.search.SearchBar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -138,6 +138,7 @@
                         android:checkable="true"
                         app:icon="@drawable/icon_sort"
                         app:iconTint="?colorPrimary"
+                        android:paddingVertical="@dimen/space_md"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -150,6 +151,7 @@
                     android:layout_height="wrap_content"
                     android:background="?colorSurfaceContainerLowest"
                     android:transitionGroup="true"
+                    android:paddingHorizontal="@dimen/space_md"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +183,8 @@
                         android:checkable="true"
                         app:icon="@drawable/icon_grid_view"
                         app:iconTint="?colorPrimary"
-                        android:padding="@dimen/space_xs"
+                        android:paddingHorizontal="@dimen/space_xs"
+                        android:paddingVertical="@dimen/space_md"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/bt_sort_cards"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -194,7 +197,8 @@
                         android:checkable="true"
                         app:icon="@drawable/icon_sort"
                         app:iconTint="?colorPrimary"
-                        android:padding="@dimen/space_xs"
+                        android:paddingHorizontal="@dimen/space_xs"
+                        android:paddingVertical="@dimen/space_md"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/bt_cards_settings"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -207,7 +211,8 @@
                         android:checkable="true"
                         app:icon="@drawable/icon_more"
                         app:iconTint="?colorPrimary"
-                        android:padding="@dimen/space_xs"
+                        android:paddingHorizontal="@dimen/space_xs"
+                        android:paddingVertical="@dimen/space_md"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -221,7 +226,7 @@
                     android:layout_height="0dp"
                     android:layout_weight="1"
                     android:background="?colorSurfaceContainerLowest"
-                    android:padding="@dimen/space_md"
+                    android:paddingHorizontal="@dimen/space_md"
                     android:transitionGroup="true"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"

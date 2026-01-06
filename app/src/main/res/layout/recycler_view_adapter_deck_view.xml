@@ -5,8 +5,7 @@
     android:id="@+id/deckRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/space_lg"
-    android:layout_marginVertical="@dimen/space_xs"
+    android:layout_marginBottom="@dimen/space_xs"
     app:cardBackgroundColor="?colorSurfaceContainerLow"
     app:cardCornerRadius="@dimen/radius_xl"
     app:strokeWidth="0dp">

@@ -731,6 +731,12 @@
         <item name="android:textColor">?colorOnSurface</item>
         <item name="android:textSize">@dimen/text_sm</item>
     </style>
+    <style name="TextAppearance.App.Hint" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:textColor">?colorSurfaceContainerHighest</item>
+        <item name="android:textSize">@dimen/text_sm</item>
+    </style>
     <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/montserrat_bold</item>
         <item name="android:fontFamily">@font/montserrat_bold</item>
