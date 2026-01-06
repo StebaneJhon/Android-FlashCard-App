@@ -381,7 +381,7 @@ class CardFragment :
         displayAllCards(deck.deckId)
         displaySubdecks(deck)
 
-        binding.cardsTopAppBar.apply {
+        binding.searchBar.apply {
             title = null
             setNavigationOnClickListener {
 

@@ -749,6 +749,54 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <!-- Shape Appearance-->
+    <style name="ShapeAppearance.App.Circle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Top" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/card_radius</item>
+        <item name="cornerSizeTopRight">@dimen/card_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/bt_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Middle" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeTopRight">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/bt_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Bottom" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/bt_radius</item>
+        <item name="cornerSizeTopRight">@dimen/bt_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/card_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/card_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Button.Single" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/card_radius</item>
+        <item name="cornerSizeTopRight">@dimen/card_radius</item>
+        <item name="cornerSizeBottomLeft">@dimen/card_radius</item>
+        <item name="cornerSizeBottomRight">@dimen/card_radius</item>
+    </style>
+
+    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">24dp</item>
+    </style>
+
+    <style name="ShapeAppearance.App.Corner.ExtraSmall" parent="ShapeAppearance.Material3.Corner.ExtraSmall">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/radius_base</item>
+    </style>
+
     <!--Action Bar theme-->
     <style name="MyActionBarTheme" parent="Widget.AppCompat.ActionMode">
         <item name="titleTextColor">@color/blue500</item>
@@ -859,11 +907,6 @@
         <item name="backgroundTint">?colorSurfaceContainerLow</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.LargeComponent</item>
     </style>
-
-    <style name="ShapeAppearance.App.LargeComponent" parent="ShapeAppearance.Material3.LargeComponent">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">24dp</item>
-    </style>
     
     <!-- Card definition field -->
     
@@ -914,38 +957,6 @@
         <item name="android:textAlignment">textStart</item>
     </style>
 
-    <style name="ShapeAppearance.App.Button.Top" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">@dimen/card_radius</item>
-        <item name="cornerSizeTopRight">@dimen/card_radius</item>
-        <item name="cornerSizeBottomLeft">@dimen/bt_radius</item>
-        <item name="cornerSizeBottomRight">@dimen/bt_radius</item>
-    </style>
-
-    <style name="ShapeAppearance.App.Button.Middle" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">@dimen/bt_radius</item>
-        <item name="cornerSizeTopRight">@dimen/bt_radius</item>
-        <item name="cornerSizeBottomLeft">@dimen/bt_radius</item>
-        <item name="cornerSizeBottomRight">@dimen/bt_radius</item>
-    </style>
-
-    <style name="ShapeAppearance.App.Button.Bottom" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">@dimen/bt_radius</item>
-        <item name="cornerSizeTopRight">@dimen/bt_radius</item>
-        <item name="cornerSizeBottomLeft">@dimen/card_radius</item>
-        <item name="cornerSizeBottomRight">@dimen/card_radius</item>
-    </style>
-
-    <style name="ShapeAppearance.App.Button.Single" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">@dimen/card_radius</item>
-        <item name="cornerSizeTopRight">@dimen/card_radius</item>
-        <item name="cornerSizeBottomLeft">@dimen/card_radius</item>
-        <item name="cornerSizeBottomRight">@dimen/card_radius</item>
-    </style>
-
     <style name="Theme.NavigationdrawerViewTest.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.NavigationdrawerViewTest.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -958,11 +969,6 @@
     </style>
 
     <!-- Text fields -->
-    <style name="ShapeAppearance.App.Corner.ExtraSmall" parent="ShapeAppearance.Material3.Corner.ExtraSmall">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/radius_base</item>
-    </style>
-
     <style name="Widget.App.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.Corner.ExtraSmall</item>
