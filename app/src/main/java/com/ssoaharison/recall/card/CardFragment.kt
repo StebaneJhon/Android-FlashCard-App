@@ -37,6 +37,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -74,6 +75,8 @@ import com.ssoaharison.recall.deck.OnSaveDeckWithCationModel
 import com.ssoaharison.recall.helper.AppMath
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
+import com.ssoaharison.recall.mainActivity.DeckPathViewModel
+import com.ssoaharison.recall.mainActivity.DeckPathViewModelFactory
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemePicker
@@ -121,6 +124,12 @@ class CardFragment :
         ViewModelProvider(this, CardViewModelFactory(repository))[CardViewModel::class.java]
     }
 
+    val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
+    }
+
+
     private var createFile =
         registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
             if (uri != null && deckExportModel != null) {
@@ -148,56 +157,61 @@ class CardFragment :
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCardBinding.inflate(inflater, container, false)
+        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+        val appThemeName = sharedPref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
+        val viewTheme = deckPathViewModel.getViewTheme(appThemeName)
+        val contextThemeWrapper = ContextThemeWrapper(requireContext(), viewTheme)
+        val themeInflater = inflater.cloneInContext(contextThemeWrapper)
+        _binding = FragmentCardBinding.inflate(themeInflater, container, false)
         appContext = container?.context
         tts = TextToSpeech(appContext, this)
         return binding.root
     }
 
-    override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
-        val inflater = super.onGetLayoutInflater(savedInstanceState)
-        var contextThemeWrapper: Context? = null
-//        deck = args.selectedDeck
-        val themePicker = ThemePicker()
-        val window = activity?.window
-        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
-        val appTheme = themePicker.selectTheme(appThemeName)
-
-//        if (!deck.deckColorCode.isNullOrBlank()) {
-//            val deckTheme: Int
-//            val deckColorSurfaceLow: Int
-//            if (appThemeName == DARK_THEME) {
-//                deckTheme = themePicker.selectDarkThemeByDeckColorCode(
-//                    deck.deckColorCode!!,
-//                    themePicker.getDefaultTheme()
-//                )
-//                deckColorSurfaceLow =
-//                    DeckColorCategorySelector().selectDeckDarkColorSurfaceContainerLow(
-//                        requireContext(),
-//                        deck.deckColorCode
-//                    )
-//            } else {
-//                deckTheme = themePicker.selectThemeByDeckColorCode(
-//                    deck.deckColorCode!!,
-//                    themePicker.getDefaultTheme()
-//                )
-//                deckColorSurfaceLow =
-//                    DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(
-//                        requireContext(),
-//                        deck.deckColorCode
-//                    )
-//            }
-//            contextThemeWrapper = ContextThemeWrapper(requireContext(), deckTheme)
-//            window?.statusBarColor = deckColorSurfaceLow
-//        } else {
-//            contextThemeWrapper = ContextThemeWrapper(requireContext(), appTheme!!)
-//        }
-        contextThemeWrapper = ContextThemeWrapper(requireContext(), appTheme!!)
-        return inflater.cloneInContext(contextThemeWrapper)
-    }
+//    override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
+//        val inflater = super.onGetLayoutInflater(savedInstanceState)
+//        var contextThemeWrapper: Context? = null
+////        deck = args.selectedDeck
+////        val themePicker = ThemePicker()
+//        val window = activity?.window
+//        window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+//        window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+////        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+////        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
+////        val appTheme = themePicker.selectTheme(appThemeName)
+//
+////        if (!deck.deckColorCode.isNullOrBlank()) {
+////            val deckTheme: Int
+////            val deckColorSurfaceLow: Int
+////            if (appThemeName == DARK_THEME) {
+////                deckTheme = themePicker.selectDarkThemeByDeckColorCode(
+////                    deck.deckColorCode!!,
+////                    themePicker.getDefaultTheme()
+////                )
+////                deckColorSurfaceLow =
+////                    DeckColorCategorySelector().selectDeckDarkColorSurfaceContainerLow(
+////                        requireContext(),
+////                        deck.deckColorCode
+////                    )
+////            } else {
+////                deckTheme = themePicker.selectThemeByDeckColorCode(
+////                    deck.deckColorCode!!,
+////                    themePicker.getDefaultTheme()
+////                )
+////                deckColorSurfaceLow =
+////                    DeckColorCategorySelector().selectDeckColorSurfaceContainerLow(
+////                        requireContext(),
+////                        deck.deckColorCode
+////                    )
+////            }
+////            contextThemeWrapper = ContextThemeWrapper(requireContext(), deckTheme)
+////            window?.statusBarColor = deckColorSurfaceLow
+////        } else {
+////            contextThemeWrapper = ContextThemeWrapper(requireContext(), appTheme!!)
+////        }
+//        contextThemeWrapper = ContextThemeWrapper(requireContext(), appTheme!!)
+//        return inflater.cloneInContext(contextThemeWrapper)
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -207,16 +221,19 @@ class CardFragment :
 //        deck = args.selectedDeck
 //        opener = args.opener
 
-
         staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
         arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getMainDeck()?.let { mainDeck ->
-                    displayData(mainDeck)
-                }
+                deckPathViewModel.currentDeck.collect { deck ->
+                    if (deck == null) {
+                        // TODO: On No Data
+                        val a  = 1
+                    } else {
+                        displayData(deck)
+                    }
+
             }
         }
 
@@ -312,7 +329,9 @@ class CardFragment :
     private fun onNavigateBack() {
         val path = cardViewModel.deckPath()
         if (path.size > 1) {
-            displayData(path[1])
+//            displayData(path[1])
+            deckPathViewModel.setCurrentDeck(path[1])
+            switchTheme()
         } else {
             Toast.makeText(
                 appContext,
@@ -339,22 +358,26 @@ class CardFragment :
 
     private fun displayData(deck: ExternalDeck) {
 
+        // TODO: Switch theme
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckPath(deck) { path ->
                     // TODO: Populate deck path
                     recyclerViewAdapterDeckPath = RecyclerViewAdapterDeckPath(path) { pathTogo ->
-                        displayData(pathTogo)
+//                        displayData(pathTogo)
+                        deckPathViewModel.setCurrentDeck(pathTogo)
+                        switchTheme()
                     }
                     binding.rvDeckPath.apply {
                         adapter = recyclerViewAdapterDeckPath
                         setHasFixedSize(true)
-                        layoutManager =
-                            LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
                     }
                 }
             }
         }
+
+//        deckPathViewModel.setCurrentDeck(deck)
 
         displayAllCards(deck.deckId)
         displaySubdecks(deck)
@@ -588,6 +611,7 @@ class CardFragment :
                             binding.cardRecyclerView.visibility = View.VISIBLE
                             populateRecyclerView(state.data.cards, state.data.deck)
 //                            bindDeckDetailsPanel(state.data.deck)
+//                            deckPathViewModel.setCurrentDeck(state.data.deck)
                         }
                     }
                 }
@@ -662,7 +686,9 @@ class CardFragment :
             }) {
 //            deck = it
 //            displayData()
-                displayData(it)
+//                displayData(it)
+                deckPathViewModel.setCurrentDeck(it)
+                switchTheme()
             }
         binding.subdeckRecyclerView.apply {
             isVisible = true
@@ -1477,6 +1503,17 @@ class CardFragment :
             it.stop()
             it.shutdown()
         }
+    }
+
+    private fun switchTheme() {
+        val navController = findNavController()
+        navController.navigate(
+            navController.currentDestination!!.id,
+            null,
+            NavOptions.Builder()
+                .setPopUpTo(navController.currentDestination!!.id, true)
+                .build()
+        )
     }
 
 }

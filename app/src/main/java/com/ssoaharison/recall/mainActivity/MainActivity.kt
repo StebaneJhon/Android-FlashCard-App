@@ -46,6 +46,10 @@ class MainActivity :
         MainActivityViewModelFactory((application as FlashCardApplication).repository)
     }
 
+    val deckPathViewModel: DeckPathViewModel by viewModels {
+        DeckPathViewModelFactory((application as FlashCardApplication).repository)
+    }
+
     private var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
 
