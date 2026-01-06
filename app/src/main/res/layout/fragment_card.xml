@@ -23,21 +23,23 @@
             android:id="@+id/cardsTopAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@drawable/icon_menu"
-            app:navigationIconTint="?colorOnSurface"
             app:menu="@menu/card_fragment_menu"
-            app:navigationContentDescription="@string/bt_description_back_to_decks">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_deck_path"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:transitionGroup="true"
-                android:scrollbars="none"/>
+            app:navigationContentDescription="@string/bt_description_back_to_decks"
+            app:navigationIcon="@drawable/icon_menu"
+            app:navigationIconTint="?colorOnSurface">
 
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_deck_path"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_sm"
+        android:scrollbars="none"
+        android:transitionGroup="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout"/>
 
     <LinearLayout
         android:id="@+id/onNoCardTextError"
@@ -77,17 +79,17 @@
         android:id="@+id/tv_no_card_found"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_xl"
+        android:fontFamily="@font/open_sans"
+        android:text="@string/error_message_no_card_found"
         android:textAlignment="center"
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_base"
         android:visibility="gone"
-        android:fontFamily="@font/open_sans"
-        android:layout_margin="@dimen/space_xl"
-        android:text="@string/error_message_no_card_found"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -96,61 +98,134 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/appBarLayout">
+        app:layout_constraintTop_toBottomOf="@+id/rv_deck_path">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_container_subdecks_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tv_deck_text"
-                    android:layout_marginHorizontal="@dimen/space_lg"
-                    android:textColor="?colorPrimary"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_sm"
-                    android:layout_marginBottom="@dimen/space_lg"/>
+                    android:layout_marginHorizontal="@dimen/space_lg">
+
+                    <TextView
+                        android:id="@+id/tv_subdecks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="@string/tv_deck_text"
+                        android:textColor="?colorPrimary"
+                        android:textSize="@dimen/text_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/bt_sort_subdecks"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        app:icon="@drawable/icon_sort"
+                        app:iconTint="?colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/subdeckRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:transitionGroup="true"
                     android:background="?colorSurfaceContainerLowest"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root"
+                    android:transitionGroup="true"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root" />
 
-                <TextView
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tv_cards_text"
-                    android:textColor="?colorPrimary"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/text_sm"
-                    android:layout_margin="@dimen/space_lg"/>
+                    android:layout_marginHorizontal="@dimen/space_lg">
+
+                    <TextView
+                        android:id="@+id/tv_cards"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:text="@string/tv_cards_text"
+                        android:textColor="?colorPrimary"
+                        android:textSize="@dimen/text_sm"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/bt_view_mode"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        app:icon="@drawable/icon_grid_view"
+                        app:iconTint="?colorPrimary"
+                        android:padding="@dimen/space_xs"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/bt_sort_cards"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/bt_sort_cards"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        app:icon="@drawable/icon_sort"
+                        app:iconTint="?colorPrimary"
+                        android:padding="@dimen/space_xs"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/bt_cards_settings"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <Button
+                        android:id="@+id/bt_cards_settings"
+                        style="?attr/materialIconButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checkable="true"
+                        app:icon="@drawable/icon_more"
+                        app:iconTint="?colorPrimary"
+                        android:padding="@dimen/space_xs"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cardRecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:transitionGroup="true"
                     android:background="?colorSurfaceContainerLowest"
                     android:padding="@dimen/space_md"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root"
+                    android:transitionGroup="true"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root" />
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -160,6 +235,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone">
+
             <include
                 android:id="@+id/ly_no_card_error"
                 layout="@layout/ly_loading_screen" />
@@ -172,36 +248,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:backgroundTint="?colorSurfaceContainerLowest"
+            app:hideOnScroll="true"
             app:menu="@menu/menu_bottom_appbar_cards"
             app:navigationIcon="@drawable/icon_more"
-            app:navigationIconTint="?colorOnSurface"
-            android:backgroundTint="?colorSurfaceContainerLowest"
-            app:hideOnScroll="true"/>
+            app:navigationIconTint="?colorOnSurface" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_anchorGravity="bottom|end"
-            android:gravity="end"
             android:layout_margin="@dimen/space_lg"
-            app:layout_anchor="@id/bottomAppBar">
+            android:gravity="end"
+            android:orientation="vertical"
+            app:layout_anchor="@id/bottomAppBar"
+            app:layout_anchorGravity="bottom|end">
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/bt_add_subdeck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_xl"
                 android:text="@string/add_subdeck"
-                android:layout_marginBottom="@dimen/space_xl" />
+                android:visibility="gone" />
 
             <Button
-                android:visibility="gone"
                 android:id="@+id/bt_add_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_xl"
                 android:text="@string/add_card"
-                android:layout_marginBottom="@dimen/space_xl" />
+                android:visibility="gone" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_add_show_actions"

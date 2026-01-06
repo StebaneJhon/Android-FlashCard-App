@@ -320,4 +320,7 @@
     <string name="translate">Translate</string>
     <string name="no_definition_found">No definition found.</string>
     <string name="card_level">Level %1$s</string>
+    <string name="card_count">All: %1$d</string>
+    <string name="known_card_count">Known: %1$d</string>
+    <string name="un_known_card_count">Un known: %1$d</string>
 </resources>

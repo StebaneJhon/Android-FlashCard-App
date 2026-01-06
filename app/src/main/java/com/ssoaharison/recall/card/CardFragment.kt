@@ -208,11 +208,9 @@ class CardFragment :
 //        opener = args.opener
 
 
-        staggeredGridLayoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
-        arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -587,6 +585,7 @@ class CardFragment :
 
                         is UiState.Success -> {
 //                            deck = state.data.deck
+                            binding.cardRecyclerView.visibility = View.VISIBLE
                             populateRecyclerView(state.data.cards, state.data.deck)
 //                            bindDeckDetailsPanel(state.data.deck)
                         }
@@ -634,10 +633,13 @@ class CardFragment :
 
                         is UiState.Loading -> {
                             // TODO: On loading
-                            val b = 2
+                            binding.subdeckRecyclerView.visibility = View.GONE
+                            binding.clContainerSubdecksHeader.visibility = View.GONE
                         }
 
                         is UiState.Success -> {
+                            binding.subdeckRecyclerView.visibility = View.VISIBLE
+                            binding.clContainerSubdecksHeader.visibility = View.VISIBLE
                             populateSubdecksRecyclerView(deck = deck, subdecks = state.data)
                         }
                     }

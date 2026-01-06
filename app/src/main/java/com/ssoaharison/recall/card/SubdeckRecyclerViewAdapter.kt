@@ -9,6 +9,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.MenuRes
 import androidx.appcompat.view.menu.MenuBuilder
@@ -16,6 +17,8 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.textview.MaterialTextView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeck
@@ -56,11 +59,15 @@ class SubdeckRecyclerViewAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val deckNameTV: TextView? = view.findViewById(R.id.deckNameTV)
-        private val deckRoot: ConstraintLayout? = view.findViewById(R.id.deckRoot)
-        private val cardSum: TextView? = view.findViewById(R.id.cardsSum)
-        private val tvKnownCardSum: TextView? = view.findViewById(R.id.tv_known_cards_Sum)
-        private val tvUnKnownCardSum: TextView? = view.findViewById(R.id.tv_un_known_cards_Sum)
+        private val deckRoot: MaterialCardView? = view.findViewById(R.id.deckRoot)
+        private val vwCardSum: TextView = view.findViewById(R.id.in_cards_sum)
+        private val llCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_cards_sum)
+        private val vwKnownCardSum: TextView = view.findViewById(R.id.in_known_cards_sum)
+        private val llKnownCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_known_cards_sum)
+        private val vwUnKnownCardSum: TextView = view.findViewById(R.id.in_known_cards_sum)
+        private val llUnKnownCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_un_known_cards_Sum)
         private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
+        private val tvDeckCreationDate: TextView = view.findViewById(R.id.tv_deck_creation_date)
         private val ICON_MARGIN = 5
 
 
@@ -80,15 +87,11 @@ class SubdeckRecyclerViewAdapter(
             val deckTextColorCode: Int
 
             if (appTheme == DARK_THEME) {
-                deckSurfaceColorCode = deckColorHelper
-                    .selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
-                deckTextColorCode = deckColorHelper
-                    .selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
             } else {
-                deckSurfaceColorCode = deckColorHelper
-                    .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
-                deckTextColorCode = deckColorHelper
-                    .selectDeckOnSurfaceColor(context, deck.deckColorCode)
+                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
             }
 
             deckNameTV?.apply {
@@ -96,22 +99,41 @@ class SubdeckRecyclerViewAdapter(
                 setTextColor(deckTextColorCode)
             }
 
-            cardSum?.isVisible = deck.cardCount == 0
-            if (deck.knownCardCount!! > 0) {
-                tvKnownCardSum?.visibility = View.VISIBLE
-                tvKnownCardSum?.text = "${deck.knownCardCount}"
+            if (deck.cardCount == 0) {
+                llCardSumContainer.visibility = View.VISIBLE
+                vwCardSum.text = context.getString(R.string.card_count, 0)
             } else {
-                tvKnownCardSum?.visibility = View.GONE
+                llCardSumContainer.visibility = View.GONE
             }
-            if (deck.unKnownCardCount!! > 0) {
-                tvUnKnownCardSum?.visibility = View.VISIBLE
-                tvUnKnownCardSum?.text = "${deck.unKnownCardCount}"
+
+            if (deck.knownCardCount > 0) {
+                llKnownCardSumContainer.visibility = View.VISIBLE
+                vwKnownCardSum.text = context.getString(R.string.known_card_count, deck.knownCardCount)
+                vwKnownCardSum.backgroundTintList = context.getColorStateList(R.color.green200)
+                vwKnownCardSum.setTextColor(context.getColor(R.color.green950))
             } else {
-                tvUnKnownCardSum?.visibility = View.GONE
+                llKnownCardSumContainer.visibility = View.GONE
+            }
+            if (deck.unKnownCardCount > 0) {
+                llUnKnownCardSumContainer.visibility = View.VISIBLE
+                vwUnKnownCardSum.text = context.getString(R.string.un_known_card_count, deck.unKnownCardCount)
+                vwUnKnownCardSum.backgroundTintList = context.getColorStateList(R.color.red200)
+                vwUnKnownCardSum.setTextColor(context.getColor(R.color.red950))
+            } else {
+                llUnKnownCardSumContainer.visibility = View.GONE
+            }
+
+            if (deck.deckCreationDate != null) {
+                tvDeckCreationDate.apply {
+                    visibility = View.VISIBLE
+                    text = deck.deckCreationDate.split(" ")[0]
+                }
+            } else {
+                tvDeckCreationDate.visibility = View.GONE
             }
 
             deckRoot?.apply {
-                setBackgroundColor(deckSurfaceColorCode)
+                setCardBackgroundColor(deckSurfaceColorCode)
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
