@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLow"
     tools:openDrawer="start"
-    android:fitsSystemWindows="true"
     tools:context=".mainActivity.MainActivity">
 
 <!--    <include-->
@@ -29,8 +28,12 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:layout_constraintVertical_bias="0.5"-->
 <!--        app:navGraph="@navigation/my_nav" />-->
-
-    <include layout="@layout/content_main"/>
+    <View
+        android:id="@+id/vw_space_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/space_xxs"/>
+    <include
+        layout="@layout/content_main"/>
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"

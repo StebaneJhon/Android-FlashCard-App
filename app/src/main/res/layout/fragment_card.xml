@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
+    android:fitsSystemWindows="true"
     tools:context=".card.CardFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -123,7 +124,7 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:text="@string/tv_deck_text"
                         android:textColor="?colorPrimary"
-                        android:textSize="@dimen/text_sm"
+                        android:textSize="@dimen/text_xs"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -166,7 +167,7 @@
                         android:fontFamily="@font/montserrat_bold"
                         android:text="@string/tv_cards_text"
                         android:textColor="?colorPrimary"
-                        android:textSize="@dimen/text_sm"
+                        android:textSize="@dimen/text_xs"
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
