@@ -64,7 +64,7 @@ class SubdeckRecyclerViewAdapter(
         private val llCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_cards_sum)
         private val vwKnownCardSum: TextView = view.findViewById(R.id.in_known_cards_sum)
         private val llKnownCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_known_cards_sum)
-        private val vwUnKnownCardSum: TextView = view.findViewById(R.id.in_known_cards_sum)
+        private val vwUnKnownCardSum: TextView = view.findViewById(R.id.in_un_known_cards_Sum)
         private val llUnKnownCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_un_known_cards_Sum)
         private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
         private val tvDeckCreationDate: TextView = view.findViewById(R.id.tv_deck_creation_date)

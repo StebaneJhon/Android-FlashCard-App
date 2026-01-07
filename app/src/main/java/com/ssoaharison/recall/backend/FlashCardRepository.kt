@@ -68,7 +68,11 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun getDeckById(deckId: String): ExternalDeck {
-        return flashCardDao.getDeckById(deckId).toExternal(0, 0, 0)
+        val innerDeck = flashCardDao.getDeckById(deckId)
+        val cardCount = flashCardDao.countCardsInDeck(innerDeck.deckId)
+        val knownCardCount = flashCardDao.countKnownCardsInDeck(innerDeck.deckId)
+        val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(innerDeck.deckId)
+        return innerDeck.toExternal(cardCount, knownCardCount, unKnownCardCount)
     }
 
     @WorkerThread

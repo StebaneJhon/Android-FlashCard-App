@@ -301,6 +301,12 @@ class CardFragment :
 //            onAddNewCard()
 //        }
 
+        binding.btStartQuiz.setOnClickListener {
+            onStartQuiz(cardViewModel.getActualDeck()) { deckWithCards ->
+                lunchQuiz(deckWithCards, QUIZ)
+            }
+        }
+
         requireActivity()
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -334,7 +340,6 @@ class CardFragment :
                 if (text.isNullOrBlank() || text.isNullOrEmpty()) {
                     // TODO: Initial state
                 } else {
-                    // TODO: Show result
                     val query = "%$text%"
                     lifecycleScope.launch {
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -343,27 +348,36 @@ class CardFragment :
                             cardViewModel.foundCards.collect { state ->
                                 when (state) {
                                     is UiState.Loading -> {
-                                        // TODO: On searching
+                                        binding.inSearchResult.pidSearchCardProgress.visibility = View.VISIBLE
+                                        binding.inSearchResult.tvNoCardFound.visibility = View.GONE
+                                        binding.inSearchResult.rvCards.visibility = View.GONE
                                     }
 
                                     is UiState.Error -> {
-                                        // TODO: On not found
+                                        binding.inSearchResult.pidSearchCardProgress.visibility = View.GONE
+                                        binding.inSearchResult.tvNoCardFound.visibility = View.VISIBLE
+                                        binding.inSearchResult.rvCards.visibility = View.GONE
                                     }
 
                                     is UiState.Success -> {
-                                        val foundCards = state.data
-                                        val foundCardsRecyclerViewAdapter =
-                                            CardsRecyclerViewAdapter(
+                                        binding.inSearchResult.pidSearchCardProgress.visibility = View.GONE
+                                        binding.inSearchResult.tvNoCardFound.visibility = View.GONE
+                                        binding.inSearchResult.rvCards.visibility = View.VISIBLE
+                                        val foundCardsRecyclerViewAdapter = CardsRecyclerViewAdapter(
                                                 context = requireContext(),
                                                 appTheme = getAppTheme(),
                                                 deck = cardViewModel.getActualDeck(),
                                                 cardList = state.data,
                                                 boxLevels = cardViewModel.getBoxLevels()!!,
                                                 editCardClickListener = { selectedCard ->
-                                                    // TODO: On edit card
+                                                    lifecycleScope.launch {
+                                                        cardViewModel.getDeckById(selectedCard.card.deckOwnerId) { deckOwner ->
+                                                            onEditCard(deckOwner, selectedCard)
+                                                        }
+                                                    }
                                                 },
                                                 deleteCardClickListener = { card ->
-                                                    //TODO: On delete card
+                                                    cardViewModel.deleteCard(card, requireContext())
                                                 },
                                                 onReadContent = { contentText ->
                                                     // TODO: On read content
@@ -372,7 +386,39 @@ class CardFragment :
                                                     //TODO: On read definition
                                                 },
                                                 onPlayAudio = { audio, view ->
-                                                    // TODO: On play audio
+                                                    if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
+                                                        lifecycleScope.launch {
+                                                            lastPlayedAudioViw?.findViewById<MaterialButton>(
+                                                                R.id.bt_play
+                                                            )
+                                                                ?.setIconResource(R.drawable.icon_play)
+                                                            lastPlayedAudioViw?.findViewById<LinearProgressIndicator>(
+                                                                R.id.lpi_audio_progression
+                                                            )?.progress =
+                                                                0
+                                                            lastPlayedAudioViw = null
+                                                            lastPlayedAudioFile = null
+                                                            player.stop()
+                                                            delay(100L)
+                                                            val newProgressIndicator: LinearProgressIndicator =
+                                                                view.findViewById(R.id.lpi_audio_progression)
+                                                            playPauseAudio(
+                                                                view,
+                                                                newProgressIndicator,
+                                                                audio
+                                                            )
+                                                            lastPlayedAudioFile = audio
+                                                            lastPlayedAudioViw = view
+                                                        }
+                                                    } else {
+                                                        val newProgressIndicator: LinearProgressIndicator =
+                                                            view.findViewById(R.id.lpi_audio_progression)
+                                                        playPauseAudio(
+                                                            view,
+                                                            newProgressIndicator,
+                                                            audio
+                                                        )
+                                                    }
                                                 }
                                             )
                                         binding.inSearchResult.rvCards.apply {
@@ -395,30 +441,43 @@ class CardFragment :
                             cardViewModel.foundDecks.collect { state ->
                                 when (state) {
                                     is UiState.Loading -> {
-                                        // TODO: On searching
+                                        binding.inSearchResult.pidSearchDeckProgress.visibility = View.VISIBLE
+                                        binding.inSearchResult.tvNoDeckFound.visibility = View.GONE
+                                        binding.inSearchResult.rvDeck.visibility = View.GONE
                                     }
 
                                     is UiState.Error -> {
-                                        // TODO: On not found
+                                        binding.inSearchResult.pidSearchDeckProgress.visibility = View.GONE
+                                        binding.inSearchResult.tvNoDeckFound.visibility = View.VISIBLE
+                                        binding.inSearchResult.rvDeck.visibility = View.GONE
                                     }
 
                                     is UiState.Success -> {
-                                        val foundCards = state.data
-                                        val foundDecksRecyclerViewAdapter = SubdeckRecyclerViewAdapter(
+                                        binding.inSearchResult.pidSearchDeckProgress.visibility = View.GONE
+                                        binding.inSearchResult.tvNoDeckFound.visibility = View.GONE
+                                        binding.inSearchResult.rvDeck.visibility = View.VISIBLE
+                                        val foundDecksRecyclerViewAdapter =
+                                            SubdeckRecyclerViewAdapter(
                                                 listOfDecks = state.data,
                                                 context = requireContext(),
                                                 appTheme = "WHITE THEM",
                                                 editDeckClickListener = { deck ->
-                                                    //TODO: Edit deck
+                                                    lifecycleScope.launch {
+                                                        cardViewModel.getDeckById(deck.deckId) { parentDeck ->
+                                                            onEditDeck(parentDeck, deck)
+                                                        }
+                                                    }
                                                 },
                                                 deleteDeckClickListener = { deck ->
-                                                    //TODO: Delete deck
+                                                    onDeleteSubdeck(deck)
                                                 },
                                                 startQuizListener = { deck ->
                                                     //TODO: Start quiz
                                                 },
                                                 deckClickListener = { deck ->
-                                                    //TODO: To deck
+                                                    deckPathViewModel.setCurrentDeck(deck)
+                                                    switchTheme()
+                                                    binding.searchView.hide()
                                                 }
                                             )
                                         binding.inSearchResult.rvDeck.apply {
@@ -1098,6 +1157,7 @@ class CardFragment :
             { selectedCard ->
                 cardViewModel.deleteCard(selectedCard, appContext!!)
             },
+            // TODO: Fix on read text
             { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
@@ -1110,6 +1170,7 @@ class CardFragment :
                     )
                 }
             },
+            // TODO: Fix on read text
             { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
@@ -1122,7 +1183,6 @@ class CardFragment :
                     )
                 }
             }, { audio, view ->
-                // TODO: Check if audio is playing
                 if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
                     lifecycleScope.launch {
                         lastPlayedAudioViw?.findViewById<MaterialButton>(R.id.bt_play)

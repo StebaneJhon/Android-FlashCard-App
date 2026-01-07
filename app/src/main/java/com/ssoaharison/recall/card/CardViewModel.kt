@@ -215,6 +215,10 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateDeck(deck)
     }
 
+    suspend fun getDeckById(deckId: String, deck: (ExternalDeck) -> Unit) {
+        deck(repository.getDeckById(deckId))
+    }
+
 }
 
 class CardViewModelFactory(private val repository: FlashCardRepository) : ViewModelProvider.Factory {
