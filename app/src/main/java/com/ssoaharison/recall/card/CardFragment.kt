@@ -331,11 +331,11 @@ class CardFragment :
         binding.searchView
             .editText
             .addTextChangedListener { text ->
-                val query = "%$text%"
-                if (query.isBlank() || query.isEmpty()) {
+                if (text.isNullOrBlank() || text.isNullOrEmpty()) {
                     // TODO: Initial state
                 } else {
                     // TODO: Show result
+                    val query = "%$text%"
                     lifecycleScope.launch {
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
                             delay(500)
