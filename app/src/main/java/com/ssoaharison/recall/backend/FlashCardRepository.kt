@@ -2,6 +2,7 @@ package com.ssoaharison.recall.backend
 
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.provider.ContactsContract
 import androidx.annotation.WorkerThread
 import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
@@ -133,14 +134,14 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //    }
 
     @WorkerThread
-    fun searchDeck(searchQuery: String): Flow<Set<ExternalDeck>> {
+    fun searchDeck(searchQuery: String): Flow<List<ExternalDeck>> {
         return flashCardDao.searchDeck(searchQuery).map { decks ->
             decks.map { deck ->
                 val cardCount = flashCardDao.countCardsInDeck(deck.deckId)
                 val knownCardCount = flashCardDao.countKnownCardsInDeck(deck.deckId)
                 val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(deck.deckId)
                 deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
-            }.toSet()
+            }
         }
     }
 
@@ -273,15 +274,52 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //    }
 
     @WorkerThread
-    fun searchCard(searchQuery: String, deckId: String): Flow<List<ExternalCardWithContentAndDefinitions>> {
-        return flashCardDao.searchCard(searchQuery, deckId).map { cardList ->
-            //TODO: To be updated to return ExternalCardWithContentAndDefinitions
+    fun searchCard(searchQuery: String, context: Context): Flow<List<ExternalCardWithContentAndDefinitions>> {
+        return flashCardDao.searchCard(searchQuery).map { cardList ->
             cardList.map { card ->
+                var photoModelContent: PhotoModel? = null
+                card.contentWithDefinitions.content.contentImageName?.let {
+                    val filePhotoContent = File(context.filesDir, card.contentWithDefinitions.content.contentImageName)
+                    val bytesPhotoContent = filePhotoContent.readBytes()
+                    val bmpPhotoContent = BitmapFactory.decodeByteArray(bytesPhotoContent, 0, bytesPhotoContent.size)
+                    photoModelContent = PhotoModel(filePhotoContent.name, bmpPhotoContent)
+                }
+                var audioModelContent: AudioModel? = null
+                card.contentWithDefinitions.content.contentAudioName?.let { audioName ->
+                    audioModelContent = AudioModel(audioName, card.contentWithDefinitions.content.contentAudioDuration!!)
+                }
+                val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, audioModelContent)
+
+                val externalDefinitions = card.contentWithDefinitions.definitions.map { definition ->
+                    var photoModelDefinition: PhotoModel? = null
+                    definition.definitionImageName?.let {
+                        val filePhotoDefinition = File(context.filesDir, definition.definitionImageName)
+                        val bytesPhotoDefinition = filePhotoDefinition.readBytes()
+                        val bmpPhotoDefinition = BitmapFactory.decodeByteArray(bytesPhotoDefinition, 0, bytesPhotoDefinition.size)
+                        photoModelDefinition = PhotoModel(filePhotoDefinition.name, bmpPhotoDefinition)
+                    }
+                    var audioModelDefinition: AudioModel? = null
+                    definition.definitionAudioName?.let { audioName ->
+                        audioModelDefinition = AudioModel(audioName, definition.definitionAudioDuration!!)
+                    }
+                    definition.toExternal(photoModelDefinition, audioModelDefinition)
+                }
+
+                val externalCard = card.card.toExternal()
+
+//                ExternalCardWithContentAndDefinitions(
+//                    card = card.card.toExternal(),
+//                    contentWithDefinitions = ExternalCardContentWithDefinitions(
+//                        content = card.contentWithDefinitions.content.toExternal(null, null),
+//                        definitions = card.contentWithDefinitions.definitions.map { definition -> definition.toExternal(null, null) }
+//                    )
+//                )
+
                 ExternalCardWithContentAndDefinitions(
-                    card = card.card.toExternal(),
+                    card = externalCard,
                     contentWithDefinitions = ExternalCardContentWithDefinitions(
-                        content = card.contentWithDefinitions.content.toExternal(null, null),
-                        definitions = card.contentWithDefinitions.definitions.map { definition -> definition.toExternal(null, null) }
+                        content = externalContent,
+                        definitions = externalDefinitions
                     )
                 )
 

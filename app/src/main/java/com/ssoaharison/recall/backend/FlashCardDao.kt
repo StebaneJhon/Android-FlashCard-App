@@ -111,9 +111,9 @@ interface FlashCardDao {
         "SELECT * FROM card " +
                 "JOIN cardContent ON cardContent.cardOwnerId = card.cardId " +
                 "JOIN cardDefinition ON cardDefinition.cardOwnerId = card.cardId " +
-                "WHERE cardContent.contentText LIKE :searchQuery AND card.deckOwnerId = :deckId OR cardDefinition.definitionText LIKE :searchQuery AND card.deckOwnerId = :deckId OR card.cardType LIKE :searchQuery AND card.deckOwnerId = :deckId"
+                "WHERE cardContent.contentText LIKE :searchQuery OR cardDefinition.definitionText LIKE :searchQuery OR card.cardType LIKE :searchQuery"
     )
-    fun searchCard(searchQuery: String, deckId: String): Flow<List<CardWithContentAndDefinitions>>
+    fun searchCard(searchQuery: String): Flow<List<CardWithContentAndDefinitions>>
 
     @Query("SELECT * FROM card WHERE deckOwnerId = :deckId")
     suspend fun getCards(deckId: String): List<Card>

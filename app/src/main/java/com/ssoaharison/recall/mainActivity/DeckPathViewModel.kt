@@ -24,7 +24,6 @@ class DeckPathViewModel(private val repository: FlashCardRepository): ViewModel(
             repository.getMainDeck()?.let { mainDeck ->
                 _currentDeck.update {
                     mainDeck
-
                 }
             }
         }

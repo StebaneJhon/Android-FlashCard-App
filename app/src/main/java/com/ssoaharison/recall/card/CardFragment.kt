@@ -35,6 +35,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -47,6 +48,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.room.util.query
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -85,6 +87,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import java.io.File
 import java.util.Locale
 
@@ -221,19 +224,20 @@ class CardFragment :
 //        deck = args.selectedDeck
 //        opener = args.opener
 
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
-        arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
-                deckPathViewModel.currentDeck.collect { deck ->
-                    if (deck == null) {
-                        // TODO: On No Data
-                        val a  = 1
-                    } else {
-                        displayData(deck)
-                    }
-
+            deckPathViewModel.currentDeck.collect { deck ->
+                if (deck == null) {
+                    // TODO: On No Data
+                    val a = 1
+                } else {
+                    displayData(deck)
+                }
             }
         }
 
@@ -324,6 +328,111 @@ class CardFragment :
             onAction(!binding.btAddSubdeck.isVisible)
         }
 
+        binding.searchView
+            .editText
+            .addTextChangedListener { text ->
+                val query = "%$text%"
+                if (query.isBlank() || query.isEmpty()) {
+                    // TODO: Initial state
+                } else {
+                    // TODO: Show result
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            delay(500)
+                            cardViewModel.searchCard(query, requireContext())
+                            cardViewModel.foundCards.collect { state ->
+                                when (state) {
+                                    is UiState.Loading -> {
+                                        // TODO: On searching
+                                    }
+
+                                    is UiState.Error -> {
+                                        // TODO: On not found
+                                    }
+
+                                    is UiState.Success -> {
+                                        val foundCards = state.data
+                                        val foundCardsRecyclerViewAdapter =
+                                            CardsRecyclerViewAdapter(
+                                                context = requireContext(),
+                                                appTheme = getAppTheme(),
+                                                deck = cardViewModel.getActualDeck(),
+                                                cardList = state.data,
+                                                boxLevels = cardViewModel.getBoxLevels()!!,
+                                                editCardClickListener = { selectedCard ->
+                                                    // TODO: On edit card
+                                                },
+                                                deleteCardClickListener = { card ->
+                                                    //TODO: On delete card
+                                                },
+                                                onReadContent = { contentText ->
+                                                    // TODO: On read content
+                                                },
+                                                onReadDefinition = { definitionText ->
+                                                    //TODO: On read definition
+                                                },
+                                                onPlayAudio = { audio, view ->
+                                                    // TODO: On play audio
+                                                }
+                                            )
+                                        binding.inSearchResult.rvCards.apply {
+                                            adapter = foundCardsRecyclerViewAdapter
+                                            setHasFixedSize(true)
+                                            layoutManager = StaggeredGridLayoutManager(
+                                                2,
+                                                StaggeredGridLayoutManager.VERTICAL
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            delay(500)
+                            cardViewModel.searchDeck(query)
+                            cardViewModel.foundDecks.collect { state ->
+                                when (state) {
+                                    is UiState.Loading -> {
+                                        // TODO: On searching
+                                    }
+
+                                    is UiState.Error -> {
+                                        // TODO: On not found
+                                    }
+
+                                    is UiState.Success -> {
+                                        val foundCards = state.data
+                                        val foundDecksRecyclerViewAdapter = SubdeckRecyclerViewAdapter(
+                                                listOfDecks = state.data,
+                                                context = requireContext(),
+                                                appTheme = "WHITE THEM",
+                                                editDeckClickListener = { deck ->
+                                                    //TODO: Edit deck
+                                                },
+                                                deleteDeckClickListener = { deck ->
+                                                    //TODO: Delete deck
+                                                },
+                                                startQuizListener = { deck ->
+                                                    //TODO: Start quiz
+                                                },
+                                                deckClickListener = { deck ->
+                                                    //TODO: To deck
+                                                }
+                                            )
+                                        binding.inSearchResult.rvDeck.apply {
+                                            adapter = foundDecksRecyclerViewAdapter
+                                            setHasFixedSize(true)
+                                            layoutManager = LinearLayoutManager(requireContext())
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
     }
 
     private fun onNavigateBack() {
@@ -362,15 +471,17 @@ class CardFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckPath(deck) { path ->
                     // TODO: Populate deck path
-                    recyclerViewAdapterDeckPath = RecyclerViewAdapterDeckPath(path) { pathTogo ->
+                    recyclerViewAdapterDeckPath =
+                        RecyclerViewAdapterDeckPath(path) { pathTogo ->
 //                        displayData(pathTogo)
-                        deckPathViewModel.setCurrentDeck(pathTogo)
-                        switchTheme()
-                    }
+                            deckPathViewModel.setCurrentDeck(pathTogo)
+                            switchTheme()
+                        }
                     binding.rvDeckPath.apply {
                         adapter = recyclerViewAdapterDeckPath
                         setHasFixedSize(true)
-                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                        layoutManager =
+                            LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
                     }
                 }
             }
@@ -707,7 +818,10 @@ class CardFragment :
             appTheme = getAppTheme()
         )
         newDeckDialog.show(childFragmentManager, "Edit Deck Dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { requestQuey, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_CODE,
+            this
+        ) { requestQuey, bundle ->
             val result = bundle.parcelable<Deck>(NewDeckDialog.EDIT_DECK_BUNDLE_KEY)
             result?.let {
                 cardViewModel.updateDeck(it)
@@ -733,7 +847,7 @@ class CardFragment :
     }
 
     private fun onDeleteSubdeck(deck: ExternalDeck) {
-        if (deck.cardCount!! > 0) {
+        if (deck.cardCount > 0) {
             appContext?.let {
                 MaterialAlertDialogBuilder(it)
                     .setTitle(getString(R.string.dialog_title_delete_deck))
@@ -764,7 +878,8 @@ class CardFragment :
             }
         } else {
             cardViewModel.deleteSubdeck(deck)
-            Toast.makeText(requireContext(), "Delete ${deck.deckName}", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Delete ${deck.deckName}", Toast.LENGTH_LONG)
+                .show()
         }
     }
 
@@ -807,7 +922,10 @@ class CardFragment :
 
                         is UiState.Error -> {
                             binding.cardsActivityProgressBar.isVisible = false
-                            onStartingQuizError(deck, getString(R.string.error_message_empty_deck))
+                            onStartingQuizError(
+                                deck,
+                                getString(R.string.error_message_empty_deck)
+                            )
                             this@launch.cancel()
                             this.cancel()
                         }
@@ -1015,13 +1133,15 @@ class CardFragment :
                         lastPlayedAudioFile = null
                         player.stop()
                         delay(100L)
-                        val newProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.lpi_audio_progression)
+                        val newProgressIndicator: LinearProgressIndicator =
+                            view.findViewById(R.id.lpi_audio_progression)
                         playPauseAudio(view, newProgressIndicator, audio)
                         lastPlayedAudioFile = audio
                         lastPlayedAudioViw = view
                     }
                 } else {
-                    val newProgressIndicator: LinearProgressIndicator = view.findViewById(R.id.lpi_audio_progression)
+                    val newProgressIndicator: LinearProgressIndicator =
+                        view.findViewById(R.id.lpi_audio_progression)
                     playPauseAudio(view, newProgressIndicator, audio)
                 }
             })
@@ -1134,7 +1254,10 @@ class CardFragment :
         deck: ExternalDeck,
         errorText: String
     ) {
-        MaterialAlertDialogBuilder(requireContext(), R.style.ThemeOverlay_App_MaterialAlertDialog)
+        MaterialAlertDialogBuilder(
+            requireContext(),
+            R.style.ThemeOverlay_App_MaterialAlertDialog
+        )
             .setTitle(getString(R.string.error_title_starting_quiz))
             .setMessage(errorText)
             .setNegativeButton(R.string.bt_cancel) { dialog, _ ->

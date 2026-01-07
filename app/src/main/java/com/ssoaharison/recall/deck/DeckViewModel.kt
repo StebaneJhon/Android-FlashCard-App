@@ -48,7 +48,7 @@ class DeckViewModel(
         }
     }
 
-    fun searchDeck(searchQuery: String): LiveData<Set<ExternalDeck>> {
+    fun searchDeck(searchQuery: String): LiveData<List<ExternalDeck>> {
         return repository.searchDeck(searchQuery).asLiveData()
     }
 

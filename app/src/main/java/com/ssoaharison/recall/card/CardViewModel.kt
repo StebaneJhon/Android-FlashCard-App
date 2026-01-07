@@ -123,9 +123,49 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.deleteCardWithContentAndDefinitions(card, context)
     }
 
-    fun searchCard(searchQuery: String, deckId: String): LiveData<List<ExternalCardWithContentAndDefinitions>> {
-        return repository.searchCard(searchQuery, deckId).asLiveData()
+    private var _foundCards = MutableStateFlow<UiState<List<ExternalCardWithContentAndDefinitions>>>(UiState.Loading)
+    val foundCards: StateFlow<UiState<List<ExternalCardWithContentAndDefinitions>>> = _foundCards.asStateFlow()
+    var searchCardJob: Job? = null
+    fun searchCard(searchQuery: String, context: Context){
+        searchCardJob?.cancel()
+        _foundCards.value = UiState.Loading
+        searchCardJob = viewModelScope.launch {
+            try {
+                repository.searchCard(searchQuery, context).collect {
+                    if (it.isEmpty()) {
+                        _foundCards.value = UiState.Error("No cards found")
+                    } else {
+                        _foundCards.value = UiState.Success(it)
+                    }
+                }
+            } catch (e: okio.IOException) {
+                _foundCards.value = UiState.Error(e.message.toString())
+            }
+        }
     }
+
+    private var _foundDecks = MutableStateFlow<UiState<List<ExternalDeck>>>(UiState.Loading)
+    val foundDecks: StateFlow<UiState<List<ExternalDeck>>> = _foundDecks.asStateFlow()
+    var searchDeckJob: Job? = null
+    fun searchDeck(searchQuery: String) {
+        searchDeckJob?.cancel()
+        _foundDecks.value = UiState.Loading
+        searchDeckJob = viewModelScope.launch {
+            try {
+                repository.searchDeck(searchQuery).collect {
+                    if (it.isEmpty()) {
+                        _foundDecks.value = UiState.Error("No decks found")
+                    } else {
+                        _foundDecks.value = UiState.Success(it)
+                    }
+                }
+            } catch (e: okio.IOException) {
+                _foundDecks.value = UiState.Error(e.message.toString())
+            }
+        }
+    }
+
+
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
         repository.updateCardContentLanguage(cardId, language)
