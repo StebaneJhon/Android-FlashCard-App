@@ -6,14 +6,10 @@ import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.isCorrect
 import com.ssoaharison.recall.card.isCorrectRevers
-import com.ssoaharison.recall.card.now
 import com.ssoaharison.recall.card.today
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
-import kotlinx.coroutines.delay
 import java.util.UUID
 
 fun cardToText(card: ExternalCardWithContentAndDefinitions, separator: String): String {

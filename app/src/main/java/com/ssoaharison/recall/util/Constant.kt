@@ -135,6 +135,13 @@ object DeckRef {
     const val DECK_SORT_BY_CREATION_DATE = "Deck sort by creation date"
 }
 
+object CardSortOptions {
+    const val SORT_PREF = "sort_pref"
+    const val SORT_CARD_BY_CREATION_DATE = "Sort card by creation date"
+    const val SORT_CARD_BY_LEVEL = "Sort card by level"
+    const val SORT_CARD_ALPHABETICALLY = "Sort card alphabetically"
+}
+
 object CardLevel {
     const val L1 = "L1"
     const val L2 = "L2"

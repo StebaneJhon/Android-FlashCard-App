@@ -17,6 +17,9 @@ import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.deck.ColorModel
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_ALPHABETICALLY
+import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_CREATION_DATE
+import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_LEVEL
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -221,6 +224,25 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     suspend fun getDeckById(deckId: String, deck: (ExternalDeck) -> Unit) {
         deck(repository.getDeckById(deckId))
+    }
+
+    fun sortCardsAlphabetically(cards: List<ExternalCardWithContentAndDefinitions>): List<ExternalCardWithContentAndDefinitions> {
+        return cards.sortedBy { it.contentWithDefinitions.content.contentText }
+    }
+
+    fun sortCardsByCreationDate(cards: List<ExternalCardWithContentAndDefinitions>) = cards
+
+    fun sortCardsByLevel(cards: List<ExternalCardWithContentAndDefinitions>): List<ExternalCardWithContentAndDefinitions> {
+        return cards.sortedBy { it.card.cardLevel }
+    }
+
+    fun applyCardsSortPref(sortPref: String, cards: List<ExternalCardWithContentAndDefinitions>): List<ExternalCardWithContentAndDefinitions> {
+        return when (sortPref) {
+            SORT_CARD_ALPHABETICALLY -> sortCardsAlphabetically(cards)
+            SORT_CARD_BY_CREATION_DATE -> sortCardsByCreationDate(cards)
+            SORT_CARD_BY_LEVEL -> sortCardsByLevel(cards)
+            else -> cards
+        }
     }
 
 }

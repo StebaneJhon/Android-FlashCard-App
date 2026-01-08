@@ -213,8 +213,7 @@ class DeckFragment :
         binding.deckRecycleView.visibility = View.VISIBLE
         binding.onNoDeckTextError.visibility = View.GONE
         binding.tvNoDeckFound.visibility = View.GONE
-        val sortedListOfDeck =
-            sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
+        val sortedListOfDeck = sortDeckBy(deckSharedPref?.getString("sort", DECK_SORT_BY_CREATION_DATE)!!, listOfDecks)
         if (appContext != null) {
             recyclerViewAdapter = DecksRecyclerViewAdapter(sortedListOfDeck, appContext!!, appThemeName, {
                 onEditDeck(it)

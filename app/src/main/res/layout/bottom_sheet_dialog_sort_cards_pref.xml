@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:backgroundTint="?colorSurfaceContainerLowest">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/sort_cards"
+        android:textSize="@dimen/text_base"
+        android:fontFamily="@font/open_sans_bold"
+        android:textColor="?colorOnSurface"
+        android:layout_marginVertical="@dimen/space_sm"
+        android:layout_marginHorizontal="@dimen/space_lg" />
+
+    <RadioGroup
+        android:id="@+id/rg_card_sort_pref"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/rb_card_sort_by_creation_date"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/sort_by_creation_date"
+            android:textColor="?colorOnSurface"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginBottom="@dimen/space_sm"/>
+
+        <RadioButton
+            android:id="@+id/rb_card_sort_by_card_level"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/sort_by_card_level"
+            android:textColor="?colorOnSurface"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginBottom="@dimen/space_sm"/>
+
+        <RadioButton
+            android:id="@+id/rb_card_sort_alphabetically"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/sort_alphabetically"
+            android:textColor="?colorOnSurface"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginBottom="@dimen/space_sm"/>
+
+    </RadioGroup>
+
+</LinearLayout>

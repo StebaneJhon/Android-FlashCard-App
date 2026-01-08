@@ -80,6 +80,8 @@ import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.mainActivity.DeckPathViewModel
 import com.ssoaharison.recall.mainActivity.DeckPathViewModelFactory
+import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_CREATION_DATE
+import com.ssoaharison.recall.util.CardSortOptions.SORT_PREF
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemePicker
@@ -154,6 +156,8 @@ class CardFragment :
 
     private lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
     private lateinit var linearLayoutManager: LinearLayoutManager
+
+    private lateinit var sortCardsBottomSheetDialog: SortCardsBottomSheetDialog
 
     companion object {
         const val TAG = "CardFragment"
@@ -508,6 +512,20 @@ class CardFragment :
             }
         }
 
+        binding.btSortCards.setOnClickListener {
+            sortCardsBottomSheetDialog = SortCardsBottomSheetDialog.newInstance(getSortPref())
+            sortCardsBottomSheetDialog.show(childFragmentManager, "Sort Cards Bottom Sheet")
+            childFragmentManager.setFragmentResultListener(
+                SortCardsBottomSheetDialog.SORT_CARD_PREF_REQUEST_CODE,
+                this
+            ) {_, bundle ->
+                val sortPref = bundle.getString(SortCardsBottomSheetDialog.SORT_CARD_PREF_BUNDLE_KEY)
+                sortPref?.let { sort ->
+                    changeCardSortPref(sort)
+                    displayAllCards(cardViewModel.getActualDeck().deckId)
+                }
+            }
+        }
 
     }
 
@@ -787,7 +805,8 @@ class CardFragment :
                         is UiState.Success -> {
 //                            deck = state.data.deck
                             binding.cardRecyclerView.visibility = View.VISIBLE
-                            populateRecyclerView(state.data.cards, state.data.deck)
+                            val sortedCards = cardViewModel.applyCardsSortPref(getSortPref(), state.data.cards)
+                            populateRecyclerView(sortedCards, state.data.deck)
 //                            bindDeckDetailsPanel(state.data.deck)
 //                            deckPathViewModel.setCurrentDeck(state.data.deck)
                         }
@@ -1152,6 +1171,7 @@ class CardFragment :
         binding.onNoCardTextError.isVisible = false
         binding.tvNoCardFound.isVisible = false
         binding.cardRecyclerView.isVisible = true
+
         recyclerViewAdapter = CardsRecyclerViewAdapter(
             appContext!!,
             appTheme,
@@ -1629,15 +1649,27 @@ class CardFragment :
 //    }
 
     private fun getLayoutManager(): String {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
         return sharedPreferences.getString(LAYOUT_MANAGER, STAGGERED_GRID_LAYOUT_MANAGER)
             ?: STAGGERED_GRID_LAYOUT_MANAGER
     }
 
     private fun changeCardLayoutManager(which: String) {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString(LAYOUT_MANAGER, which)
+        editor.apply()
+    }
+
+    private fun getSortPref(): String {
+        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(SORT_PREF, SORT_CARD_BY_CREATION_DATE) ?: SORT_CARD_BY_CREATION_DATE
+    }
+
+    private fun changeCardSortPref(sortPref: String) {
+        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString(SORT_PREF, sortPref)
         editor.apply()
     }
 
