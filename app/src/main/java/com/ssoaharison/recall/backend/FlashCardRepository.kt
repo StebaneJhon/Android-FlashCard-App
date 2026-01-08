@@ -346,15 +346,26 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //    }
 
     @WorkerThread
-    suspend fun getCards(deckId: String): List<ExternalCard?> {
+    suspend fun getCards(deckId: String): List<ExternalCardWithContentAndDefinitions?> {
         val cards = flashCardDao.getCards(deckId)
         return cards.map { card ->
-            card.cardId.let { cardId ->
-                cardId.let { id ->
-                    //TODO: To be updated to return ExternalCardWithContentAndDefinitions
-                    card.toExternal()
-                }
+            val externalCardContent = card.contentWithDefinitions.content.toExternal(null, null)
+            val externalCardDefinitions = card.contentWithDefinitions.definitions.map { definition ->
+                definition.toExternal(null, null)
             }
+            ExternalCardWithContentAndDefinitions(
+                card = card.card.toExternal(),
+                contentWithDefinitions = ExternalCardContentWithDefinitions(
+                    content = externalCardContent,
+                    definitions = externalCardDefinitions
+                )
+            )
+//            card.cardId.let { cardId ->
+//                cardId.let { id ->
+//                    //TODO: To be updated to return ExternalCardWithContentAndDefinitions
+//                    card.toExternal()
+//                }
+//            }
         }
     }
 

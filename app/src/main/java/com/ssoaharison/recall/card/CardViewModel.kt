@@ -30,6 +30,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     private var _deckWithAllCards = MutableStateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>>(UiState.Loading)
     val deckWithAllCards: StateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>> = _deckWithAllCards.asStateFlow()
     private lateinit var actualDeck: ExternalDeck
+    private lateinit var actualDeckSubdecks: List<ExternalDeck>
     private var fetchJob: Job? = null
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
 
@@ -66,6 +67,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
                     if (it.isEmpty()) {
                         _subdecks.value = UiState.Error("No subdeck found")
                     } else {
+                        actualDeckSubdecks = it
                         _subdecks.value = UiState.Success(it)
                     }
                 }
@@ -102,6 +104,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     }
 
     fun getActualDeck() = actualDeck
+    fun getActualDeckSubdecks() = actualDeckSubdecks
+
 
     suspend fun getMainDeck() = repository.getMainDeck()
 

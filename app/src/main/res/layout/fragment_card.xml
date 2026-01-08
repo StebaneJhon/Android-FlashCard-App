@@ -128,21 +128,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_view_mode"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checkable="true"
-                    app:icon="@drawable/icon_grid_view"
+                    app:icon="@drawable/icon_dashboard"
                     app:iconTint="?colorPrimary"
                     android:paddingHorizontal="@dimen/space_xs"
-                    android:paddingVertical="@dimen/space_md"
+                    android:paddingBottom="@dimen/space_md"
+                    android:paddingTop="@dimen/space_xs"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bt_sort_cards"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_sort_cards"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -151,12 +152,13 @@
                     app:icon="@drawable/icon_sort"
                     app:iconTint="?colorPrimary"
                     android:paddingHorizontal="@dimen/space_xs"
-                    android:paddingVertical="@dimen/space_md"
+                    android:paddingBottom="@dimen/space_md"
+                    android:paddingTop="@dimen/space_xs"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bt_cards_settings"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_cards_settings"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -165,7 +167,8 @@
                     app:icon="@drawable/icon_more"
                     app:iconTint="?colorPrimary"
                     android:paddingHorizontal="@dimen/space_xs"
-                    android:paddingVertical="@dimen/space_md"
+                    android:paddingBottom="@dimen/space_md"
+                    android:paddingTop="@dimen/space_xs"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

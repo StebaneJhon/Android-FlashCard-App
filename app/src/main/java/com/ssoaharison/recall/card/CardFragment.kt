@@ -27,6 +27,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.appcompat.widget.SearchView
@@ -82,6 +83,7 @@ import com.ssoaharison.recall.mainActivity.DeckPathViewModelFactory
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemePicker
+import com.ssoaharison.recall.util.cardToText
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -89,6 +91,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.internal.wait
 import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.Locale
 
 
@@ -133,12 +138,13 @@ class CardFragment :
     }
 
 
-    private var createFile =
-        registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
-            if (uri != null && deckExportModel != null) {
-                cardsToTextToUri(uri, deckExportModel?.separator!!)
-            }
-        }
+//    private var createFile = registerForActivityResult(
+//        ActivityResultContracts.CreateDocument("text/plain")
+//    ) { uri ->
+//        if (uri != null && deckExportModel != null) {
+//            cardsToTextToUri(cardViewModel.getActualDeck().deckId, uri, deckExportModel?.separator!!)
+//        }
+//    }
 
 //    @SuppressLint("RestrictedApi")
 //    private var item: ActionMenuItemView? = null
@@ -224,17 +230,14 @@ class CardFragment :
 //        deck = args.selectedDeck
 //        opener = args.opener
 
-        staggeredGridLayoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
-        arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
             deckPathViewModel.currentDeck.collect { deck ->
                 if (deck == null) {
                     // TODO: On No Data
-                    val a = 1
                 } else {
                     displayData(deck)
                 }
@@ -492,6 +495,20 @@ class CardFragment :
                     }
                 }
             }
+
+        binding.btViewMode.setOnClickListener {
+            if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
+                changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+                binding.cardRecyclerView.layoutManager = linearLayoutManager
+                binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_view_agenda)
+            } else {
+                changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+                binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
+                binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_dashboard)
+            }
+        }
+
+
     }
 
     private fun onNavigateBack() {
@@ -524,29 +541,22 @@ class CardFragment :
 //    }
 
     private fun displayData(deck: ExternalDeck) {
-
-        // TODO: Switch theme
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckPath(deck) { path ->
-                    // TODO: Populate deck path
                     recyclerViewAdapterDeckPath =
                         RecyclerViewAdapterDeckPath(path) { pathTogo ->
-//                        displayData(pathTogo)
                             deckPathViewModel.setCurrentDeck(pathTogo)
                             switchTheme()
                         }
                     binding.rvDeckPath.apply {
                         adapter = recyclerViewAdapterDeckPath
                         setHasFixedSize(true)
-                        layoutManager =
-                            LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
                     }
                 }
             }
         }
-
-//        deckPathViewModel.setCurrentDeck(deck)
 
         displayAllCards(deck.deckId)
         displaySubdecks(deck)
@@ -576,11 +586,9 @@ class CardFragment :
             }
             setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.search_deck_menu -> {
-                        SearchDialog(deck).show(
-                            childFragmentManager,
-                            "Search dialog"
-                        )
+                    R.id.mb_export_deck -> {
+                        showExportDeckDialog()
+//                        true")
                         true
                     }
 
@@ -634,7 +642,8 @@ class CardFragment :
 
     }
 
-//    private fun showExportDeckDialog() {
+    private fun showExportDeckDialog() {
+        Toast.makeText(requireContext(), "Export function in development", Toast.LENGTH_LONG).show()
 //        val exportDeckDialog = ExportDeckDialog()
 //        exportDeckDialog.show(childFragmentManager, "Export deck dialog")
 //        childFragmentManager.setFragmentResultListener(
@@ -642,9 +651,9 @@ class CardFragment :
 //            this
 //        ) { _, bundle ->
 //            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
-//            createFile.launch("${deck.deckName}${deckExportModel?.format}")
+//            createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
 //        }
-//    }
+    }
 
 //    private fun showDeckDetails() {
 //        binding.tilDeckName.isVisible = !binding.tilDeckName.isVisible
@@ -820,12 +829,10 @@ class CardFragment :
                 cardViewModel.subdecks.collect { state ->
                     when (state) {
                         is UiState.Error -> {
-                            // TODO: On no deck
                             binding.subdeckRecyclerView.isVisible = false
                         }
 
                         is UiState.Loading -> {
-                            // TODO: On loading
                             binding.subdeckRecyclerView.visibility = View.GONE
                             binding.clContainerSubdecksHeader.visibility = View.GONE
                         }
@@ -1209,14 +1216,14 @@ class CardFragment :
         binding.cardRecyclerView.apply {
             adapter = recyclerViewAdapter
             setHasFixedSize(true)
-            layoutManager =
-                if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+            layoutManager = if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
 //                    item?.setIcon(
 //                        ContextCompat.getDrawable(
 //                            requireContext(),
 //                            R.drawable.icon_grid_view
 //                        )
 //                    )
+                    binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_dashboard)
                     staggeredGridLayoutManager
                 } else {
 //                    item?.setIcon(
@@ -1225,6 +1232,7 @@ class CardFragment :
 //                            R.drawable.icon_view_agenda
 //                        )
 //                    )
+                    binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_view_agenda)
                     linearLayoutManager
                 }
         }
@@ -1621,27 +1629,31 @@ class CardFragment :
 //    }
 
     private fun getLayoutManager(): String {
-        val sharedPreferences =
-            requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
         return sharedPreferences.getString(LAYOUT_MANAGER, STAGGERED_GRID_LAYOUT_MANAGER)
             ?: STAGGERED_GRID_LAYOUT_MANAGER
     }
 
     private fun changeCardLayoutManager(which: String) {
-        val sharedPreferences =
-            requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
+        val sharedPreferences = requireActivity().getSharedPreferences("cardLayoutManager", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString(LAYOUT_MANAGER, which)
         editor.apply()
     }
 
-    private fun cardsToTextToUri(uri: Uri, separator: String) {
+//    private fun cardsToTextToUri(deckId: String, uri: Uri, separator: String) {
 //        lifecycleScope.launch {
 //            val stringBuilder = StringBuilder()
 //            try {
 //                appContext?.contentResolver?.openFileDescriptor(uri, "w")?.use { fd ->
 //                    FileOutputStream(fd.fileDescriptor).use { outputStream ->
-//                        val cards = cardViewModel.getCards(deck.deckId)
+//
+//                        var cards = cardViewModel.getCards(deckId)
+//                        cardViewModel.getActualDeckSubdecks().forEach { deck ->
+//                            val subDeckCards = cardViewModel.getCards(deck.deckId)
+//                            cards = cards + subDeckCards
+//                        }
+//
 //                        cards.forEach { card ->
 //                            val newLine = cardToText(card!!, separator)
 //                            stringBuilder.append(newLine)
@@ -1658,7 +1670,7 @@ class CardFragment :
 //                Toast.makeText(requireContext(), getString(R.string.error_message_cards_exported_failed), Toast.LENGTH_LONG).show()
 //            }
 //        }
-    }
+//    }
 
     private fun getAppTheme(): String {
         val themePicker = ThemePicker()
