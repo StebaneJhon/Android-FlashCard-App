@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/sort_cards"
+        android:text="@string/sort_decks"
         android:textSize="@dimen/text_base"
         android:fontFamily="@font/open_sans_bold"
         android:textColor="?colorOnSurface"
@@ -17,12 +17,12 @@
         android:layout_marginHorizontal="@dimen/space_lg" />
 
     <RadioGroup
-        android:id="@+id/rg_card_sort_pref"
+        android:id="@+id/rg_deck_sort_pref"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/rb_card_sort_by_creation_date"
+            android:id="@+id/rb_deck_sort_by_creation_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/sort_by_creation_date"
@@ -31,16 +31,16 @@
             android:layout_marginBottom="@dimen/space_sm"/>
 
         <RadioButton
-            android:id="@+id/rb_card_sort_by_card_level"
+            android:id="@+id/rb_deck_sort_by_card_sum"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/sort_by_card_level"
+            android:text="@string/sort_by_card_sum"
             android:textColor="?colorOnSurface"
             android:layout_marginHorizontal="@dimen/space_lg"
             android:layout_marginBottom="@dimen/space_sm"/>
 
         <RadioButton
-            android:id="@+id/rb_card_sort_alphabetically"
+            android:id="@+id/rb_deck_sort_alphabetically"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/sort_alphabetically"

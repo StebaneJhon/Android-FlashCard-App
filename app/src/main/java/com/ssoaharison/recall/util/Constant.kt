@@ -130,6 +130,7 @@ object ScanRef {
 }
 
 object DeckRef {
+    const val SORT_PREF = "sort_pref"
     const val DECK_SORT_ALPHABETICALLY = "Deck sort alphabetically"
     const val DECK_SORT_BY_CARD_SUM = "Deck sort by card sum"
     const val DECK_SORT_BY_CREATION_DATE = "Deck sort by creation date"

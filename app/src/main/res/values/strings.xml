@@ -330,4 +330,6 @@
     <string name="sort_by_card_level">Sort by card level</string>
     <string name="sort_alphabetically">Sort alphabetically</string>
     <string name="card_view_options">Card view options</string>
+    <string name="sort_by_card_sum">Sort by card sum</string>
+    <string name="sort_decks">Sort decks</string>
 </resources>

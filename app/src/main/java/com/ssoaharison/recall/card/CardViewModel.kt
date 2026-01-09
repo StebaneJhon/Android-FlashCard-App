@@ -20,6 +20,9 @@ import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_ALPHABETICALLY
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_CREATION_DATE
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_LEVEL
+import com.ssoaharison.recall.util.DeckRef.DECK_SORT_ALPHABETICALLY
+import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CARD_SUM
+import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -61,7 +64,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     private var _subdecks = MutableStateFlow<UiState<List<ExternalDeck>>>(UiState.Loading)
     val subdecks: StateFlow<UiState<List<ExternalDeck>>> = _subdecks.asStateFlow()
     var fetchSubdeckJob: Job? = null
-    fun getSubdecks(deckId: String) {
+    fun getSubdecks(deckId: String, sortPref: String) {
         fetchSubdeckJob?.cancel()
         _subdecks.value = UiState.Loading
         fetchSubdeckJob = viewModelScope.launch {
@@ -71,7 +74,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
                         _subdecks.value = UiState.Error("No subdeck found")
                     } else {
                         actualDeckSubdecks = it
-                        _subdecks.value = UiState.Success(it)
+                        val sortedSupport = applyDeckSortPref(sortPref, it)
+                        _subdecks.value = UiState.Success(sortedSupport)
                     }
                 }
             } catch (e: IOException) {
@@ -242,6 +246,23 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
             SORT_CARD_BY_CREATION_DATE -> sortCardsByCreationDate(cards)
             SORT_CARD_BY_LEVEL -> sortCardsByLevel(cards)
             else -> cards
+        }
+    }
+
+    fun sortDeckByCreationDate(decks: List<ExternalDeck>) = decks
+    fun sortDeckByCardSum(decks: List<ExternalDeck>): List<ExternalDeck> {
+        return decks.sortedBy { it.cardCount }
+    }
+    fun sortDeckAlphabetically(decks: List<ExternalDeck>): List<ExternalDeck> {
+        return decks.sortedBy { it.deckName.lowercase() }
+    }
+
+    fun applyDeckSortPref(sortPref: String, decks: List<ExternalDeck>): List<ExternalDeck> {
+        return when (sortPref) {
+            DECK_SORT_ALPHABETICALLY -> sortDeckAlphabetically(decks)
+            DECK_SORT_BY_CARD_SUM -> sortDeckByCardSum(decks)
+            DECK_SORT_BY_CREATION_DATE -> sortDeckByCreationDate(decks)
+            else -> decks
         }
     }
 

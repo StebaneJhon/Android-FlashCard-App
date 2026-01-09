@@ -97,6 +97,8 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Locale
+import androidx.core.content.edit
+import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
 
 
 class CardFragment :
@@ -158,6 +160,7 @@ class CardFragment :
     private lateinit var linearLayoutManager: LinearLayoutManager
 
     private lateinit var sortCardsBottomSheetDialog: SortCardsBottomSheetDialog
+    private lateinit var sortDecksBottomSheetDialog: SortDecksBottomSheetDialog
 
     companion object {
         const val TAG = "CardFragment"
@@ -527,6 +530,22 @@ class CardFragment :
             }
         }
 
+        binding.btSortSubdecks.setOnClickListener {
+            sortDecksBottomSheetDialog = SortDecksBottomSheetDialog.newInstance(getDeckSortPref())
+            sortDecksBottomSheetDialog.show(childFragmentManager, "Sort Decks Bottom Sheet")
+            childFragmentManager.setFragmentResultListener(
+                SortDecksBottomSheetDialog.SORT_DECK_PREF_REQUEST_CODE,
+                this,
+            ) {_, bundle ->
+                val data = bundle.getString(SortDecksBottomSheetDialog.SORT_DECK_PREF_BUNDLE_KEY)
+                data?.let { sortPref ->
+                    changeDeckSortPref(sortPref)
+                    displaySubdecks(cardViewModel.getActualDeck(), getDeckSortPref())
+                }
+            }
+
+        }
+
     }
 
     private fun onNavigateBack() {
@@ -577,7 +596,7 @@ class CardFragment :
         }
 
         displayAllCards(deck.deckId)
-        displaySubdecks(deck)
+        displaySubdecks(deck, getDeckSortPref())
 
         binding.searchBar.apply {
             title = null
@@ -840,11 +859,11 @@ class CardFragment :
 //        }
 //    }
 
-    private fun displaySubdecks(deck: ExternalDeck) {
+    private fun displaySubdecks(deck: ExternalDeck, sortPref: String) {
         displaySubdeckJob?.cancel()
         displaySubdeckJob = lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getSubdecks(deck.deckId)
+                cardViewModel.getSubdecks(deck.deckId, sortPref)
                 cardViewModel.subdecks.collect { state ->
                     when (state) {
                         is UiState.Error -> {
@@ -1656,9 +1675,9 @@ class CardFragment :
 
     private fun changeCardLayoutManager(which: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString(LAYOUT_MANAGER, which)
-        editor.apply()
+        sharedPreferences.edit {
+            putString(LAYOUT_MANAGER, which)
+        }
     }
 
     private fun getSortPref(): String {
@@ -1668,9 +1687,21 @@ class CardFragment :
 
     private fun changeCardSortPref(sortPref: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString(SORT_PREF, sortPref)
-        editor.apply()
+        sharedPreferences.edit {
+            putString(SORT_PREF, sortPref)
+        }
+    }
+
+    private fun changeDeckSortPref(sortPref: String) {
+        val deckViewPref = requireActivity().getSharedPreferences("deckViewPref", Context.MODE_PRIVATE)
+        deckViewPref.edit {
+            putString(SORT_PREF, sortPref)
+        }
+    }
+
+    private fun getDeckSortPref(): String {
+        val deckViewPref = requireActivity().getSharedPreferences("deckViewPref", Context.MODE_PRIVATE)
+        return deckViewPref.getString(SORT_PREF, DECK_SORT_BY_CREATION_DATE) ?: DECK_SORT_BY_CREATION_DATE
     }
 
 //    private fun cardsToTextToUri(deckId: String, uri: Uri, separator: String) {

@@ -60,18 +60,18 @@ class CardsRecyclerViewAdapter(
         CardViewHolder.create(parent)
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-            (holder as CardViewHolder).bind(
-                context,
-                appTheme,
-                deck,
-                cardList[position],
-                boxLevels,
-                editCardClickListener,
-                deleteCardClickListener,
-                onReadContent,
-                onReadDefinition,
-                onPlayAudio,
-            )
+        (holder as CardViewHolder).bind(
+            context,
+            appTheme,
+            deck,
+            cardList[position],
+            boxLevels,
+            editCardClickListener,
+            deleteCardClickListener,
+            onReadContent,
+            onReadDefinition,
+            onPlayAudio,
+        )
 
     override fun getItemCount(): Int {
         return cardList.size
@@ -90,7 +90,8 @@ class CardsRecyclerViewAdapter(
         private val cardDefinition8: View = view.findViewById(R.id.in_definition_8)
         private val cardDefinition9: View = view.findViewById(R.id.in_definition_9)
         private val cardDefinition10: View = view.findViewById(R.id.in_definition_10)
-//        private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
+
+        //        private val cardStatus: TextView = view.findViewById(R.id.tv_card_status)
         private val cardStatus: LinearLayout = view.findViewById(R.id.in_level)
         private val popUpBT: Button = view.findViewById(R.id.pupUpBT)
         private val cardRoot: MaterialCardView = view.findViewById(R.id.card_root)
@@ -167,15 +168,16 @@ class CardsRecyclerViewAdapter(
             }
 
             descriptionBinding.forEachIndexed { index, descriptionView ->
-                if (index <  correctDefinition!!.size) {
+                if (index < correctDefinition!!.size) {
                     descriptionContainer[index].visibility = View.VISIBLE
                     cardDescriptionError.visibility = View.GONE
                     if (correctDefinition[index].definitionText != null) {
-                        val tvDefinition: TextView = descriptionView.findViewById(R.id.tv_definition)
+                        val tvDefinition: TextView =
+                            descriptionView.findViewById(R.id.tv_definition)
                         tvDefinition.text = correctDefinition[index].definitionText
                     }
 
-                    if ( card.contentWithDefinitions.definitions[index].definitionImage != null) {
+                    if (card.contentWithDefinitions.definitions[index].definitionImage != null) {
                         val imageView: ImageView = descriptionView.findViewById(R.id.img_photo)
                         imageView.apply {
                             setImageBitmap(correctDefinition[index].definitionImage?.bmp)
@@ -185,14 +187,20 @@ class CardsRecyclerViewAdapter(
 
                     val audioContainer: LinearLayout = descriptionView.findViewById(R.id.ll_definition_container_audio)
 //                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play_audio)
-                    val btPlayDefinitionAudio: MaterialButton = descriptionView.findViewById(R.id.bt_play)
+                    val btPlayDefinitionAudio: MaterialButton =
+                        descriptionView.findViewById(R.id.bt_play)
                     val tvAudioLength: TextView = descriptionView.findViewById(R.id.tv_length)
-                    val lpiAudioProgression: LinearLayout? = descriptionView.findViewById(R.id.ly_content_audio)
+                    val lpiAudioProgression: LinearLayout? =
+                        descriptionView.findViewById(R.id.ly_content_audio)
                     if (card.contentWithDefinitions.definitions[index].definitionAudio != null) {
                         audioContainer.visibility = View.VISIBLE
-                        tvAudioLength.text = card.contentWithDefinitions.definitions[index].definitionAudio?.duration
+                        tvAudioLength.text =
+                            card.contentWithDefinitions.definitions[index].definitionAudio?.duration
                         btPlayDefinitionAudio.setOnClickListener {
-                            onPlayAudio(card.contentWithDefinitions.definitions[index].definitionAudio!!, lpiAudioProgression ?: return@setOnClickListener)
+                            onPlayAudio(
+                                card.contentWithDefinitions.definitions[index].definitionAudio!!,
+                                lpiAudioProgression ?: return@setOnClickListener
+                            )
                         }
                     } else {
                         audioContainer.visibility = View.GONE
@@ -200,19 +208,18 @@ class CardsRecyclerViewAdapter(
 
 
 //                    descriptionView.text = definitionTexts[index]
-//                    descriptionView.setOnClickListener {
-//                        it as TextView
-//                        val text = it.text.toString()
-//                        val language = card.card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
-//                        onReadDefinition(
-//                            TextClickedModel(
-//                                TextWithLanguageModel(card.card.cardId, text, DEFINITION, language),
-//                                it,
-//                                definitionTextColor,
-//                                DEFINITION
-//                            )
-//                        )
-//                    }
+
+                    descriptionView.findViewById<TextView>(R.id.tv_definition).setOnClickListener {
+                        it as TextView
+                        val text = it.text.toString()
+                        val language = card.card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
+                        onReadDefinition(TextClickedModel(
+                            text = TextWithLanguageModel(card.card.cardId, text, DEFINITION, language),
+                            view = it,
+                            textColor = R.color.neutral950,
+                            type = DEFINITION,
+                        ))
+                    }
 //                    descriptionView.setOnLongClickListener { v: View ->
 //                        showMenu(
 //                            context,
@@ -247,19 +254,6 @@ class CardsRecyclerViewAdapter(
 
 
             content.apply {
-//                setOnClickListener {
-//                    it as TextView
-//                    val text = it.text.toString()
-//                    val language = card.card.cardContentLanguage ?: deck.cardContentDefaultLanguage
-//                    onReadContent(
-//                        TextClickedModel(
-//                            TextWithLanguageModel(card.card.cardId, text, CONTENT, language),
-//                            it,
-//                            R.color.red950,
-//                            CONTENT
-//                        )
-//                    )
-//                }
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
@@ -275,6 +269,18 @@ class CardsRecyclerViewAdapter(
                 }
             }
 
+            content.findViewById<TextView>(R.id.tv_content).setOnClickListener {
+                it as TextView
+                val text = it.text.toString()
+                val language = card.card.cardContentLanguage ?: deck.cardContentDefaultLanguage
+                onReadContent(TextClickedModel(
+                    text = TextWithLanguageModel(card.card.cardId, text, CONTENT, language),
+                    view = it,
+                    textColor = R.color.neutral950,
+                    type = CONTENT,
+                ))
+            }
+
         }
 
         private fun onBrightTheme(
@@ -283,7 +289,10 @@ class CardsRecyclerViewAdapter(
             context: Context,
             onPlayAudio: (AudioModel, LinearLayout) -> Unit
         ) {
-            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card?.card?.cardLevel!!)
+            val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(
+                boxLevels,
+                card?.card?.cardLevel!!
+            )
             val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
 //            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
 //            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColor(actualBoxLevel.levelColor)
@@ -294,18 +303,24 @@ class CardsRecyclerViewAdapter(
 //            cvContainerCard.backgroundTintList = cardBackgroundStateList
             cardStatus.apply {
                 findViewById<View>(R.id.vw_level_color).backgroundTintList = colorStateList
-                findViewById<TextView>(R.id.tv_level_text).text = context.getString(R.string.card_level, card.card.cardLevel)
+                findViewById<TextView>(R.id.tv_level_text).text =
+                    context.getString(R.string.card_level, card.card.cardLevel)
 //                text = card.card.cardLevel
 //                backgroundTintList = colorStateList
             }
             if (card.contentWithDefinitions.content.contentAudio != null) {
-                content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility = View.VISIBLE
-                content.findViewById<TextView>(R.id.tv_length).text = card.contentWithDefinitions.content.contentAudio.duration
+                content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility =
+                    View.VISIBLE
+                content.findViewById<TextView>(R.id.tv_length).text =
+                    card.contentWithDefinitions.content.contentAudio.duration
 //                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
 //                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
 //                }
                 content.findViewById<MaterialButton>(R.id.bt_play).setOnClickListener {
-                    onPlayAudio(card.contentWithDefinitions.content.contentAudio, content.findViewById<LinearLayout>(R.id.ly_content_audio))
+                    onPlayAudio(
+                        card.contentWithDefinitions.content.contentAudio,
+                        content.findViewById<LinearLayout>(R.id.ly_content_audio)
+                    )
                 }
             }
 
@@ -334,28 +349,35 @@ class CardsRecyclerViewAdapter(
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
 //            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor =
+                spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
 //            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
 //            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLightVariant(actualBoxLevel.levelColor)
 
 //            val colorStateList = ContextCompat.getColorStateList(context, statusColor)
-            val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
+            val cardBackgroundStateList =
+                ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
 //            cvContainerCard.backgroundTintList = colorStateList
             cardStatus.apply {
                 findViewById<View>(R.id.vw_level_color).backgroundTintList = cardBackgroundStateList
-                findViewById<TextView>(R.id.tv_level_text).text = context.getString(R.string.card_level, card.card.cardLevel)
+                findViewById<TextView>(R.id.tv_level_text).text =
+                    context.getString(R.string.card_level, card.card.cardLevel)
 //                text = context.getString(R.string.card_level, card.card.cardLevel)
 //                backgroundTintList = cardBackgroundStateList
             }
 
             // TODO: Include Audio
             if (card.contentWithDefinitions.content.contentAudio != null) {
-                content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility = View.VISIBLE
+                content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility =
+                    View.VISIBLE
 //                content.findViewById<MaterialButton>(R.id.bt_play_audio).setOnClickListener {
 //                    onPlayAudio(card.contentWithDefinitions.content.contentAudio)
 //                }
                 content.findViewById<MaterialButton>(R.id.bt_play).setOnClickListener {
-                    onPlayAudio(card.contentWithDefinitions.content.contentAudio, content.findViewById<LinearLayout>(R.id.ly_content_audio))
+                    onPlayAudio(
+                        card.contentWithDefinitions.content.contentAudio,
+                        content.findViewById<LinearLayout>(R.id.ly_content_audio)
+                    )
                 }
             }
             if (card.contentWithDefinitions.content.contentText != null) {
@@ -409,7 +431,8 @@ class CardsRecyclerViewAdapter(
             val popup = if (deckThemeName.isNullOrBlank()) {
                 PopupMenu(context, v)
             } else {
-                val defaultTheme = themePicker.selectTheme(appTheme) ?: themePicker.getDefaultTheme()
+                val defaultTheme =
+                    themePicker.selectTheme(appTheme) ?: themePicker.getDefaultTheme()
                 val deckTheme = if (appTheme == DARK_THEME) {
                     ThemePicker().selectDarkThemeByDeckColorCode(deckThemeName, defaultTheme)
                 } else {
