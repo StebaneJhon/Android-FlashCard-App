@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="?colorSurfaceContainerLowest">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_lg"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/deck_details"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_base"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/deckNameLY"
+        style="@style/Widget.App.TextInputLayout"
+        app:boxBackgroundColor="?colorSurfaceContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_sm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/deckNameET"
+            style="@style/Widget.App.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="@string/deck_name_hint"
+            android:hint="@string/deck_name_hint"
+            android:inputType="textMultiLine"
+            android:maxLines="5" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/deckFirstLanguageLY"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:fontFamily="@font/open_sans"
+        android:textColor="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
+        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        app:endIconTint="?colorOnSurface"
+        android:layout_marginTop="@dimen/space_sm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deckNameLY">
+
+        <AutoCompleteTextView
+            android:id="@+id/deckFirstLanguageET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/deck_first_language_hint"
+            android:background="@null"
+            android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/deck_first_language_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="?colorOnSurface"
+            android:textColorHint="?colorOnSurface"
+            tools:ignore="LabelFor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/deckSecondLanguageLY"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:fontFamily="@font/open_sans"
+        android:textColor="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
+        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
+        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
+        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
+        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        app:endIconTint="?colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deckFirstLanguageLY">
+
+        <AutoCompleteTextView
+            android:id="@+id/deckSecondLanguageET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:autofillHints="@string/deck_second_language_hint"
+            android:background="@null"
+            android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+            android:ellipsize="end"
+            android:fontFamily="@font/open_sans"
+            android:hint="@string/deck_second_language_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="?colorOnSurface"
+            android:textColorHint="?colorOnSurface"
+            tools:ignore="LabelFor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/colorPickerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_sm"
+        android:fontFamily="@font/open_sans_bold"
+        android:paddingTop="@dimen/space_sm"
+        android:paddingBottom="@dimen/space_xxs"
+        android:text="@string/category_color_picker_title"
+        android:textColor="?colorOnSurface"
+        android:textSize="@dimen/text_sm"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deckSecondLanguageLY" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_deck_color_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_xs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorPickerTitle" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

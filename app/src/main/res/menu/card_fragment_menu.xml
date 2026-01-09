@@ -36,4 +36,12 @@
         android:contentDescription="@string/export_deck"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/mb_deck_details"
+        android:icon="@drawable/icon_more"
+        android:iconTint="?colorOnSurface"
+        android:title="@string/deck_details"
+        android:contentDescription="@string/export_deck"
+        app:showAsAction="ifRoom" />
+
 </menu>

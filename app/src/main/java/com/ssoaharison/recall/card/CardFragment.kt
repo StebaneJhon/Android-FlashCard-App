@@ -161,6 +161,7 @@ class CardFragment :
 
     private lateinit var sortCardsBottomSheetDialog: SortCardsBottomSheetDialog
     private lateinit var sortDecksBottomSheetDialog: SortDecksBottomSheetDialog
+    private lateinit var currentDeckDetailsBottomSheetDialog: CurrentDeckDetailsBottomSheetDialog
 
     companion object {
         const val TAG = "CardFragment"
@@ -625,7 +626,11 @@ class CardFragment :
                 when (menuItem.itemId) {
                     R.id.mb_export_deck -> {
                         showExportDeckDialog()
-//                        true")
+                        true
+                    }
+
+                    R.id.mb_deck_details -> {
+                        showCurrentDeckDetails()
                         true
                     }
 
@@ -677,6 +682,23 @@ class CardFragment :
             onAddNewDeck(deck)
         }
 
+    }
+
+    private fun showCurrentDeckDetails() {
+        currentDeckDetailsBottomSheetDialog = CurrentDeckDetailsBottomSheetDialog.newInstance(cardViewModel.getActualDeck())
+        currentDeckDetailsBottomSheetDialog.show(childFragmentManager, "Current Deck Details Bottom Sheet")
+        childFragmentManager.setFragmentResultListener(
+            CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_REQUEST_CODE,
+            this
+        ) { _, bundle ->
+            val data = bundle.parcelable<Deck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
+            data?.let { updatedDeck ->
+                //TODO: Update deck
+
+
+
+            }
+        }
     }
 
     private fun showExportDeckDialog() {
@@ -942,8 +964,7 @@ class CardFragment :
         )
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
-            val result =
-                bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
+            val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
             result?.let {
                 cardViewModel.insertSubdeck(it.deck)
             }
