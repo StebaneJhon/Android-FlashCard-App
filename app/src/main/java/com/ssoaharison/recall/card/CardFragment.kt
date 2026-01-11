@@ -98,6 +98,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Locale
 import androidx.core.content.edit
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
 
 
@@ -243,11 +244,13 @@ class CardFragment :
         arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
-            deckPathViewModel.currentDeck.collect { deck ->
-                if (deck == null) {
-                    // TODO: On No Data
-                } else {
-                    displayData(deck)
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                deckPathViewModel.currentDeck.collect { deck ->
+                    if (deck == null) {
+                        // TODO: On No Data
+                    } else {
+                        displayData(deck)
+                    }
                 }
             }
         }
@@ -691,11 +694,13 @@ class CardFragment :
             CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_REQUEST_CODE,
             this
         ) { _, bundle ->
-            val data = bundle.parcelable<Deck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
+            val data = bundle.parcelable<ExternalDeck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
             data?.let { updatedDeck ->
                 //TODO: Update deck
 
-
+                cardViewModel.updateDeck(updatedDeck.toLocal())
+                deckPathViewModel.setCurrentDeck(updatedDeck)
+                switchTheme()
 
             }
         }

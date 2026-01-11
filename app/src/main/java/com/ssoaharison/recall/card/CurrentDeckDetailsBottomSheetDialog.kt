@@ -4,17 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.ListPopupWindow
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.databinding.BottomSheetDialogCurrentDeckDetailsBinding
 import com.ssoaharison.recall.deck.ColorModel
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.DeckColorPickerAdapter
+import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,7 +39,10 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
 
     private lateinit var deckColorPickerAdapter: DeckColorPickerAdapter
 
+    private val supportedLanguages = LanguageUtil().getSupportedLang()
 
+    private lateinit var contentLanguagePopupWindow: ListPopupWindow
+    private lateinit var  definitionLanguagePopupWindow: ListPopupWindow
 
     companion object {
         const val TAG = "CurrentDeckDetailsBottomSheetDialog"
@@ -58,12 +68,100 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
 
         val deckColorCategorySelector = DeckColorCategorySelector()
 
+        contentLanguagePopupWindow = ListPopupWindow(requireContext(), null, androidx.appcompat.R.attr.popupWindowStyle)
+        definitionLanguagePopupWindow = ListPopupWindow(requireContext(), null, androidx.appcompat.R.attr.popupWindowStyle)
+
         lifecycleScope.launch {
             delay(50)
             currentDeckDetailsViewModel.initColorSelection(deckColorCategorySelector.getColors(), currentDeck.deckColorCode)
             currentDeckDetailsViewModel.colorSelectionList.collect { colors ->
                 displayColorPicker(colors)
             }
+        }
+
+        binding.btEditDeckName.apply {
+            text = currentDeck.deckName
+            setOnClickListener {
+                EditDeckNameDialog.newInstance(currentDeck.deckName).show(childFragmentManager, EditDeckNameDialog.TAG)
+                childFragmentManager.setFragmentResultListener(
+                    EditDeckNameDialog.CURRENT_DECK_NAME_REQUEST_CODE,
+                    this@CurrentDeckDetailsBottomSheetDialog
+                ) {_, bundle ->
+                    val data = bundle.getString(EditDeckNameDialog.CURRENT_DECK_NAME_BUNDLE_CODE)
+                    data?.let { newDeckName ->
+                        val updatedDeck = currentDeck.copy(deckName = newDeckName)
+                        onUpdateCurrentDeck(updatedDeck)
+                    }
+                }
+            }
+        }
+
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        contentLanguagePopupWindow.apply {
+            anchorView = binding.llContentLanguageContainer
+            setAdapter(arrayAdapterSupportedLanguages)
+            setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+                val updatedDeck = currentDeck.copy( cardContentDefaultLanguage = supportedLanguages[position])
+                onUpdateCurrentDeck(updatedDeck)
+            }
+        }
+
+        definitionLanguagePopupWindow.apply {
+            anchorView = binding.llDefinitionLanguageContainer
+            setAdapter(arrayAdapterSupportedLanguages)
+            setOnItemClickListener { parent: AdapterView<*>?, view: View?, position: Int, id: Long ->
+                val updatedDeck = currentDeck.copy( cardDefinitionDefaultLanguage = supportedLanguages[position])
+                onUpdateCurrentDeck(updatedDeck)
+            }
+        }
+
+        binding.inDeckContentLanguage.apply {
+            tvHeader.text = getString(R.string.text_content_language)
+            tvLanguage.text = currentDeck.cardContentDefaultLanguage ?: getString(R.string.text_definition_language)
+        }
+
+        binding.llContentLanguageContainer.setOnClickListener {
+            if (contentLanguagePopupWindow.isShowing) {
+                contentLanguagePopupWindow.dismiss()
+            } else {
+                contentLanguagePopupWindow.show()
+            }
+        }
+
+        binding.inDeckDefinitionLanguage.apply {
+            tvHeader.text = getString(R.string.text_definition_language)
+            tvLanguage.text = currentDeck.cardDefinitionDefaultLanguage ?: getString(R.string.text_definition_language)
+        }
+        binding.llDefinitionLanguageContainer.setOnClickListener {
+            if (definitionLanguagePopupWindow.isShowing) {
+                definitionLanguagePopupWindow.dismiss()
+            } else {
+                definitionLanguagePopupWindow.show()
+
+            }
+        }
+
+
+
+        binding.deckFirstLanguageET.apply {
+            setAdapter(arrayAdapterSupportedLanguages)
+            setDropDownBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.filter_spinner_dropdown_background,
+                    requireActivity().theme
+                )
+            )
+        }
+        binding.deckSecondLanguageET.apply {
+            setAdapter(arrayAdapterSupportedLanguages)
+            setDropDownBackgroundDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    R.drawable.filter_spinner_dropdown_background,
+                    requireActivity().theme
+                )
+            )
         }
 
     }
@@ -74,7 +172,8 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
             listOfColors = colors,
             onColorClicked = { color ->
                 currentDeckDetailsViewModel.selectColor(color.id)
-                deckColorPickerAdapter.notifyDataSetChanged()
+                val updatedDeck = currentDeck.copy(deckColorCode = color.id)
+                onUpdateCurrentDeck(updatedDeck)
             }
         )
         binding.rvDeckColorPicker.apply {
@@ -84,7 +183,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
         }
     }
 
-    private fun onUpdateCurrentDeck(updatedDeck: Deck) {
+    private fun onUpdateCurrentDeck(updatedDeck: ExternalDeck) {
         parentFragmentManager.setFragmentResult(CURRENT_DECK_DETAILS_REQUEST_CODE, bundleOf(CURRENT_DECK_DETAILS_BUNDLE_KEY to updatedDeck))
         dismiss()
     }

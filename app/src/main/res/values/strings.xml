@@ -111,6 +111,7 @@
     <string name="bt_text_add">Add</string>
     <string name="bt_text_update">Update</string>
     <string name="bt_text_cancel">Cancel</string>
+    <string name="ok">OK</string>
     <string name="til_error_card_content">Card content required</string>
     <string name="til_error_card_definition">Card definition required</string>
     <string name="cp_error_correct_definition">At least one definition must be correct. Check the box to the right of this field to mark it as correct, and uncheck it to mark it as incorrect.</string>
@@ -332,4 +333,5 @@
     <string name="card_view_options">Card view options</string>
     <string name="sort_by_card_sum">Sort by card sum</string>
     <string name="sort_decks">Sort decks</string>
+    <string name="edit_deck_name">Edit deck name</string>
 </resources>

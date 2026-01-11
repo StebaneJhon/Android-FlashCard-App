@@ -6,4 +6,5 @@
     android:padding="15dp"
     android:textColor="?colorOnSurface"
     android:textSize="@dimen/text_sm"
-    android:fontFamily="@font/open_sans"/>
+    android:fontFamily="@font/open_sans"
+    android:background="?colorSurfaceContainer"/>
