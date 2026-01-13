@@ -143,13 +143,13 @@ class CardFragment :
     }
 
 
-//    private var createFile = registerForActivityResult(
-//        ActivityResultContracts.CreateDocument("text/plain")
-//    ) { uri ->
-//        if (uri != null && deckExportModel != null) {
-//            cardsToTextToUri(cardViewModel.getActualDeck().deckId, uri, deckExportModel?.separator!!)
-//        }
-//    }
+    private var createFile = registerForActivityResult(
+        ActivityResultContracts.CreateDocument("text/plain")
+    ) { uri ->
+        if (uri != null && deckExportModel != null) {
+            cardsToTextToUri(cardViewModel.getActualDeck().deckId, uri, deckExportModel?.separator!!, deckExportModel?.includeSubdecks!!)
+        }
+    }
 
 //    @SuppressLint("RestrictedApi")
 //    private var item: ActionMenuItemView? = null
@@ -707,16 +707,15 @@ class CardFragment :
     }
 
     private fun showExportDeckDialog() {
-        Toast.makeText(requireContext(), "Export function in development", Toast.LENGTH_LONG).show()
-//        val exportDeckDialog = ExportDeckDialog()
-//        exportDeckDialog.show(childFragmentManager, "Export deck dialog")
-//        childFragmentManager.setFragmentResultListener(
-//            REQUEST_EXPORT_DECK_CODE,
-//            this
-//        ) { _, bundle ->
-//            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
-//            createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
-//        }
+        val exportDeckDialog = ExportDeckDialog()
+        exportDeckDialog.show(childFragmentManager, "Export deck dialog")
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_EXPORT_DECK_CODE,
+            this
+        ) { _, bundle ->
+            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
+            createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
+        }
     }
 
 //    private fun showDeckDetails() {
@@ -1730,36 +1729,35 @@ class CardFragment :
         return deckViewPref.getString(SORT_PREF, DECK_SORT_BY_CREATION_DATE) ?: DECK_SORT_BY_CREATION_DATE
     }
 
-//    private fun cardsToTextToUri(deckId: String, uri: Uri, separator: String) {
-//        lifecycleScope.launch {
-//            val stringBuilder = StringBuilder()
-//            try {
-//                appContext?.contentResolver?.openFileDescriptor(uri, "w")?.use { fd ->
-//                    FileOutputStream(fd.fileDescriptor).use { outputStream ->
-//
-//                        var cards = cardViewModel.getCards(deckId)
-//                        cardViewModel.getActualDeckSubdecks().forEach { deck ->
-//                            val subDeckCards = cardViewModel.getCards(deck.deckId)
-//                            cards = cards + subDeckCards
-//                        }
-//
-//                        cards.forEach { card ->
-//                            val newLine = cardToText(card!!, separator)
-//                            stringBuilder.append(newLine)
-//                        }
-//                        outputStream.write(stringBuilder.toString().toByteArray())
-//                    }
-//                    Toast.makeText(requireContext(), getString(R.string.message_cards_exported_successfully), Toast.LENGTH_LONG).show()
-//                }
-//            } catch (e: FileNotFoundException) {
-//                e.printStackTrace()
-//                Toast.makeText(requireContext(), getString(R.string.error_message_file_not_found), Toast.LENGTH_LONG).show()
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//                Toast.makeText(requireContext(), getString(R.string.error_message_cards_exported_failed), Toast.LENGTH_LONG).show()
-//            }
-//        }
-//    }
+    private fun cardsToTextToUri(deckId: String, uri: Uri, separator: String, includeSubdecks: Boolean) {
+        lifecycleScope.launch {
+            val stringBuilder = StringBuilder()
+            try {
+                appContext?.contentResolver?.openFileDescriptor(uri, "w")?.use { fd ->
+                    FileOutputStream(fd.fileDescriptor).use { outputStream ->
+
+                        val cards = if (includeSubdecks) {
+                            cardViewModel.getDeckAndSubdecksCards(deckId)
+                        } else {
+                            cardViewModel.getCards(deckId)
+                        }
+                        cards.forEach { card ->
+                            val newLine = cardToText(card!!, separator)
+                            stringBuilder.append(newLine)
+                        }
+                        outputStream.write(stringBuilder.toString().toByteArray())
+                    }
+                    Toast.makeText(requireContext(), getString(R.string.message_cards_exported_successfully), Toast.LENGTH_LONG).show()
+                }
+            } catch (e: FileNotFoundException) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), getString(R.string.error_message_file_not_found), Toast.LENGTH_LONG).show()
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(requireContext(), getString(R.string.error_message_cards_exported_failed), Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     private fun getAppTheme(): String {
         val themePicker = ThemePicker()

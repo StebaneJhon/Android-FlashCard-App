@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="?colorSurfaceContainerLowest"
-    android:padding="@dimen/space_sm">
+    android:padding="@dimen/space_lg">
     
     <TextView
         android:id="@+id/tv_title"
@@ -80,6 +80,16 @@
             android:textColorHint="?colorOnSurface" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/sw_include_subdecks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/include_subdecks"
+        app:layout_constraintTop_toBottomOf="@+id/til_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/bt_cancel"
         style="@style/Widget.Material3.Button.TextButton"
@@ -93,7 +103,7 @@
         android:textStyle="bold"
         android:layout_marginTop="@dimen/space_md"
         app:layout_constraintEnd_toStartOf="@+id/bt_export"
-        app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+        app:layout_constraintTop_toBottomOf="@+id/sw_include_subdecks" />
 
     <Button
         android:id="@+id/bt_export"

@@ -124,6 +124,9 @@ interface FlashCardDao {
     @Query("SELECT COUNT(*) FROM card")
     suspend fun getCardCount(): Int
 
+    @Query("""WITH RECURSIVE subdecks AS (SELECT deckId FROM deck WHERE deckId = :deckId UNION ALL SELECT d.deckId FROM deck d INNER JOIN subdecks sub ON d.parentDeckId = sub.deckId) SELECT * FROM card WHERE deckOwnerId IN (SELECT deckId FROM subdecks)""")
+    suspend fun getDeckAndSubdecksCards(deckId: String): List<CardWithContentAndDefinitions>
+
     @Query("SELECT COUNT(*) FROM card WHERE cardLevel <> 'L1' ")
     suspend fun getKnownCardCount(): Int
 

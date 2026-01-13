@@ -106,6 +106,9 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     suspend fun getCards(deckId: String) = repository.getCards(deckId)
 
+    suspend fun getDeckAndSubdecksCards(deckId: String) = repository.getDeckAndSubdecksCards(deckId)
+
+
     fun getBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
        return spaceRepetitionHelper.getActualBoxLevels()
     }

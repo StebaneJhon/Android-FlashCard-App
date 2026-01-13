@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.io.File
+import kotlin.collections.map
 
 class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
@@ -366,6 +367,24 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //                    card.toExternal()
 //                }
 //            }
+        }
+    }
+
+    @WorkerThread
+    suspend fun getDeckAndSubdecksCards(deckId: String): List<ExternalCardWithContentAndDefinitions> {
+        val cards = flashCardDao.getDeckAndSubdecksCards(deckId)
+        return cards.map { card ->
+            val externalCardContent = card.contentWithDefinitions.content.toExternal(null, null)
+            val externalCardDefinitions = card.contentWithDefinitions.definitions.map { definition ->
+                definition.toExternal(null, null)
+            }
+            ExternalCardWithContentAndDefinitions(
+                card = card.card.toExternal(),
+                contentWithDefinitions = ExternalCardContentWithDefinitions(
+                    content = externalCardContent,
+                    definitions = externalCardDefinitions
+                )
+            )
         }
     }
 
