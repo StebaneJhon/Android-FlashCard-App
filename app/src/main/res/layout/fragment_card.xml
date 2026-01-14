@@ -308,7 +308,7 @@
                 android:minWidth="48dp"
                 android:layout_marginVertical="@dimen/space_sm"
                 android:orientation="vertical"
-                 app:layout_anchorGravity="bottom|end"
+                app:layout_anchorGravity="bottom|end"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -317,8 +317,8 @@
                     android:id="@+id/fab_add_show_actions"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="?colorPrimary"
                     android:contentDescription="@string/bt_description_add_new_card"
+                    android:backgroundTint="?colorPrimary"
                     app:srcCompat="@drawable/icon_add"
                     app:shapeAppearance="@style/ShapeAppearance.App.Circle"
                     app:elevation="0dp"

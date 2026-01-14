@@ -424,6 +424,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:minWidth="48dp"
+                android:layout_marginVertical="@dimen/space_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -433,9 +434,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
-                    android:layout_margin="@dimen/space_md"
                     android:contentDescription="@string/add_card"
-                    app:srcCompat="@drawable/icon_check" />
+                    android:backgroundTint="?colorPrimary"
+                    app:srcCompat="@drawable/icon_check"
+                    app:shapeAppearance="@style/ShapeAppearance.App.Circle"
+                    app:elevation="0dp"
+                    app:pressedTranslationZ="0dp"
+                    app:hoveredFocusedTranslationZ="0dp"
+                    app:borderWidth="0dp"
+                    android:outlineProvider="none"
+                    app:useCompatPadding="false"/>
             </FrameLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

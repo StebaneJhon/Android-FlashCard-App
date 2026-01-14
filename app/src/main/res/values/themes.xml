@@ -996,5 +996,14 @@
         <item name="textAppearanceBodySmall">@style/TextAppearance.App.BodySmall</item>
     </style>
 
+    <!-- Switch -->
+    <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch" parent="">
+        <item name="colorSurfaceContainerHighest">?colorSurfaceContainerLowest</item>
+        <item name="colorOnPrimaryContainer">?colorSurfaceContainerLowest</item>
+    </style>
 
 </resources>

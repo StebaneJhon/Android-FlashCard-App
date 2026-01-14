@@ -9,6 +9,7 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
         android:id="@+id/cl_content_container_image"
         android:layout_width="match_parent"
         android:layout_height="150dp"
@@ -95,6 +96,7 @@
 <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/ll_content_container_audio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
