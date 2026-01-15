@@ -53,5 +53,8 @@
     <dimen name="progression_region_height">9dp</dimen>
 
     <dimen name="wave_view_max_height">400px</dimen>
-    
+
+    <dimen name="img_height_large">150dp</dimen>
+    <dimen name="img_height_base">75dp</dimen>
+
 </resources>
