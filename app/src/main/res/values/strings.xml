@@ -82,7 +82,7 @@
     <string name="tv_card_count_setting_section_hint">card count</string>
     <string name="rb_front_and_back_setting_text">Front and Back</string>
     <string name="rb_back_and_front_setting_text">Back and Front</string>
-    <string name="bt_apply_and_restart_quiz_settings_text">APPLY AND RESTART QUIZ</string>
+    <string name="bt_apply_and_restart_quiz_settings_text">Apply and restart quiz</string>
     <string name="text_on_no_more_cards_error">Looks like you do not have any cards to revise. Please create new cards or unable the show unknown cards only option in your settings.</string>
     <string name="bt_unable_unknown_cards_only_text">UNABLE UNKNOWN CARDS ONLY</string>
     <string name="tv_cards_text">Cards</string>
