@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:visibility="gone"
         android:id="@+id/img_photo"
         android:layout_width="match_parent"
         android:layout_height="@dimen/img_height_large"
@@ -16,6 +17,7 @@
         android:src="@drawable/ic_launcher_background" />
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_xs">
@@ -28,13 +30,11 @@
         android:id="@+id/tv_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/open_sans"
         android:gravity="center"
         android:textAlignment="center"
         android:textColor="?colorOnSurface"
-        app:autoSizeMaxTextSize="@dimen/text_xl3"
-        app:autoSizeMinTextSize="@dimen/text_base"
-        app:autoSizeStepGranularity="2sp"
+        android:textSize="@dimen/text_base"
         app:autoSizeTextType="uniform"
         tools:text="1. What is the capital of Madagascar?"
         android:layout_marginTop="@dimen/space_xs"/>

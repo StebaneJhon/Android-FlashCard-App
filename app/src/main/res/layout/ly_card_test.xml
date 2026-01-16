@@ -52,24 +52,37 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:rippleColor="@color/transparent" />
 
-            <TextView
+            <FrameLayout
                 android:id="@+id/tv_definition"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:fontFamily="@font/montserrat_bold"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:textColor="?colorOnSurface"
-                android:layout_marginTop="@dimen/space_sm"
-                app:autoSizeMaxTextSize="@dimen/text_xl3"
-                app:autoSizeMinTextSize="@dimen/text_base"
-                app:autoSizeStepGranularity="2sp"
-                app:autoSizeTextType="uniform"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/bt_speak_back"
-                tools:text="1. What is the capital of Madagascar?" />
+                app:layout_constraintTop_toBottomOf="@+id/bt_speak_back">
+                <include
+                    android:id="@+id/in_definition"
+                    layout="@layout/ly_quiz_question" />
+            </FrameLayout>
+
+<!--            <TextView-->
+<!--                android:id="@+id/tv_definition"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:fontFamily="@font/montserrat_bold"-->
+<!--                android:gravity="center"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="?colorOnSurface"-->
+<!--                android:layout_marginTop="@dimen/space_sm"-->
+<!--                app:autoSizeMaxTextSize="@dimen/text_xl3"-->
+<!--                app:autoSizeMinTextSize="@dimen/text_base"-->
+<!--                app:autoSizeStepGranularity="2sp"-->
+<!--                app:autoSizeTextType="uniform"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                app:layout_constraintEnd_toEndOf="parent"-->
+<!--                app:layout_constraintStart_toStartOf="parent"-->
+<!--                app:layout_constraintTop_toBottomOf="@+id/bt_speak_back"-->
+<!--                tools:text="1. What is the capital of Madagascar?" />-->
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -210,7 +223,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_alternative3">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative2"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -244,7 +257,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative3"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -278,7 +291,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative5">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative4"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -312,7 +325,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative5"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -346,7 +359,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_alternative7">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative6"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -380,7 +393,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative7"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -414,7 +427,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative9">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative8"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -448,7 +461,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative9"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 
@@ -483,7 +496,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">
                 <include
-                    android:id="@+id/in_alternative1"
+                    android:id="@+id/in_alternative10"
                     layout="@layout/ly_quiz_alternative"/>
             </FrameLayout>
 

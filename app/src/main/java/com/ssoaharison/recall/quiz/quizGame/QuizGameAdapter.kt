@@ -23,6 +23,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.databinding.LyCardTestBinding
+import com.ssoaharison.recall.databinding.LyQuizAlternativeBinding
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -41,8 +43,9 @@ class QuizGameAdapter(
         parent: ViewGroup,
         viewType: Int
     ): TestQuizGameAdapterViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.ly_card_test, parent, false)
-        return TestQuizGameAdapterViewHolder(view)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = LyCardTestBinding.inflate(layoutInflater, parent, false)
+        return TestQuizGameAdapterViewHolder(binding)
     }
 
     override fun getItemCount() = cardList.size
@@ -57,36 +60,59 @@ class QuizGameAdapter(
     }
 
     inner class TestQuizGameAdapterViewHolder(
-        view: View
-    ) : RecyclerView.ViewHolder(view) {
+        private val binding: LyCardTestBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val flCardRoot: FrameLayout = view.findViewById(R.id.fl_card_root)
-        private val cvCardContainer: MaterialCardView = view.findViewById(R.id.cv_card_container)
-        private val cvCardContainerBack: MaterialCardView =
-            view.findViewById(R.id.cv_card_container_back)
-        private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
-        private val tvCardTypeBack: TextView = view.findViewById(R.id.tv_card_type_back)
-        private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
-        private val btSpeakBack: Button = view.findViewById(R.id.bt_speak_back)
-        private val tvContent: TextView = view.findViewById(R.id.tv_content)
-        private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
-        private val tvHint: TextView = view.findViewById(R.id.tv_hint)
-        private val btAlternative1: MaterialButton = view.findViewById(R.id.bt_alternative1)
-        private val btAlternative2: MaterialButton = view.findViewById(R.id.bt_alternative2)
-        private val btAlternative3: MaterialButton = view.findViewById(R.id.bt_alternative3)
-        private val btAlternative4: MaterialButton = view.findViewById(R.id.bt_alternative4)
-        private val btAlternative5: MaterialButton = view.findViewById(R.id.bt_alternative5)
-        private val btAlternative6: MaterialButton = view.findViewById(R.id.bt_alternative6)
-        private val btAlternative7: MaterialButton = view.findViewById(R.id.bt_alternative7)
-        private val btAlternative8: MaterialButton = view.findViewById(R.id.bt_alternative8)
-        private val btAlternative9: MaterialButton = view.findViewById(R.id.bt_alternative9)
-        private val btAlternative10: MaterialButton = view.findViewById(R.id.bt_alternative10)
+//        private val flCardRoot: FrameLayout = view.findViewById(R.id.fl_card_root)
+//        private val cvCardContainer: MaterialCardView = view.findViewById(R.id.cv_card_container)
+//        private val cvCardContainerBack: MaterialCardView =
+//            view.findViewById(R.id.cv_card_container_back)
+//        private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
+//        private val tvCardTypeBack: TextView = view.findViewById(R.id.tv_card_type_back)
+//        private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
+//        private val btSpeakBack: Button = view.findViewById(R.id.bt_speak_back)
+//        private val inContent: TextView = view.findViewById(R.id.tv_content)
+//        private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
+//        private val tvHint: TextView = view.findViewById(R.id.tv_hint)
+//        private val frAlternative1: FrameLayout = view.findViewById(R.id.bt_alternative1)
+//        private val inAlternative1: View = view.findViewById(R.id.in_alternative1)
+//        private val frAlternative2: FrameLayout = view.findViewById(R.id.bt_alternative2)
+//        private val inAlternative2: View = view.findViewById(R.id.in_alternative2)
+//        private val frAlternative3: FrameLayout = view.findViewById(R.id.bt_alternative3)
+//        private val inAlternative3: View = view.findViewById(R.id.bt_alternative3)
+//        private val frAlternative4: FrameLayout = view.findViewById(R.id.bt_alternative4)
+//        private val inAlternative4: View = view.findViewById(R.id.in_alternative4)
+//        private val frAlternative5: FrameLayout = view.findViewById(R.id.bt_alternative5)
+//        private val inAlternative5: View = view.findViewById(R.id.in_alternative5)
+//        private val frAlternative6: FrameLayout = view.findViewById(R.id.bt_alternative6)
+//        private val inAlternative6: View = view.findViewById(R.id.in_alternative6)
+//        private val frAlternative7: FrameLayout = view.findViewById(R.id.bt_alternative7)
+//        private val inAlternative7: View = view.findViewById(R.id.in_alternative7)
+//        private val frAlternative8: FrameLayout = view.findViewById(R.id.bt_alternative8)
+//        private val inAlternative8: View = view.findViewById(R.id.in_alternative8)
+//        private val frAlternative9: FrameLayout = view.findViewById(R.id.bt_alternative9)
+//        private val inAlternative9: View = view.findViewById(R.id.in_alternative9)
+//        private val frAlternative10: FrameLayout = view.findViewById(R.id.bt_alternative10)
+//        private val inAlternative10: View = view.findViewById(R.id.in_alternative10)
         private lateinit var frontAnim: AnimatorSet
         private lateinit var backAnim: AnimatorSet
 
-        private val btAlternatives = listOf(
-            btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
-            btAlternative6, btAlternative7, btAlternative8, btAlternative9, btAlternative10,
+//        private val btAlternatives = listOf(
+//            btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
+//            btAlternative6, btAlternative7, btAlternative8, btAlternative9, btAlternative10,
+//        )
+
+        private val alternatives = listOf(
+            QuizAlternativeModel(container = binding.btAlternative1, view = binding.inAlternative1),
+            QuizAlternativeModel(container = binding.btAlternative2, view = binding.inAlternative2),
+            QuizAlternativeModel(container = binding.btAlternative3, view = binding.inAlternative3),
+            QuizAlternativeModel(container = binding.btAlternative4, view = binding.inAlternative4),
+            QuizAlternativeModel(container = binding.btAlternative5, view = binding.inAlternative5),
+            QuizAlternativeModel(container = binding.btAlternative6, view = binding.inAlternative6),
+            QuizAlternativeModel(container = binding.btAlternative7, view = binding.inAlternative7),
+            QuizAlternativeModel(container = binding.btAlternative8, view = binding.inAlternative8),
+            QuizAlternativeModel(container = binding.btAlternative9, view = binding.inAlternative9),
+            QuizAlternativeModel(container = binding.btAlternative10, view = binding.inAlternative10),
         )
 
 
@@ -96,13 +122,15 @@ class QuizGameAdapter(
             appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
         ) {
-            tvContent.text = card.cardContent.contentText
-            tvCardType.text = card.cardType
+            binding.inContent.tvText.text = card.cardContent.contentText
+//            tvContent.text = card.cardContent.contentText
+            binding.tvCardType.text = card.cardType
+//            tvCardType.text = card.cardType
             when {
                 card.cardType == SINGLE_ANSWER_CARD -> {
-                    tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                    tvHint.text = ContextCompat.getString(context, R.string.text_tap_to_flip)
-                    tvHint.setTextColor(
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_tap_to_flip)
+                    binding.tvHint.setTextColor(
                         MaterialColors.getColor(
                             itemView,
                             com.google.android.material.R.attr.colorOnSurface
@@ -111,9 +139,9 @@ class QuizGameAdapter(
                 }
 
                 card.attemptTime == 0 -> {
-                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
-                    tvHint.setTextColor(
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
+                    binding.tvHint.setTextColor(
                         MaterialColors.getColor(
                             itemView,
                             com.google.android.material.R.attr.colorOnSurface
@@ -122,61 +150,61 @@ class QuizGameAdapter(
                 }
 
                 card.attemptTime > 0 && card.isCorrectlyAnswered -> {
-                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    tvHint.text = ContextCompat.getString(context, R.string.text_correct)
-                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
                 }
 
                 card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
-                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    tvHint.text =
-                        ContextCompat.getString(context, R.string.text_correct_answer_more)
-                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
                 }
 
                 card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
-                    tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    tvHint.text = ContextCompat.getString(context, R.string.text_wrong_answer)
-                    tvHint.setTextColor(ContextCompat.getColor(context, R.color.red500))
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_wrong_answer)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.red500))
                 }
             }
 
             if (card.cardType == SINGLE_ANSWER_CARD) {
                 if (card.flipCount == 0) {
                     if (!card.isFlipped) {
-                        cvCardContainer.alpha = 1f
-                        cvCardContainer.rotationY = 0f
-                        cvCardContainerBack.alpha = 0f
+                        binding.cvCardContainer.alpha = 1f
+                        binding.cvCardContainer.rotationY = 0f
+                        binding.cvCardContainerBack.alpha = 0f
                     } else {
-                        cvCardContainer.alpha = 0f
-                        cvCardContainer.rotationY = 0f
-                        cvCardContainerBack.rotationY = 0f
-                        cvCardContainerBack.alpha = 1f
+                        binding.cvCardContainer.alpha = 0f
+                        binding.cvCardContainer.rotationY = 0f
+                        binding.cvCardContainerBack.rotationY = 0f
+                        binding.cvCardContainerBack.alpha = 1f
                     }
                 } else {
                     flipCard(card.isFlipped)
                 }
             } else {
-                cvCardContainer.alpha = 1f
-                cvCardContainer.rotationY = 0f
-                cvCardContainerBack.alpha = 1f
-                btAlternatives.forEachIndexed { index, materialButton ->
+                binding.cvCardContainer.alpha = 1f
+                binding.cvCardContainer.rotationY = 0f
+                binding.cvCardContainerBack.alpha = 1f
+                alternatives.forEachIndexed { index, alternative ->
                     if (index < card.cardDefinition.size) {
-                        materialButton.visibility = View.VISIBLE
+                        alternative.container.visibility = View.VISIBLE
                         if (card.cardDefinition[index].isSelected) {
                             val answerStatus = card.cardDefinition[index].isCorrect != 0
-                            onButtonClicked(
-                                materialButton,
+                            onAlternativeClicked(
+                                alternative.view,
+                                alternative.container,
                                 card.cardType!!,
                                 context,
                                 answerStatus,
                                 appTheme
                             )
                         } else {
-                            onButtonUnClicked(materialButton, card.cardType!!, context)
+                            onButtonUnClicked(alternative.view, alternative.container, card.cardType!!, context)
                         }
                     } else {
-                        materialButton.visibility = View.GONE
+                        alternative.container.visibility = View.GONE
                     }
                 }
             }
@@ -192,7 +220,7 @@ class QuizGameAdapter(
             return false
         }
 
-        private fun MaterialButton.onAlternativeClicked(
+        private fun FrameLayout.onAlternativeClicked(
             card: QuizGameCardModel,
             answer: QuizGameCardDefinitionModel,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
@@ -207,8 +235,9 @@ class QuizGameAdapter(
             }
         }
 
-        private fun onButtonClicked(
-            button: MaterialButton,
+        private fun onAlternativeClicked(
+            alternative: LyQuizAlternativeBinding,
+            container: View,
             cardType: String,
             context: Context,
             isCorrectlyAnswered: Boolean,
@@ -217,87 +246,122 @@ class QuizGameAdapter(
             if (appTheme != DARK_THEME) {
                 if (isCorrectlyAnswered) {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon =
-                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
                     } else {
-                        button.icon = AppCompatResources.getDrawable(
-                            context,
-                            R.drawable.icon_radio_button_checked
-                        )
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
                     }
-                    button.background.setTint(ContextCompat.getColor(context, R.color.green50))
-                    button.setStrokeColorResource(R.color.green500)
-                    button.setIconTintResource(R.color.green500)
+
+                    container.background.setTint(ContextCompat.getColor(context, R.color.green50))
+//                    button.setStrokeColorResource(R.color.green500)
+//                    button.setIconTintResource(R.color.green500)
+                    alternative.imgLeadingIcon.setColorFilter(
+                        ContextCompat.getColor(context, R.color.green500),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
                 } else {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon =
-                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
                     } else {
-                        button.icon =
-                            AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
                     }
-                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
-                    button.setStrokeColorResource(R.color.red500)
-                    button.setIconTintResource(R.color.red500)
+                    container.background.setTint(ContextCompat.getColor(context, R.color.red50))
+//                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
+//                    button.setStrokeColorResource(R.color.red500)
+//                    button.setIconTintResource(R.color.red500)
+                    alternative.imgLeadingIcon.setColorFilter(
+                        ContextCompat.getColor(context, R.color.red500),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
                 }
             } else {
                 if (isCorrectlyAnswered) {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon =
-                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
+//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
                     } else {
-                        button.icon = AppCompatResources.getDrawable(
-                            context,
-                            R.drawable.icon_radio_button_checked
-                        )
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
+//                        button.icon = AppCompatResources.getDrawable(
+//                            context,
+//                            R.drawable.icon_radio_button_checked
+//                        )
                     }
-                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
-                    button.setStrokeColorResource(R.color.green50)
-                    button.setIconTintResource(R.color.green50)
-                    button.setTextColor(ContextCompat.getColor(context, R.color.green50))
+                    container.background.setTint(ContextCompat.getColor(context, R.color.green800))
+//                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
+//                    button.setStrokeColorResource(R.color.green50)
+                    alternative.imgLeadingIcon.setColorFilter(
+                        ContextCompat.getColor(context, R.color.green50),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
+//                    button.setIconTintResource(R.color.green50)
+                    alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.green50))
                 } else {
                     if (cardType == MULTIPLE_ANSWER_CARD) {
-                        button.icon =
-                            AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
+//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
                     } else {
-                        button.icon =
-                            AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
+//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                     }
-                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
-                    button.setStrokeColorResource(R.color.red50)
-                    button.setIconTintResource(R.color.red50)
-                    button.setTextColor(ContextCompat.getColor(context, R.color.red50))
+                    container.background.setTint(ContextCompat.getColor(context, R.color.red800))
+//                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
+//                    button.setStrokeColorResource(R.color.red50)
+                    alternative.imgLeadingIcon.setColorFilter(
+                        ContextCompat.getColor(context, R.color.red50),
+                        android.graphics.PorterDuff.Mode.SRC_IN
+                    )
+//                    button.setIconTintResource(R.color.red50)
+                    alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
+//                    button.setTextColor(ContextCompat.getColor(context, R.color.red50))
                 }
             }
 
 
         }
 
-        private fun onButtonUnClicked(button: MaterialButton, cardType: String, context: Context) {
+        private fun onButtonUnClicked(
+            view: LyQuizAlternativeBinding,
+            container: View,
+            cardType: String,
+            context: Context
+        ) {
             if (cardType == MULTIPLE_ANSWER_CARD) {
-                button.icon =
-                    AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
+                view.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_outline_blank)
+//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
             } else {
-                button.icon =
-                    AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
+                view.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_unchecked)
+//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
             }
-            button.background.setTint(
-                MaterialColors.getColor(
+            container.background.setTint(MaterialColors.getColor(
+                context,
+                com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                Color.GRAY
+            ))
+//            button.background.setTint(
+//                MaterialColors.getColor(
+//                    context,
+//                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+//                    Color.GRAY
+//                )
+//            )
+            view.imgLeadingIcon.imageTintList = MaterialColors.getColorStateList(
                     context,
-                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
-                    Color.GRAY
+                    com.google.android.material.R.attr.colorOnSurface,
+                    ContextCompat.getColorStateList(context, R.color.neutral950)!!
                 )
-            )
-            button.iconTint = MaterialColors.getColorStateList(
-                context,
-                com.google.android.material.R.attr.colorOnSurface,
-                ContextCompat.getColorStateList(context, R.color.neutral950)!!
-            )
-            button.strokeColor = MaterialColors.getColorStateList(
-                context,
-                com.google.android.material.R.attr.colorSurfaceContainer,
-                ContextCompat.getColorStateList(context, R.color.neutral500)!!
-            )
+//                ContextCompat.getColor(context, R.color.red50),
+//                android.graphics.PorterDuff.Mode.SRC_IN
+//            button.iconTint = MaterialColors.getColorStateList(
+//                context,
+//                com.google.android.material.R.attr.colorOnSurface,
+//                ContextCompat.getColorStateList(context, R.color.neutral950)!!
+//            )
+//            button.strokeColor = MaterialColors.getColorStateList(
+//                context,
+//                com.google.android.material.R.attr.colorSurfaceContainer,
+//                ContextCompat.getColorStateList(context, R.color.neutral500)!!
+//            )
         }
 
         private fun bindAnswerAlternatives(
@@ -306,19 +370,19 @@ class QuizGameAdapter(
         ) {
             if (card.cardType == SINGLE_ANSWER_CARD) {
 
-                flCardRoot.isClickable = true
-                btAlternatives.forEach { materialButton ->
-                    materialButton.visibility = View.GONE
+                binding.flCardRoot.isClickable = true
+                alternatives.forEach { alternative ->
+                    alternative.container.visibility = View.GONE
                 }
-                tvDefinition.text = card.cardDefinition.first().definition
-                tvCardTypeBack.text = card.cardType
-                flCardRoot.setOnClickListener {
+                binding.inDefinition.tvText.text = card.cardDefinition.first().definition
+                binding.tvCardTypeBack.text = card.cardType
+                binding.flCardRoot.setOnClickListener {
                     card.cardDefinition.first().isSelected = true
                     cardOnClick(
                         card.cardDefinition.first()
                     )
                 }
-                btSpeakBack.setOnClickListener {
+                binding.btSpeakBack.setOnClickListener {
                     onSpeak(
                         QuizSpeakModel(
                             text = listOf(
@@ -329,13 +393,13 @@ class QuizGameAdapter(
                                     card.cardDefinitionLanguage
                                 )
                             ),
-                            views = listOf(tvDefinition),
+                            views = listOf(binding.tvDefinition),
                         )
                     )
                 }
-                btSpeak.setOnClickListener {
+                binding.btSpeak.setOnClickListener {
                     frontSpeak(
-                        listOf(tvContent),
+                        listOf(binding.inContent.tvText),
                         listOf(
                             TextWithLanguageModel(
                                 card.cardId,
@@ -347,7 +411,7 @@ class QuizGameAdapter(
                     )
                 }
             } else {
-                flCardRoot.isClickable = false
+                binding.flCardRoot.isClickable = false
                 val texts = arrayListOf(
                     TextWithLanguageModel(
                         card.cardId,
@@ -356,18 +420,25 @@ class QuizGameAdapter(
                         card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     )
                 )
-                val views = arrayListOf(tvContent)
-                btAlternatives.forEachIndexed { index, materialButton ->
+                val views = arrayListOf(binding.inContent.tvText)
+                alternatives.forEachIndexed { index, alternative ->
                     if (index < card.cardDefinition.size) {
-                        materialButton.apply {
-                            visibility = View.VISIBLE
-                            text = card.cardDefinition[index].definition
-                            onAlternativeClicked(
-                                card = card,
-                                answer = card.cardDefinition[index],
-                                cardOnClick = cardOnClick
-                            )
-                        }
+                        alternative.container.visibility = View.VISIBLE
+                        alternative.view.tvText.text = card.cardDefinition[index].definition
+                        (alternative.container as FrameLayout).onAlternativeClicked(
+                            card = card,
+                            answer = card.cardDefinition[index],
+                            cardOnClick = cardOnClick
+                        )
+//                        materialButton.apply {
+//                            visibility = View.VISIBLE
+//                            text = card.cardDefinition[index].definition
+//                            onAlternativeClicked(
+//                                card = card,
+//                                answer = card.cardDefinition[index],
+//                                cardOnClick = cardOnClick
+//                            )
+//                        }
                         texts.add(
                             TextWithLanguageModel(
                                 card.cardDefinition[index].cardId,
@@ -376,9 +447,9 @@ class QuizGameAdapter(
                                 card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                             )
                         )
-                        views.add(materialButton)
+                        views.add(alternative.view.tvText)
                     } else {
-                        materialButton.visibility = View.GONE
+                        alternative.container.visibility = View.GONE
                     }
                 }
                 frontSpeak(views, texts)
@@ -389,7 +460,7 @@ class QuizGameAdapter(
             views: List<View>,
             texts: List<TextWithLanguageModel>,
         ) {
-            btSpeak.setOnClickListener {
+            binding.btSpeak.setOnClickListener {
                 onSpeak(
                     QuizSpeakModel(
                         text = texts,
@@ -410,16 +481,16 @@ class QuizGameAdapter(
             ) as AnimatorSet
 
             val scale: Float = context.resources.displayMetrics.density
-            cvCardContainer.cameraDistance = 8000 * scale
-            cvCardContainerBack.cameraDistance = 8000 * scale
+            binding.cvCardContainer.cameraDistance = 8000 * scale
+            binding.cvCardContainerBack.cameraDistance = 8000 * scale
             if (isFlipped) {
-                frontAnim.setTarget(cvCardContainer)
-                backAnim.setTarget(cvCardContainerBack)
+                frontAnim.setTarget(binding.cvCardContainer)
+                backAnim.setTarget(binding.cvCardContainerBack)
                 frontAnim.start()
                 backAnim.start()
             } else {
-                frontAnim.setTarget(cvCardContainerBack)
-                backAnim.setTarget(cvCardContainer)
+                frontAnim.setTarget(binding.cvCardContainerBack)
+                backAnim.setTarget(binding.cvCardContainer)
                 frontAnim.start()
                 backAnim.start()
             }
