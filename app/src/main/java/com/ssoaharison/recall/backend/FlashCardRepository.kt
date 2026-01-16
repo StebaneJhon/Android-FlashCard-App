@@ -224,6 +224,49 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
         }
     }
 
+    @WorkerThread
+    suspend fun getDeckWithCardsOnStartQuiz(deckId: String): ExternalDeckWithCardsAndContentAndDefinitions {
+        val data = flashCardDao.gettDeckWithCards(deckId)
+        val cardCount = flashCardDao.countCardsInDeck(data.deck.deckId)
+        val knownCardCount = flashCardDao.countKnownCardsInDeck(data.deck.deckId)
+        val unKnownCardCount = flashCardDao.countUnKnownCardsInDeck(data.deck.deckId)
+        val externalDeck = data.deck.toExternal(cardCount, knownCardCount, unKnownCardCount)
+        val externalCardList = data.cards.map { card  ->
+            var photoModelContent: PhotoModel? = null
+            card.contentWithDefinitions.content.contentImageName?.let {
+                photoModelContent = PhotoModel(it, null)
+            }
+            var audioModelContent: AudioModel? = null
+            card.contentWithDefinitions.content.contentAudioName?.let { audioName ->
+                audioModelContent = AudioModel(audioName, card.contentWithDefinitions.content.contentAudioDuration!!)
+            }
+            val externalContent = card.contentWithDefinitions.content.toExternal(photoModelContent, audioModelContent)
+
+            val externalDefinitions = card.contentWithDefinitions.definitions.map { definition ->
+                var photoModelDefinition: PhotoModel? = null
+                definition.definitionImageName?.let {
+                    photoModelDefinition = PhotoModel(it, null)
+                }
+                var audioModelDefinition: AudioModel? = null
+                definition.definitionAudioName?.let { audioName ->
+                    audioModelDefinition = AudioModel(audioName, definition.definitionAudioDuration!!)
+                }
+                definition.toExternal(photoModelDefinition, audioModelDefinition)
+            }
+            val externalCard = card.card.toExternal()
+            ExternalCardWithContentAndDefinitions(
+                card = externalCard,
+                contentWithDefinitions = ExternalCardContentWithDefinitions(
+                    content = externalContent,
+                    definitions = externalDefinitions
+                )
+            )
+        }
+        return ExternalDeckWithCardsAndContentAndDefinitions(
+            deck = externalDeck,
+            cards = externalCardList
+        )
+    }
 
     @WorkerThread
     suspend fun insertDeck(deck: Deck) {
@@ -347,13 +390,37 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 //    }
 
     @WorkerThread
-    suspend fun getCards(deckId: String): List<ExternalCardWithContentAndDefinitions?> {
+    suspend fun getCards(deckId: String, context: Context): List<ExternalCardWithContentAndDefinitions> {
         val cards = flashCardDao.getCards(deckId)
         return cards.map { card ->
-            val externalCardContent = card.contentWithDefinitions.content.toExternal(null, null)
-            val externalCardDefinitions = card.contentWithDefinitions.definitions.map { definition ->
-                definition.toExternal(null, null)
+            var photoModelContent: PhotoModel? = null
+            card.contentWithDefinitions.content.contentImageName?.let {
+                val filePhotoContent = File(context.filesDir, card.contentWithDefinitions.content.contentImageName)
+                val bytesPhotoContent = filePhotoContent.readBytes()
+                val bmpPhotoContent = BitmapFactory.decodeByteArray(bytesPhotoContent, 0, bytesPhotoContent.size)
+                photoModelContent = PhotoModel(filePhotoContent.name, bmpPhotoContent)
             }
+            var audioModelContent: AudioModel? = null
+            card.contentWithDefinitions.content.contentAudioName?.let { audioName ->
+                audioModelContent = AudioModel(audioName, card.contentWithDefinitions.content.contentAudioDuration!!)
+            }
+            val externalCardContent = card.contentWithDefinitions.content.toExternal(photoModelContent, audioModelContent)
+
+            val externalCardDefinitions = card.contentWithDefinitions.definitions.map { definition ->
+                var photoModelDefinition: PhotoModel? = null
+                definition.definitionImageName?.let {
+                    val filePhotoDefinition = File(context.filesDir, definition.definitionImageName)
+                    val bytesPhotoDefinition = filePhotoDefinition.readBytes()
+                    val bmpPhotoDefinition = BitmapFactory.decodeByteArray(bytesPhotoDefinition, 0, bytesPhotoDefinition.size)
+                    photoModelDefinition = PhotoModel(filePhotoDefinition.name, bmpPhotoDefinition)
+                }
+                var audioModelDefinition: AudioModel? = null
+                definition.definitionAudioName?.let { audioName ->
+                    audioModelDefinition = AudioModel(audioName, definition.definitionAudioDuration!!)
+                }
+                definition.toExternal(photoModelDefinition, audioModelDefinition)
+            }
+
             ExternalCardWithContentAndDefinitions(
                 card = card.card.toExternal(),
                 contentWithDefinitions = ExternalCardContentWithDefinitions(

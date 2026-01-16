@@ -3,12 +3,14 @@ package com.ssoaharison.recall.quiz.quizGame
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.content.Context
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
@@ -23,12 +25,15 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.databinding.LyCardTestBinding
 import com.ssoaharison.recall.databinding.LyQuizAlternativeBinding
+import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
 import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
+import java.io.File
 
 class QuizGameAdapter(
     val context: Context,
@@ -37,6 +42,7 @@ class QuizGameAdapter(
     val deck: ExternalDeck,
     private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit,
+    private val onPlayAudio: (AudioModel, LyAudioPlayerBinding) -> Unit,
 ) : RecyclerView.Adapter<QuizGameAdapter.TestQuizGameAdapterViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -56,6 +62,7 @@ class QuizGameAdapter(
             cardList[position],
             appTheme,
             cardOnClick,
+            onPlayAudio,
         )
     }
 
@@ -121,8 +128,39 @@ class QuizGameAdapter(
             card: QuizGameCardModel,
             appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
+            onPlayAudio: (AudioModel, LyAudioPlayerBinding) -> Unit,
         ) {
-            binding.inContent.tvText.text = card.cardContent.contentText
+
+            if (card.cardContent.contentText != null) {
+                binding.inContent.tvText.apply {
+                    visibility = View.VISIBLE
+                    text = card.cardContent.contentText
+                }
+            } else {
+                binding.inContent.tvText.visibility = View.GONE
+            }
+
+            if (card.cardContent.contentImage != null) {
+                val photoFile = File(context.filesDir, card.cardContent.contentImage.name)
+                val photoBytes = photoFile.readBytes()
+                val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                binding.inContent.imgPhoto.apply {
+                    visibility = View.VISIBLE
+                    setImageBitmap(photoBtm)
+                }
+            } else {
+                binding.inContent.imgPhoto.visibility = View.GONE
+            }
+
+            if (card.cardContent.contentAudio != null) {
+                binding.inContent.llAudioContainer.visibility = View.VISIBLE
+                binding.inContent.inAudioPlayer.btPlay.setOnClickListener {
+                    onPlayAudio(card.cardContent.contentAudio, binding.inContent.inAudioPlayer)
+                }
+            } else {
+                binding.inContent.llAudioContainer.visibility = View.GONE
+            }
+
 //            tvContent.text = card.cardContent.contentText
             binding.tvCardType.text = card.cardType
 //            tvCardType.text = card.cardType
@@ -374,7 +412,37 @@ class QuizGameAdapter(
                 alternatives.forEach { alternative ->
                     alternative.container.visibility = View.GONE
                 }
-                binding.inDefinition.tvText.text = card.cardDefinition.first().definition
+
+                if (card.cardDefinition.first().definition != null) {
+                    binding.inDefinition.tvText.apply {
+                        visibility = View.VISIBLE
+                        text = card.cardDefinition.first().definition
+                    }
+                } else {
+                    binding.inDefinition.tvText.visibility = View.GONE
+                }
+
+                if (card.cardDefinition.first().definitionImage != null) {
+                    val photoFile = File(context.filesDir, card.cardDefinition.first().definitionImage?.name!!)
+                    val photoBytes = photoFile.readBytes()
+                    val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                    binding.inDefinition.imgPhoto.apply {
+                        visibility = View.VISIBLE
+                        setImageBitmap(photoBtm)
+                    }
+                } else {
+                    binding.inDefinition.imgPhoto.visibility = View.GONE
+                }
+
+                if (card.cardDefinition.first().definitionAudio != null) {
+                    binding.inDefinition.llAudioContainer.visibility = View.VISIBLE
+                    binding.inDefinition.inAudioPlayer.btPlay.setOnClickListener {
+                        onPlayAudio(card.cardDefinition.first().definitionAudio!!,  binding.inDefinition.inAudioPlayer)
+                    }
+                } else {
+                    binding.inDefinition.llAudioContainer.visibility = View.GONE
+                }
+
                 binding.tvCardTypeBack.text = card.cardType
                 binding.flCardRoot.setOnClickListener {
                     card.cardDefinition.first().isSelected = true
@@ -388,7 +456,7 @@ class QuizGameAdapter(
                             text = listOf(
                                 TextWithLanguageModel(
                                     card.cardId,
-                                    card.cardDefinition.first().definition,
+                                    card.cardDefinition.first().definition!!,
                                     DEFINITION,
                                     card.cardDefinitionLanguage
                                 )
@@ -424,7 +492,37 @@ class QuizGameAdapter(
                 alternatives.forEachIndexed { index, alternative ->
                     if (index < card.cardDefinition.size) {
                         alternative.container.visibility = View.VISIBLE
-                        alternative.view.tvText.text = card.cardDefinition[index].definition
+
+                        if (card.cardDefinition[index].definition != null) {
+                            alternative.view.tvText.apply {
+                                visibility = View.VISIBLE
+                                text = card.cardDefinition[index].definition
+                            }
+                        } else {
+                            alternative.view.tvText.visibility = View.GONE
+                        }
+
+                        if (card.cardDefinition[index].definitionImage != null) {
+                            val photoFile = File(context.filesDir, card.cardDefinition[index].definitionImage?.name!!)
+                            val photoBytes = photoFile.readBytes()
+                            val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                            alternative.view.imgPhoto.apply {
+                                visibility = View.VISIBLE
+                                setImageBitmap(photoBtm)
+                            }
+                        } else {
+                            alternative.view.imgPhoto.visibility = View.GONE
+                        }
+
+                        if (card.cardDefinition[index].definitionAudio != null) {
+                            alternative.view.llContainerAudioPlayer.visibility = View.VISIBLE
+                            alternative.view.inAudioPlayer.btPlay.setOnClickListener {
+                                onPlayAudio(card.cardDefinition[index].definitionAudio!!,  alternative.view.inAudioPlayer)
+                            }
+                        } else {
+                            alternative.view.llContainerAudioPlayer.visibility = View.GONE
+                        }
+
                         (alternative.container as FrameLayout).onAlternativeClicked(
                             card = card,
                             answer = card.cardDefinition[index],
@@ -442,7 +540,7 @@ class QuizGameAdapter(
                         texts.add(
                             TextWithLanguageModel(
                                 card.cardDefinition[index].cardId,
-                                card.cardDefinition[index].definition,
+                                card.cardDefinition[index].definition!!,
                                 DEFINITION,
                                 card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                             )

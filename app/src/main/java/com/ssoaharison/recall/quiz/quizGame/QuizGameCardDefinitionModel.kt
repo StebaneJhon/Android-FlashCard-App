@@ -1,13 +1,17 @@
 package com.ssoaharison.recall.quiz.quizGame
 
 import android.os.Parcelable
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.PhotoModel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class QuizGameCardDefinitionModel (
     val definitionId: String,
     val cardId: String,
-    val definition: String,
+    val definition: String?,
+    val definitionImage: PhotoModel?,
+    val definitionAudio: AudioModel?,
     val cardType: String,
     val isCorrect: Int,
     var isSelected: Boolean = false,

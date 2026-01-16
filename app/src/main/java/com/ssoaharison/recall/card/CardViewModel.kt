@@ -104,7 +104,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateDeck(deck)
     }
 
-    suspend fun getCards(deckId: String) = repository.getCards(deckId)
+    suspend fun getCards(deckId: String, context: Context) = repository.getCards(deckId, context)
 
     suspend fun getDeckAndSubdecksCards(deckId: String) = repository.getDeckAndSubdecksCards(deckId)
 
@@ -268,6 +268,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
             else -> decks
         }
     }
+
+    suspend fun getDeckWithCardsOnStartQuiz(deckId: String) = repository.getDeckWithCardsOnStartQuiz(deckId)
 
 }
 

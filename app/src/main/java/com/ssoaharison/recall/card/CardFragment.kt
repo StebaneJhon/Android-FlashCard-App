@@ -321,6 +321,9 @@ class CardFragment :
             }
         }
 
+
+
+
         requireActivity()
             .onBackPressedDispatcher
             .addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
@@ -1039,35 +1042,44 @@ class CardFragment :
         deck: ExternalDeck,
         start: (ExternalDeckWithCardsAndContentAndDefinitions) -> Unit
     ) {
+
+
+
         startingQuizJob?.cancel()
         startingQuizJob = lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getDeckWithCards(deck.deckId, appContext!!)
-                cardViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.cardsActivityProgressBar.isVisible = true
-                        }
-
-                        is UiState.Error -> {
-                            binding.cardsActivityProgressBar.isVisible = false
-                            onStartingQuizError(
-                                deck,
-                                getString(R.string.error_message_empty_deck)
-                            )
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-
-                        is UiState.Success -> {
-                            binding.cardsActivityProgressBar.isVisible = false
-                            start(state.data)
-                            this@launch.cancel()
-                            this.cancel()
-                        }
-                    }
-                }
-            }
+            binding.cardsActivityProgressBar.isVisible = true
+            val deckAndCards = cardViewModel.getDeckWithCardsOnStartQuiz(deck.deckId)
+            binding.cardsActivityProgressBar.isVisible = false
+            start(deckAndCards)
+            this@launch.cancel()
+            this.cancel()
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                cardViewModel.getDeckWithCards(deck.deckId, appContext!!)
+//                cardViewModel.deckWithAllCards.collect { state ->
+//                    when (state) {
+//                        is UiState.Loading -> {
+//                            binding.cardsActivityProgressBar.isVisible = true
+//                        }
+//
+//                        is UiState.Error -> {
+//                            binding.cardsActivityProgressBar.isVisible = false
+//                            onStartingQuizError(
+//                                deck,
+//                                getString(R.string.error_message_empty_deck)
+//                            )
+//                            this@launch.cancel()
+//                            this.cancel()
+//                        }
+//
+//                        is UiState.Success -> {
+//                            binding.cardsActivityProgressBar.isVisible = false
+//                            start(state.data)
+//                            this@launch.cancel()
+//                            this.cancel()
+//                        }
+//                    }
+//                }
+//            }
         }
 
     }
@@ -1124,6 +1136,7 @@ class CardFragment :
                 intent.putExtra(QuizGameActivity.DECK_ID_KEY, deckWithCards)
                 startActivity(intent)
             }
+
 
 //            TEST -> {
 //                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_TEST) {
@@ -1228,7 +1241,6 @@ class CardFragment :
             { selectedCard ->
                 cardViewModel.deleteCard(selectedCard, appContext!!)
             },
-            // TODO: Fix on read text
             { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
@@ -1241,7 +1253,6 @@ class CardFragment :
                     )
                 }
             },
-            // TODO: Fix on read text
             { text ->
                 if (tts?.isSpeaking == true) {
                     stopReading(text)
@@ -1739,7 +1750,7 @@ class CardFragment :
                         val cards = if (includeSubdecks) {
                             cardViewModel.getDeckAndSubdecksCards(deckId)
                         } else {
-                            cardViewModel.getCards(deckId)
+                            cardViewModel.getCards(deckId, requireContext())
                         }
                         cards.forEach { card ->
                             val newLine = cardToText(card!!, separator)

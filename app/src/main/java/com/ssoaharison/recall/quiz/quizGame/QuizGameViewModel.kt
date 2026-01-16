@@ -179,7 +179,9 @@ class TestQuizGameViewModel(
                 definition = it.definitionText ?: "No text found",
                 cardType = cardType,
                 isCorrect = it.isCorrectDefinition,
-                isSelected = false
+                isSelected = false,
+                definitionImage = it.definitionImage,
+                definitionAudio = it.definitionAudio,
             )
         }.shuffled()
         return formatedDefinitions.mapIndexed { index, item ->

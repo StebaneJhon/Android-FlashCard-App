@@ -11,6 +11,7 @@ import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -41,10 +42,15 @@ import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.snackbar.Snackbar
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
+import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
@@ -56,6 +62,7 @@ import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Locale
 
 class QuizGameActivity :
@@ -83,6 +90,13 @@ class QuizGameActivity :
     private var tts: TextToSpeech? = null
     private var quizJob: Job? = null
     private var fetchJob1: Job? = null
+
+    var lastPlayedAudioFile: AudioModel? = null
+    var lastPlayedAudioViw: LyAudioPlayerBinding? = null
+
+    private val player by lazy {
+        AndroidAudioPlayer(this)
+    }
 
     companion object {
         private const val TAG = "QuizGameActivity"
@@ -246,6 +260,23 @@ class QuizGameActivity :
                     )
                 }
 
+            },
+            { audio, view ->
+                if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
+                    lifecycleScope.launch {
+                        lastPlayedAudioViw?.btPlay?.setIconResource(R.drawable.icon_play)
+                        lastPlayedAudioViw?.lpiAudioProgression?.progress = 0
+                        lastPlayedAudioViw = null
+                        lastPlayedAudioFile = null
+                        player.stop()
+                        delay(100L)
+                        playPauseAudio(view, audio)
+                        lastPlayedAudioFile = audio
+                        lastPlayedAudioViw = view
+                    }
+                } else {
+                    playPauseAudio(view, audio)
+                }
             })
 
         binding.vpCardHolder.apply {
@@ -373,6 +404,57 @@ class QuizGameActivity :
             })
         }
         viewModel.startTimer()
+    }
+
+    private fun playPauseAudio(
+        view: LyAudioPlayerBinding,
+        audio: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                // Resume audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                // Pause audio
+                view.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                // Play audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                val audioFile = File(this.filesDir, audio.name)
+                player.playFile(audioFile)
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+                player.onCompletion {
+                    lastPlayedAudioFile = null
+                    lastPlayedAudioViw = null
+                    view.btPlay.setIconResource(R.drawable.icon_play)
+                }
+            }
+        }
     }
 
     private fun displayProgression(data: List<QuizGameCardModel>, recyclerView: RecyclerView) {

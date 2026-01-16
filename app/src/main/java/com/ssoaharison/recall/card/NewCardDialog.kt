@@ -1276,7 +1276,7 @@ class NewCardDialog(
         }
 
         if (content.contentImage != null) {
-            onSetContentFieldPhoto(content.contentImage!!.bmp)
+            onSetContentFieldPhoto(content.contentImage!!.bmp!!)
             binding.lyContent.btContentDeleteImage.setOnClickListener {
                 if (deleteImageFromInternalStorage(content.contentImage!!.name)) {
                     newCardViewModel.deleteContentImageField()

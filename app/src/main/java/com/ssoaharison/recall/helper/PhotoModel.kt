@@ -7,5 +7,5 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class PhotoModel(
     val name: String,
-    val bmp: Bitmap
+    val bmp: Bitmap?
 ): Parcelable
