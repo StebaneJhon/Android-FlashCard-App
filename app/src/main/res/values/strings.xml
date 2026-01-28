@@ -335,4 +335,5 @@
     <string name="sort_decks">Sort decks</string>
     <string name="edit_deck_name">Edit deck name</string>
     <string name="include_subdecks">Include subdecks</string>
+    <string name="search_decks_or_cards">Search decks or cards</string>
 </resources>

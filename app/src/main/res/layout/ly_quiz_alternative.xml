@@ -26,7 +26,7 @@
         android:clipToOutline="true"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_launcher_background"
-        android:layout_marginStart="@dimen/space_sm"
+        android:layout_marginStart="@dimen/space_md"
         app:layout_constraintStart_toEndOf="@id/img_leading_icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -37,7 +37,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/space_xxs"
-        android:layout_marginStart="@dimen/space_sm"
+        android:background="@drawable/bg_radius_sm"
+        android:backgroundTint="?colorSurfaceContainerLow"
+        android:layout_marginStart="@dimen/space_md"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_leading_icon"
         app:layout_constraintTop_toBottomOf="@id/img_photo">
@@ -55,7 +57,7 @@
         android:textAlignment="textStart"
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_sm"
-        android:layout_marginStart="@dimen/space_sm"
+        android:layout_marginStart="@dimen/space_md"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/img_leading_icon"

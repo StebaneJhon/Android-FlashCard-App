@@ -24,7 +24,7 @@
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Search decks or cards"
+            android:hint="@string/search_decks_or_cards"
             android:textAppearance="@style/TextAppearance.App.Hint"
             android:backgroundTint="?colorSurfaceContainerLow"
             app:navigationIcon="@drawable/icon_menu"
@@ -38,7 +38,7 @@
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:hint="Search decks or cards"
+        android:hint="@string/search_decks_or_cards"
         app:layout_anchor="@id/search_bar">
 
         <include
@@ -224,10 +224,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="right|bottom"
+        android:layout_gravity="end|bottom"
         android:layout_marginBottom="70dp"
         android:layout_marginEnd="30dp"
-        android:gravity="right">
+        android:gravity="end">
         <Button
             android:id="@+id/bt_add_subdeck"
             android:layout_width="wrap_content"
@@ -295,8 +295,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:contentDescription="@string/add_card"
+                    android:contentDescription="@string/start_quiz_button_text"
                     app:icon="@drawable/icon_neurology"
+                    android:backgroundTint="?colorSurfaceContainerLow"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minWidth="48dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frameLayout"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <Button
+                    android:id="@+id/bt_start_flash_cards"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/bt_flash_card_game_start"
+                    app:icon="@drawable/icon_cards_stack"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 

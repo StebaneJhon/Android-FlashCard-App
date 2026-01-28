@@ -91,7 +91,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -99,7 +98,9 @@ import java.io.IOException
 import java.util.Locale
 import androidx.core.content.edit
 import com.ssoaharison.recall.backend.models.toLocal
+import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
+import com.ssoaharison.recall.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 
 
 class CardFragment :
@@ -318,6 +319,12 @@ class CardFragment :
         binding.btStartQuiz.setOnClickListener {
             onStartQuiz(cardViewModel.getActualDeck()) { deckWithCards ->
                 lunchQuiz(deckWithCards, QUIZ)
+            }
+        }
+
+        binding.btStartFlashCards.setOnClickListener {
+            onStartQuiz(cardViewModel.getActualDeck()) { deckWithCads ->
+                lunchQuiz(deckWithCads, FLASH_CARD_QUIZ)
             }
         }
 
@@ -1089,11 +1096,11 @@ class CardFragment :
         quizMode: String
     ) {
         when (quizMode) {
-//            FLASH_CARD_QUIZ -> {
-//                val intent = Intent(appContext, FlashCardGameActivity::class.java)
-//                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
-//                startActivity(intent)
-//            }
+            FLASH_CARD_QUIZ -> {
+                val intent = Intent(appContext, FlashCardGameActivity::class.java)
+                intent.putExtra(FlashCardGameActivity.DECK_ID_KEY, deckWithCards)
+                startActivity(intent)
+            }
 //
 //            MULTIPLE_CHOICE_QUIZ -> {
 //                if (deckWithCards.cards?.size!! >= MIN_CARD_FOR_MULTI_CHOICE_QUIZ) {

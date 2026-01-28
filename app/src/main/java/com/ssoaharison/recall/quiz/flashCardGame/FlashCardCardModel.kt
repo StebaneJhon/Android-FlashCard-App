@@ -1,9 +1,9 @@
 package com.ssoaharison.recall.quiz.flashCardGame
 
-import com.ssoaharison.recall.backend.models.ImmutableCard
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 
 data class FlashCardCardModel(
-    val card: ImmutableCard,
+    val card: ExternalCardWithContentAndDefinitions,
     var isActualOrPassed: Boolean = false,
 ) {
     fun setAsActualOrPassed() {
