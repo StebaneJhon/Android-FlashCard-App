@@ -11,12 +11,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,7 +26,11 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -60,7 +66,12 @@ import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.databinding.LyQuizQuestionBinding
+import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.PhotoModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
@@ -69,6 +80,7 @@ import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Locale
 
 
@@ -102,6 +114,15 @@ class FlashCardGameActivity :
 //    private lateinit var tvDefinitions: List<TextView>
     private lateinit var tvDefinitions: List<FlashcardContentLyModel>
     private val EXTRA_MARGIN = -2
+
+    var lastPlayedAudioFile: AudioModel? = null
+    var lastPlayedAudioViw: LyAudioPlayerBinding? = null
+
+    var statusBarHeight: Float = 58f
+
+    private val player by lazy {
+        AndroidAudioPlayer(this)
+    }
 
     companion object {
         const private val MIN_SWIPE_DISTANCE = -275
@@ -147,6 +168,26 @@ class FlashCardGameActivity :
         val view = binding.root
 
         setContentView(view)
+
+        WindowCompat.enableEdgeToEdge(window)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout2) { v, windowInserts ->
+            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+            val px = insets.top
+            statusBarHeight = px / resources.displayMetrics.density
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            WindowInsetsCompat.CONSUMED
+        }
+
+//        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+//        statusBarHeight = if (resourceId > 0) {
+//            val px = resources.getDimensionPixelSize(resourceId).toFloat()
+//            px / resources.displayMetrics.density
+//        } else {
+//            0f
+//        }
+
         deckWithCards?.let {
             val cardList = it.cards?.toMutableList()
             val deck = it.deck
@@ -330,7 +371,7 @@ class FlashCardGameActivity :
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
-        val extraPaddings = resources.getDimension(R.dimen.space_md)
+        val extraPaddings = resources.getDimension(R.dimen.space_lg).plus(statusBarHeight)
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
         val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
         val currentX = card.x
@@ -350,7 +391,7 @@ class FlashCardGameActivity :
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
         val cardHeight = binding.cvCardFront.height
-        val extraPaddings = resources.getDimension(R.dimen.space_md)
+        val extraPaddings = resources.getDimension(R.dimen.space_lg).plus(statusBarHeight)
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
         val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
         val currentX = card.x
@@ -521,7 +562,7 @@ class FlashCardGameActivity :
             val displayMetrics = resources.displayMetrics
             val cardWidth = view.width
             val cardHeight = binding.cvCardFront.height
-            val extraPaddings = resources.getDimension(R.dimen.space_md)
+            val extraPaddings = resources.getDimension(R.dimen.space_lg).plus(statusBarHeight)
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
             val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
 
@@ -811,13 +852,18 @@ class FlashCardGameActivity :
                 com.google.android.material.R.attr.colorSurfaceContainerHigh
             )
 //            val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
+            onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText?.let { text ->
+
+            }
             val text = onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText
-            // TODO: Include Image and Audio
+
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
                 deckColorCode,
                 text,
+                onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionImage,
+                onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionAudio,
             )
         } else {
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(
@@ -826,12 +872,14 @@ class FlashCardGameActivity :
             )
 //            val text = onScreenCards.bottom?.cardContent?.content
             val text = onScreenCards.bottom?.contentWithDefinitions?.content?.contentText
-            // TODO: Include Image and Audio
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
                 deckColorCode,
-                text,)
+                text,
+                onScreenCards.bottom?.contentWithDefinitions?.content?.contentImage,
+                onScreenCards.bottom?.contentWithDefinitions?.content?.contentAudio,
+                )
         }
         bindCardFrontAndBack(deckColorCode, onScreenCards,)
     }
@@ -843,18 +891,82 @@ class FlashCardGameActivity :
         binding.cvCardFront.backgroundTintList = deckColorCode
 
 //        binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
-        binding.inFront.tvText.text = onScreenCards.top.contentWithDefinitions.content.contentText
-        // TODO: Include Image and Audio
+        //binding.inFront.tvText.text = onScreenCards.top.contentWithDefinitions.content.contentText
+        val contentText = onScreenCards.top.contentWithDefinitions.content.contentText
+        val contentImage = onScreenCards.top.contentWithDefinitions.content.contentImage
+        val contentAudio = onScreenCards.top.contentWithDefinitions.content.contentAudio
+        if (contentText != null) {
+            binding.inFront.tvText.apply {
+                visibility = View.VISIBLE
+                text = contentText
+            }
+        } else {
+            binding.inFront.tvText.visibility = View.GONE
+        }
+
+        if (contentImage != null) {
+            val photoFile = File(this.filesDir, contentImage.name)
+            val photoBytes = photoFile.readBytes()
+            val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+            binding.inFront.imgPhoto.apply {
+                visibility = View.VISIBLE
+                setImageBitmap(photoBtm)
+            }
+        } else {
+            binding.inFront.imgPhoto.visibility = View.GONE
+        }
+
+        if (contentAudio != null) {
+            binding.inFront.llAudioContainer.visibility = View.VISIBLE
+            binding.inFront.inAudioPlayer.btPlay.setOnClickListener {
+                playPauseAudio(binding.inFront.inAudioPlayer, contentAudio)
+            }
+        } else {
+            binding.inFront.llAudioContainer.visibility = View.GONE
+        }
 
 //        val correctDefinitions = getCorrectDefinition(onScreenCards.top.cardDefinition)
         val correctDefinitions = getCorrectDefinition(onScreenCards.top.contentWithDefinitions.definitions)
         val views = arrayListOf<TextView>()
-        // TODO: Include Image and Audio
         tvDefinitions.forEachIndexed { index, ly ->
             if (index < correctDefinitions?.size!!) {
                 ly.container.visibility = View.VISIBLE
 //                tv.text = correctDefinitions[index].definition
-                ly.view.tvText.text = correctDefinitions[index].definitionText
+                //ly.view.tvText.text = correctDefinitions[index].definitionText
+                val definitionText = correctDefinitions[index].definitionText
+                val definitionImage = correctDefinitions[index].definitionImage
+                val definitionAudio = correctDefinitions[index].definitionAudio
+
+                if (definitionText != null) {
+                    ly.view.tvText.apply {
+                        visibility = View.VISIBLE
+                        text = definitionText
+                    }
+                } else {
+                    ly.view.tvText.visibility = View.GONE
+                }
+
+                if (definitionImage != null) {
+                    val photoFile = File(this.filesDir, definitionImage.name)
+                    val photoBytes = photoFile.readBytes()
+                    val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                    ly.view.imgPhoto.apply {
+                        visibility = View.VISIBLE
+                        setImageBitmap(photoBtm)
+                    }
+                } else {
+                    ly.view.imgPhoto.visibility = View.GONE
+                }
+
+                if (definitionAudio != null) {
+                    ly.view.llAudioContainer.visibility = View.VISIBLE
+                    ly.view.inAudioPlayer.btPlay.setOnClickListener {
+                        playPauseAudio(ly.view.inAudioPlayer, definitionAudio)
+                    }
+                } else {
+                    ly.view.llAudioContainer.visibility = View.GONE
+                }
+
                 views.add(ly.view.tvText)
             } else {
                 ly.container.visibility = View.GONE
@@ -1083,14 +1195,95 @@ class FlashCardGameActivity :
         onScreenCards: FlashCardGameModel,
         deckColorCode: ColorStateList?,
         text: String?,
+        image: PhotoModel?,
+        audioModel: AudioModel?
     ) {
         binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
         if (onScreenCards.bottom != null) {
             binding.cvCardBottom.backgroundTintList = deckColorCode
-            binding.inBottom.tvText.text = text
+            //binding.inBottom.tvText.text = text
+            if (text != null) {
+                binding.inBottom.tvText.visibility = View.VISIBLE
+                binding.inBottom.tvText.text = text
+            } else {
+                binding.inBottom.tvText.visibility = View.GONE
+            }
+
+            if (image != null) {
+                val photoFile = File( this.filesDir, image.name)
+                val photoBytes = photoFile.readBytes()
+                val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                binding.inBottom.imgPhoto.apply {
+                    visibility = View.VISIBLE
+                    setImageBitmap(photoBtm)
+                }
+            } else {
+                binding.inBottom.imgPhoto.visibility = View.GONE
+            }
+
+            if (audioModel != null) {
+                binding.inBottom.llAudioContainer.visibility = View.VISIBLE
+                binding.inBottom.inAudioPlayer.btPlay.setOnClickListener {
+                    playPauseAudio(binding.inBottom.inAudioPlayer, audioModel)
+                }
+            } else {
+                binding.inBottom.llAudioContainer.visibility = View.GONE
+            }
+
         } else {
             binding.cvCardBottom.backgroundTintList = deckColorCode
             binding.inBottom.tvText.text = "..."
+        }
+    }
+
+    private fun playPauseAudio(
+        view: LyAudioPlayerBinding,
+        audio: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                // Resume audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                // Pause audio
+                view.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                // Play audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                val audioFile = File(this.filesDir, audio.name)
+                player.playFile(audioFile)
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+                player.onCompletion {
+                    lastPlayedAudioFile = null
+                    lastPlayedAudioViw = null
+                    view.btPlay.setIconResource(R.drawable.icon_play)
+                }
+            }
         }
     }
 

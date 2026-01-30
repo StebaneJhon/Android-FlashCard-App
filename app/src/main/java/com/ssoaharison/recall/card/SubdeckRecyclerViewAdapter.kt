@@ -2,6 +2,7 @@ package com.ssoaharison.recall.card
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -9,15 +10,21 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.annotation.MenuRes
+import androidx.appcompat.content.res.AppCompatResources.getColorStateList
 import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.divider.MaterialDivider
 import com.google.android.material.textview.MaterialTextView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
@@ -59,7 +66,7 @@ class SubdeckRecyclerViewAdapter(
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         private val deckNameTV: TextView? = view.findViewById(R.id.deckNameTV)
-        private val deckRoot: MaterialCardView? = view.findViewById(R.id.deckRoot)
+        private val deckRoot: ConstraintLayout? = view.findViewById(R.id.deckRoot)
         private val vwCardSum: TextView = view.findViewById(R.id.in_cards_sum)
         private val llCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_cards_sum)
         private val vwKnownCardSum: TextView = view.findViewById(R.id.in_known_cards_sum)
@@ -68,6 +75,9 @@ class SubdeckRecyclerViewAdapter(
         private val llUnKnownCardSumContainer: LinearLayout = view.findViewById(R.id.ll_container_un_known_cards_Sum)
         private val popupMenuBT: Button? = view.findViewById(R.id.popup_menu_BT)
         private val tvDeckCreationDate: TextView = view.findViewById(R.id.tv_deck_creation_date)
+        private val divider: MaterialDivider = view.findViewById(R.id.divider)
+        private val ivDeck: ImageView = view.findViewById(R.id.iv_deck)
+
         private val ICON_MARGIN = 5
 
 
@@ -85,13 +95,17 @@ class SubdeckRecyclerViewAdapter(
 
             val deckSurfaceColorCode: Int
             val deckTextColorCode: Int
+            val deckSurfaceContainerColorCode: Int
+
 
             if (appTheme == DARK_THEME) {
-                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(context, deck.deckColorCode)
                 deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+                deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
             } else {
-                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckColorCode)
                 deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
+                deckSurfaceContainerColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
             }
 
             deckNameTV?.apply {
@@ -133,7 +147,8 @@ class SubdeckRecyclerViewAdapter(
             }
 
             deckRoot?.apply {
-                setCardBackgroundColor(deckSurfaceColorCode)
+                setBackgroundColor(deckSurfaceColorCode)
+//                setCardBackgroundColor(deckSurfaceColorCode)
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
@@ -160,6 +175,12 @@ class SubdeckRecyclerViewAdapter(
                     deck
                 )
             }
+            divider.dividerColor = deckSurfaceContainerColorCode
+            ivDeck.setColorFilter(deckTextColorCode)
+            ivDeck.backgroundTintList = ColorStateList.valueOf(
+                deckSurfaceContainerColorCode
+            )
+
         }
 
         @SuppressLint("RestrictedApi")
@@ -218,8 +239,8 @@ class SubdeckRecyclerViewAdapter(
 
         companion object {
             fun create(parent: ViewGroup): ViewHolder {
-                val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.recycler_view_adapter_deck_view, parent, false)
+                //val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_adapter_deck_view, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.recycler_view_adapter_deck_view_3, parent, false)
 
                 return ViewHolder(view)
             }

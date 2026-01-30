@@ -74,7 +74,7 @@
                     android:id="@+id/tv_subdecks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
+                    android:fontFamily="@font/open_sans"
                     android:text="@string/tv_deck_text"
                     android:textColor="?colorPrimary"
                     android:textSize="@dimen/text_xs"
@@ -98,13 +98,21 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:dividerColor="?colorSurfaceContainerLow"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/subdeckRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?colorSurfaceContainerLowest"
                 android:transitionGroup="true"
-                android:paddingHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +127,7 @@
                     android:id="@+id/tv_cards"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_bold"
+                    android:fontFamily="@font/open_sans"
                     android:text="@string/tv_cards_text"
                     android:textColor="?colorPrimary"
                     android:textSize="@dimen/text_xs"

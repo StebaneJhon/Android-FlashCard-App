@@ -49,10 +49,54 @@ class DeckColorCategorySelector {
         ROSE to R.color.rose100,
     )
 
+    private val deckColorSurfaceContainer = mapOf(
+//        WHITE to R.color.neutral100,
+        GREY to R.color.neutral200,
+//        BLACK to R.color.neutral950,
+        RED to R.color.red200,
+        ORANGE to R.color.orange200,
+        YELLOW to R.color.yellow200,
+        LIME to R.color.lime200,
+        GREEN to R.color.green200,
+        EMERALD to R.color.emerald200,
+        TEAL to R.color.teal200,
+        CYAN to R.color.cyan200,
+        SKY to R.color.sky200,
+        BLUE to R.color.blue200,
+        INDIGO to R.color.indigo200,
+        VIOLET to R.color.violet200,
+        PURPLE to R.color.purple200,
+        FUCHSIA to R.color.fuchsia200,
+        PINK to R.color.pink200,
+        ROSE to R.color.rose200,
+    )
+
     private val deckDarkColorSurfaceLow = mapOf(
 //        WHITE to R.color.neutral900,
         GREY to R.color.neutral900,
 //        BLACK to R.color.neutral700,
+        RED to R.color.red900,
+        ORANGE to R.color.orange900,
+        YELLOW to R.color.yellow900,
+        LIME to R.color.lime900,
+        GREEN to R.color.green900,
+        EMERALD to R.color.emerald900,
+        TEAL to R.color.teal900,
+        CYAN to R.color.cyan900,
+        SKY to R.color.sky900,
+        BLUE to R.color.blue900,
+        INDIGO to R.color.indigo900,
+        VIOLET to R.color.violet900,
+        PURPLE to R.color.purple900,
+        FUCHSIA to R.color.fuchsia900,
+        PINK to R.color.pink900,
+        ROSE to R.color.rose900,
+    )
+
+    private val deckDarkColorSurfaceContainer = mapOf(
+//        WHITE to R.color.neutral100,
+        GREY to R.color.neutral900,
+//        BLACK to R.color.neutral950,
         RED to R.color.red900,
         ORANGE to R.color.orange900,
         YELLOW to R.color.yellow900,
@@ -175,12 +219,32 @@ class DeckColorCategorySelector {
         }
     }
 
+    fun selectDeckColorSurfaceContainer(context: Context, color: String?): Int {
+        return if (color in this.deckColorSurfaceContainer.keys) {
+            ContextCompat.getColor(context, this.deckColorSurfaceContainer.getOrDefault(color, R.color.neutral200))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
+            ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
     fun selectDeckDarkColorSurfaceContainerLow(context: Context, color: String?): Int {
         return if (color in this.deckColorSurfaceLow.keys) {
             ContextCompat.getColor(context, this.deckDarkColorSurfaceLow.getOrDefault(color, R.color.neutral100))
         } else {
             val typedValue = TypedValue()
             context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainerLow, typedValue, true)
+            ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
+        }
+    }
+
+    fun selectDeckDarkColorSurfaceContainer(context: Context, color: String?): Int {
+        return if (color in this.deckDarkColorSurfaceContainer.keys) {
+            ContextCompat.getColor(context, this.deckDarkColorSurfaceContainer.getOrDefault(color, R.color.neutral900))
+        } else {
+            val typedValue = TypedValue()
+            context.theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, typedValue, true)
             ResourcesCompat.getColor(context.resources, typedValue.resourceId, context.theme)
         }
     }

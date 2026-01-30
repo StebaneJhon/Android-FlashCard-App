@@ -944,7 +944,7 @@ class CardFragment :
             isVisible = true
             adapter = subdeckRecyclerViewAdapter
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(appContext)
+            layoutManager = LinearLayoutManager(appContext, RecyclerView.VERTICAL, false)
         }
     }
 
