@@ -5,6 +5,8 @@ import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -132,9 +134,10 @@ class QuizGameAdapter(
         ) {
 
             if (card.cardContent.contentText != null) {
+                val spannableString = Html.fromHtml(card.cardContent.contentText, FROM_HTML_MODE_LEGACY).trim()
                 binding.inContent.tvText.apply {
                     visibility = View.VISIBLE
-                    text = card.cardContent.contentText
+                    text = spannableString
                 }
             } else {
                 binding.inContent.tvText.visibility = View.GONE
@@ -414,9 +417,10 @@ class QuizGameAdapter(
                 }
 
                 if (card.cardDefinition.first().definition != null) {
+                    val spannableString = Html.fromHtml(card.cardDefinition.first().definition, FROM_HTML_MODE_LEGACY).trim()
                     binding.inDefinition.tvText.apply {
                         visibility = View.VISIBLE
-                        text = card.cardDefinition.first().definition
+                        text = spannableString
                     }
                 } else {
                     binding.inDefinition.tvText.visibility = View.GONE
@@ -494,9 +498,10 @@ class QuizGameAdapter(
                         alternative.container.visibility = View.VISIBLE
 
                         if (card.cardDefinition[index].definition != null) {
+                            val spannableString = Html.fromHtml(card.cardDefinition[index].definition, FROM_HTML_MODE_LEGACY).trim()
                             alternative.view.tvText.apply {
                                 visibility = View.VISIBLE
-                                text = card.cardDefinition[index].definition
+                                text = spannableString
                             }
                         } else {
                             alternative.view.tvText.visibility = View.GONE

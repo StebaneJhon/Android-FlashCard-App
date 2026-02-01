@@ -78,7 +78,6 @@
         android:textAlignment="textStart"
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_sm"
-        android:textStyle="bold"
         tools:text="Content"/>
 
 </LinearLayout>

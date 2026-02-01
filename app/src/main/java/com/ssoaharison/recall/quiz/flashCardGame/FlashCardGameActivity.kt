@@ -16,6 +16,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -852,9 +854,9 @@ class FlashCardGameActivity :
                 com.google.android.material.R.attr.colorSurfaceContainerHigh
             )
 //            val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
-            onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText?.let { text ->
-
-            }
+//            onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText?.let { text ->
+//
+//            }
             val text = onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText
 
             bindCardBottom(
@@ -896,9 +898,10 @@ class FlashCardGameActivity :
         val contentImage = onScreenCards.top.contentWithDefinitions.content.contentImage
         val contentAudio = onScreenCards.top.contentWithDefinitions.content.contentAudio
         if (contentText != null) {
+            val spannableString = Html.fromHtml(contentText, FROM_HTML_MODE_LEGACY).trim()
             binding.inFront.tvText.apply {
                 visibility = View.VISIBLE
-                text = contentText
+                text = spannableString
             }
         } else {
             binding.inFront.tvText.visibility = View.GONE
@@ -938,9 +941,10 @@ class FlashCardGameActivity :
                 val definitionAudio = correctDefinitions[index].definitionAudio
 
                 if (definitionText != null) {
+                    val spannableString = Html.fromHtml(definitionText, FROM_HTML_MODE_LEGACY).trim()
                     ly.view.tvText.apply {
                         visibility = View.VISIBLE
-                        text = definitionText
+                        text = spannableString
                     }
                 } else {
                     ly.view.tvText.visibility = View.GONE
@@ -1203,8 +1207,9 @@ class FlashCardGameActivity :
             binding.cvCardBottom.backgroundTintList = deckColorCode
             //binding.inBottom.tvText.text = text
             if (text != null) {
+                val spannableString = Html.fromHtml(text, FROM_HTML_MODE_LEGACY).trim()
                 binding.inBottom.tvText.visibility = View.VISIBLE
-                binding.inBottom.tvText.text = text
+                binding.inBottom.tvText.text = spannableString
             } else {
                 binding.inBottom.tvText.visibility = View.GONE
             }

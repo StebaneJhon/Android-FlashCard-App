@@ -9,7 +9,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.ImageDecoder
+import android.graphics.Typeface
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.icu.text.DecimalFormat
@@ -19,6 +21,14 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.speech.RecognizerIntent
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
+import android.text.Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL
+import android.text.Spannable
+import android.text.style.CharacterStyle
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.TypedValue
 import android.view.ActionMode
 import android.view.LayoutInflater
@@ -51,6 +61,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
@@ -63,6 +74,7 @@ import com.ssoaharison.recall.util.Constant
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.TextRecognition
@@ -122,6 +134,9 @@ class NewCardDialog(
     private lateinit var importCardsFromDeviceModel: CardImportFromDeviceModel
     private lateinit var attachBottomSheetDialog: AttachBottomSheetDialog
     private lateinit var scanBottomSheetDialog: ScanBottomSheetDialog
+
+    var colorSurfaceContainerLow: Int = Color.WHITE
+    var colorPrimary: Int = Color.BLACK
 
     private val recorder by lazy {
         AndroidAudioRecorder(requireContext())
@@ -420,6 +435,15 @@ class NewCardDialog(
 
         initFields()
 
+        colorSurfaceContainerLow = MaterialColors.getColor(
+            binding.inFormatOptions.btFormatBold,
+            com.google.android.material.R.attr.colorSurfaceContainerLow
+        )
+        colorPrimary = MaterialColors.getColor(
+            binding.inFormatOptions.btFormatBold,
+            com.google.android.material.R.attr.colorPrimarySurface
+        )
+
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
@@ -497,6 +521,161 @@ class NewCardDialog(
         binding.btScan.setOnClickListener {
             onScan()
         }
+        binding.btFormat.setOnClickListener {
+            if (newCardViewModel.getActiveFieldIndex() != null) {
+                binding.containerFormatOptions.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
+            }
+        }
+        binding.inFormatOptions.btClose.setOnClickListener {
+            binding.containerFormatOptions.visibility = View.GONE
+        }
+        binding.inFormatOptions.btFormatBold.setOnClickListener {
+            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
+                if (fieldIndex == -1) {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatBold,
+                        binding.lyContent.tieContentText,
+                        StyleSpan(Typeface.BOLD)
+                    )
+                } else {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatBold,
+                        definitionFields[fieldIndex].ly.tieText,
+                        StyleSpan(Typeface.BOLD)
+                    )
+                }
+            }
+        }
+        binding.inFormatOptions.btFormatItalic.setOnClickListener {
+            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
+                if (fieldIndex == -1) {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatItalic,
+                        binding.lyContent.tieContentText,
+                        StyleSpan(Typeface.ITALIC)
+                    )
+                } else {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatItalic,
+                        definitionFields[fieldIndex].ly.tieText,
+                        StyleSpan(Typeface.ITALIC)
+                    )
+                }
+            }
+        }
+        binding.inFormatOptions.btFormatUnderlined.setOnClickListener {
+            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
+                if (fieldIndex == -1) {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatUnderlined,
+                        binding.lyContent.tieContentText,
+                        UnderlineSpan()
+                    )
+                } else {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatUnderlined,
+                        definitionFields[fieldIndex].ly.tieText,
+                        UnderlineSpan()
+                    )
+                }
+            }
+        }
+        binding.inFormatOptions.btFormatStrikethrough.setOnClickListener {
+            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
+                if (fieldIndex == -1) {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatStrikethrough,
+                        binding.lyContent.tieContentText,
+                        StrikethroughSpan()
+                    )
+                } else {
+                    onFormatButtonClicked(
+                        binding.inFormatOptions.btFormatStrikethrough,
+                        definitionFields[fieldIndex].ly.tieText,
+                        StrikethroughSpan()
+                    )
+                }
+            }
+        }
+
+
+    }
+
+    fun onFormatButtonClicked(button: MaterialButton, field: TextInputEditText, span: Any) {
+        val start = field.selectionStart
+        val end = field.selectionEnd
+        val editable = field.text
+
+        editable?.let { editable ->
+            val spans = when (span) {
+                is StyleSpan -> editable.getSpans(start, end, StyleSpan::class.java)?.filter { it.style == span.style}
+                is UnderlineSpan -> editable.getSpans(start, end, UnderlineSpan::class.java).toList()
+                is StrikethroughSpan -> editable.getSpans(start, end, StrikethroughSpan::class.java).toList()
+                else -> emptyList<CharacterStyle>()
+            }
+
+            if (spans?.isNotEmpty() == true) {
+                button.apply {
+                    backgroundTintList = ColorStateList.valueOf(colorSurfaceContainerLow)
+                    iconTint = ColorStateList.valueOf(colorPrimary)
+                }
+                spans.forEach { span ->
+                    val s = editable.getSpanStart(span)
+                    if (start == end) {
+                        editable.setSpan(span, s, start, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    } else {
+                        editable.removeSpan(span)
+                    }
+                }
+            } else {
+                button.apply {
+                    backgroundTintList = ColorStateList.valueOf(colorPrimary)
+                    iconTint = ColorStateList.valueOf(colorSurfaceContainerLow)
+                }
+                applyFormatToSelection(field, span, start, end)
+            }
+        }
+
+    }
+
+    private fun applyFormatToSelection(field: TextInputEditText, span: Any, start: Int, end: Int) {
+        field.text?.setSpan(
+            span,
+            start,
+            end,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+    }
+
+    private fun updateFormatButtonUi(field: TextInputEditText) {
+        val start = field.selectionStart
+        val end = field.selectionEnd
+        val editable = field.text
+
+        val isBold = editable?.getSpans(start, end, StyleSpan::class.java)?.any {it.style == Typeface.BOLD } ?: false
+        val isItalic = editable?.getSpans(start, end, StyleSpan::class.java)?.any {it.style == Typeface.ITALIC } ?: false
+        val underlineSpan = editable?.getSpans(start, end, UnderlineSpan::class.java)?.isNotEmpty() ?: false
+        val strikethroughSpan = editable?.getSpans(start, end, StrikethroughSpan::class.java)?.isNotEmpty() ?: false
+
+        binding.inFormatOptions.btFormatBold.apply {
+            backgroundTintList = ColorStateList.valueOf(if (isBold) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (isBold) colorSurfaceContainerLow else colorPrimary)
+        }
+        binding.inFormatOptions.btFormatItalic.apply {
+            backgroundTintList = ColorStateList.valueOf(if (isItalic) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (isItalic) colorSurfaceContainerLow else colorPrimary)
+        }
+        binding.inFormatOptions.btFormatUnderlined.apply {
+            backgroundTintList = ColorStateList.valueOf(if (underlineSpan) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (underlineSpan) colorSurfaceContainerLow else colorPrimary)
+        }
+        binding.inFormatOptions.btFormatStrikethrough.apply {
+            backgroundTintList = ColorStateList.valueOf(if (strikethroughSpan) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (strikethroughSpan) colorSurfaceContainerLow else colorPrimary)
+        }
+
 
     }
 
@@ -1237,12 +1416,18 @@ class NewCardDialog(
 
     fun displayContentField(content: ContentFieldModel) {
         content.contentText?.let { text ->
-            binding.lyContent.tieContentText.setText(text)
-            binding.lyContent.tieContentText.setSelection(text.length)
+            val spannableString = Html.fromHtml(text, FROM_HTML_MODE_LEGACY).trim()
+            binding.lyContent.tieContentText.setText(spannableString)
+            binding.lyContent.tieContentText.setSelection(spannableString.length)
+        }
+
+        binding.lyContent.tieContentText.setOnClickListener {
+            updateFormatButtonUi(binding.lyContent.tieContentText)
         }
 
         binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
+                enableFormatButton(true)
                 onFieldFocused(
                     fieldViewContainer = binding.lyContent.llContentField,
                     v = v,
@@ -1262,6 +1447,7 @@ class NewCardDialog(
                     enableTranslateButton(false)
                 }
             } else {
+                enableFormatButton(false)
                 onFieldFocused(
                     fieldViewContainer = binding.lyContent.llContentField,
                     v = v,
@@ -1272,7 +1458,10 @@ class NewCardDialog(
             }
         }
         binding.lyContent.tieContentText.addTextChangedListener { text ->
-            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = text.toString()))
+            updateFormatButtonUi(binding.lyContent.tieContentText)
+            val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_INDIVIDUAL).trim()
+//            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = htmlText))
+            newCardViewModel.updateContentText(htmlText)
         }
 
         if (content.contentImage != null) {
@@ -1309,6 +1498,11 @@ class NewCardDialog(
         binding.btTranslate.isClickable = enable
     }
 
+    private fun enableFormatButton(enable: Boolean) {
+        binding.btFormat.isEnabled = enable
+        binding.btFormat.isEnabled = enable
+    }
+
     private fun displayDefinitionFields(fields: List<DefinitionFieldModel>) {
         definitionFields.forEachIndexed { index, fieldView ->
             if (index < fields.size) {
@@ -1316,8 +1510,9 @@ class NewCardDialog(
                 val actualDefinitionFieldModel = fields[index]
 
                 actualDefinitionFieldModel.definitionText?.let { text ->
-                    fieldView.ly.tieText.setText(text)
-                    fieldView.ly.tieText.setSelection(text.length)
+                    val spannableString = Html.fromHtml(text, FROM_HTML_MODE_LEGACY).trim()
+                    fieldView.ly.tieText.setText(spannableString)
+                    fieldView.ly.tieText.setSelection(spannableString.length)
                 }
 
                 if (actualDefinitionFieldModel.definitionImage != null) {
@@ -1341,13 +1536,19 @@ class NewCardDialog(
                     // TODO: On wrong definition
                 }
                 fieldView.ly.tieText.addTextChangedListener { text ->
+                    updateFormatButtonUi(fieldView.ly.tieText)
+                    val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_INDIVIDUAL).trim()
                     newCardViewModel.updateDefinitionText(
                         id = actualDefinitionFieldModel.definitionId,
-                        text = text.toString()
+                        text = htmlText
                     )
+                }
+                fieldView.ly.tieText.setOnClickListener {
+                    updateFormatButtonUi(fieldView.ly.tieText)
                 }
                 fieldView.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {
+                        enableFormatButton(true)
                         if (newCardViewModel.hasContentText()) {
                             enableTranslateButton(true)
                         } else {
@@ -1360,6 +1561,7 @@ class NewCardDialog(
                         )
                         newCardViewModel.changeFieldFocus(index)
                     } else {
+                        enableFormatButton(false)
                         onFieldFocused(
                             fieldViewContainer = fieldView.ly.clContainerField,
                             v = v,

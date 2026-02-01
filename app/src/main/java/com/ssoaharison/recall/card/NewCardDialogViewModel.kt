@@ -82,6 +82,14 @@ class NewCardDialogViewModel(
     fun updateContentField(updatedContentField: ContentFieldModel) {
         _contentField.update { updatedContentField }
     }
+
+    fun updateContentText(text: String) {
+        _contentField.update { field ->
+            field.contentText = text
+            field
+        }
+    }
+
     fun initContentField(content: ExternalCardContent?) {
         _contentField.update {
             if (content == null) {

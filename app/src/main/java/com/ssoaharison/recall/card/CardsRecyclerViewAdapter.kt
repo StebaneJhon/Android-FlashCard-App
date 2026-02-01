@@ -3,6 +3,8 @@ package com.ssoaharison.recall.card
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.InsetDrawable
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.util.TypedValue
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
@@ -172,9 +174,9 @@ class CardsRecyclerViewAdapter(
                     descriptionContainer[index].visibility = View.VISIBLE
                     cardDescriptionError.visibility = View.GONE
                     if (correctDefinition[index].definitionText != null) {
-                        val tvDefinition: TextView =
-                            descriptionView.findViewById(R.id.tv_definition)
-                        tvDefinition.text = correctDefinition[index].definitionText
+                        val tvDefinition: TextView = descriptionView.findViewById(R.id.tv_definition)
+                        val spannableString = Html.fromHtml(correctDefinition[index].definitionText, FROM_HTML_MODE_LEGACY).trim()
+                        tvDefinition.text = spannableString
                     }
 
                     if (card.contentWithDefinitions.definitions[index].definitionImage != null) {
@@ -325,8 +327,9 @@ class CardsRecyclerViewAdapter(
             }
 
             if (card.contentWithDefinitions.content.contentText != null) {
+                val spannableString = Html.fromHtml(card.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).trim()
                 content.findViewById<TextView>(R.id.tv_content).apply {
-                    text = card.contentWithDefinitions.content.contentText
+                    text = spannableString
 //                    setTextColor(context.getColor(contentTextColor))
                 }
             }
@@ -366,7 +369,6 @@ class CardsRecyclerViewAdapter(
 //                backgroundTintList = cardBackgroundStateList
             }
 
-            // TODO: Include Audio
             if (card.contentWithDefinitions.content.contentAudio != null) {
                 content.findViewById<LinearLayout>(R.id.ll_content_container_audio).visibility =
                     View.VISIBLE
@@ -381,8 +383,10 @@ class CardsRecyclerViewAdapter(
                 }
             }
             if (card.contentWithDefinitions.content.contentText != null) {
+                val spannableString = Html.fromHtml(card.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).trim()
+
                 content.findViewById<TextView>(R.id.tv_content).apply {
-                    text = card.contentWithDefinitions.content.contentText
+                    text = spannableString
 //                    setTextColor(context.getColor(contentTextColor))
                 }
             }

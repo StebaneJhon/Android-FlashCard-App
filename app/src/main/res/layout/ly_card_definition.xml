@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/open_sans"
         android:textAlignment="textStart"
-        android:textColor="?colorPrimary"
+        android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_sm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
