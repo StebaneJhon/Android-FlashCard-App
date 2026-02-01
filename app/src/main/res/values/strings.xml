@@ -336,4 +336,10 @@
     <string name="edit_deck_name">Edit deck name</string>
     <string name="include_subdecks">Include subdecks</string>
     <string name="search_decks_or_cards">Search decks or cards</string>
+    <string name="format_text">Format text</string>
+    <string name="format_bold">Format bold</string>
+    <string name="format_italic">Format italic</string>
+    <string name="format_underline">Format underline</string>
+    <string name="format_strikethrough">Format strikethrough</string>
+    <string name="format_clear">Format clear</string>
 </resources>

@@ -361,9 +361,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:minWidth="48dp"
+                android:layout_marginBottom="@dimen/space_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <Button
                     android:id="@+id/bt_add_media"
@@ -382,9 +382,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:minWidth="48dp"
+                android:layout_marginBottom="@dimen/space_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout2"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintStart_toEndOf="@+id/frameLayout2">
 
                 <Button
                     android:id="@+id/bt_scan"
@@ -398,13 +398,14 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/frameLayout3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:minWidth="48dp"
+                android:layout_marginBottom="@dimen/space_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintStart_toEndOf="@+id/frameLayout">
 
                 <Button
                     android:id="@+id/bt_translate"
@@ -420,14 +421,53 @@
             </FrameLayout>
 
             <FrameLayout
+                android:id="@+id/frameLayout4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:minWidth="48dp"
+                android:layout_marginBottom="@dimen/space_sm"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/frameLayout3">
+
+                <Button
+                    android:id="@+id/bt_format"
+                    style="?attr/materialIconButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/format_text"
+                    app:icon="@drawable/icon_text_format"
+                    android:backgroundTint="?colorSurfaceContainerLow"
+                    android:enabled="false"
+                    android:clickable="false"/>
+            </FrameLayout>
+
+            <FrameLayout
+                android:visibility="gone"
+                android:id="@+id/container_format_options"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/space_sm"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/frameLayout6">
+
+                <include
+                    android:id="@+id/in_format_options"
+                    layout="@layout/ly_format_text_options" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frameLayout6"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:minWidth="48dp"
                 android:layout_marginVertical="@dimen/space_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/bt_save"
