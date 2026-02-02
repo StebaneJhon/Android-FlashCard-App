@@ -164,8 +164,7 @@ class QuizGameActivity :
         binding.vpCardHolder.isUserInputEnabled = false
 
         binding.topAppBar.apply {
-            title = getString(R.string.start_quiz_button_text)
-            subtitle = viewModel.deck?.deckName
+            title = viewModel.deck?.deckName
             setNavigationOnClickListener { finish() }
         }
 

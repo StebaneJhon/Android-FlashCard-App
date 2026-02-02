@@ -1503,11 +1503,13 @@ class NewCardDialog(
                     onRemoveDefinitionFieldAudio(fieldView)
                 }
 
-                if (actualDefinitionFieldModel.isCorrectDefinition) {
-                    // TODO: On correct definition
-                } else {
-                    // TODO: On wrong definition
-                }
+//                if (actualDefinitionFieldModel.isCorrectDefinition) {
+//                    // TODO: On correct definition
+//                    onClickChip(true, fieldView.ly.btIsTrue)
+//                } else {
+//                    // TODO: On wrong definition
+//                    onClickChip(false, fieldView.ly.btIsTrue)
+//                }
                 fieldView.ly.tieText.addTextChangedListener { text ->
                     updateFormatButtonUi(fieldView.ly.tieText)
                     val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()

@@ -9,8 +9,8 @@
     app:cardBackgroundColor="?colorSurfaceContainerLow"
     android:layout_marginHorizontal="@dimen/space_xs"
     android:layout_marginBottom="@dimen/space_sm"
-    app:cardCornerRadius="@dimen/card_radius"
-    app:strokeWidth="0dp">
+    app:cardCornerRadius="@dimen/radius_lg"
+    app:strokeColor="?colorSurfaceContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_container_card"
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/inner_deck_border"
         android:backgroundTint="?colorSurfaceContainerLow"
-        android:padding="@dimen/space_sm">
+        android:layout_margin="@dimen/space_sm">
 
         <FrameLayout
             android:id="@+id/container_content"
@@ -27,6 +27,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
+
             <include
                 android:id="@+id/in_content"
                 layout="@layout/ly_card_content" />
@@ -106,7 +107,7 @@
             android:id="@+id/container_definition_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
+            android:layout_marginTop="@dimen/space_sm"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/container_content">
@@ -403,6 +404,7 @@
             android:id="@+id/ll_container_level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/space_xxs"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/pupUpBT"
             app:layout_constraintTop_toBottomOf="@+id/container_definition_10">
@@ -446,6 +448,7 @@
             app:iconGravity="start"
             app:iconSize="25dp"
             app:iconTint="?colorOnSurface"
+            android:layout_marginTop="@dimen/space_xxs"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_card_status"
             app:layout_constraintBottom_toBottomOf="@+id/tv_card_status"/>

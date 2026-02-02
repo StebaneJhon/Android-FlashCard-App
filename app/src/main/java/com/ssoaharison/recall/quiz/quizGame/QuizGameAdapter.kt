@@ -174,7 +174,7 @@ class QuizGameAdapter(
                     binding.tvHint.setTextColor(
                         MaterialColors.getColor(
                             itemView,
-                            com.google.android.material.R.attr.colorOnSurface
+                            com.google.android.material.R.attr.colorSurfaceContainerHighest
                         )
                     )
                 }
@@ -185,7 +185,7 @@ class QuizGameAdapter(
                     binding.tvHint.setTextColor(
                         MaterialColors.getColor(
                             itemView,
-                            com.google.android.material.R.attr.colorOnSurface
+                            com.google.android.material.R.attr.colorSurfaceContainerHighest
                         )
                     )
                 }

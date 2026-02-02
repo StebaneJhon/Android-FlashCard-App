@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:background="?colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:fitsSystemWindows="true">
@@ -23,7 +22,7 @@
         <com.google.android.material.search.SearchBar
             android:id="@+id/search_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:hint="@string/search_decks_or_cards"
             android:textAppearance="@style/TextAppearance.App.Hint"
             android:backgroundTint="?colorSurfaceContainerLow"
@@ -62,13 +61,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/height_sm"
                 android:scrollbars="none"
-                android:transitionGroup="true" />
+                android:transitionGroup="true"
+                android:layout_marginTop="@dimen/space_sm"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_container_subdecks_header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/space_lg">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv_subdecks"
@@ -79,11 +78,12 @@
                     android:textColor="?colorPrimary"
                     android:textSize="@dimen/text_xs"
                     android:textStyle="bold"
+                    android:layout_margin="@dimen/space_lg"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_sort_subdecks"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -91,7 +91,8 @@
                     android:checkable="true"
                     app:icon="@drawable/icon_sort"
                     app:iconTint="?colorPrimary"
-                    android:paddingVertical="@dimen/space_md"
+                    app:iconGravity="textStart"
+                    android:padding="@dimen/space_lg"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -120,8 +121,7 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/space_lg">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv_cards"
@@ -132,6 +132,7 @@
                     android:textColor="?colorPrimary"
                     android:textSize="@dimen/text_xs"
                     android:textStyle="bold"
+                    android:layout_margin="@dimen/space_lg"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -144,9 +145,8 @@
                     android:checkable="true"
                     app:icon="@drawable/icon_dashboard"
                     app:iconTint="?colorPrimary"
-                    android:paddingHorizontal="@dimen/space_xs"
-                    android:paddingBottom="@dimen/space_md"
-                    android:paddingTop="@dimen/space_xs"
+                    android:padding="@dimen/space_lg"
+                    app:iconGravity="textStart"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/bt_sort_cards"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -159,9 +159,7 @@
                     android:checkable="true"
                     app:icon="@drawable/icon_sort"
                     app:iconTint="?colorPrimary"
-                    android:paddingHorizontal="@dimen/space_xs"
-                    android:paddingBottom="@dimen/space_md"
-                    android:paddingTop="@dimen/space_xs"
+                    android:padding="@dimen/space_lg"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -210,6 +208,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/extra_space_bottom"/>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

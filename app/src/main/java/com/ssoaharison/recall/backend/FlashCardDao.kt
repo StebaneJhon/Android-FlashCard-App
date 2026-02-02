@@ -197,7 +197,8 @@ interface FlashCardDao {
                 if (storedDefinition.definitionId == newDefinition.definitionId && (
                         storedDefinition.definitionText != newDefinition.definitionText ||
                         storedDefinition.definitionAudioName != newDefinition.definitionAudioName ||
-                        storedDefinition.definitionImageName != newDefinition.definitionImageName
+                        storedDefinition.definitionImageName != newDefinition.definitionImageName ||
+                        storedDefinition.isCorrectDefinition != newDefinition.isCorrectDefinition
                         )
                     ) {
                     updatedDefinitions.add(newDefinition)

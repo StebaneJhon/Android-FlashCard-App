@@ -23,10 +23,11 @@
     <dimen name="text_xl3">30sp</dimen>
 
     <dimen name="radius_xs">4dp</dimen>
-    <dimen name="radius_sm">8dp</dimen>
+    <dimen name="radius_sm">10dp</dimen>
     <dimen name="radius_base">16dp</dimen>
     <dimen name="radius_lg">12dp</dimen>
     <dimen name="radius_xl">18dp</dimen>
+    <dimen name="radius_xxl">22dp</dimen>
     <dimen name="bt_radius">4dp</dimen>
     <dimen name="card_radius">10dp</dimen>
     <dimen name="card_radius_sm">4dp</dimen>
@@ -37,7 +38,7 @@
 
     <dimen name="icon_xs">10dp</dimen>
     <dimen name="icon_sm">15dp</dimen>
-    <dimen name="icon_base">25dp</dimen>
+    <dimen name="icon_base">44dp</dimen>
     <dimen name="icon_lg">30dp</dimen>
     <dimen name="icon_card_top_width">39dp</dimen>
     <dimen name="icon_card_top_height">20dp</dimen>
@@ -57,5 +58,7 @@
 
     <dimen name="img_height_large">150dp</dimen>
     <dimen name="img_height_base">75dp</dimen>
+
+    <dimen name="extra_space_bottom">100dp</dimen>
 
 </resources>

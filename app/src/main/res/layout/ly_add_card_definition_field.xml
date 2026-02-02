@@ -170,7 +170,7 @@
                 style="@style/Widget.App.TextInputEditText"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/til_card_content_hint"
+                android:hint="@string/til_card_definition_hint"
                 android:inputType="textMultiLine"
                 android:maxLines="10" />
         </com.google.android.material.textfield.TextInputLayout>

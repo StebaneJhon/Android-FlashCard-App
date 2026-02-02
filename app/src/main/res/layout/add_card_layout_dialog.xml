@@ -17,7 +17,6 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tab_add_new_update_card"
-            style="@style/Widget.App.Toolbar.Add.Edit.Card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:menu="@menu/menu_add_new_card_top_app_bar"
@@ -318,7 +317,7 @@
             <View
                 android:id="@+id/vw_bottom_space"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="@dimen/extra_space_bottom"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/bt_more_definition" />

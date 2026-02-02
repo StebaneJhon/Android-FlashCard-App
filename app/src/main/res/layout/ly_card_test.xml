@@ -8,12 +8,12 @@
     app:cardBackgroundColor="@color/black">
 
     <com.google.android.material.card.MaterialCardView
+        android:alpha="0"
         android:id="@+id/cv_card_container_back"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0"
-        android:layout_margin="@dimen/space_md"
-        app:cardCornerRadius="@dimen/card_radius"
+        android:layout_margin="@dimen/space_lg"
+        app:cardCornerRadius="@dimen/radius_xxl"
         app:strokeWidth="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -21,32 +21,28 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="?colorSurfaceContainer"
-            android:paddingTop="@dimen/space_lg"
-            android:paddingStart="@dimen/space_lg"
-            android:paddingEnd="@dimen/space_lg"
-            android:paddingBottom="@dimen/space_md">
+            android:paddingBottom="@dimen/space_xs">
 
             <TextView
                 android:id="@+id/tv_card_type_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_sm"
                 android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_sm"
+                app:layout_constraintBottom_toBottomOf="@+id/bt_speak_back"
                 app:layout_constraintEnd_toStartOf="@+id/bt_speak_back"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bt_speak_back"
                 tools:text="Flash Card" />
 
             <Button
                 android:id="@+id/bt_speak_back"
                 style="?attr/materialIconButtonStyle"
-                android:layout_width="@dimen/icon_card_top_width"
-                android:layout_height="@dimen/icon_card_top_height"
+                android:layout_width="@dimen/icon_base"
+                android:layout_height="@dimen/icon_base"
                 android:contentDescription="@string/bt_help_button_text"
                 app:icon="@drawable/icon_speak"
-                app:iconSize="@dimen/icon_base"
                 app:iconTint="?colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -56,6 +52,7 @@
                 android:id="@+id/tv_definition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -92,8 +89,8 @@
         android:id="@+id/cv_card_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/space_md"
-        app:cardCornerRadius="@dimen/card_radius"
+        android:layout_margin="@dimen/space_lg"
+        app:cardCornerRadius="@dimen/radius_xxl"
         app:strokeWidth="0dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,32 +98,28 @@
             android:layout_height="match_parent"
             android:background="@drawable/bg_card_flash_card"
             android:backgroundTint="?colorSurfaceContainer"
-            android:paddingTop="@dimen/space_lg"
-            android:paddingStart="@dimen/space_lg"
-            android:paddingEnd="@dimen/space_lg"
-            android:paddingBottom="@dimen/space_md">
+            android:paddingBottom="@dimen/space_xs">
 
             <TextView
                 android:id="@+id/tv_card_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_sm"
                 android:layout_marginEnd="@dimen/space_sm"
                 android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
+                android:textColor="?colorSurfaceContainerHighest"
+                android:textSize="@dimen/text_xs"
+                app:layout_constraintBottom_toBottomOf="@+id/bt_speak"
                 app:layout_constraintEnd_toStartOf="@+id/bt_speak"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/bt_speak"
                 tools:text="Flash Card" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_speak"
                 style="?attr/materialIconButtonStyle"
-                android:layout_width="@dimen/icon_card_top_width"
-                android:layout_height="@dimen/icon_card_top_height"
+                android:layout_width="@dimen/icon_base"
+                android:layout_height="@dimen/icon_base"
                 android:contentDescription="@string/bt_help_button_text"
                 app:icon="@drawable/icon_speak"
-                app:iconSize="@dimen/icon_base"
                 app:iconTint="?colorOnSurface"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -136,6 +129,7 @@
                 android:id="@+id/tv_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -165,25 +159,27 @@
 <!--                tools:text="1. What is the capital of Madagascar?" />-->
 
             <TextView
+                android:layout_marginHorizontal="@dimen/space_md"
                 android:id="@+id/tv_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
+                android:textColor="?colorSurfaceContainerHighest"
+                android:textSize="@dimen/text_xs"
+                android:layout_marginBottom="@dimen/space_sm"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:text="@string/text_not_answered" />
 
             <FrameLayout
+                android:layout_marginHorizontal="@dimen/space_md"
                 android:id="@+id/bt_alternative1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -218,7 +214,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_alternative3">
@@ -252,7 +248,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -286,7 +282,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative5">
@@ -320,7 +316,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -354,7 +350,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/bt_alternative7">
@@ -388,7 +384,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -422,7 +418,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative9">
@@ -456,7 +452,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -491,7 +487,7 @@
                 android:layout_marginBottom="@dimen/space_sm"
                 android:background="@drawable/bg_radius_sm"
                 android:backgroundTint="?colorSurfaceContainerLowest"
-                android:padding="@dimen/space_xs"
+                android:layout_marginHorizontal="@dimen/space_md"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent">

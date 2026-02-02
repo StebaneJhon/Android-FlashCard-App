@@ -16,6 +16,7 @@
         android:background="@drawable/bg_radius_sm"
         android:backgroundTint="?colorSurfaceContainer"
         android:padding="@dimen/space_md"
+        android:layout_marginVertical="@dimen/space_md"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -104,6 +105,7 @@
         app:icon="@drawable/icon_more"
         app:iconTint="?colorOnSurface"
         android:layout_marginEnd="@dimen/space_lg"
+        android:layout_marginHorizontal="@dimen/space_md"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

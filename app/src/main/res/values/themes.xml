@@ -738,15 +738,15 @@
         <item name="android:textSize">@dimen/text_sm</item>
     </style>
     <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
-        <item name="fontFamily">@font/montserrat_bold</item>
-        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="fontFamily">@font/open_sans_bold</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
         <item name="android:textColor">?colorOnSurface</item>
     </style>
     <style name="TextAppearance.App.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/montserrat_bold</item>
+        <item name="fontFamily">@font/open_sans_bold</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
         <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/text_base</item>
     </style>
 
     <!-- Shape Appearance-->
@@ -844,7 +844,7 @@
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
         <item name="titleTextColor">?attr/colorOnSurface</item>
         <item name="subtitleTextColor">?attr/colorOnSurface</item>
-        <item name="titleTextAppearance">@style/TextAppearance.App.TitleLarge</item>
+        <item name="titleTextAppearance">@style/TextAppearance.App.TitleMedium</item>
     </style>
 
     <style name="ThemeOverlay.App.Toolbar" parent="">
@@ -852,20 +852,20 @@
     </style>
 
     <!-- Toolbar edit&add theme -->
-    <style name="Widget.App.Toolbar.Add.Edit.Card" parent="Widget.Material3.Toolbar">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>
-        <item name="titleTextColor">?attr/colorOnSurface</item>
-        <item name="subtitleTextColor">?attr/colorOnSurface</item>
-        <item name="titleTextAppearance">@style/TextAppearance.App.Medium</item>
-        <item name="actionMenuTextAppearance">@style/TextAppearance.App.Small</item>
-        <item name="actionMenuTextColor">@color/red950</item>
-        <item name="android:actionMenuTextColor">@color/red950</item>
+<!--    <style name="Widget.App.Toolbar.Add.Edit.Card" parent="Widget.Material3.Toolbar">-->
+<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>-->
+<!--        <item name="titleTextColor">?attr/colorOnSurface</item>-->
+<!--        <item name="subtitleTextColor">?attr/colorOnSurface</item>-->
+<!--        <item name="titleTextAppearance">@style/TextAppearance.App.Medium</item>-->
+<!--        <item name="actionMenuTextAppearance">@style/TextAppearance.App.Small</item>-->
+<!--        <item name="actionMenuTextColor">@color/red950</item>-->
+<!--        <item name="android:actionMenuTextColor">@color/red950</item>-->
 
-    </style>
+<!--    </style>-->
 
-    <style name="ThemeOverlay.App.Toolbar.Add.Edit.Card" parent="">
+<!--    <style name="ThemeOverlay.App.Toolbar.Add.Edit.Card" parent="">-->
 
-    </style>
+<!--    </style>-->
 
 
     <!--Progress bar style-->
