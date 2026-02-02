@@ -372,10 +372,9 @@ class FlashCardGameActivity :
         val card = binding.clOnScreenCardRoot
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
-        val cardHeight = binding.cvCardFront.height
-        val extraPaddings = resources.getDimension(R.dimen.space_lg).plus(statusBarHeight)
+        val cardHeight = card.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + binding.appBarLayout2.height
         val currentX = card.x
         val currentY = card.y
         completeSwipeToRight(card, currentX)
@@ -392,10 +391,9 @@ class FlashCardGameActivity :
         val card = binding.clOnScreenCardRoot
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
-        val cardHeight = binding.cvCardFront.height
-        val extraPaddings = resources.getDimension(R.dimen.space_lg).plus(statusBarHeight)
+        val cardHeight = card.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + binding.appBarLayout2.height
         val currentX = card.x
         val currentY = card.y
         completeSwipeToLeft(card, currentX)
@@ -563,10 +561,9 @@ class FlashCardGameActivity :
         card.setOnTouchListener { view, motionEvent ->
             val displayMetrics = resources.displayMetrics
             val cardWidth = view.width
-            val cardHeight = binding.cvCardFront.height
-            val extraPaddings = resources.getDimension(R.dimen.space_lg).plus(statusBarHeight)
+            val cardHeight = view.height
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
+            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)  + binding.appBarLayout2.height
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {

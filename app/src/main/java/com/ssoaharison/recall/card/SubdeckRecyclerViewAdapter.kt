@@ -97,7 +97,6 @@ class SubdeckRecyclerViewAdapter(
             val deckTextColorCode: Int
             val deckSurfaceContainerColorCode: Int
 
-
             if (appTheme == DARK_THEME) {
                 deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(context, deck.deckColorCode)
                 deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)

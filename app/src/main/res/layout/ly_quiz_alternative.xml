@@ -10,7 +10,6 @@
         android:id="@+id/img_leading_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clipToOutline="true"
         android:scaleType="centerCrop"
         android:src="@drawable/icon_check_box"
         app:layout_constraintStart_toStartOf="parent"

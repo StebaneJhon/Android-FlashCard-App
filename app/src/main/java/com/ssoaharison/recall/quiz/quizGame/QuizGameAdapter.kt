@@ -386,11 +386,16 @@ class QuizGameAdapter(
 //                    Color.GRAY
 //                )
 //            )
-            view.imgLeadingIcon.imageTintList = MaterialColors.getColorStateList(
-                    context,
-                    com.google.android.material.R.attr.colorOnSurface,
-                    ContextCompat.getColorStateList(context, R.color.neutral950)!!
-                )
+//            view.imgLeadingIcon.imageTintList = MaterialColors.getColorStateList(
+//                    context,
+//                    com.google.android.material.R.attr.colorOnSurface,
+//                    ContextCompat.getColorStateList(context, R.color.neutral950)!!
+//                )
+
+            view.imgLeadingIcon.setColorFilter(MaterialColors.getColor(
+                view.imgLeadingIcon,
+                com.google.android.material.R.attr.colorOnSurface
+            ))
 //                ContextCompat.getColor(context, R.color.red50),
 //                android.graphics.PorterDuff.Mode.SRC_IN
 //            button.iconTint = MaterialColors.getColorStateList(
