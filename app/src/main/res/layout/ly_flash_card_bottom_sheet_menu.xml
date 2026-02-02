@@ -35,17 +35,16 @@
         <RelativeLayout
             android:id="@+id/rl_filter_title_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_filters_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
+                android:fontFamily="@font/open_sans"
                 android:text="@string/tv_filters_settings_section_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs"
+                android:textSize="@dimen/text_sm"
                 android:textStyle="bold" />
 
             <ImageButton
@@ -110,17 +109,17 @@
         <RelativeLayout
             android:id="@+id/rl_space_repetition_title_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_space_repetition_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat_bold"
+                android:fontFamily="@font/open_sans"
+                android:textStyle="bold"
                 android:text="@string/tv_space_repetition_settings_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs" />
+                android:textSize="@dimen/text_sm" />
 
             <ImageButton
                 android:id="@+id/bt_reveal_space_repetition_settings"
@@ -167,17 +166,17 @@
         <RelativeLayout
             android:id="@+id/rl_card_orientation_title_section"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_sm">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_card_orientation_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans_bold"
+                android:fontFamily="@font/open_sans"
                 android:text="@string/tv_card_orientation_setting_section_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs" />
+                android:textSize="@dimen/text_sm"
+                android:textStyle="bold"/>
 
             <ImageButton
                 android:id="@+id/bt_reveal_card_orientation_settings"
@@ -218,40 +217,45 @@
 
 
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_card_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_radius_base"
         android:backgroundTint="?colorSurfaceContainer"
         android:layout_marginTop="10dp"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:fontFamily="@font/open_sans"
             android:text="@string/tv_card_count_setting_section_title"
             android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_xs"
-            android:layout_marginTop="@dimen/space_lg"
-            android:layout_marginHorizontal="@dimen/space_lg"/>
+            android:textSize="@dimen/text_sm"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_card_count"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="0dp"
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false"
-            app:layout_constraintBottom_toTopOf="@+id/ll_error"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tie_card_count"
                 style="@style/Widget.App.TextInputEditText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autofillHints="@string/deck_name_hint"
                 android:fontFamily="@font/open_sans"
@@ -259,7 +263,7 @@
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
