@@ -23,7 +23,7 @@ import android.provider.MediaStore
 import android.speech.RecognizerIntent
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
-import android.text.Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL
+import android.text.Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE
 import android.text.Spannable
 import android.text.style.CharacterStyle
 import android.text.style.StrikethroughSpan
@@ -528,82 +528,56 @@ class NewCardDialog(
                 Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
             }
         }
+
         binding.inFormatOptions.btClose.setOnClickListener {
             binding.containerFormatOptions.visibility = View.GONE
         }
+
         binding.inFormatOptions.btFormatBold.setOnClickListener {
-            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
-                if (fieldIndex == -1) {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatBold,
-                        binding.lyContent.tieContentText,
-                        StyleSpan(Typeface.BOLD)
-                    )
-                } else {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatBold,
-                        definitionFields[fieldIndex].ly.tieText,
-                        StyleSpan(Typeface.BOLD)
-                    )
-                }
-            }
+            onFormatButtonClicked(binding.inFormatOptions.btFormatBold, StyleSpan(Typeface.BOLD))
         }
         binding.inFormatOptions.btFormatItalic.setOnClickListener {
-            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
-                if (fieldIndex == -1) {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatItalic,
-                        binding.lyContent.tieContentText,
-                        StyleSpan(Typeface.ITALIC)
-                    )
-                } else {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatItalic,
-                        definitionFields[fieldIndex].ly.tieText,
-                        StyleSpan(Typeface.ITALIC)
-                    )
-                }
-            }
+            onFormatButtonClicked(binding.inFormatOptions.btFormatItalic, StyleSpan(Typeface.ITALIC))
         }
         binding.inFormatOptions.btFormatUnderlined.setOnClickListener {
-            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
-                if (fieldIndex == -1) {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatUnderlined,
-                        binding.lyContent.tieContentText,
-                        UnderlineSpan()
-                    )
-                } else {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatUnderlined,
-                        definitionFields[fieldIndex].ly.tieText,
-                        UnderlineSpan()
-                    )
-                }
-            }
+            onFormatButtonClicked(binding.inFormatOptions.btFormatUnderlined, UnderlineSpan())
         }
         binding.inFormatOptions.btFormatStrikethrough.setOnClickListener {
-            newCardViewModel.getActiveFieldIndex()?.let { fieldIndex ->
-                if (fieldIndex == -1) {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatStrikethrough,
-                        binding.lyContent.tieContentText,
-                        StrikethroughSpan()
-                    )
-                } else {
-                    onFormatButtonClicked(
-                        binding.inFormatOptions.btFormatStrikethrough,
-                        definitionFields[fieldIndex].ly.tieText,
-                        StrikethroughSpan()
-                    )
-                }
-            }
+            onFormatButtonClicked(binding.inFormatOptions.btFormatStrikethrough, StrikethroughSpan())
         }
-
 
     }
 
-    fun onFormatButtonClicked(button: MaterialButton, field: TextInputEditText, span: Any) {
+    fun onFormatButtonClicked(button: MaterialButton, span: CharacterStyle) {
+        val selectedFieldIndex = newCardViewModel.getActiveFieldIndex()
+        if (selectedFieldIndex != null) {
+            if (selectedFieldIndex == -1) {
+                onFormatText(
+                    button = button,
+                    field = binding.lyContent.tieContentText,
+                    span = span
+                )
+                val htmText = Html.toHtml(binding.lyContent.tieContentText.text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
+                newCardViewModel.updateContentText(htmText)
+            } else {
+                onFormatText(
+                    button = button,
+                    field = definitionFields[selectedFieldIndex].ly.tieText,
+                    span = span
+                )
+                val htmlText = Html.toHtml(definitionFields[selectedFieldIndex].ly.tieText.text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
+                newCardViewModel.updateDefinitionText(
+                    id = newCardViewModel.getDefinitionFieldAt(selectedFieldIndex).definitionId,
+                    text = htmlText
+                )
+            }
+        } else {
+            Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    fun onFormatText(button: MaterialButton, field: TextInputEditText, span: CharacterStyle) {
         val start = field.selectionStart
         val end = field.selectionEnd
         val editable = field.text
@@ -637,7 +611,6 @@ class NewCardDialog(
                 applyFormatToSelection(field, span, start, end)
             }
         }
-
     }
 
     private fun applyFormatToSelection(field: TextInputEditText, span: Any, start: Int, end: Int) {
@@ -1459,7 +1432,7 @@ class NewCardDialog(
         }
         binding.lyContent.tieContentText.addTextChangedListener { text ->
             updateFormatButtonUi(binding.lyContent.tieContentText)
-            val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_INDIVIDUAL).trim()
+            val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
 //            newCardViewModel.updateContentField(newCardViewModel.contentField.value.copy(contentText = htmlText))
             newCardViewModel.updateContentText(htmlText)
         }
@@ -1537,7 +1510,7 @@ class NewCardDialog(
                 }
                 fieldView.ly.tieText.addTextChangedListener { text ->
                     updateFormatButtonUi(fieldView.ly.tieText)
-                    val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_INDIVIDUAL).trim()
+                    val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
                     newCardViewModel.updateDefinitionText(
                         id = actualDefinitionFieldModel.definitionId,
                         text = htmlText
