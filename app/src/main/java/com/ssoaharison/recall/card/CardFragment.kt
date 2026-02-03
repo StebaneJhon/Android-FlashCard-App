@@ -1544,8 +1544,7 @@ class CardFragment :
             REQUEST_CODE_CARD,
             this
         ) { _, bundle ->
-            val result =
-                bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
+            val result = bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let {
                 cardViewModel.updateCard(it)
                 Toast.makeText(

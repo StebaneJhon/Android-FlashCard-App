@@ -984,9 +984,10 @@ class FlashCardGameActivity :
                 val language = onScreenCards.top.card.cardContentLanguage
                     ?: viewModel.deck?.cardContentDefaultLanguage
                 if (language.isNullOrBlank()) {
+                    val text = Html.fromHtml(onScreenCards.top.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).toString()
                     LanguageUtil().detectLanguage(
 //                        text = onScreenCards.top.cardContent?.content!!,
-                        text = onScreenCards.top.contentWithDefinitions.content.contentText!!,
+                        text = text,
                         onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
                         onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
                         onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
@@ -1002,7 +1003,7 @@ class FlashCardGameActivity :
 //                                        onScreenCards.top.cardId,
                                         cardId = onScreenCards.top.card.cardId,
 //                                        text = onScreenCards.top.cardContent.content,
-                                        text = onScreenCards.top.contentWithDefinitions.content.contentText,
+                                        text = text,
                                         textType = CONTENT,
                                         detectedLanguage
                                     )
@@ -1012,13 +1013,14 @@ class FlashCardGameActivity :
                         }
                     )
                 } else {
+                    val text = Html.fromHtml(onScreenCards.top.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).toString()
                     readText(
                         listOf(
                             TextWithLanguageModel(
 //                                cardId = onScreenCards.top.cardId,
                                 cardId = onScreenCards.top.card.cardId,
 //                                text = onScreenCards.top.cardContent?.content!!,
-                                text = onScreenCards.top.contentWithDefinitions.content.contentText!!,
+                                text = text,
                                 textType = CONTENT,
                                 language
                             )
@@ -1038,7 +1040,7 @@ class FlashCardGameActivity :
                 val language = onScreenCards.top.card.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage
                 if (language.isNullOrBlank()) {
                     LanguageUtil().detectLanguage(
-                        text = definitions.first(),
+                        text = Html.fromHtml(definitions.first(), FROM_HTML_MODE_LEGACY).toString(),
                         onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
                         onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
                         onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
@@ -1052,7 +1054,7 @@ class FlashCardGameActivity :
                                 TextWithLanguageModel(
 //                                    cardId = onScreenCards.top.cardId,
                                     cardId = onScreenCards.top.card.cardId,
-                                    text = d,
+                                    text = Html.fromHtml(d, FROM_HTML_MODE_LEGACY).toString(),
                                     textType = DEFINITION,
                                     language = detectedLanguage
                                 )
@@ -1068,7 +1070,7 @@ class FlashCardGameActivity :
                         TextWithLanguageModel(
 //                            cardId = onScreenCards.top.cardId,
                             cardId = onScreenCards.top.card.cardId,
-                            text = d,
+                            text = Html.fromHtml(d, FROM_HTML_MODE_LEGACY).toString(),
                             textType = DEFINITION,
                             language = language
                         )

@@ -48,6 +48,7 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
+import com.ssoaharison.recall.databinding.LyCardTestBinding
 import com.ssoaharison.recall.helper.AppMath
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
@@ -800,7 +801,7 @@ class QuizGameActivity :
 
     private fun readText(
         text: List<TextWithLanguageModel>,
-        view: List<View>,
+        view: List<TextView>,
     ) {
 
         var position = 0
@@ -810,17 +811,16 @@ class QuizGameActivity :
             com.google.android.material.R.attr.colorOnSurface,
             Color.BLACK
         )
-        val onReadColor =
-            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onReadColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerHighest, Color.GRAY)
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor)
+                view[position].setTextColor(onReadColor)
             }
 
             override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, onStopColor)
+                view[position].setTextColor(onStopColor)
                 position += 1
                 if (position < textSum) {
                     onSpeak(params, text, position, this)
@@ -860,19 +860,19 @@ class QuizGameActivity :
 
     private fun stopReadingAllText() {
         tts?.stop()
-        val tvContent: TextView = findViewById(R.id.tv_content)
-        val tvDefinition: TextView = findViewById(R.id.tv_definition)
+        val tvContent: TextView = findViewById<View>(R.id.tv_content).findViewById(R.id.tv_text)
+        val tvDefinition: TextView = findViewById<View>(R.id.tv_definition).findViewById(R.id.tv_text)
         val alternatives = listOf(
-            findViewById<MaterialButton>(R.id.bt_alternative1),
-            findViewById<MaterialButton>(R.id.bt_alternative2),
-            findViewById<MaterialButton>(R.id.bt_alternative3),
-            findViewById<MaterialButton>(R.id.bt_alternative4),
-            findViewById<MaterialButton>(R.id.bt_alternative5),
-            findViewById<MaterialButton>(R.id.bt_alternative6),
-            findViewById<MaterialButton>(R.id.bt_alternative7),
-            findViewById<MaterialButton>(R.id.bt_alternative8),
-            findViewById<MaterialButton>(R.id.bt_alternative9),
-            findViewById<MaterialButton>(R.id.bt_alternative10),
+            findViewById<View>(R.id.in_alternative1).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative2).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative3).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative4).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative5).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative6).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative7).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative8).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative9).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative10).findViewById<TextView>(R.id.tv_text),
         )
         tvContent.setTextColor(
             MaterialColors.getColor(
@@ -899,29 +899,29 @@ class QuizGameActivity :
         }
     }
 
-    private fun onReading(
-        position: Int,
-        view: List<View>,
-        onReadColor: Int
-    ) {
-        if (position == 0) {
-            (view[position] as TextView).setTextColor(onReadColor)
-        } else {
-            (view[position] as MaterialButton).setTextColor(onReadColor)
-        }
-    }
+//    private fun onReading(
+//        position: Int,
+//        view: List<View>,
+//        onReadColor: Int
+//    ) {
+//        if (position == 0) {
+//            (view[position] as TextView).setTextColor(onReadColor)
+//        } else {
+//            (view[position] as MaterialButton).setTextColor(onReadColor)
+//        }
+//    }
 
-    private fun onReadingStop(
-        position: Int,
-        view: List<View>,
-        onReadColor: Int
-    ) {
-        if (position == 0) {
-            (view[position] as TextView).setTextColor(onReadColor)
-        } else {
-            (view[position] as MaterialButton).setTextColor(onReadColor)
-        }
-    }
+//    private fun onReadingStop(
+//        position: Int,
+//        view: List<View>,
+//        onReadColor: Int
+//    ) {
+//        if (position == 0) {
+//            (view[position] as TextView).setTextColor(onReadColor)
+//        } else {
+//            (view[position] as Tex).setTextColor(onReadColor)
+//        }
+//    }
 
     private fun onSpeak(
         params: Bundle,

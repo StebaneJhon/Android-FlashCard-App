@@ -465,12 +465,12 @@ class QuizGameAdapter(
                             text = listOf(
                                 TextWithLanguageModel(
                                     card.cardId,
-                                    card.cardDefinition.first().definition!!,
+                                    Html.fromHtml(card.cardDefinition.first().definition, FROM_HTML_MODE_LEGACY).toString(),
                                     DEFINITION,
                                     card.cardDefinitionLanguage
                                 )
                             ),
-                            views = listOf(binding.tvDefinition),
+                            views = listOf(binding.inDefinition.tvText),
                         )
                     )
                 }
@@ -480,7 +480,7 @@ class QuizGameAdapter(
                         listOf(
                             TextWithLanguageModel(
                                 card.cardId,
-                                card.cardContent.contentText!!,
+                                binding.inContent.tvText.text.toString(),
                                 CONTENT,
                                 card.cardContentLanguage
                             )
@@ -492,7 +492,7 @@ class QuizGameAdapter(
                 val texts = arrayListOf(
                     TextWithLanguageModel(
                         card.cardId,
-                        card.cardContent.contentText!!,
+                        Html.fromHtml(card.cardContent.contentText, FROM_HTML_MODE_LEGACY).toString(),
                         CONTENT,
                         card.cardContentLanguage ?: deck.cardContentDefaultLanguage
                     )
@@ -550,7 +550,7 @@ class QuizGameAdapter(
                         texts.add(
                             TextWithLanguageModel(
                                 card.cardDefinition[index].cardId,
-                                card.cardDefinition[index].definition!!,
+                                Html.fromHtml(card.cardDefinition[index].definition, FROM_HTML_MODE_LEGACY).toString(),
                                 DEFINITION,
                                 card.cardDefinitionLanguage ?: deck.cardDefinitionDefaultLanguage
                             )
@@ -565,7 +565,7 @@ class QuizGameAdapter(
         }
 
         private fun frontSpeak(
-            views: List<View>,
+            views: List<TextView>,
             texts: List<TextWithLanguageModel>,
         ) {
             binding.btSpeak.setOnClickListener {
