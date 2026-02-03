@@ -306,7 +306,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:contentDescription="@string/start_quiz_button_text"
-                    app:icon="@drawable/icon_neurology"
+                    app:icon="@drawable/icon_view_carousel"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 

@@ -328,7 +328,9 @@ class CardFragment :
             }
         }
 
-
+        binding.btMore.setOnClickListener {
+            onChooseQuizMode(cardViewModel.getActualDeck())
+        }
 
 
         requireActivity()
@@ -651,37 +653,37 @@ class CardFragment :
                 }
             }
         }
-        binding.bottomAppBar.apply {
-            setNavigationOnClickListener {
-                onChooseQuizMode(deck)
-            }
-            setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-//                        R.id.bt_flash_card_game -> {
-//                            onStartQuiz { deckWithCards ->
-//                                lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
-//                            }
-//                            true
+//        binding.bottomAppBar.apply {
+//            setNavigationOnClickListener {
+//                onChooseQuizMode(deck)
+//            }
+//            setOnMenuItemClickListener { menuItem ->
+//                when (menuItem.itemId) {
+////                        R.id.bt_flash_card_game -> {
+////                            onStartQuiz { deckWithCards ->
+////                                lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
+////                            }
+////                            true
+////                        }
+//
+//                    R.id.bt_quiz -> {
+//                        onStartQuiz(deck) { deckWithCards ->
+//                            lunchQuiz(deckWithCards, QUIZ)
 //                        }
-
-                    R.id.bt_quiz -> {
-                        onStartQuiz(deck) { deckWithCards ->
-                            lunchQuiz(deckWithCards, QUIZ)
-                        }
-                        true
-                    }
-
-//                        R.id.bt_test -> {
-//                            onStartQuiz { deckWithCards ->
-//                                lunchQuiz(deckWithCards, TEST)
-//                            }
-//                            true
-//                        }
-
-                    else -> false
-                }
-            }
-        }
+//                        true
+//                    }
+//
+////                        R.id.bt_test -> {
+////                            onStartQuiz { deckWithCards ->
+////                                lunchQuiz(deckWithCards, TEST)
+////                            }
+////                            true
+////                        }
+//
+//                    else -> false
+//                }
+//            }
+//        }
 
 //        binding.fabAddCard.setOnClickListener {
 //            onAddNewCard()
@@ -931,8 +933,8 @@ class CardFragment :
                 onEditDeck(parentDeck = deck, deckToEdit = it)
             }, {
                 onDeleteSubdeck(it)
-            }, {
-                // TODO: Start Quiz
+            }, { deck ->
+                onChooseQuizMode(deck)
             }) {
 //            deck = it
 //            displayData()
@@ -1030,7 +1032,7 @@ class CardFragment :
     }
 
     private fun onChooseQuizMode(deck: ExternalDeck) {
-        val quizMode = QuizModeBottomSheet(deck)
+        val quizMode = QuizModeBottomSheet()
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_QUIZ_MODE,
@@ -1049,9 +1051,6 @@ class CardFragment :
         deck: ExternalDeck,
         start: (ExternalDeckWithCardsAndContentAndDefinitions) -> Unit
     ) {
-
-
-
         startingQuizJob?.cancel()
         startingQuizJob = lifecycleScope.launch {
             binding.cardsActivityProgressBar.isVisible = true

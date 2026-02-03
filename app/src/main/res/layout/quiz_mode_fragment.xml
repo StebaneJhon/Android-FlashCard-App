@@ -4,13 +4,9 @@
     android:id="@+id/quizModeDialogRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="?colorSurfaceContainerLow"
-    style="@style/Widget.Material3.BottomSheet"
-    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    android:backgroundTint="?colorSurfaceContainerLowest"
     android:orientation="vertical"
-    android:paddingStart="@dimen/space_sm"
-    android:paddingEnd="@dimen/space_sm"
-    android:paddingBottom="@dimen/space_xs">
+    android:paddingBottom="@dimen/space_lg">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
             android:id="@+id/drag_handle"
@@ -20,29 +16,29 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/space_md"
-            android:layout_marginBottom="@dimen/space_md"
-            android:fontFamily="@font/montserrat_bold"
+            android:layout_marginBottom="@dimen/space_lg"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
             android:text="@string/tv_quiz_mode_title"
             android:textAlignment="textStart"
-            android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_base"
-            android:textStyle="bold" />
+            android:layout_marginHorizontal="@dimen/space_lg"/>
 
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/bt_flash_card_game"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:backgroundTint="?colorSurfaceContainer"-->
-<!--            android:text="@string/bt_flash_card_game_start"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            app:cornerRadius="@dimen/bt_radius"-->
-<!--            android:textAlignment="textStart"-->
-<!--            app:icon="@drawable/icon_flip"-->
-<!--            app:iconTint="?colorOnSurface"-->
-<!--            app:iconGravity="start"-->
-<!--            app:iconPadding="@dimen/space_md"/>-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_flash_card_game"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?colorPrimary"
+            android:text="@string/bt_flash_card_game_start"
+            android:textColor="?colorOnPrimary"
+            android:fontFamily="@font/open_sans"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/radius_base"
+            android:textAlignment="textStart"
+            app:icon="@drawable/icon_cards_stack"
+            app:iconTint="?colorOnPrimary"
+            app:iconGravity="start"
+            app:iconPadding="@dimen/space_md"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginBottom="@dimen/space_xxs"/>
 
 <!--        <com.google.android.material.button.MaterialButton-->
 <!--            android:id="@+id/multiChoiceQuizButton"-->
@@ -92,17 +88,19 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_quiz"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:backgroundTint="?colorSurfaceContainer"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?colorPrimary"
             android:text="@string/bt_test_quiz_game_text"
-            android:textColor="?colorOnSurface"
+            android:textColor="?colorOnPrimary"
             android:fontFamily="@font/open_sans"
             android:textAlignment="textStart"
-            app:cornerRadius="@dimen/bt_radius"
-            app:icon="@drawable/icon_neurology"
-            app:iconTint="?colorOnSurface"
+            android:textStyle="bold"
+            app:cornerRadius="@dimen/radius_base"
+            app:icon="@drawable/icon_view_carousel"
+            app:iconTint="?colorOnPrimary"
             app:iconGravity="start"
-            app:iconPadding="@dimen/space_md"/>
+            app:iconPadding="@dimen/space_md"
+            android:layout_marginHorizontal="@dimen/space_lg"/>
 
 <!--        <com.google.android.material.button.MaterialButton-->
 <!--            android:id="@+id/bt_test"-->

@@ -9,7 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_sm">
+        android:layout_margin="@dimen/space_lg">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,10 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/bt_exit"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xl"
-                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.App.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="@+id/bt_exit"
                 app:layout_constraintEnd_toStartOf="@+id/bt_add_top"
                 app:layout_constraintStart_toEndOf="@+id/bt_exit"
@@ -225,32 +222,33 @@
                 android:id="@+id/dialogPositiveBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/transparent"
+                android:layout_marginTop="@dimen/space_lg"
+                android:backgroundTint="?colorPrimary"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="@string/bt_add_deck"
-                android:textColor="?colorOnSurface"
+                android:textColor="?colorOnPrimary"
                 android:textSize="@dimen/text_sm"
-                android:textStyle="bold"
-                android:layout_margin="@dimen/space_lg"
-                app:layout_constraintEnd_toStartOf="@+id/bt_add_card"
+                app:cornerRadius="@dimen/radius_base"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/bt_add_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@color/transparent"
                 android:drawableEnd="@drawable/icon_arrow_right"
+                android:drawableTint="?colorOnPrimary"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="@string/bt_add_card"
-                android:textColor="?colorOnSurface"
+                android:textColor="?colorOnPrimary"
                 android:textSize="@dimen/text_sm"
-                android:textStyle="bold"
-                android:visibility="gone"
-                android:layout_marginTop="@dimen/space_lg"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />
+                app:cornerRadius="@dimen/radius_base"
+                android:layout_marginEnd="@dimen/space_lg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/dialogPositiveBT"
+                app:layout_constraintTop_toTopOf="@+id/dialogPositiveBT" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -120,7 +120,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="5" />
+                tools:text="5%" />
 
             <TextView
                 android:id="@+id/tv_accuracy_cards_score_layout"
@@ -249,7 +249,7 @@
         android:text="@string/bt_continue_match_quiz_score"
         android:textColor="?colorSurfaceContainerLowest"
         android:textStyle="bold"
-        app:cornerRadius="@dimen/bt_radius"
+        app:cornerRadius="@dimen/radius_base"
         app:layout_constraintBottom_toTopOf="@+id/bt_restart_quiz_with_previous_cards_score_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -300,7 +300,7 @@
         android:text="@string/back_to_deck_text_button"
         android:textColor="?colorSurfaceContainerLowest"
         android:textStyle="bold"
-        app:cornerRadius="@dimen/bt_radius"
+        app:cornerRadius="@dimen/radius_base"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

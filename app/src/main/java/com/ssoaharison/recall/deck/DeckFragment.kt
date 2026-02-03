@@ -353,7 +353,7 @@ class DeckFragment :
 
     @SuppressLint("MissingInflatedId")
     private fun onStartQuiz(deck: ExternalDeck) {
-        val quizMode = QuizModeBottomSheet(deck)
+        val quizMode = QuizModeBottomSheet()
         quizMode.show(childFragmentManager, "Quiz Mode")
         childFragmentManager.setFragmentResultListener(
             REQUEST_CODE_QUIZ_MODE,
