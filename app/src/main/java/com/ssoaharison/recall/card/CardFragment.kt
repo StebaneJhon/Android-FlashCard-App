@@ -1472,7 +1472,7 @@ class CardFragment :
         val textColor = view.textColors
         val onReadColor = MaterialColors.getColor(
             appContext!!,
-            androidx.appcompat.R.attr.colorPrimary,
+            com.google.android.material.R.attr.colorSurfaceContainerHighest,
             Color.GRAY
         )
 

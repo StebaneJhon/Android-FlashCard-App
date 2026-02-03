@@ -3,17 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:backgroundTint="?colorSurfaceContainerLowest">
+    android:backgroundTint="?colorSurfaceContainerLowest"
+    android:paddingBottom="@dimen/space_lg">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/sort_cards"
-        android:textSize="@dimen/text_base"
-        android:fontFamily="@font/open_sans_bold"
-        android:textColor="?colorOnSurface"
-        android:layout_marginTop="@dimen/space_lg"
-        android:layout_marginBottom="@dimen/space_sm"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:layout_marginBottom="@dimen/space_lg"
         android:layout_marginHorizontal="@dimen/space_lg" />
 
     <RadioGroup
@@ -27,8 +30,7 @@
             android:layout_height="match_parent"
             android:text="@string/sort_by_creation_date"
             android:textColor="?colorOnSurface"
-            android:layout_marginHorizontal="@dimen/space_lg"
-            android:layout_marginBottom="@dimen/space_sm"/>
+            android:layout_marginHorizontal="@dimen/space_lg" />
 
         <RadioButton
             android:id="@+id/rb_card_sort_by_card_level"
@@ -36,8 +38,7 @@
             android:layout_height="match_parent"
             android:text="@string/sort_by_card_level"
             android:textColor="?colorOnSurface"
-            android:layout_marginHorizontal="@dimen/space_lg"
-            android:layout_marginBottom="@dimen/space_sm"/>
+            android:layout_marginHorizontal="@dimen/space_lg" />
 
         <RadioButton
             android:id="@+id/rb_card_sort_alphabetically"
@@ -45,8 +46,7 @@
             android:layout_height="match_parent"
             android:text="@string/sort_alphabetically"
             android:textColor="?colorOnSurface"
-            android:layout_marginHorizontal="@dimen/space_lg"
-            android:layout_marginBottom="@dimen/space_sm"/>
+            android:layout_marginHorizontal="@dimen/space_lg" />
 
     </RadioGroup>
 

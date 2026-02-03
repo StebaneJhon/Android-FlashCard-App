@@ -5,23 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:backgroundTint="?colorSurfaceContainerLowest"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/space_lg">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_marginHorizontal="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_lg"
         android:fontFamily="@font/open_sans_bold"
         android:text="@string/deck_details"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
-        android:textStyle="bold"
-        android:layout_marginBottom="@dimen/space_sm"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:layout_marginBottom="@dimen/space_lg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans"
+        android:text="@string/deck_name_hint"
+        android:textColor="?colorPrimary"
+        android:textSize="@dimen/text_xs"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="@dimen/space_xxl"
+        android:layout_marginBottom="@dimen/space_lg"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_edit_deck_name"
@@ -30,24 +44,36 @@
         android:backgroundTint="?colorSurfaceContainer"
         android:text="Deck name"
         android:textAlignment="textStart"
-        android:textSize="@dimen/text_base"
+        android:textSize="@dimen/text_sm"
         android:fontFamily="@font/open_sans"
         android:textColor="?colorOnSurface"
         android:drawableEnd="@drawable/icon_edit"
         app:cornerRadius="@dimen/radius_base"
-        android:layout_marginBottom="@dimen/space_sm"
+        android:layout_marginBottom="@dimen/space_lg"
         android:layout_marginHorizontal="@dimen/space_lg"
-        android:paddingVertical="@dimen/space_lg"
+        android:paddingVertical="@dimen/space_md"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/open_sans"
+        android:text="@string/tv_language_section_settings"
+        android:textColor="?colorPrimary"
+        android:textSize="@dimen/text_xs"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="@dimen/space_xxl"
+        android:layout_marginBottom="@dimen/space_lg"/>
 
     <LinearLayout
         android:id="@+id/ll_content_language_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/space_lg"
-        android:layout_marginBottom="@dimen/space_xs">
+        android:layout_marginBottom="@dimen/space_sm">
         <include
             android:id="@+id/in_deck_content_language"
             layout="@layout/ly_language_field" />
@@ -164,21 +190,15 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:id="@+id/colorPickerTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_sm"
-        android:fontFamily="@font/open_sans_bold"
-        android:paddingTop="@dimen/space_sm"
-        android:paddingBottom="@dimen/space_xxs"
+        android:fontFamily="@font/open_sans"
         android:text="@string/category_color_picker_title"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
+        android:textColor="?colorPrimary"
+        android:textSize="@dimen/text_xs"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deckSecondLanguageLY" />
+        android:layout_marginHorizontal="@dimen/space_xxl"
+        android:layout_marginVertical="@dimen/space_lg"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_deck_color_picker"

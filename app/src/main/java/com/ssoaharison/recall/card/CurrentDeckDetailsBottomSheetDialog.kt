@@ -116,7 +116,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
         }
 
         binding.inDeckContentLanguage.apply {
-            tvHeader.text = getString(R.string.text_content_language)
+            tvHeader.text = getString(R.string.text_content)
             tvLanguage.text = currentDeck.cardContentDefaultLanguage ?: getString(R.string.text_definition_language)
         }
 
@@ -129,7 +129,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
         }
 
         binding.inDeckDefinitionLanguage.apply {
-            tvHeader.text = getString(R.string.text_definition_language)
+            tvHeader.text = getString(R.string.text_definition)
             tvLanguage.text = currentDeck.cardDefinitionDefaultLanguage ?: getString(R.string.text_definition_language)
         }
         binding.llDefinitionLanguageContainer.setOnClickListener {

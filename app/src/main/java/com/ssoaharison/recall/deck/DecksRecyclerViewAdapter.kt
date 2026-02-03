@@ -204,7 +204,7 @@ class DecksRecyclerViewAdapter(
         companion object {
             fun create(parent: ViewGroup): ViewHolder {
                 val view = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.recycler_view_adapter_deck_view, parent, false)
+                    .inflate(R.layout.recycler_view_adapter_deck_view_3, parent, false)
 
                 return ViewHolder(view)
             }
