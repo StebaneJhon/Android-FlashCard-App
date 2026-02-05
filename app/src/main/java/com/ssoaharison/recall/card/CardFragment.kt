@@ -4,37 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ArrayAdapter
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.appcompat.widget.ListPopupWindow
-import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.ThemeUtils
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.drawerlayout.widget.DrawerLayout
@@ -49,7 +36,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.room.util.query
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
@@ -176,9 +162,9 @@ class CardFragment :
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        val appThemeName = sharedPref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
-        val viewTheme = deckPathViewModel.getViewTheme(appThemeName)
+//        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        val appThemeName = sharedPref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
+        val viewTheme = deckPathViewModel.getViewTheme()
         val contextThemeWrapper = ContextThemeWrapper(requireContext(), viewTheme)
         val themeInflater = inflater.cloneInContext(contextThemeWrapper)
         _binding = FragmentCardBinding.inflate(themeInflater, container, false)
@@ -486,7 +472,6 @@ class CardFragment :
                                             SubdeckRecyclerViewAdapter(
                                                 listOfDecks = state.data,
                                                 context = requireContext(),
-                                                appTheme = "WHITE THEM",
                                                 editDeckClickListener = { deck ->
                                                     lifecycleScope.launch {
                                                         cardViewModel.getDeckById(deck.deckId) { parentDeck ->
@@ -928,8 +913,10 @@ class CardFragment :
         deck: ExternalDeck,
         subdecks: List<ExternalDeck>
     ) {
-        subdeckRecyclerViewAdapter =
-            SubdeckRecyclerViewAdapter(subdecks, appContext!!, "WHITE THEM", {
+        subdeckRecyclerViewAdapter = SubdeckRecyclerViewAdapter(
+            subdecks,
+            appContext!!,
+            {
                 onEditDeck(parentDeck = deck, deckToEdit = it)
             }, {
                 onDeleteSubdeck(it)

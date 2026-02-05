@@ -46,7 +46,6 @@ import com.ssoaharison.recall.util.LanguageUtil
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.ssoaharison.recall.util.parcelable

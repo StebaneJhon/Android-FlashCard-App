@@ -58,7 +58,6 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -76,8 +75,8 @@ class QuizGameActivity :
     private val viewModel: TestQuizGameViewModel by viewModels {
         TestQuizGameViewModelFactory((application as FlashCardApplication).repository)
     }
-    private var sharedPref: SharedPreferences? = null
-    private var editor: SharedPreferences.Editor? = null
+//    private var sharedPref: SharedPreferences? = null
+//    private var editor: SharedPreferences.Editor? = null
 
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
@@ -108,33 +107,35 @@ class QuizGameActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        editor = sharedPref?.edit()
+//        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        editor = sharedPref?.edit()
         miniGamePref = getSharedPreferences(
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
             Context.MODE_PRIVATE
         )
         val themePicker = ThemePicker()
         miniGamePrefEditor = miniGamePref?.edit()
-        appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = themePicker.selectTheme(appTheme)
+//        appTheme = sharedPref?.getString("themName", "WHITE THEM")
+//        val themRef = themePicker.selectTheme(appTheme)
 
         deckWithCards = intent?.parcelable(FlashCardGameActivity.DECK_ID_KEY)
 
         val deckColorCode = deckWithCards?.deck?.deckColorCode
+        val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
+        setTheme(theme)
 
-        if (deckColorCode.isNullOrBlank() && themRef != null) {
-            setTheme(themRef)
-        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-            val deckTheme = if (appTheme == DARK_THEME) {
-                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
-            } else {
-                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
-            }
-            setTheme(deckTheme)
-        } else {
-            setTheme(themePicker.getDefaultTheme())
-        }
+//        if (deckColorCode.isNullOrBlank() && themRef != null) {
+//            setTheme(themRef)
+//        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+//            val deckTheme = if (appTheme == DARK_THEME) {
+//                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+//            } else {
+//                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+//            }
+//            setTheme(deckTheme)
+//        } else {
+//            setTheme(themePicker.getDefaultTheme())
+//        }
 
 
         binding = ActivityTestQuizGameBinding.inflate(layoutInflater)
@@ -236,7 +237,6 @@ class QuizGameActivity :
         quizGameAdapter = QuizGameAdapter(
             this,
             data,
-            appTheme ?: "WHITE THEM",
             viewModel.deck!!,
             { userAnswer ->
                 viewModel.submitUserAnswer(userAnswer, binding.vpCardHolder.currentItem)

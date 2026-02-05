@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -18,17 +18,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.databinding.FragmentSettingsBinding
-import com.ssoaharison.recall.util.ContactActions.CONTACT
-import com.ssoaharison.recall.util.ContactActions.HELP
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
-import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -68,11 +65,11 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
 
         sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
-        appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) {
-            activity?.setTheme(themRef)
-        }
+//        appTheme = sharedPref?.getString("themName", "WHITE THEM")
+//        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
+//        if (themRef != null) {
+//            activity?.setTheme(themRef)
+//        }
 
 //        gridLayoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
 //        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -112,15 +109,35 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
                 }
         }
 
-        lifecycleScope.launch {
-            delay(50)
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                settingsFragmentViewModel.initThemeSelection(ThemePicker().getThemes(), appTheme ?: WHITE_THEME)
-                settingsFragmentViewModel.themSelectionList.collect {listOfTheme ->
-                    displayThemes(listOfTheme)
+        when (AppThemeHelper.getSavedTheme(requireContext())) {
+            1 -> binding.rgAppThemes.check(R.id.rb_light)
+            2 -> binding.rgAppThemes.check(R.id.rb_dark)
+            else -> binding.rgAppThemes.check(R.id.rb_system)
+        }
+
+        binding.rgAppThemes.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rb_light -> {
+                    AppThemeHelper.saveTheme(requireContext(), AppCompatDelegate.MODE_NIGHT_NO)
+                }
+                R.id.rb_dark -> {
+                    AppThemeHelper.saveTheme(requireContext(), AppCompatDelegate.MODE_NIGHT_YES)
+                }
+                R.id.rb_system -> {
+                    AppThemeHelper.saveTheme(requireContext(), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 }
             }
-        }
+         }
+
+//        lifecycleScope.launch {
+//            delay(50)
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                settingsFragmentViewModel.initThemeSelection(ThemePicker().getThemes(), appTheme ?: WHITE_THEME)
+//                settingsFragmentViewModel.themSelectionList.collect {listOfTheme ->
+//                    displayThemes(listOfTheme)
+//                }
+//            }
+//        }
 
 //        binding.btPrivacyOthersSection.setOnClickListener {
 //            findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
@@ -154,22 +171,22 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
 
     }
 
-    private fun displayThemes(listOfTheme: ArrayList<ThemeModel>) {
-        themePickerAdapter = ThemePickerAdapter(
-            requireContext(),
-            listOfTheme
-        ) {selectedTheme ->
-            settingsFragmentViewModel.selectTheme(selectedTheme.themeId)
-            setAppTheme(selectedTheme.themeId)
-            updateAppTheme()
-            themePickerAdapter.notifyDataSetChanged()
-        }
-        binding.rvSettingsThemePicker.apply {
-            adapter = themePickerAdapter
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
-        }
-    }
+//    private fun displayThemes(listOfTheme: ArrayList<ThemeModel>) {
+//        themePickerAdapter = ThemePickerAdapter(
+//            requireContext(),
+//            listOfTheme
+//        ) {selectedTheme ->
+//            settingsFragmentViewModel.selectTheme(selectedTheme.themeId)
+//            setAppTheme(selectedTheme.themeId)
+//            updateAppTheme()
+//            themePickerAdapter.notifyDataSetChanged()
+//        }
+//        binding.rvSettingsThemePicker.apply {
+//            adapter = themePickerAdapter
+//            setHasFixedSize(true)
+//            layoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
+//        }
+//    }
 
     private fun sendEmail(subject: String) {
         val action = SettingsFragmentDirections.actionSettingsFragmentToEmailFragment(subject)
@@ -197,16 +214,16 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         newDialog.show(parentFragmentManager, "Update Box Level Dialog")
     }
 
-    private fun updateAppTheme() {
-        activity?.recreate()
-    }
-
-    private fun setAppTheme(themName: String) {
-        editor?.apply {
-            putString("themName", themName)
-            apply()
-        }
-    }
+//    private fun updateAppTheme() {
+//        activity?.recreate()
+//    }
+//
+//    private fun setAppTheme(themName: String) {
+//        editor?.apply {
+//            putString("themName", themName)
+//            apply()
+//        }
+//    }
 
     override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {
         settingsFragmentViewModel.updateBoxLevel(boxLevel)

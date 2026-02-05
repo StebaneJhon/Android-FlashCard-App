@@ -278,7 +278,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_more"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -286,7 +286,8 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_text_translate"
                     app:icon="@drawable/icon_more"
-                    android:backgroundTint="?colorSurfaceContainerLow"/>
+                    app:iconTint="?colorOnSurface"
+                    android:backgroundTint="?colorSurfaceContainerLow" />
             </FrameLayout>
 
             <FrameLayout
@@ -299,7 +300,7 @@
                 app:layout_constraintStart_toEndOf="@+id/frameLayout2"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_start_quiz"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -307,6 +308,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/start_quiz_button_text"
                     app:icon="@drawable/icon_view_carousel"
+                    app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 
@@ -320,7 +322,7 @@
                 app:layout_constraintStart_toEndOf="@+id/frameLayout"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_start_flash_cards"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -328,6 +330,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_flash_card_game_start"
                     app:icon="@drawable/icon_cards_stack"
+                    app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 

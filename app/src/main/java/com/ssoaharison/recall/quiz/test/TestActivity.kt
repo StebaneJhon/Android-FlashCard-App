@@ -43,7 +43,6 @@ import com.ssoaharison.recall.quiz.quizGame.QuizGameProgressBarAdapter
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.launch
 import java.util.Locale

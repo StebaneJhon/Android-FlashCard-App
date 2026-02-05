@@ -3,6 +3,7 @@ package com.ssoaharison.recall.card
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -29,14 +30,13 @@ import com.google.android.material.textview.MaterialTextView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.util.DeckColorCategorySelector
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 
 class SubdeckRecyclerViewAdapter(
     private val listOfDecks: List<ExternalDeck>,
     private val context: Context,
-    private val appTheme: String?,
     private val editDeckClickListener: (ExternalDeck) -> Unit,
     private val deleteDeckClickListener: (ExternalDeck) -> Unit,
     private val startQuizListener: (ExternalDeck) -> Unit,
@@ -55,7 +55,6 @@ class SubdeckRecyclerViewAdapter(
         return holder.bind(
             listOfDecks[position],
             context,
-            appTheme,
             editDeckClickListener,
             deleteDeckClickListener,
             startQuizListener,
@@ -80,12 +79,19 @@ class SubdeckRecyclerViewAdapter(
 
         private val ICON_MARGIN = 5
 
+        var deckSurfaceColorCode: Int? = null
+        var deckTextColorCode: Int? = null
+        var deckSurfaceContainerColorCode: Int? = null
+        var knownCardViewBackgroundColor: ColorStateList? = null
+        var unknownCardViewBackgroundColor: ColorStateList? = null
+        var knownCardTextColor: Int? = null
+        var unknownCardTextColor: Int? = null
+
 
         @SuppressLint("ResourceAsColor")
         fun bind(
             deck: ExternalDeck,
             context: Context,
-            appTheme: String?,
             editDeckClickListener: (ExternalDeck) -> Unit,
             deleteDeckClickListener: (ExternalDeck) -> Unit,
             startQuizListener: (ExternalDeck) -> Unit,
@@ -93,23 +99,35 @@ class SubdeckRecyclerViewAdapter(
         ) {
             val deckColorHelper = DeckColorCategorySelector()
 
-            val deckSurfaceColorCode: Int
-            val deckTextColorCode: Int
-            val deckSurfaceContainerColorCode: Int
-
-            if (appTheme == DARK_THEME) {
-                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(context, deck.deckColorCode)
-                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
-                deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
-            } else {
-                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckColorCode)
-                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
-                deckSurfaceContainerColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    initColorsOnLightTheme(deckColorHelper, context, deck)
+                }
+                2 -> {
+                    initColorsOnDarkTheme(deckColorHelper, context, deck)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        initColorsOnDarkTheme(deckColorHelper, context, deck)
+                    } else {
+                        initColorsOnLightTheme(deckColorHelper, context, deck)
+                    }
+                }
             }
+
+//            if (appTheme == DARK_THEME) {
+//                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(context, deck.deckColorCode)
+//                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+//                deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+//            } else {
+//                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckColorCode)
+//                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
+//                deckSurfaceContainerColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+//            }
 
             deckNameTV?.apply {
                 text = deck.deckName
-                setTextColor(deckTextColorCode)
+                setTextColor(deckTextColorCode!!)
             }
 
             if (deck.cardCount == 0) {
@@ -122,16 +140,16 @@ class SubdeckRecyclerViewAdapter(
             if (deck.knownCardCount > 0) {
                 llKnownCardSumContainer.visibility = View.VISIBLE
                 vwKnownCardSum.text = context.getString(R.string.known_card_count, deck.knownCardCount)
-                vwKnownCardSum.backgroundTintList = context.getColorStateList(R.color.green200)
-                vwKnownCardSum.setTextColor(context.getColor(R.color.green950))
+                vwKnownCardSum.backgroundTintList = knownCardViewBackgroundColor
+                vwKnownCardSum.setTextColor(knownCardTextColor!!)
             } else {
                 llKnownCardSumContainer.visibility = View.GONE
             }
             if (deck.unKnownCardCount > 0) {
                 llUnKnownCardSumContainer.visibility = View.VISIBLE
                 vwUnKnownCardSum.text = context.getString(R.string.un_known_card_count, deck.unKnownCardCount)
-                vwUnKnownCardSum.backgroundTintList = context.getColorStateList(R.color.red200)
-                vwUnKnownCardSum.setTextColor(context.getColor(R.color.red950))
+                vwUnKnownCardSum.backgroundTintList = unknownCardViewBackgroundColor
+                vwUnKnownCardSum.setTextColor(unknownCardTextColor!!)
             } else {
                 llUnKnownCardSumContainer.visibility = View.GONE
             }
@@ -146,8 +164,7 @@ class SubdeckRecyclerViewAdapter(
             }
 
             deckRoot?.apply {
-                setBackgroundColor(deckSurfaceColorCode)
-//                setCardBackgroundColor(deckSurfaceColorCode)
+                setBackgroundColor(deckSurfaceColorCode!!)
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
@@ -174,12 +191,52 @@ class SubdeckRecyclerViewAdapter(
                     deck
                 )
             }
-            divider.dividerColor = deckSurfaceContainerColorCode
-            ivDeck.setColorFilter(deckTextColorCode)
+            divider.dividerColor = deckSurfaceContainerColorCode!!
+            ivDeck.setColorFilter(deckTextColorCode!!)
             ivDeck.backgroundTintList = ColorStateList.valueOf(
-                deckSurfaceContainerColorCode
+                deckSurfaceContainerColorCode!!
             )
 
+        }
+
+        private fun initColorsOnDarkTheme(
+            deckColorHelper: DeckColorCategorySelector,
+            context: Context,
+            deck: ExternalDeck
+        ) {
+            deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(
+                context,
+                deck.deckColorCode
+            )
+            deckTextColorCode =
+                deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+            deckSurfaceContainerColorCode =
+                deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+            knownCardViewBackgroundColor =
+                ContextCompat.getColorStateList(context, R.color.green600)
+            unknownCardViewBackgroundColor =
+                ContextCompat.getColorStateList(context, R.color.red600)
+            knownCardTextColor = context.getColor(R.color.green50)
+            unknownCardTextColor = context.getColor(R.color.red50)
+        }
+
+        private fun initColorsOnLightTheme(
+            deckColorHelper: DeckColorCategorySelector,
+            context: Context,
+            deck: ExternalDeck
+        ) {
+            deckSurfaceColorCode =
+                deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckColorCode)
+            deckTextColorCode =
+                deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
+            deckSurfaceContainerColorCode =
+                deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+            knownCardViewBackgroundColor =
+                ContextCompat.getColorStateList(context, R.color.green200)
+            knownCardTextColor = context.getColor(R.color.green950)
+            unknownCardTextColor = context.getColor(R.color.red950)
+            unknownCardViewBackgroundColor =
+                ContextCompat.getColorStateList(context, R.color.red200)
         }
 
         @SuppressLint("RestrictedApi")

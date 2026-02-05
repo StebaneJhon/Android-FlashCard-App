@@ -5,6 +5,7 @@ import android.animation.AnimatorSet
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.view.LayoutInflater
@@ -30,17 +31,16 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.databinding.LyCardTestBinding
 import com.ssoaharison.recall.databinding.LyQuizAlternativeBinding
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import java.io.File
 
 class QuizGameAdapter(
     val context: Context,
     val cardList: List<QuizGameCardModel>,
-    val appTheme: String,
     val deck: ExternalDeck,
     private val cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
     private val onSpeak: (QuizSpeakModel) -> Unit,
@@ -62,7 +62,6 @@ class QuizGameAdapter(
         return holder.bind(
             context,
             cardList[position],
-            appTheme,
             cardOnClick,
             onPlayAudio,
         )
@@ -128,7 +127,6 @@ class QuizGameAdapter(
         fun bind(
             context: Context,
             card: QuizGameCardModel,
-            appTheme: String,
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit,
             onPlayAudio: (AudioModel, LyAudioPlayerBinding) -> Unit,
         ) {
@@ -239,7 +237,6 @@ class QuizGameAdapter(
                                 card.cardType!!,
                                 context,
                                 answerStatus,
-                                appTheme
                             )
                         } else {
                             onButtonUnClicked(alternative.view, alternative.container, card.cardType!!, context)
@@ -282,83 +279,111 @@ class QuizGameAdapter(
             cardType: String,
             context: Context,
             isCorrectlyAnswered: Boolean,
-            appTheme: String
         ) {
-            if (appTheme != DARK_THEME) {
-                if (isCorrectlyAnswered) {
-                    if (cardType == MULTIPLE_ANSWER_CARD) {
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
-                    } else {
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
-                    }
 
-                    container.background.setTint(ContextCompat.getColor(context, R.color.green50))
-//                    button.setStrokeColorResource(R.color.green500)
-//                    button.setIconTintResource(R.color.green500)
-                    alternative.imgLeadingIcon.setColorFilter(
-                        ContextCompat.getColor(context, R.color.green500),
-                        android.graphics.PorterDuff.Mode.SRC_IN
-                    )
-                } else {
-                    if (cardType == MULTIPLE_ANSWER_CARD) {
-//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
-                    } else {
-//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
-                    }
-                    container.background.setTint(ContextCompat.getColor(context, R.color.red50))
-//                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
-//                    button.setStrokeColorResource(R.color.red500)
-//                    button.setIconTintResource(R.color.red500)
-                    alternative.imgLeadingIcon.setColorFilter(
-                        ContextCompat.getColor(context, R.color.red500),
-                        android.graphics.PorterDuff.Mode.SRC_IN
-                    )
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    onAlternativeClickedOnLightTheme(isCorrectlyAnswered, cardType, alternative, container, context)
                 }
-            } else {
-                if (isCorrectlyAnswered) {
-                    if (cardType == MULTIPLE_ANSWER_CARD) {
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
-//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                2 -> {
+                    onAlternativeClickedOnDarkTheme(isCorrectlyAnswered, cardType, alternative, container, context)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        onAlternativeClickedOnDarkTheme(isCorrectlyAnswered, cardType, alternative, container, context)
                     } else {
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
-//                        button.icon = AppCompatResources.getDrawable(
-//                            context,
-//                            R.drawable.icon_radio_button_checked
-//                        )
+                        onAlternativeClickedOnLightTheme(isCorrectlyAnswered, cardType, alternative, container, context)
                     }
-                    container.background.setTint(ContextCompat.getColor(context, R.color.green800))
-//                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
-//                    button.setStrokeColorResource(R.color.green50)
-                    alternative.imgLeadingIcon.setColorFilter(
-                        ContextCompat.getColor(context, R.color.green50),
-                        android.graphics.PorterDuff.Mode.SRC_IN
-                    )
-//                    button.setIconTintResource(R.color.green50)
-                    alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.green50))
-                } else {
-                    if (cardType == MULTIPLE_ANSWER_CARD) {
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
-//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
-                    } else {
-                        alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
-//                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
-                    }
-                    container.background.setTint(ContextCompat.getColor(context, R.color.red800))
-//                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
-//                    button.setStrokeColorResource(R.color.red50)
-                    alternative.imgLeadingIcon.setColorFilter(
-                        ContextCompat.getColor(context, R.color.red50),
-                        android.graphics.PorterDuff.Mode.SRC_IN
-                    )
-//                    button.setIconTintResource(R.color.red50)
-                    alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
-//                    button.setTextColor(ContextCompat.getColor(context, R.color.red50))
                 }
             }
+        }
 
+        private fun onAlternativeClickedOnLightTheme(
+            isCorrectlyAnswered: Boolean,
+            cardType: String,
+            alternative: LyQuizAlternativeBinding,
+            container: View,
+            context: Context
+        ) {
+            if (isCorrectlyAnswered) {
+                if (cardType == MULTIPLE_ANSWER_CARD) {
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
+        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+                } else {
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
+        //                        button.icon = AppCompatResources.getDrawable(
+        //                            context,
+        //                            R.drawable.icon_radio_button_checked
+        //                        )
+                }
+                container.background.setTint(ContextCompat.getColor(context, R.color.green800))
+        //                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
+        //                    button.setStrokeColorResource(R.color.green50)
+                alternative.imgLeadingIcon.setColorFilter(
+                    ContextCompat.getColor(context, R.color.green50),
+                    PorterDuff.Mode.SRC_IN
+                )
+        //                    button.setIconTintResource(R.color.green50)
+                alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.green50))
+            } else {
+                if (cardType == MULTIPLE_ANSWER_CARD) {
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
+        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                } else {
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
+        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                }
+                container.background.setTint(ContextCompat.getColor(context, R.color.red800))
+        //                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
+        //                    button.setStrokeColorResource(R.color.red50)
+                alternative.imgLeadingIcon.setColorFilter(
+                    ContextCompat.getColor(context, R.color.red50),
+                    PorterDuff.Mode.SRC_IN
+                )
+        //                    button.setIconTintResource(R.color.red50)
+                alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
+        //                    button.setTextColor(ContextCompat.getColor(context, R.color.red50))
+            }
+        }
 
+        private fun onAlternativeClickedOnDarkTheme(
+            isCorrectlyAnswered: Boolean,
+            cardType: String,
+            alternative: LyQuizAlternativeBinding,
+            container: View,
+            context: Context
+        ) {
+            if (isCorrectlyAnswered) {
+                if (cardType == MULTIPLE_ANSWER_CARD) {
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
+                } else {
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
+                }
+
+                container.background.setTint(ContextCompat.getColor(context, R.color.green50))
+        //                    button.setStrokeColorResource(R.color.green500)
+        //                    button.setIconTintResource(R.color.green500)
+                alternative.imgLeadingIcon.setColorFilter(
+                    ContextCompat.getColor(context, R.color.green500),
+                    PorterDuff.Mode.SRC_IN
+                )
+            } else {
+                if (cardType == MULTIPLE_ANSWER_CARD) {
+        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
+                } else {
+        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
+                    alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
+                }
+                container.background.setTint(ContextCompat.getColor(context, R.color.red50))
+        //                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
+        //                    button.setStrokeColorResource(R.color.red500)
+        //                    button.setIconTintResource(R.color.red500)
+                alternative.imgLeadingIcon.setColorFilter(
+                    ContextCompat.getColor(context, R.color.red500),
+                    PorterDuff.Mode.SRC_IN
+                )
+            }
         }
 
         private fun onButtonUnClicked(

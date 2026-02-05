@@ -22,7 +22,6 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.DeckColorCategorySelector
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 
 class DecksRecyclerViewAdapter(
@@ -81,17 +80,16 @@ class DecksRecyclerViewAdapter(
             val deckSurfaceColorCode: Int
             val deckTextColorCode: Int
 
-            if (appTheme == DARK_THEME) {
-                deckSurfaceColorCode = deckColorHelper
-                    .selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
-                deckTextColorCode = deckColorHelper
-                    .selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
-            } else {
-                deckSurfaceColorCode = deckColorHelper
-                    .selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
-                deckTextColorCode = deckColorHelper
-                    .selectDeckOnSurfaceColor(context, deck.deckColorCode)
-            }
+            deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+            deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
+
+//            if (appTheme == DARK_THEME) {
+//                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+//                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+//            } else {
+//                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+//                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
+//            }
 
             deckNameTV?.apply {
                 text = deck.deckName

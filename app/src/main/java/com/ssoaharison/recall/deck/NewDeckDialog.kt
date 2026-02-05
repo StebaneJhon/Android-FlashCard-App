@@ -22,8 +22,8 @@ import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.util.DeckColorPickerAdapter
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -146,11 +146,27 @@ class NewDeckDialog(
         lifecycleScope.launch {
             delay(50)
             val deckColorCategorySelector = DeckColorCategorySelector()
-            val deckColors = if (appTheme == DARK_THEME) {
-                deckColorCategorySelector.getDarkColors()
-            } else {
-                deckColorCategorySelector.getColors()
+            val deckColors = when (AppThemeHelper.getSavedTheme(requireContext())) {
+                1 -> {
+                    deckColorCategorySelector.getColors()
+                }
+                2 -> {
+                    deckColorCategorySelector.getDarkColors()
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(requireContext())) {
+                        deckColorCategorySelector.getDarkColors()
+                    } else {
+                        deckColorCategorySelector.getColors()
+                    }
+                }
             }
+
+//            if (appTheme == DARK_THEME) {
+//                deckColorCategorySelector.getDarkColors()
+//            } else {
+//                deckColorCategorySelector.getColors()
+//            }
             newDeckDialogViewModel.initColorSelection(deckColors, deckCategoryColor)
             newDeckDialogViewModel.colorSelectionList.collect { listOfColors ->
                 displayColorPicker(listOfColors)
@@ -225,7 +241,8 @@ class NewDeckDialog(
     private fun displayColorPicker(listOfColors: List<ColorModel>) {
         deckColorPickerAdapter = DeckColorPickerAdapter(
             requireContext(),
-            listOfColors
+            listOfColors,
+            true
         ) { selectedColor ->
             newDeckDialogViewModel.selectColor(selectedColor.id)
             deckCategoryColor = selectedColor.id

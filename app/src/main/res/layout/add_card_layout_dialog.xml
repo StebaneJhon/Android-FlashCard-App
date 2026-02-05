@@ -364,7 +364,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_add_media"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -372,6 +372,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_text_translate"
                     app:icon="@drawable/icon_attach"
+                    app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 
@@ -385,7 +386,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/frameLayout2">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_scan"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
@@ -393,6 +394,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="@string/add_card"
                     app:icon="@drawable/icon_document_scanner"
+                    app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
             </FrameLayout>
 
@@ -406,7 +408,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/frameLayout">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_translate"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"

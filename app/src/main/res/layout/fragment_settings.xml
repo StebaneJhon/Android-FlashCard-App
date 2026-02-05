@@ -232,8 +232,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_general_data_info" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_settings_theme_picker"
+        <RadioGroup
+            android:id="@+id/rg_app_themes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_lg"
@@ -243,7 +243,44 @@
             android:padding="@dimen/space_xs"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_theme_section_title" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_theme_section_title" >
+            <RadioButton
+                android:id="@+id/rb_light"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="true"
+                android:text="Light"
+                android:textColor="?colorOnSurface"/>
+            <RadioButton
+                android:id="@+id/rb_dark"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:enabled="true"
+                android:text="Dark"
+                android:textColor="?colorOnSurface"/>
+            <RadioButton
+                android:id="@+id/rb_system"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:enabled="true"
+                android:text="System"
+                android:textColor="?colorOnSurface"/>
+        </RadioGroup>
+
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rv_settings_theme_picker"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/space_lg"-->
+<!--            android:layout_marginHorizontal="@dimen/space_lg"-->
+<!--            android:background="@drawable/bg_radius_xl"-->
+<!--            android:backgroundTint="?colorSurfaceContainerLow"-->
+<!--            android:padding="@dimen/space_xs"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/tv_theme_section_title" />-->
 
         <TextView
             android:id="@+id/tv_space_repetition_title"
@@ -258,7 +295,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rv_settings_theme_picker" />
+            app:layout_constraintTop_toBottomOf="@+id/rg_app_themes" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_space_repetition_section"

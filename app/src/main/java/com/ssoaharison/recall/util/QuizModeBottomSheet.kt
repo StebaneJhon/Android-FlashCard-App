@@ -18,7 +18,6 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.TEST
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.WRITING_QUIZ
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 
 class QuizModeBottomSheet(): BottomSheetDialogFragment() {

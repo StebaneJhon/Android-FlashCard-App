@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
+import com.ssoaharison.recall.util.ThemeConst.BASE_THEME
 import com.ssoaharison.recall.util.ThemePicker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,16 +36,12 @@ class DeckPathViewModel(private val repository: FlashCardRepository): ViewModel(
     }
 
 
-    fun getViewTheme(defaultThemeName: String): Int {
+    fun getViewTheme(): Int {
         if (currentDeck.value?.deckColorCode == null) {
-            val viewTheme = themePicker.selectTheme(defaultThemeName) ?: themePicker.getDefaultTheme()
+            val viewTheme = themePicker.selectTheme(BASE_THEME) ?: themePicker.getDefaultTheme()
             return (viewTheme)
         } else {
-            val viewTheme = if (defaultThemeName == DARK_THEME) {
-                themePicker.selectDarkThemeByDeckColorCode(currentDeck.value?.deckColorCode!!, themePicker.getDefaultTheme())
-            } else {
-                themePicker.selectThemeByDeckColorCode(currentDeck.value?.deckColorCode!!, themePicker.getDefaultTheme())
-            }
+            val viewTheme = themePicker.selectThemeByDeckColorCode(currentDeck.value?.deckColorCode!!)
             return viewTheme
         }
     }

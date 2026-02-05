@@ -342,4 +342,6 @@
     <string name="format_underline">Format underline</string>
     <string name="format_strikethrough">Format strikethrough</string>
     <string name="format_clear">Format clear</string>
+    <string name="error_message_cannot_edit_main_deck_name">Cannot edit main deck name.</string>
+    <string name="error_message_cannot_edit_main_deck_background">Cannot edit main deck background.</string>
 </resources>

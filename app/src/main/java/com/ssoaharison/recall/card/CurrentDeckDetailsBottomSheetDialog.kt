@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
@@ -19,9 +20,11 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.databinding.BottomSheetDialogCurrentDeckDetailsBinding
 import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.util.DeckColorCategorySelector
 import com.ssoaharison.recall.util.DeckColorPickerAdapter
 import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.util.MAIN_DECK_ID
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -73,25 +76,44 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
 
         lifecycleScope.launch {
             delay(50)
-            currentDeckDetailsViewModel.initColorSelection(deckColorCategorySelector.getColors(), currentDeck.deckColorCode)
+            val colors =  when (AppThemeHelper.getSavedTheme(requireContext())) {
+                1 -> {
+                    deckColorCategorySelector.getColors()
+                }
+                2 -> {
+                    deckColorCategorySelector.getDarkColors()
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(requireContext())) {
+                        deckColorCategorySelector.getDarkColors()
+                    } else {
+                        deckColorCategorySelector.getColors()
+                    }
+                }
+            }
+            currentDeckDetailsViewModel.initColorSelection(colors, currentDeck.deckColorCode)
             currentDeckDetailsViewModel.colorSelectionList.collect { colors ->
-                displayColorPicker(colors)
+                displayColorPicker(colors, currentDeck.deckId != MAIN_DECK_ID)
             }
         }
 
         binding.btEditDeckName.apply {
             text = currentDeck.deckName
             setOnClickListener {
-                EditDeckNameDialog.newInstance(currentDeck.deckName).show(childFragmentManager, EditDeckNameDialog.TAG)
-                childFragmentManager.setFragmentResultListener(
-                    EditDeckNameDialog.CURRENT_DECK_NAME_REQUEST_CODE,
-                    this@CurrentDeckDetailsBottomSheetDialog
-                ) {_, bundle ->
-                    val data = bundle.getString(EditDeckNameDialog.CURRENT_DECK_NAME_BUNDLE_CODE)
-                    data?.let { newDeckName ->
-                        val updatedDeck = currentDeck.copy(deckName = newDeckName)
-                        onUpdateCurrentDeck(updatedDeck)
+                if (currentDeck.deckId != MAIN_DECK_ID) {
+                    EditDeckNameDialog.newInstance(currentDeck.deckName).show(childFragmentManager, EditDeckNameDialog.TAG)
+                    childFragmentManager.setFragmentResultListener(
+                        EditDeckNameDialog.CURRENT_DECK_NAME_REQUEST_CODE,
+                        this@CurrentDeckDetailsBottomSheetDialog
+                    ) {_, bundle ->
+                        val data = bundle.getString(EditDeckNameDialog.CURRENT_DECK_NAME_BUNDLE_CODE)
+                        data?.let { newDeckName ->
+                            val updatedDeck = currentDeck.copy(deckName = newDeckName)
+                            onUpdateCurrentDeck(updatedDeck)
+                        }
                     }
+                } else {
+                    Toast.makeText(context, getString(R.string.error_message_cannot_edit_main_deck_name), Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -166,10 +188,14 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
 
     }
 
-    private fun displayColorPicker(colors: List<ColorModel>) {
+    private fun displayColorPicker(
+        colors: List<ColorModel>,
+        isItemsClickable: Boolean = true,
+    ) {
         deckColorPickerAdapter = DeckColorPickerAdapter(
             context = requireContext(),
             listOfColors = colors,
+            isItemsClickable = isItemsClickable,
             onColorClicked = { color ->
                 currentDeckDetailsViewModel.selectColor(color.id)
                 val updatedDeck = currentDeck.copy(deckColorCode = color.id)

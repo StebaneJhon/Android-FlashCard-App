@@ -26,7 +26,6 @@ import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
@@ -37,6 +36,7 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.databinding.LyCardDefinitionBinding
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.util.TextType.CONTENT
@@ -64,7 +64,6 @@ class CardsRecyclerViewAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
         (holder as CardViewHolder).bind(
             context,
-            appTheme,
             deck,
             cardList[position],
             boxLevels,
@@ -135,7 +134,6 @@ class CardsRecyclerViewAdapter(
 
         fun bind(
             context: Context,
-            appTheme: String,
             deck: ExternalDeck,
             card: ExternalCardWithContentAndDefinitions,
             boxLevels: List<ImmutableSpaceRepetitionBox>,
@@ -146,11 +144,27 @@ class CardsRecyclerViewAdapter(
             onPlayAudio: (AudioModel, LinearLayout) -> Unit
         ) {
 
-            if (appTheme == DARK_THEME) {
-                this.onDarkTheme(boxLevels, card, context, onPlayAudio)
-            } else {
-                this.onBrightTheme(boxLevels, card, context, onPlayAudio)
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    this.onBrightTheme(boxLevels, card, context, onPlayAudio)
+                }
+                2 -> {
+                    this.onDarkTheme(boxLevels, card, context, onPlayAudio)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        this.onDarkTheme(boxLevels, card, context, onPlayAudio)
+                    } else {
+                        this.onBrightTheme(boxLevels, card, context, onPlayAudio)
+                    }
+                }
             }
+
+//            if (appTheme == DARK_THEME) {
+//                this.onDarkTheme(boxLevels, card, context, onPlayAudio)
+//            } else {
+//                this.onBrightTheme(boxLevels, card, context, onPlayAudio)
+//            }
 
             val correctDefinition = getCorrectDefinition(card.contentWithDefinitions.definitions)
 //            val definitionTexts = cardDefinitionsToStrings(correctDefinition)
@@ -158,7 +172,6 @@ class CardsRecyclerViewAdapter(
             cardRoot.setOnLongClickListener { v: View ->
                 showMenu(
                     context,
-                    appTheme,
                     v,
                     R.menu.card_popup_menu,
                     editCardClickListener,
@@ -244,7 +257,6 @@ class CardsRecyclerViewAdapter(
             popUpBT.setOnClickListener { v: View ->
                 showMenu(
                     context,
-                    appTheme,
                     v,
                     R.menu.card_popup_menu,
                     editCardClickListener,
@@ -259,7 +271,6 @@ class CardsRecyclerViewAdapter(
                 setOnLongClickListener { v: View ->
                     showMenu(
                         context,
-                        appTheme,
                         v,
                         R.menu.card_popup_menu,
                         editCardClickListener,
@@ -352,14 +363,12 @@ class CardsRecyclerViewAdapter(
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
 //            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor =
-                spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
 //            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
 //            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLightVariant(actualBoxLevel.levelColor)
 
 //            val colorStateList = ContextCompat.getColorStateList(context, statusColor)
-            val cardBackgroundStateList =
-                ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
+            val cardBackgroundStateList = ContextCompat.getColorStateList(context, cardBackgroundStatusColor)
 //            cvContainerCard.backgroundTintList = colorStateList
             cardStatus.apply {
                 findViewById<View>(R.id.vw_level_color).backgroundTintList = cardBackgroundStateList
@@ -423,7 +432,6 @@ class CardsRecyclerViewAdapter(
         @SuppressLint("RestrictedApi")
         private fun showMenu(
             context: Context,
-            appTheme: String,
             v: View,
             @MenuRes menuRes: Int,
             editCardClickListener: (ExternalCardWithContentAndDefinitions) -> Unit,
@@ -431,17 +439,10 @@ class CardsRecyclerViewAdapter(
             card: ExternalCardWithContentAndDefinitions,
             deckThemeName: String?,
         ) {
-            val themePicker = ThemePicker()
             val popup = if (deckThemeName.isNullOrBlank()) {
                 PopupMenu(context, v)
             } else {
-                val defaultTheme =
-                    themePicker.selectTheme(appTheme) ?: themePicker.getDefaultTheme()
-                val deckTheme = if (appTheme == DARK_THEME) {
-                    ThemePicker().selectDarkThemeByDeckColorCode(deckThemeName, defaultTheme)
-                } else {
-                    ThemePicker().selectThemeByDeckColorCode(deckThemeName, defaultTheme)
-                }
+                val deckTheme = ThemePicker().selectThemeByDeckColorCode(deckThemeName)
                 val wrapper = ContextThemeWrapper(context, deckTheme)
                 PopupMenu(wrapper, v)
             }

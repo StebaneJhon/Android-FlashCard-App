@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.ssoaharison.recall.R
 import com.google.android.material.card.MaterialCardView
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 class TestResultRecyclerViewAdapter(
     private val context: Context,

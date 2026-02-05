@@ -29,7 +29,6 @@ import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
 import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

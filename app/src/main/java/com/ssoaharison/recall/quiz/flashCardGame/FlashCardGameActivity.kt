@@ -78,7 +78,6 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -99,8 +98,8 @@ class FlashCardGameActivity :
 
     private lateinit var flashCardProgressBarAdapter: FlashCardProgressBarAdapter
 
-    private var sharedPref: SharedPreferences? = null
-    private var editor: SharedPreferences.Editor? = null
+//    private var sharedPref: SharedPreferences? = null
+//    private var editor: SharedPreferences.Editor? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions? = null
@@ -136,33 +135,35 @@ class FlashCardGameActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         miniGamePref = getSharedPreferences(
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
             Context.MODE_PRIVATE
         )
-        editor = sharedPref?.edit()
+//        editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
         val themePicker = ThemePicker()
-        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = themePicker.selectTheme(appTheme)
+//        val appTheme = sharedPref?.getString("themName", "BASE THEME")
+//        val themRef = themePicker.selectTheme(appTheme)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
 
         val deckColorCode = deckWithCards?.deck?.deckColorCode
+        val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
+        setTheme(theme)
 
-        if (deckColorCode.isNullOrBlank() && themRef != null) {
-            setTheme(themRef)
-        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-            val deckTheme = if (appTheme == DARK_THEME) {
-                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
-            } else {
-                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
-            }
-            setTheme(deckTheme)
-        } else {
-            setTheme(themePicker.getDefaultTheme())
-        }
+//        if (deckColorCode.isNullOrBlank() && themRef != null) {
+//            setTheme(themRef)
+//        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+//            val deckTheme = if (appTheme == DARK_THEME) {
+//                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+//            } else {
+//                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+//            }
+//            setTheme(deckTheme)
+//        } else {
+//            setTheme(themePicker.getDefaultTheme())
+//        }
 
         tts = TextToSpeech(this, this)
 

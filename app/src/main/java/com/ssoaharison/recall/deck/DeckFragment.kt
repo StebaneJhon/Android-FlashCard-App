@@ -47,7 +47,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.util.DeckColorCategorySelector
-import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
+import com.ssoaharison.recall.util.ThemeConst.BASE_THEME
 import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -109,7 +109,7 @@ class DeckFragment :
         deckSharedPrefEditor = deckSharedPref?.edit()
 
         appSharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        appThemeName = appSharedPref?.getString("themName", "WHITE THEM") ?: WHITE_THEME
+        appThemeName = appSharedPref?.getString("themName", "BASE_THEME") ?: BASE_THEME
 
         binding.deckTopAppBar.setNavigationOnClickListener {
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
