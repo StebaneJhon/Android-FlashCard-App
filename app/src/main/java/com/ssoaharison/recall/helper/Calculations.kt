@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.util
+package com.ssoaharison.recall.helper
 
 class Calculations {
     fun percentageOfRest(all: Int, part: Int) = (100 - ((part.toFloat() / all.toFloat()) * 100)).toInt()

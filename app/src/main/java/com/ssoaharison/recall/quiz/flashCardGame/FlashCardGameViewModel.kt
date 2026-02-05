@@ -13,7 +13,7 @@ import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
-import com.ssoaharison.recall.util.Calculations
+import com.ssoaharison.recall.helper.Calculations
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

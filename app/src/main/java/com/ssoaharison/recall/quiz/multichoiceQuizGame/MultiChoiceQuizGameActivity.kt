@@ -1,57 +1,16 @@
 package com.ssoaharison.recall.quiz.multichoiceQuizGame
 
-import android.animation.ArgbEvaluator
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Looper
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
-import android.view.View
 import android.view.animation.Animation
-import android.view.animation.AnimationUtils
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.color.MaterialColors
-import com.google.android.material.snackbar.Snackbar
-import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.databinding.ActivityMultichoiceQuizGameBinding
-import com.ssoaharison.recall.mainActivity.MainActivity
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.settings.MiniGameSettingsSheet
-import com.ssoaharison.recall.util.FlashCardMiniGameRef
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
-import com.ssoaharison.recall.util.FlashCardMiniGameRef.CHECKED_CARD_ORIENTATION
-import com.ssoaharison.recall.util.LanguageUtil
-import com.ssoaharison.recall.util.TextType.CONTENT
-import com.ssoaharison.recall.util.TextType.DEFINITION
-import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemePicker
-import com.ssoaharison.recall.util.UiState
-import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.util.Locale
 
 class MultiChoiceQuizGameActivity :
     AppCompatActivity()

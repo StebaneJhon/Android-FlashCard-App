@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.util
+package com.ssoaharison.recall.helper
 
 import android.content.Intent
 import android.os.Build

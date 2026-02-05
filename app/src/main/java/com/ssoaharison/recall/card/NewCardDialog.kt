@@ -71,7 +71,7 @@ import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
 import com.ssoaharison.recall.util.Constant
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -105,8 +105,8 @@ import com.ssoaharison.recall.util.ScanRef.AUDIO_TO_TEXT
 import com.ssoaharison.recall.util.ScanRef.IMAGE_FROM_CAMERA_TO_TEXT
 import com.ssoaharison.recall.util.ScanRef.IMAGE_FROM_GALERI_TO_TEXT
 import com.ssoaharison.recall.util.UiState
-import com.ssoaharison.recall.util.parcelable
-import com.ssoaharison.recall.util.textToImmutableCard
+import com.ssoaharison.recall.helper.parcelable
+import com.ssoaharison.recall.helper.textToImmutableCard
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

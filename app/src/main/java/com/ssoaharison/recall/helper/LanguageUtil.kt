@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.util
+package com.ssoaharison.recall.helper
 
 import android.content.Context
 import com.google.mlkit.common.model.DownloadConditions
@@ -9,8 +9,8 @@ import com.google.mlkit.nl.translate.TranslateRemoteModel
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.Translator
 import com.google.mlkit.nl.translate.TranslatorOptions
-import com.ssoaharison.recall.helper.InternetChecker
 import java.util.Locale
+import kotlin.collections.get
 
 class LanguageUtil {
     private val languages = mapOf(

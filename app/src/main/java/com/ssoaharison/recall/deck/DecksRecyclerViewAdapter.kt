@@ -21,7 +21,7 @@ import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
 
 
 class DecksRecyclerViewAdapter(

@@ -23,7 +23,7 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
-import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors

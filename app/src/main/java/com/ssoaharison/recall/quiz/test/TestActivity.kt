@@ -1,51 +1,13 @@
 package com.ssoaharison.recall.quiz.test
 
-import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
-import android.view.View
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.fragment.app.add
-import androidx.fragment.app.commit
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.databinding.ActivityTestBinding
-import com.ssoaharison.recall.quiz.quizGame.QuizGameActivity
-import com.ssoaharison.recall.util.LanguageUtil
-import com.ssoaharison.recall.util.TestResultAction.BACK_TO_DECK
-import com.ssoaharison.recall.util.TestResultAction.RETAKE_TEST
-import com.ssoaharison.recall.util.ThemePicker
-import com.ssoaharison.recall.util.UiState
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.color.MaterialColors
-import com.google.android.material.snackbar.Snackbar
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity.Companion
-import com.ssoaharison.recall.quiz.quizGame.QuizGameCardModel
-import com.ssoaharison.recall.quiz.quizGame.QuizGameProgressBarAdapter
-import com.ssoaharison.recall.util.TextType.CONTENT
-import com.ssoaharison.recall.util.TextType.DEFINITION
-import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.parcelable
-import kotlinx.coroutines.launch
-import java.util.Locale
 
 class TestActivity :
     AppCompatActivity()

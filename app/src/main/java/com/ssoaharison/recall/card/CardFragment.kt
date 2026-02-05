@@ -43,7 +43,7 @@ import com.ssoaharison.recall.databinding.FragmentCardBinding
 import com.ssoaharison.recall.deck.NewDeckDialog
 import com.ssoaharison.recall.quiz.quizGame.QuizGameActivity
 import com.ssoaharison.recall.util.Constant
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.QUIZ
 import com.ssoaharison.recall.util.ItemLayoutManager.LAYOUT_MANAGER
 import com.ssoaharison.recall.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
@@ -71,8 +71,8 @@ import com.ssoaharison.recall.util.CardSortOptions.SORT_PREF
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.ThemePicker
-import com.ssoaharison.recall.util.cardToText
-import com.ssoaharison.recall.util.parcelable
+import com.ssoaharison.recall.helper.cardToText
+import com.ssoaharison.recall.helper.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.MatchQuizGameItemModel
-import com.ssoaharison.recall.util.Calculations
+import com.ssoaharison.recall.helper.Calculations
 import com.ssoaharison.recall.util.MatchQuizGameClickStatus
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job

@@ -1,38 +1,12 @@
 package com.ssoaharison.recall.quiz.matchQuizGame
 
-import android.animation.ArgbEvaluator
-import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.GridLayoutManager
-import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.models.MatchQuizGameItemModel
 import com.ssoaharison.recall.databinding.ActivityMatchQuizGameBinding
-import com.ssoaharison.recall.mainActivity.MainActivity
-import com.ssoaharison.recall.util.MatchQuizGameClickStatus
-import com.ssoaharison.recall.util.ThemePicker
-import com.ssoaharison.recall.util.UiState
-import com.google.android.material.snackbar.Snackbar
-import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
-import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_1
-import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_2
-import com.ssoaharison.recall.util.BoardSizes.BOARD_SIZE_3
-import com.ssoaharison.recall.util.parcelable
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class MatchQuizGameActivity : AppCompatActivity() {
 

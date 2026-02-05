@@ -38,17 +38,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.ActivityFlashCardGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity
 import com.ssoaharison.recall.settings.MiniGameSettingsSheet
-import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
 import com.ssoaharison.recall.util.FlashCardMiniGameRef
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
@@ -59,7 +54,7 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.FILTER_CREATION_DATE
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.FILTER_RANDOM
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
@@ -69,7 +64,6 @@ import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitio
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
-import com.ssoaharison.recall.databinding.LyQuizQuestionBinding
 import com.ssoaharison.recall.helper.AppMath
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
@@ -78,7 +72,7 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.parcelable
+import com.ssoaharison.recall.helper.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File

@@ -31,7 +31,7 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.helper.AppThemeHelper
-import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
 
 
 class SubdeckRecyclerViewAdapter(
@@ -208,14 +208,10 @@ class SubdeckRecyclerViewAdapter(
                 context,
                 deck.deckColorCode
             )
-            deckTextColorCode =
-                deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
-            deckSurfaceContainerColorCode =
-                deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
-            knownCardViewBackgroundColor =
-                ContextCompat.getColorStateList(context, R.color.green600)
-            unknownCardViewBackgroundColor =
-                ContextCompat.getColorStateList(context, R.color.red600)
+            deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
+            deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+            knownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.green900)
+            unknownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.red900)
             knownCardTextColor = context.getColor(R.color.green50)
             unknownCardTextColor = context.getColor(R.color.red50)
         }

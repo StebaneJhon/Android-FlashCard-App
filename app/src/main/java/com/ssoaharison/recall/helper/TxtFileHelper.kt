@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.util
+package com.ssoaharison.recall.helper
 
 import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.entities.CardContent

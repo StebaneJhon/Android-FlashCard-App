@@ -17,9 +17,8 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.databinding.AddDeckLayoutDialogBinding
 import com.ssoaharison.recall.util.DeckAdditionAction.ADD
-import com.ssoaharison.recall.util.DeckAdditionAction.ADD_DECK_FORWARD_TO_CARD_ADDITION
-import com.ssoaharison.recall.util.DeckColorCategorySelector
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.helper.AppThemeHelper
