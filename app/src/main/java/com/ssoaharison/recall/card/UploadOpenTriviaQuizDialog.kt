@@ -12,8 +12,6 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.LyDialogUploadDeckWithCardsBinding
 import com.ssoaharison.recall.helper.OpenTriviaQuizCategoryHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.ssoaharison.recall.deck.DeckFragment
-import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 
 class UploadOpenTriviaQuizDialog : DialogFragment() {
 
@@ -89,7 +87,7 @@ class UploadOpenTriviaQuizDialog : DialogFragment() {
                         )
                     }
                 if (settingsModel != null) {
-                    sendOpenTriviaQuizMode(DeckFragment.REQUEST_CODE, settingsModel)
+                    sendOpenTriviaQuizMode(CardFragment.REQUEST_CODE, settingsModel)
                 }
                 dismiss()
             }

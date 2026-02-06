@@ -15,7 +15,7 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
-import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.util.ColorModel
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_ALPHABETICALLY
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_CREATION_DATE

@@ -1,7 +1,7 @@
 package com.ssoaharison.recall.card
 
 import androidx.lifecycle.ViewModel
-import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.util.ColorModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

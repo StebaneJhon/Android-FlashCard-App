@@ -91,9 +91,8 @@ import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefin
 import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
-import com.ssoaharison.recall.deck.OpenTriviaQuizModel
 import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
@@ -972,7 +971,7 @@ class NewCardDialog(
     private fun showTriviaQuestionUploader() {
         val newDeckDialog = UploadOpenTriviaQuizDialog()
         newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(CardFragment.REQUEST_CODE, this) { _, bundle ->
             val result =
                 bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
             cardUploadingJob?.cancel()
@@ -1256,16 +1255,72 @@ class NewCardDialog(
 
     private fun checkChip(chip: TextView) {
         chip.apply {
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    checkChipLightTheme(chip)
+                }
+                2 -> {
+                    checkChipDarkTheme(chip)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        checkChipDarkTheme(chip)
+                    } else {
+                        checkChipLightTheme(chip)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkChipLightTheme(chip: TextView) {
+        chip.apply {
             background.setTint(ContextCompat.getColor(context, R.color.green200))
             setTextColor(ContextCompat.getColor(context, R.color.green500))
             text = getString(R.string.cp_true_text)
         }
     }
 
+    private fun checkChipDarkTheme(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green700))
+            setTextColor(ContextCompat.getColor(context, R.color.green50))
+            text = getString(R.string.cp_true_text)
+        }
+    }
+
     private fun unCheckChip(chip: TextView) {
+        chip.apply {
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    unCheckLightChip(chip)
+                }
+                2 -> {
+                    unCheckDarkThemeChip(chip)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        unCheckDarkThemeChip(chip)
+                    } else {
+                        unCheckLightChip(chip)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun unCheckLightChip(chip: TextView) {
         chip.apply {
             background.setTint(ContextCompat.getColor(context, R.color.red200))
             setTextColor(ContextCompat.getColor(context, R.color.red500))
+            text = getString(R.string.cp_false_text)
+        }
+    }
+
+    private fun unCheckDarkThemeChip(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red700))
+            setTextColor(ContextCompat.getColor(context, R.color.red50))
             text = getString(R.string.cp_false_text)
         }
     }

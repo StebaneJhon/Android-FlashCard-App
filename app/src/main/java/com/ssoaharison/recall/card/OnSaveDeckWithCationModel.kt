@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.deck
+package com.ssoaharison.recall.card
 
 import android.os.Parcelable
 import com.ssoaharison.recall.backend.entities.Deck

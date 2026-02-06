@@ -40,7 +40,6 @@ import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.databinding.FragmentCardBinding
-import com.ssoaharison.recall.deck.NewDeckDialog
 import com.ssoaharison.recall.quiz.quizGame.QuizGameActivity
 import com.ssoaharison.recall.util.Constant
 import com.ssoaharison.recall.helper.LanguageUtil
@@ -59,8 +58,6 @@ import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefin
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
-import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
-import com.ssoaharison.recall.deck.OnSaveDeckWithCationModel
 import com.ssoaharison.recall.helper.AppMath
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
@@ -153,6 +150,7 @@ class CardFragment :
 
     companion object {
         const val TAG = "CardFragment"
+        const val REQUEST_CODE = "0"
         const val REQUEST_CODE_CARD = "0"
         const val REQUEST_CODE_QUIZ_MODE = "300"
         const val REQUEST_EXPORT_DECK_CODE = "400"
@@ -1043,7 +1041,11 @@ class CardFragment :
             binding.cardsActivityProgressBar.isVisible = true
             val deckAndCards = cardViewModel.getDeckWithCardsOnStartQuiz(deck.deckId)
             binding.cardsActivityProgressBar.isVisible = false
-            start(deckAndCards)
+            if (deckAndCards.cards.isEmpty()) {
+                Toast.makeText(requireContext(), getString(R.string.error_message_empty_deck), Toast.LENGTH_LONG).show()
+            } else {
+                start(deckAndCards)
+            }
             this@launch.cancel()
             this.cancel()
 //            repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -1399,7 +1401,7 @@ class CardFragment :
             .setNegativeButton(R.string.bt_cancel) { dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(getString(R.string.bt_add_card)) { dialog, _ ->
+            .setPositiveButton(getString(R.string.bt_add_card, deck.deckName)) { dialog, _ ->
                 onAddNewCard(deck)
                 dialog.dismiss()
             }

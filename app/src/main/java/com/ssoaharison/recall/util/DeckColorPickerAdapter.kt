@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.util.ColorModel
 
 class DeckColorPickerAdapter(
     private val context: Context,

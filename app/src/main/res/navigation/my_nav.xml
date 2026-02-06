@@ -11,11 +11,6 @@
         android:label="fragment_card"
         tools:layout="@layout/fragment_card" />
     <fragment
-        android:id="@+id/deckFragment"
-        android:name="com.ssoaharison.recall.deck.DeckFragment"
-        android:label="fragment_deck"
-        tools:layout="@layout/fragment_deck" />
-    <fragment
         android:id="@+id/settingsFragment"
         android:name="com.ssoaharison.recall.settings.SettingsFragment"
         android:label="fragment_settings"

@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.deck
+package com.ssoaharison.recall.card
 
 import android.app.Dialog
 import android.os.Bundle
@@ -22,6 +22,7 @@ import com.ssoaharison.recall.helper.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.helper.AppThemeHelper
+import com.ssoaharison.recall.util.ColorModel
 import com.ssoaharison.recall.util.DeckColorPickerAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

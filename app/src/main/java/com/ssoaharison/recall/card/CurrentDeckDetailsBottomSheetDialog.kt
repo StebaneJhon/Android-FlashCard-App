@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.databinding.BottomSheetDialogCurrentDeckDetailsBinding
-import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.util.ColorModel
 import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.DeckColorCategorySelector
 import com.ssoaharison.recall.util.DeckColorPickerAdapter

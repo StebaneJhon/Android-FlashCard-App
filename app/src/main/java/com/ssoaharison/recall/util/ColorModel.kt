@@ -1,4 +1,4 @@
-package com.ssoaharison.recall.deck
+package com.ssoaharison.recall.util
 
 data class ColorModel(
     val color: Int,
