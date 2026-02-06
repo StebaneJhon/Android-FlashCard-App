@@ -55,11 +55,9 @@
                     android:id="@+id/tv_title_content_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
                     android:text="@string/text_content"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_content_language"
@@ -67,11 +65,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/space_sm"
-                    android:fontFamily="@font/open_sans"
                     android:padding="0dp"
                     android:text="@string/text_content_language"
                     android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
+                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
                     app:icon="@drawable/icon_expand_more"
                     app:iconGravity="end"
                     app:iconTint="?colorPrimary" />
@@ -107,11 +104,9 @@
                     android:id="@+id/tv_title_definition_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
                     android:text="@string/text_definition"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_sm"
-                    android:textStyle="bold" />
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_definition_language"
@@ -119,11 +114,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/space_sm"
-                    android:fontFamily="@font/open_sans"
                     android:padding="0dp"
                     android:text="@string/text_definition_language"
                     android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
+                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
                     app:icon="@drawable/icon_expand_more"
                     app:iconGravity="end"
                     app:iconTint="?colorPrimary" />
@@ -304,13 +298,12 @@
                 style="@style/Widget.Material3.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:padding="0dp"
                 android:text="@string/text_new_definition"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs"
                 app:icon="@drawable/icon_add"
                 app:iconTint="?colorOnSurface"
+                android:textAppearance="@style/TextAppearance.App.BodySmall"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/ll_definition_10_container" />
 

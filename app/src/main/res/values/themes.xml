@@ -711,31 +711,33 @@
 
     <!-- Text Appearance -->
     <style name="TextAppearance.App.Medium" parent="TextAppearance.Material3.TitleLarge">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
         <item name="android:textColor">?colorOnSurface</item>
     </style>
     <style name="TextAppearance.App.Small" parent="TextAppearance.Material3.TitleSmall">
-        <item name="fontFamily">@font/open_sans_light</item>
-        <item name="android:fontFamily">@font/open_sans_light</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:textColor">?colorOnSurface</item>
     </style>
     <style name="TextAppearance.App.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
-        <item name="fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
         <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:textSize">@dimen/text_base</item>
+    </style>
+    <style name="TextAppearance.App.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
+        <item name="android:textColor">?colorOnSurface</item>
     </style>
     <style name="TextAppearance.App.BodySmall" parent="TextAppearance.Material3.BodySmall">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:textSize">@dimen/text_sm</item>
     </style>
     <style name="TextAppearance.App.Hint" parent="TextAppearance.Material3.BodySmall">
-        <item name="fontFamily">@font/open_sans</item>
-        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
         <item name="android:textColor">?colorSurfaceContainerHighest</item>
-        <item name="android:textSize">@dimen/text_sm</item>
     </style>
     <style name="TextAppearance.App.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
         <item name="fontFamily">@font/open_sans_bold</item>
@@ -746,7 +748,27 @@
         <item name="fontFamily">@font/open_sans_bold</item>
         <item name="android:fontFamily">@font/open_sans_bold</item>
         <item name="android:textColor">?colorOnSurface</item>
-        <item name="android:textSize">@dimen/text_base</item>
+    </style>
+    <style name="TextAppearance.App.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/open_sans_semi_bold</item>
+        <item name="android:fontFamily">@font/open_sans_bold</item>
+        <item name="android:textColor">?colorOnSurface</item>
+    </style>
+    <style name="TextAppearance.App.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans_light</item>
+    </style>
+    <style name="TextAppearance.App.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans_light</item>
+    </style>
+    <style name="TextAppearance.App.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/open_sans_light</item>
+        <item name="android:fontFamily">@font/open_sans_light</item>
+    </style>
+    <style name="TextAppearance.App.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
     </style>
 
     <!-- Shape Appearance-->
@@ -823,7 +845,7 @@
 
     <style name="MaterialAlertDialog.App.Title.Text" parent="MaterialAlertDialog.Material3.Title.Text">
         <item name="android:textColor">?colorOnSurface</item>
-        <item name="fontFamily">@font/open_sans</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
     </style>
 
     <!-- Rounded dialog theme -->

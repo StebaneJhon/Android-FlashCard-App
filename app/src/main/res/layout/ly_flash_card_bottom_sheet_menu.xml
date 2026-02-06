@@ -41,11 +41,9 @@
                 android:id="@+id/tv_filters_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/tv_filters_settings_section_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                android:textStyle="bold" />
+                android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
             <ImageButton
                 android:id="@+id/bt_reveal_filter_settings"
@@ -68,26 +66,24 @@
                 android:id="@+id/rb_random"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/rb_random_settings"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm" />
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
             <RadioButton
                 android:id="@+id/rb_creation_date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/rb_creation_time_settings"
-                android:textColor="?colorOnSurface" />
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
             <RadioButton
                 android:id="@+id/rb_filter_by_lv"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/rb_by_card_level_setting_text"
-                android:textColor="?colorOnSurface" />
+                android:textColor="?colorOnSurface"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
         </RadioGroup>
 
@@ -115,11 +111,9 @@
                 android:id="@+id/tv_space_repetition_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textStyle="bold"
                 android:text="@string/tv_space_repetition_settings_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm" />
+                android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
             <ImageButton
                 android:id="@+id/bt_reveal_space_repetition_settings"
@@ -135,17 +129,17 @@
             android:id="@+id/cb_unknown_card_first"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
             android:text="@string/cb_card_to_be_revised_first_setting_text"
-            android:textColor="?colorOnSurface" />
+            android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
         <CheckBox
             android:id="@+id/cb_unknown_card_only"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
             android:text="@string/cb_card_to_be_revised_only_setting_text"
-            android:textColor="?colorOnSurface" />
+            android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
     </LinearLayout>
 
@@ -172,11 +166,9 @@
                 android:id="@+id/tv_card_orientation_section_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/tv_card_orientation_setting_section_title"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                android:textStyle="bold"/>
+                android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
             <ImageButton
                 android:id="@+id/bt_reveal_card_orientation_settings"
@@ -199,17 +191,17 @@
                 android:id="@+id/rb_front_back"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/rb_front_and_back_setting_text"
-                android:textColor="?colorOnSurface" />
+                android:textColor="?colorOnSurface"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
             <RadioButton
                 android:id="@+id/rb_back_front"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fontFamily="@font/open_sans"
                 android:text="@string/rb_back_and_front_setting_text"
-                android:textColor="?colorOnSurface" />
+                android:textColor="?colorOnSurface"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
         </RadioGroup>
 
@@ -231,11 +223,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/space_lg"
-            android:fontFamily="@font/open_sans"
             android:text="@string/tv_card_count_setting_section_title"
             android:textColor="?colorOnSurface"
-            android:textSize="@dimen/text_sm"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -248,6 +238,7 @@
             app:boxStrokeWidth="0dp"
             app:boxStrokeWidthFocused="0dp"
             app:hintEnabled="false"
+            app:hintTextAppearance="@style/TextAppearance.App.Hint"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -258,8 +249,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:autofillHints="@string/deck_name_hint"
-                android:fontFamily="@font/open_sans"
                 android:hint="@string/tv_card_count_setting_section_hint"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -276,6 +267,7 @@
         android:paddingTop="@dimen/space_lg"
         android:paddingBottom="@dimen/space_lg"
         android:text="@string/bt_apply_and_restart_quiz_settings_text"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         android:textColor="?colorSurfaceContainerLowest"
         app:cornerRadius="@dimen/radius_base"
         app:layout_constraintEnd_toEndOf="parent"

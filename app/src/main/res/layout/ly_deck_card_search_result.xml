@@ -15,12 +15,10 @@
             android:id="@+id/tv_decks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
             android:text="@string/tv_deck_text"
             android:textColor="?colorPrimary"
-            android:textSize="@dimen/text_xs"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
             android:layout_margin="@dimen/space_lg"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -31,11 +29,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/no_deck_found"
-            android:textSize="@dimen/text_lg"
             android:textAlignment="center"
             android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:drawableTint="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
             android:layout_marginHorizontal="@dimen/space_lg"
             app:drawableTopCompat="@drawable/icon_search" />
 
@@ -62,12 +59,10 @@
             android:id="@+id/tv_cards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
             android:text="@string/tv_cards_text"
             android:textColor="?colorPrimary"
-            android:textSize="@dimen/text_xs"
             android:layout_margin="@dimen/space_lg"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -78,11 +73,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/no_card_found"
-            android:textSize="@dimen/text_lg"
             android:textAlignment="center"
             android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:drawableTint="?colorOnSurface"
-            android:fontFamily="@font/open_sans"
             android:layout_marginHorizontal="@dimen/space_lg"
             app:drawableTopCompat="@drawable/icon_search" />
 

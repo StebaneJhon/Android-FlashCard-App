@@ -7,9 +7,7 @@
     android:layout_height="match_parent"
     android:textAlignment="center"
     android:gravity="center"
-    android:textSize="@dimen/text_xs"
-    android:fontFamily="@font/open_sans_bold"
-    android:textStyle="bold"
+    android:textAppearance="@style/TextAppearance.App.TitleMedium"
     tools:text="Location/"
     android:textColor="?colorOnSurface"
     android:layout_marginStart="@dimen/space_lg"/>

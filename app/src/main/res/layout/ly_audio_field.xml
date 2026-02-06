@@ -45,7 +45,7 @@
         android:textColor="?colorOnSurface"
         android:textAlignment="center"
         android:gravity="center"
-        android:textSize="@dimen/text_xs"
+        android:textAppearance="@style/TextAppearance.App.LabelMedium"
         android:layout_marginHorizontal="@dimen/space_xs"/>
 
     <com.google.android.material.button.MaterialButton

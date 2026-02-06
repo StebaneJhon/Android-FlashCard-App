@@ -12,11 +12,9 @@
         android:id="@+id/tv_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_bold"
         android:text="@string/text_content"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        android:textStyle="bold" />
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_language"
@@ -24,11 +22,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_sm"
-        android:fontFamily="@font/open_sans"
         android:padding="0dp"
         android:text="@string/text_content_language"
         android:textColor="?colorPrimary"
-        android:textSize="@dimen/text_xs"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         app:icon="@drawable/icon_expand_more"
         app:iconGravity="end"
         app:iconTint="?colorPrimary" />

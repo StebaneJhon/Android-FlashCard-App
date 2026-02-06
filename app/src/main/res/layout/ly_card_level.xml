@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:text="Level 1"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_xxs"
-        android:fontFamily="@font/open_sans"/>
+        android:textAppearance="@style/TextAppearance.App.LabelSmall"/>
 
 </LinearLayout>

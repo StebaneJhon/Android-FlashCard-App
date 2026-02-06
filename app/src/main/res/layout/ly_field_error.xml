@@ -24,7 +24,7 @@
         tools:text="Error"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fontFamily="@font/open_sans"
+        android:textAppearance="@style/TextAppearance.App.BodySmall"
         android:textColor="?colorError"
         android:gravity="center_vertical"/>
 

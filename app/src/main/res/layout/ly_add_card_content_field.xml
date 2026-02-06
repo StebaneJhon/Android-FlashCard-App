@@ -180,6 +180,8 @@
         android:layout_marginEnd="@dimen/space_xxs"
         android:layout_weight="1"
         android:padding="0dp"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
         app:boxStrokeWidth="0dp"
         app:boxStrokeWidthFocused="0dp"
         app:hintEnabled="false"
@@ -194,7 +196,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/til_card_content_hint"
             android:inputType="textMultiLine"
-            android:maxLines="10" />
+            android:maxLines="10"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout

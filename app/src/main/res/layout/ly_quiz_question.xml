@@ -33,12 +33,9 @@
         android:id="@+id/tv_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
         android:gravity="center"
         android:textAlignment="center"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
-        app:autoSizeTextType="uniform"
+        android:textAppearance="@style/TextAppearance.App.BodyLarge"
         tools:text="1. What is the capital of Madagascar?"
         android:layout_marginTop="@dimen/space_xs"/>
 

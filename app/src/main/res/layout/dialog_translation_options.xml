@@ -12,12 +12,10 @@
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
         android:text="@string/translate"
         android:textAlignment="center"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_lg"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
         android:layout_marginBottom="@dimen/space_lg"/>
 
     <androidx.recyclerview.widget.RecyclerView

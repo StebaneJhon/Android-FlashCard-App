@@ -74,10 +74,8 @@
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
         android:textAlignment="textStart"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         tools:text="Content"/>
 
 </LinearLayout>

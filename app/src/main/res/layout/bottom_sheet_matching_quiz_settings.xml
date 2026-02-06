@@ -23,11 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/space_md"
-        android:fontFamily="@font/montserrat_bold"
         android:text="@string/text_board_size"
         android:textAlignment="textStart"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
         android:textStyle="bold" />
 
     <RadioGroup
@@ -40,7 +39,7 @@
             android:id="@+id/rb_board_size_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:text="4 : 2"
             android:textColor="?colorOnSurface" />
 
@@ -48,7 +47,7 @@
             android:id="@+id/rb_board_size_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:text="4 : 3"
             android:textColor="?colorOnSurface" />
 
@@ -56,7 +55,7 @@
             android:id="@+id/rb_board_size_3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:text="6 : 3"
             android:textColor="?colorOnSurface" />
     </RadioGroup>

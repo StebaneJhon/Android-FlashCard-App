@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/space_sm"
-                android:fontFamily="@font/open_sans"
+                android:fontFamily="@font/open_sans_regular"
                 android:textColor="?colorOnSurface"
                 android:textSize="@dimen/text_sm"
                 app:layout_constraintBottom_toBottomOf="@+id/bt_speak_back"
@@ -105,9 +105,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/space_sm"
-                android:fontFamily="@font/open_sans"
                 android:textColor="?colorSurfaceContainerHighest"
-                android:textSize="@dimen/text_xs"
+                android:textAppearance="@style/TextAppearance.App.LabelSmall"
                 app:layout_constraintBottom_toBottomOf="@+id/bt_speak"
                 app:layout_constraintEnd_toStartOf="@+id/bt_speak"
                 app:layout_constraintTop_toTopOf="@+id/bt_speak"
@@ -163,9 +162,8 @@
                 android:id="@+id/tv_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:textColor="?colorSurfaceContainerHighest"
-                android:textSize="@dimen/text_xs"
+                android:textAppearance="@style/TextAppearance.App.LabelSmall"
                 android:layout_marginBottom="@dimen/space_sm"
                 app:layout_constraintBottom_toTopOf="@+id/bt_alternative1"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -195,7 +193,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -230,7 +228,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -264,7 +262,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -298,7 +296,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -332,7 +330,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -366,7 +364,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -400,7 +398,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -434,7 +432,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -469,7 +467,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->
@@ -504,7 +502,7 @@
 <!--                android:layout_height="wrap_content"-->
 <!--                android:layout_marginTop="@dimen/space_sm"-->
 <!--                android:backgroundTint="?colorSurfaceContainerLowest"-->
-<!--                android:fontFamily="@font/open_sans"-->
+<!--                android:fontFamily="@font/open_sans_regular"-->
 <!--                android:textColor="?colorOnSurface"-->
 <!--                app:autoSizeMaxTextSize="@dimen/text_base"-->
 <!--                app:autoSizeMinTextSize="@dimen/text_sm"-->

@@ -34,15 +34,13 @@
         android:id="@+id/til_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.App.TextInputLayout"
+        android:layout_marginTop="@dimen/space_md"
         android:layout_marginHorizontal="@dimen/space_lg"
-        android:textColorHint="@color/neutral400"
-        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBarLayout">
 
@@ -53,21 +51,19 @@
             android:autofillHints="@string/hint_name"
             android:hint="@string/hint_name"
             android:inputType="text"
-            android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface"
-            android:fontFamily="@font/open_sans" />
+            style="@style/Widget.App.TextInputEditText"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@style/Widget.App.TextInputLayout"
+        android:layout_marginTop="@dimen/space_md"
         android:layout_marginHorizontal="@dimen/space_lg"
-        android:textColorHint="@color/neutral400"
-        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -80,21 +76,19 @@
             android:layout_height="match_parent"
             android:inputType="textEmailSubject"
             android:hint="@string/hint_email"
-            android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface"
-            android:fontFamily="@font/open_sans"/>
+            style="@style/Widget.App.TextInputEditText"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="@color/neutral400"
+        style="@style/Widget.App.TextInputLayout"
+        android:layout_marginTop="@dimen/space_md"
         android:layout_marginHorizontal="@dimen/space_lg"
-        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -111,19 +105,17 @@
             android:maxLines="20"
             android:autofillHints="@string/hint_message"
             android:hint="@string/hint_message"
-            android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface"
-            android:fontFamily="@font/open_sans"/>
+            style="@style/Widget.App.TextInputEditText"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageView
         android:id="@+id/imv_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_sm"
-        android:layout_marginBottom="@dimen/space_sm"
-        android:layout_marginEnd="@dimen/space_sm"
+        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginBottom="@dimen/space_md"
         android:src="@drawable/icon_check_circle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_message" />
@@ -132,12 +124,12 @@
         android:id="@+id/tv_success_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_sm"
-        android:layout_marginEnd="@dimen/space_lg"
-        android:layout_marginStart="@dimen/space_sm"
         android:text="@string/success_message_email_sent"
         android:textColor="@color/green600"
-        android:fontFamily="@font/open_sans"
+        android:layout_marginVertical="@dimen/space_md"
+        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_lg"
+        android:textAppearance="@style/TextAppearance.App.BodySmall"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imv_check"
         app:layout_constraintTop_toBottomOf="@+id/til_message" />
@@ -146,11 +138,13 @@
         android:id="@+id/bt_send_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/space_sm"
+        android:layout_marginEnd="@dimen/space_lg"
         android:layout_marginTop="@dimen/space_md"
         android:backgroundTint="?colorPrimary"
+        android:background="@drawable/bg_radius_base"
         android:text="@string/bt_text_send"
         android:textColor="?colorOnPrimary"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_success_message" />
 

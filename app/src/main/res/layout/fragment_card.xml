@@ -73,12 +73,10 @@
                     android:id="@+id/tv_subdecks"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
                     android:text="@string/tv_deck_text"
                     android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
-                    android:textStyle="bold"
                     android:layout_margin="@dimen/space_lg"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -127,12 +125,10 @@
                     android:id="@+id/tv_cards"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans"
                     android:text="@string/tv_cards_text"
                     android:textColor="?colorPrimary"
-                    android:textSize="@dimen/text_xs"
-                    android:textStyle="bold"
                     android:layout_margin="@dimen/space_lg"
+                    android:textAppearance="@style/TextAppearance.App.TitleSmall"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -179,21 +175,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/open_sans_bold"
                     android:text="@string/title_on_no_card_to_show"
                     android:textAlignment="center"
                     android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_base" />
+                    android:textAppearance="@style/TextAppearance.App.TitleMedium"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/space_xs"
-                    android:fontFamily="@font/open_sans"
+                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
                     android:text="@string/on_no_card_text_hint"
                     android:textAlignment="center"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="@dimen/text_base" />
+                    android:textColor="?colorOnSurface" />
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -371,13 +365,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/space_xl"
-        android:fontFamily="@font/open_sans"
         android:text="@string/error_message_no_card_found"
         android:textAlignment="center"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
         android:layout_gravity="center"
         android:visibility="gone"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -29,10 +29,9 @@
         android:layout_marginTop="@dimen/space_md"
         android:layout_marginEnd="@dimen/space_md"
         android:layout_marginStart="@dimen/space_md"
-        android:fontFamily="@font/open_sans"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.App.BodyLarge"
+        android:fontFamily="@font/open_sans_semi_bold"
         app:layout_constraintEnd_toStartOf="@+id/popup_menu_BT"
         app:layout_constraintStart_toEndOf="@+id/iv_deck"
         app:layout_constraintTop_toTopOf="parent"
@@ -89,8 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/space_sm"
-            android:fontFamily="@font/open_sans"
-            android:textSize="@dimen/text_xxs"
+            android:textAppearance="@style/TextAppearance.App.LabelSmall"
             tools:text="year-month-day" />
     </LinearLayout>
 

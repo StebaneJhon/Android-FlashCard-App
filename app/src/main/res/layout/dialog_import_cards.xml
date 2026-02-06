@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="?colorSurfaceContainerLowest"
-    android:padding="@dimen/space_sm">
+    android:padding="@dimen/space_lg">
     
     <TextView
         android:id="@+id/tv_title"
@@ -15,11 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Import cards from device"
-        android:textSize="@dimen/text_lg" 
-        android:fontFamily="@font/open_sans"
-        android:textStyle="bold"
         android:textAlignment="center"
-        android:textColor="?colorOnSurface" />
+        android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"/>
 
     <TextView
         android:id="@+id/tv_title_format"
@@ -49,63 +47,59 @@
             android:layout_height="match_parent"
             android:enabled="true"
             android:checked="true"
-            android:text="@string/txt" />
+            android:text="@string/txt"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
     </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.App.TextInputLayout"
         android:id="@+id/til_separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
         android:textColor="?colorOnSurface"
-        android:textColorHint="@color/neutral400"
-        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-        app:boxCornerRadiusTopStart="@dimen/ed_radius"
-        android:layout_marginTop="@dimen/space_sm"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+        android:layout_marginTop="@dimen/space_md"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rg_format">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.App.TextInputEditText"
             android:id="@+id/tie_separator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/open_sans"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:hint="@string/text_separator"
             android:inputType="textMultiLine"
             android:maxLines="5"
-            android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface" />
+            android:textColor="?colorOnSurface"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/bt_cancel"
-        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:fontFamily="@font/open_sans_bold"
+        android:background="@drawable/bg_radius_base"
+        android:backgroundTint="?colorPrimary"
         android:text="@string/bt_text_cancel"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        android:textStyle="bold"
+        android:textColor="?colorOnPrimary"
         android:layout_marginTop="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_lg"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         app:layout_constraintEnd_toStartOf="@+id/bt_get_file"
         app:layout_constraintTop_toBottomOf="@+id/til_separator" />
 
     <Button
         android:id="@+id/bt_get_file"
-        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:fontFamily="@font/open_sans_bold"
+        android:background="@drawable/bg_radius_base"
+        android:backgroundTint="?colorPrimary"
         android:text="@string/search_file"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        android:textStyle="bold"
+        android:textColor="?colorOnPrimary"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:layout_marginStart="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bt_cancel" />
     

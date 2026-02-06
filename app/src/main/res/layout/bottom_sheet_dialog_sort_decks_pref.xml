@@ -32,6 +32,7 @@
             android:layout_height="match_parent"
             android:text="@string/sort_by_creation_date"
             android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:layout_marginHorizontal="@dimen/space_lg" />
 
         <RadioButton
@@ -40,6 +41,7 @@
             android:layout_height="match_parent"
             android:text="@string/sort_by_card_sum"
             android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:layout_marginHorizontal="@dimen/space_lg" />
 
         <RadioButton
@@ -48,6 +50,7 @@
             android:layout_height="match_parent"
             android:text="@string/sort_alphabetically"
             android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:layout_marginHorizontal="@dimen/space_lg" />
 
     </RadioGroup>
