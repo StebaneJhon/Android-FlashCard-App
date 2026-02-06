@@ -5,19 +5,34 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="?colorSurfaceContainerLowest"
-    android:padding="@dimen/space_lg">
-    
+    android:paddingBottom="@dimen/space_lg">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_dismiss"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/bt_description_exit"
+        app:icon="@drawable/icon_exit"
+        app:iconSize="25sp"
+        app:iconTint="?colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Import cards from device"
-        android:textAlignment="center"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
         android:textColor="?colorOnSurface"
-        android:textAppearance="@style/TextAppearance.App.TitleMedium"/>
+        android:layout_marginEnd="@dimen/space_lg"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_dismiss"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/bt_dismiss"
+        app:layout_constraintTop_toTopOf="@+id/bt_dismiss" />
 
     <TextView
         android:id="@+id/tv_title_format"
@@ -29,10 +44,10 @@
         android:textColor="?colorOnSurface"
         android:textSize="@dimen/text_base"
         android:textStyle="bold"
-        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginHorizontal="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+        app:layout_constraintTop_toBottomOf="@+id/bt_dismiss" />
 
     <RadioGroup
         android:id="@+id/rg_format"
@@ -40,7 +55,8 @@
         android:layout_height="wrap_content"
         android:checkedButton="@+id/enabled_selected"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_format"
-        tools:layout_editor_absoluteX="8dp">
+        tools:layout_editor_absoluteX="8dp"
+        android:layout_marginHorizontal="@dimen/space_lg">
         <RadioButton
             android:id="@+id/rb_format_txt"
             android:layout_width="match_parent"
@@ -60,6 +76,8 @@
         app:hintTextAppearance="@style/TextAppearance.App.Hint"
         app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
         android:layout_marginTop="@dimen/space_md"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        app:boxBackgroundColor="?colorSurfaceContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rg_format">
@@ -100,6 +118,7 @@
         android:textColor="?colorOnPrimary"
         android:textAppearance="@style/TextAppearance.App.BodyMedium"
         android:layout_marginStart="@dimen/space_lg"
+        android:layout_marginEnd="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bt_cancel" />
     

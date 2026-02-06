@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/space_lg">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_dismiss"
@@ -25,6 +26,7 @@
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.App.TitleMedium"
         android:textColor="?colorOnSurface"
+        android:layout_marginEnd="@dimen/space_lg"
         app:layout_constraintBottom_toBottomOf="@+id/bt_dismiss"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/bt_dismiss"
@@ -80,6 +82,7 @@
         android:padding="@dimen/space_md"
         android:layout_marginHorizontal="@dimen/space_lg"
         android:layout_marginTop="@dimen/space_md"
+        android:layout_marginBottom="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cv_from_device">
