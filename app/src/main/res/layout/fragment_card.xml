@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context=".card.CardFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -118,6 +118,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/container_card_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -162,34 +163,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <LinearLayout
-                android:id="@+id/onNoCardTextError"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/space_xl"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone"
-                android:padding="@dimen/space_xl">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_on_no_card_to_show"
-                    android:textAlignment="center"
-                    android:textColor="?colorOnSurface"
-                    android:textAppearance="@style/TextAppearance.App.TitleMedium"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/space_xs"
-                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                    android:text="@string/on_no_card_text_hint"
-                    android:textAlignment="center"
-                    android:textColor="?colorOnSurface" />
-            </LinearLayout>
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/cardRecyclerView"
                 android:layout_width="match_parent"
@@ -210,45 +183,27 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <com.google.android.material.bottomappbar.BottomAppBar
+    <LinearLayout
         android:visibility="gone"
-        android:id="@+id/bottomAppBar"
-        style="@style/Widget.Material3.BottomAppBar"
+        android:id="@+id/container_no_card_and_deck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:backgroundTint="?colorSurfaceContainerLowest"
-        app:hideOnScroll="true"
-        app:menu="@menu/menu_bottom_appbar_cards"
-        app:navigationIcon="@drawable/icon_more"
-        app:navigationIconTint="?colorOnSurface" />
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/space_xl"
+        android:gravity="center"
+        android:layout_gravity="center"
         android:orientation="vertical"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="70dp"
-        android:layout_marginEnd="30dp"
-        android:gravity="end">
-        <Button
-            android:id="@+id/bt_add_subdeck"
+        android:padding="@dimen/space_lg">
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_xl"
-            android:text="@string/add_subdeck"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/bt_add_card"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/space_xl"
-            android:text="@string/add_card"
-            android:visibility="gone"/>
+            android:layout_marginTop="@dimen/space_xs"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
+            android:fontFamily="@font/open_sans_semi_bold"
+            android:text="@string/no_deck_and_card"
+            android:textAlignment="center"
+            android:textColor="?colorOnSurface"
+            android:drawableBottom="@drawable/icon_bottom_right_click" />
     </LinearLayout>
-
 
     <com.google.android.material.dockedtoolbar.DockedToolbarLayout
         android:id="@+id/docked_toolbar"
@@ -384,6 +339,49 @@
         <include
             android:id="@+id/ly_no_card_error"
             layout="@layout/ly_loading_screen" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_add_subdeck_and_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/neutral800_transparent"
+        android:orientation="vertical"
+        android:gravity="bottom|end"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/bt_add_subdeck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_xl"
+            android:text="@string/add_subdeck"
+            android:layout_marginEnd="@dimen/space_lg"/>
+
+        <Button
+            android:id="@+id/bt_add_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/space_xl"
+            android:layout_marginEnd="@dimen/space_lg"
+            android:text="@string/add_card" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_hide_actions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/bt_description_add_new_card"
+            android:backgroundTint="?colorPrimary"
+            app:srcCompat="@drawable/icon_exit"
+            app:shapeAppearance="@style/ShapeAppearance.App.Circle"
+            app:elevation="0dp"
+            app:pressedTranslationZ="0dp"
+            app:hoveredFocusedTranslationZ="0dp"
+            app:borderWidth="0dp"
+            android:outlineProvider="none"
+            app:useCompatPadding="false"
+            android:layout_marginBottom="32dp"
+            android:layout_marginEnd="@dimen/space_lg"/>
     </LinearLayout>
 
 

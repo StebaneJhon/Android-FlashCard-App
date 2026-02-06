@@ -80,6 +80,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.Locale
 import androidx.core.content.edit
+import androidx.core.view.WindowCompat
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
@@ -341,7 +342,15 @@ class CardFragment :
             })
 
         binding.fabAddShowActions.setOnClickListener {
-            onAction(!binding.btAddSubdeck.isVisible)
+            onAction(true)
+        }
+
+        binding.fabAddHideActions.setOnClickListener {
+            onAction(false)
+        }
+
+        binding.containerAddSubdeckAndCard.setOnClickListener {
+            onAction(false)
         }
 
         binding.searchView
@@ -562,13 +571,12 @@ class CardFragment :
     }
 
     private fun onAction(areActionsShown: Boolean) {
-        binding.btAddSubdeck.isVisible = areActionsShown
-        binding.btAddCard.isVisible = areActionsShown
-        if (areActionsShown) {
-            binding.fabAddShowActions.setImageResource(R.drawable.icon_exit)
-        } else {
-            binding.fabAddShowActions.setImageResource(R.drawable.icon_add)
-        }
+//        binding.btAddSubdeck.isVisible = areActionsShown
+//        binding.btAddCard.isVisible = areActionsShown
+        val window = requireActivity().window
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.isAppearanceLightStatusBars = !areActionsShown
+        binding.containerAddSubdeckAndCard.isVisible = areActionsShown
     }
 
 //    private fun displayData() {
@@ -580,8 +588,7 @@ class CardFragment :
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckPath(deck) { path ->
-                    recyclerViewAdapterDeckPath =
-                        RecyclerViewAdapterDeckPath(path) { pathTogo ->
+                    recyclerViewAdapterDeckPath = RecyclerViewAdapterDeckPath(path) { pathTogo ->
                             deckPathViewModel.setCurrentDeck(pathTogo)
                             switchTheme()
                         }
@@ -839,12 +846,17 @@ class CardFragment :
                         }
 
                         is UiState.Error -> {
-                            onDeckEmpty()
+                            binding.containerNoCardAndDeck.isVisible = !binding.subdeckRecyclerView.isVisible
+                            binding.cardsActivityProgressBar.isVisible = false
+                            binding.cardRecyclerView.isVisible = false
+                            binding.containerCardHeader.isVisible = false
                         }
 
                         is UiState.Success -> {
 //                            deck = state.data.deck
+                            binding.containerNoCardAndDeck.visibility = View.GONE
                             binding.cardRecyclerView.visibility = View.VISIBLE
+                            binding.containerCardHeader.visibility = View.VISIBLE
                             val sortedCards = cardViewModel.applyCardsSortPref(getSortPref(), state.data.cards)
                             populateRecyclerView(sortedCards, state.data.deck)
 //                            bindDeckDetailsPanel(state.data.deck)
@@ -888,15 +900,21 @@ class CardFragment :
                 cardViewModel.subdecks.collect { state ->
                     when (state) {
                         is UiState.Error -> {
+                            binding.divider.visibility = View.GONE
                             binding.subdeckRecyclerView.isVisible = false
+                            binding.clContainerSubdecksHeader.visibility = View.GONE
+                            binding.containerNoCardAndDeck.isVisible =  !binding.cardRecyclerView.isVisible
                         }
 
                         is UiState.Loading -> {
+                            binding.divider.visibility = View.GONE
                             binding.subdeckRecyclerView.visibility = View.GONE
                             binding.clContainerSubdecksHeader.visibility = View.GONE
                         }
 
                         is UiState.Success -> {
+                            binding.containerNoCardAndDeck.visibility = View.GONE
+                            binding.divider.visibility = View.VISIBLE
                             binding.subdeckRecyclerView.visibility = View.VISIBLE
                             binding.clContainerSubdecksHeader.visibility = View.VISIBLE
                             populateSubdecksRecyclerView(deck = deck, subdecks = state.data)
@@ -1010,10 +1028,11 @@ class CardFragment :
     }
 
     private fun onDeckEmpty() {
+        binding.containerNoCardAndDeck.isVisible = binding.subdeckRecyclerView.isVisible
         binding.cardsActivityProgressBar.isVisible = false
         binding.cardRecyclerView.isVisible = false
         binding.tvNoCardFound.isVisible = false
-        binding.onNoCardTextError.isVisible = true
+        binding.containerCardHeader.isVisible = false
     }
 
     private fun onChooseQuizMode(deck: ExternalDeck) {
@@ -1220,7 +1239,6 @@ class CardFragment :
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
         binding.cardsActivityProgressBar.isVisible = false
-        binding.onNoCardTextError.isVisible = false
         binding.tvNoCardFound.isVisible = false
         binding.cardRecyclerView.isVisible = true
 
@@ -1650,7 +1668,6 @@ class CardFragment :
     private fun onCardNotFound() {
         binding.cardsActivityProgressBar.isVisible = false
         binding.cardRecyclerView.isVisible = false
-        binding.onNoCardTextError.isVisible = false
         binding.tvNoCardFound.isVisible = true
     }
 

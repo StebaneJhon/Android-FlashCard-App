@@ -65,6 +65,7 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
@@ -258,9 +259,8 @@ class FlashCardGameActivity :
         gameOn(binding.clOnScreenCardRoot)
 
         binding.btKnow.setOnClickListener {
-            onKnownButtonClicked()
+                onKnownButtonClicked()
         }
-
         binding.btNotKnow.setOnClickListener {
             onKnownNotButtonClicked()
         }
@@ -292,6 +292,34 @@ class FlashCardGameActivity :
             }
         }
 
+    }
+
+    fun setKnownButtonColorOnLightTheme() {
+        binding.btKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setKnownButtonColorOnDarkTheme() {
+        binding.btKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.green50)
+        }
+    }
+
+    fun setUnKnownButtonColorOnLightTheme() {
+        binding.btNotKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setUnKnownButtonColorOnDarkTheme() {
+        binding.btNotKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red50)
+        }
     }
 
     override fun onSettingsApplied() {

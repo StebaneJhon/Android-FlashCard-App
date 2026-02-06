@@ -43,6 +43,7 @@ import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
 import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
@@ -175,6 +176,59 @@ class QuizGameActivity :
             } else {
                 false
             }
+        }
+
+        setActinButtonsColor()
+
+    }
+
+    fun setActinButtonsColor() {
+        when(AppThemeHelper.getSavedTheme(this)) {
+            1 -> {
+                setKnownButtonColorOnLightTheme()
+                setUnKnownButtonColorOnLightTheme()
+            }
+            2 -> {
+                setKnownButtonColorOnDarkTheme()
+                setUnKnownButtonColorOnDarkTheme()
+            }
+            else -> {
+                if (AppThemeHelper.isSystemDarkTheme(this))  {
+                    setKnownButtonColorOnDarkTheme()
+                    setUnKnownButtonColorOnDarkTheme()
+                } else {
+                    setKnownButtonColorOnLightTheme()
+                    setUnKnownButtonColorOnLightTheme()
+                }
+            }
+        }
+    }
+
+    fun setKnownButtonColorOnLightTheme() {
+        binding.btKnown.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setKnownButtonColorOnDarkTheme() {
+        binding.btKnown.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.green50)
+        }
+    }
+
+    fun setUnKnownButtonColorOnLightTheme() {
+        binding.btKnownNot.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setUnKnownButtonColorOnDarkTheme() {
+        binding.btKnownNot.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red50)
         }
     }
 

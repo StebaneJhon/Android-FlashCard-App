@@ -18,6 +18,7 @@
     <string name="cards_sum">%1$s Cards</string>
     <string name="on_no_deck_text_hint">To add a deck, press the + button located at the bottom right of your screen.</string>
     <string name="on_no_card_text_hint">To add cards, press the + button located at the bottom right of your screen and to start revising your cards, press one of the buttons at the bottom left of your screen.</string>
+    <string name="no_deck_and_card">Add a deck or a card by pressing the + button at the corner right of your screen.</string>
     <string name="card_image_bg_hint">card image background</string>
     <string name="settings_hint">Settings</string>
     <string name="themes_head_text">Theme</string>

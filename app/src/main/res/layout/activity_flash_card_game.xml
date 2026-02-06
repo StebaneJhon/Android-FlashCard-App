@@ -605,7 +605,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_not_Know"
         style="?attr/materialIconButtonFilledTonalStyle"
         android:layout_width="wrap_content"
@@ -641,7 +641,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_Know"
         style="?attr/materialIconButtonFilledTonalStyle"
         android:layout_width="wrap_content"
