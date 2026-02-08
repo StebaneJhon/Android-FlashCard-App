@@ -64,8 +64,9 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun getActualBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
-        return boxLevels
+    fun getActualBoxLevels(): List<ImmutableSpaceRepetitionBox> {
+
+        return boxLevels ?: getInitialSpaceRepetitionBox().toExternal()
     }
 
     private val colors = mapOf(

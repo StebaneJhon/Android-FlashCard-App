@@ -250,6 +250,7 @@
                 android:layout_height="wrap_content"
                 android:autofillHints="@string/deck_name_hint"
                 android:hint="@string/tv_card_count_setting_section_hint"
+                android:inputType="number"
                 android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>

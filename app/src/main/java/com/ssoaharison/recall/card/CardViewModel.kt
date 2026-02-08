@@ -1,40 +1,136 @@
 package com.ssoaharison.recall.card
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.entities.Deck
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
-import com.ssoaharison.recall.backend.models.ExternalCard
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
-import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.util.ColorModel
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
+import com.ssoaharison.recall.util.Async
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_ALPHABETICALLY
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_CREATION_DATE
 import com.ssoaharison.recall.util.CardSortOptions.SORT_CARD_BY_LEVEL
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_ALPHABETICALLY
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CARD_SUM
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
+import com.ssoaharison.recall.util.ItemLayoutManager.LINEAR
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
 
 class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
-    private var _deckWithAllCards = MutableStateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>>(UiState.Loading)
-    val deckWithAllCards: StateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>> = _deckWithAllCards.asStateFlow()
+    private var _cards =
+        MutableStateFlow<Async<List<ExternalCardWithContentAndDefinitions>>>(Async.Loading)
+    private var _decks = MutableStateFlow<Async<List<ExternalDeck>>>(Async.Loading)
+    private var _cardViewMode = MutableStateFlow<String>(LINEAR)
+    private val _isLoading = MutableStateFlow(false)
+    private val _isError = MutableStateFlow(false)
+
+    val uiState: StateFlow<CardFragmentUiState> = combine(
+        _cards, _decks, _cardViewMode, _isLoading, _isError
+    ) { cards, decks, cardViewMode, isLoading, isError ->
+        var isFetchingError = cards is Async.Error && decks is Async.Error
+        var isFetchingLoading = cards is Async.Loading || decks is Async.Loading
+        var fetchedCards = (cards as? Async.Success)?.data ?: emptyList()
+        var fetchedDecks = (decks as? Async.Success)?.data ?: emptyList()
+        CardFragmentUiState(
+            cards = fetchedCards,
+            decks = fetchedDecks,
+            cardsViewMode = cardViewMode,
+            isLoading = isFetchingLoading,
+            isError = isFetchingError
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = CardFragmentUiState()
+    )
+
+    fun fetchCards(deckId: String, context: Context, sortPref: String) {
+        viewModelScope.launch {
+            _cards.value = Async.Loading
+            repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId, context)
+                .collect { (deck, cards) ->
+                    actualDeck = deck
+                    _cards.value = if (cards.isEmpty()) {
+                        Async.Error(true)
+                    } else {
+                        Async.Success(applyCardsSortPref(sortPref, cards))
+                    }
+                }
+        }
+    }
+
+    fun fetchDecks(deckId: String, sortPref: String) {
+        viewModelScope.launch {
+            _decks.value = Async.Loading
+            repository.getSubdecks(deckId).collect { decks ->
+                _decks.value = if (decks.isEmpty()) {
+                    Async.Error(true)
+                } else {
+                    actualDeckSubdecks = decks
+                    val sortedSupport = applyDeckSortPref(sortPref, decks)
+                    Async.Success(sortedSupport)
+                }
+            }
+        }
+    }
+
+    fun updateCardViewMode(viewMode: String) {
+        _cardViewMode.update {
+            viewMode
+        }
+    }
+
+    private var _searchDeckResult = MutableStateFlow<Async<List<ExternalDeck>>>(Async.Loading)
+    private var _searchCardResult =
+        MutableStateFlow<Async<List<ExternalCardWithContentAndDefinitions>>>(Async.Loading)
+    private var _searchLoading = MutableStateFlow(false)
+    private var _searchError = MutableStateFlow(false)
+
+    val searchResultUiState: StateFlow<SearchResultUiState> = combine(
+        _searchDeckResult, _searchCardResult, _searchLoading, _searchError
+    ) { searchDeckResult, searchCardResult, searchLoading, searchError ->
+        var isSearchingError = searchDeckResult is Async.Error && searchCardResult is Async.Error
+        var isSearchingLoading =
+            searchDeckResult is Async.Loading || searchCardResult is Async.Loading
+        var foundDesks = (searchDeckResult as? Async.Success)?.data ?: emptyList()
+        var foundCards = (searchCardResult as? Async.Success)?.data ?: emptyList()
+        SearchResultUiState(
+            foundDecks = foundDesks,
+            foundCards = foundCards,
+            isLoading = isSearchingLoading,
+            isError = isSearchingError
+        )
+
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = SearchResultUiState()
+    )
+
+
+    private var _deckWithAllCards =
+        MutableStateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>>(UiState.Loading)
+    val deckWithAllCards: StateFlow<UiState<ExternalDeckWithCardsAndContentAndDefinitions>> =
+        _deckWithAllCards.asStateFlow()
     private lateinit var actualDeck: ExternalDeck
     private lateinit var actualDeckSubdecks: List<ExternalDeck>
     private var fetchJob: Job? = null
@@ -47,14 +143,15 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         _deckWithAllCards.value = UiState.Loading
         fetchJob = viewModelScope.launch {
             try {
-                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId, context).collect {
-                    actualDeck = it.deck
-                    if (it.cards.isEmpty()) {
-                        _deckWithAllCards.value = UiState.Error("Empty deck")
-                    } else {
-                        _deckWithAllCards.value = UiState.Success(it)
+                repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId, context)
+                    .collect {
+                        actualDeck = it.deck
+                        if (it.cards.isEmpty()) {
+                            _deckWithAllCards.value = UiState.Error("Empty deck")
+                        } else {
+                            _deckWithAllCards.value = UiState.Success(it)
+                        }
                     }
-                }
             } catch (e: IOException) {
                 _deckWithAllCards.value = UiState.Error(e.toString())
             }
@@ -84,6 +181,31 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         }
     }
 
+//    var _data = MutableStateFlow<UiState<CardFragmentUiState>>(UiState.Loading)
+//    val data: StateFlow<UiState<CardFragmentUiState>> = _data.asStateFlow()
+//
+//    fun getDeckWithDecksAndCards(deckId: String, context: Context, deckSortPref: String) {
+//        fetchJob?.cancel()
+//        _subdecks.value = UiState.Loading
+//        _deckWithAllCards.value = UiState.Loading
+//        fetchJob = viewModelScope.launch {
+//            try {
+//                repository.getSubdecks(deckId).collect { decks ->
+//                    _subdecks.value = UiState.Success(decks)
+//                    repository.getExternalDeckWithCardsAndContentAndDefinitions(deckId, context)
+//                        .collect { cards ->
+//                            _deckWithAllCards.value = UiState.Success(cards)
+//                            _data.value =
+//                                UiState.Success(CardFragmentUiState(subdecks, deckWithAllCards))
+//                        }
+//                }
+//
+//            } catch (e: okio.IOException) {
+//
+//            }
+//        }
+//    }
+
     suspend fun getDeckPath(deck: ExternalDeck, result: (List<ExternalDeck>) -> Unit) {
         val path = repository.getDeckPath(deck)
         deckPath = path
@@ -109,8 +231,8 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     suspend fun getDeckAndSubdecksCards(deckId: String) = repository.getDeckAndSubdecksCards(deckId)
 
 
-    fun getBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
-       return spaceRepetitionHelper.getActualBoxLevels()
+    fun getBoxLevels(): List<ImmutableSpaceRepetitionBox> {
+        return spaceRepetitionHelper.getActualBoxLevels()
     }
 
     fun getActualDeck() = actualDeck
@@ -119,11 +241,12 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
 
     suspend fun getMainDeck() = repository.getMainDeck()
 
-    fun insertCards(cards: List<CardWithContentAndDefinitions>, externalDeck: ExternalDeck) = viewModelScope.launch {
-        val cardsToAdd = cards.reversed()
+    fun insertCards(cards: List<CardWithContentAndDefinitions>, externalDeck: ExternalDeck) =
+        viewModelScope.launch {
+            val cardsToAdd = cards.reversed()
 //        repository.insertCards(cardsToAdd)
-        repository.insertCardsWithContentAndDefinition(cards)
-    }
+            repository.insertCardsWithContentAndDefinition(cards)
+        }
 
     fun insertCard(card: CardWithContentAndDefinitions) = viewModelScope.launch {
         repository.insertCardWithContentAndDefinition(card)
@@ -137,48 +260,75 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.deleteCardWithContentAndDefinitions(card, context)
     }
 
-    private var _foundCards = MutableStateFlow<UiState<List<ExternalCardWithContentAndDefinitions>>>(UiState.Loading)
-    val foundCards: StateFlow<UiState<List<ExternalCardWithContentAndDefinitions>>> = _foundCards.asStateFlow()
-    var searchCardJob: Job? = null
-    fun searchCard(searchQuery: String, context: Context){
-        searchCardJob?.cancel()
-        _foundCards.value = UiState.Loading
-        searchCardJob = viewModelScope.launch {
-            try {
-                repository.searchCard(searchQuery, context).collect {
-                    if (it.isEmpty()) {
-                        _foundCards.value = UiState.Error("No cards found")
-                    } else {
-                        _foundCards.value = UiState.Success(it)
-                    }
+//    private var _foundCards =
+//        MutableStateFlow<UiState<List<ExternalCardWithContentAndDefinitions>>>(UiState.Loading)
+//    val foundCards: StateFlow<UiState<List<ExternalCardWithContentAndDefinitions>>> =
+//        _foundCards.asStateFlow()
+//    var searchCardJob: Job? = null
+//    fun searchCard(searchQuery: String, context: Context) {
+//        searchCardJob?.cancel()
+//        _foundCards.value = UiState.Loading
+//        searchCardJob = viewModelScope.launch {
+//            try {
+//                repository.searchCard(searchQuery, context).collect {
+//                    if (it.isEmpty()) {
+//                        _foundCards.value = UiState.Error("No cards found")
+//                    } else {
+//                        _foundCards.value = UiState.Success(it)
+//                    }
+//                }
+//            } catch (e: okio.IOException) {
+//                _foundCards.value = UiState.Error(e.message.toString())
+//            }
+//        }
+//    }
+
+    fun searchCard(searchQuery: String, context: Context) {
+        viewModelScope.launch {
+            _searchCardResult.value = Async.Loading
+            repository.searchCard(searchQuery, context).collect {
+                _searchCardResult.value = if (it.isEmpty()) {
+                    Async.Error(true)
+                } else {
+                    Async.Success(it)
                 }
-            } catch (e: okio.IOException) {
-                _foundCards.value = UiState.Error(e.message.toString())
             }
         }
     }
 
-    private var _foundDecks = MutableStateFlow<UiState<List<ExternalDeck>>>(UiState.Loading)
-    val foundDecks: StateFlow<UiState<List<ExternalDeck>>> = _foundDecks.asStateFlow()
-    var searchDeckJob: Job? = null
+//    private var _foundDecks = MutableStateFlow<UiState<List<ExternalDeck>>>(UiState.Loading)
+//    val foundDecks: StateFlow<UiState<List<ExternalDeck>>> = _foundDecks.asStateFlow()
+//    var searchDeckJob: Job? = null
+//    fun searchDeck(searchQuery: String) {
+//        searchDeckJob?.cancel()
+//        _foundDecks.value = UiState.Loading
+//        searchDeckJob = viewModelScope.launch {
+//            try {
+//                repository.searchDeck(searchQuery).collect {
+//                    if (it.isEmpty()) {
+//                        _foundDecks.value = UiState.Error("No decks found")
+//                    } else {
+//                        _foundDecks.value = UiState.Success(it)
+//                    }
+//                }
+//            } catch (e: okio.IOException) {
+//                _foundDecks.value = UiState.Error(e.message.toString())
+//            }
+//        }
+//    }
+
     fun searchDeck(searchQuery: String) {
-        searchDeckJob?.cancel()
-        _foundDecks.value = UiState.Loading
-        searchDeckJob = viewModelScope.launch {
-            try {
-                repository.searchDeck(searchQuery).collect {
-                    if (it.isEmpty()) {
-                        _foundDecks.value = UiState.Error("No decks found")
-                    } else {
-                        _foundDecks.value = UiState.Success(it)
-                    }
+        viewModelScope.launch {
+            _searchDeckResult.value = Async.Loading
+            repository.searchDeck(searchQuery).collect {
+                _searchDeckResult.value = if (it.isEmpty()) {
+                    Async.Error(true)
+                } else {
+                    Async.Success(it)
                 }
-            } catch (e: okio.IOException) {
-                _foundDecks.value = UiState.Error(e.message.toString())
             }
         }
     }
-
 
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {
@@ -193,9 +343,10 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         repository.updateDefaultCardContentLanguage(deckId, language)
     }
 
-    fun updateDefaultCardDefinitionLanguage(deckId: String, language: String) = viewModelScope.launch {
-        repository.updateDefaultCardDefinitionLanguage(deckId, language)
-    }
+    fun updateDefaultCardDefinitionLanguage(deckId: String, language: String) =
+        viewModelScope.launch {
+            repository.updateDefaultCardDefinitionLanguage(deckId, language)
+        }
 
     private var _colorSelectionList = MutableStateFlow<ArrayList<ColorModel>>(arrayListOf())
     val colorSelectionList: StateFlow<ArrayList<ColorModel>> = _colorSelectionList.asStateFlow()
@@ -243,7 +394,10 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         return cards.sortedBy { it.card.cardLevel }
     }
 
-    fun applyCardsSortPref(sortPref: String, cards: List<ExternalCardWithContentAndDefinitions>): List<ExternalCardWithContentAndDefinitions> {
+    fun applyCardsSortPref(
+        sortPref: String,
+        cards: List<ExternalCardWithContentAndDefinitions>
+    ): List<ExternalCardWithContentAndDefinitions> {
         return when (sortPref) {
             SORT_CARD_ALPHABETICALLY -> sortCardsAlphabetically(cards)
             SORT_CARD_BY_CREATION_DATE -> sortCardsByCreationDate(cards)
@@ -256,6 +410,7 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
     fun sortDeckByCardSum(decks: List<ExternalDeck>): List<ExternalDeck> {
         return decks.sortedBy { it.cardCount }
     }
+
     fun sortDeckAlphabetically(decks: List<ExternalDeck>): List<ExternalDeck> {
         return decks.sortedBy { it.deckName.lowercase() }
     }
@@ -269,11 +424,13 @@ class CardViewModel(private val repository: FlashCardRepository) : ViewModel() {
         }
     }
 
-    suspend fun getDeckWithCardsOnStartQuiz(deckId: String) = repository.getDeckWithCardsOnStartQuiz(deckId)
+    suspend fun getDeckWithCardsOnStartQuiz(deckId: String) =
+        repository.getDeckWithCardsOnStartQuiz(deckId)
 
 }
 
-class CardViewModelFactory(private val repository: FlashCardRepository) : ViewModelProvider.Factory {
+class CardViewModelFactory(private val repository: FlashCardRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CardViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

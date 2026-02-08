@@ -327,6 +327,7 @@
     <string name="un_known_card_count">Un known: %1$d</string>
     <string name="no_card_found">No card found</string>
     <string name="no_deck_found">No deck found</string>
+    <string name="no_item_found">No item found</string>
     <string name="sort_cards">Sort cards</string>
     <string name="sort_by_creation_date">Sort by creation date</string>
     <string name="sort_by_card_level">Sort by card level</string>

@@ -176,8 +176,8 @@ object TestResultAction {
 }
 
 object ItemLayoutManager {
-    const val STAGGERED_GRID_LAYOUT_MANAGER = "STAGGERED GRID LAYOUT MANAGER"
-    const val LINEAR_LAYOUT_MANAGER = "LINEAR LAYOUT MANAGER"
+    const val GRID = "GRID"
+    const val LINEAR = "LINEAR"
     const val LAYOUT_MANAGER = "LAYOUT_MANAGER"
 }
 

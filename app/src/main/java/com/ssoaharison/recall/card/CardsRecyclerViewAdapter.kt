@@ -22,23 +22,21 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
 import com.google.android.material.card.MaterialCardView
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
 import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.backend.models.toLocal
-import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
-import com.ssoaharison.recall.databinding.LyCardDefinitionBinding
 import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.AudioModel
-import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
+import com.ssoaharison.recall.util.ItemLayoutManager.GRID
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
@@ -51,6 +49,7 @@ class CardsRecyclerViewAdapter(
     private val deck: ExternalDeck,
     private val cardList: List<ExternalCardWithContentAndDefinitions>,
     private val boxLevels: List<ImmutableSpaceRepetitionBox>,
+    private val viewMode: String,
     private val editCardClickListener: (ExternalCardWithContentAndDefinitions) -> Unit,
     private val deleteCardClickListener: (CardWithContentAndDefinitions) -> Unit,
     private val onReadContent: (TextClickedModel) -> Unit,
@@ -58,11 +57,15 @@ class CardsRecyclerViewAdapter(
     private val onPlayAudio: (AudioModel, LinearLayout) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        CardViewHolder.create(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = CardViewHolder.create(parent)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) =
-        (holder as CardViewHolder).bind(
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val layoutParams = holder.itemView.layoutParams
+        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+            layoutParams.isFullSpan = viewMode != GRID
+        }
+        return (holder as CardViewHolder).bind(
             context,
             deck,
             cardList[position],
@@ -73,6 +76,8 @@ class CardsRecyclerViewAdapter(
             onReadDefinition,
             onPlayAudio,
         )
+    }
+
 
     override fun getItemCount(): Int {
         return cardList.size

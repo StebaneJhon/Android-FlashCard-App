@@ -19,7 +19,6 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.ListPopupWindow
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
@@ -45,8 +44,6 @@ import com.ssoaharison.recall.util.Constant
 import com.ssoaharison.recall.helper.LanguageUtil
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.QUIZ
 import com.ssoaharison.recall.util.ItemLayoutManager.LAYOUT_MANAGER
-import com.ssoaharison.recall.util.ItemLayoutManager.LINEAR_LAYOUT_MANAGER
-import com.ssoaharison.recall.util.ItemLayoutManager.STAGGERED_GRID_LAYOUT_MANAGER
 import com.ssoaharison.recall.util.QuizModeBottomSheet
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
@@ -81,10 +78,15 @@ import java.io.IOException
 import java.util.Locale
 import androidx.core.content.edit
 import androidx.core.view.WindowCompat
+import androidx.recyclerview.widget.ConcatAdapter
+import androidx.recyclerview.widget.GridLayoutManager
 import com.ssoaharison.recall.backend.models.toLocal
+import com.ssoaharison.recall.helper.CardOnlySpacingDecoration
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.DeckRef.DECK_SORT_BY_CREATION_DATE
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
+import com.ssoaharison.recall.util.ItemLayoutManager.GRID
+import com.ssoaharison.recall.util.ItemLayoutManager.LINEAR
 
 
 class CardFragment :
@@ -98,6 +100,11 @@ class CardFragment :
     private lateinit var recyclerViewAdapter: CardsRecyclerViewAdapter
     private lateinit var subdeckRecyclerViewAdapter: SubdeckRecyclerViewAdapter
     private lateinit var recyclerViewAdapterDeckPath: RecyclerViewAdapterDeckPath
+    private lateinit var deckListHeaderAdapter: DeckListHeaderAdapter
+    private lateinit var cardListHeaderAdapter: CardListHeaderAdapter
+
+    private lateinit var concatAdapter: ConcatAdapter
+
     private var tts: TextToSpeech? = null
     private var startingQuizJob: Job? = null
     private var displayingCardsJob: Job? = null
@@ -132,7 +139,12 @@ class CardFragment :
         ActivityResultContracts.CreateDocument("text/plain")
     ) { uri ->
         if (uri != null && deckExportModel != null) {
-            cardsToTextToUri(cardViewModel.getActualDeck().deckId, uri, deckExportModel?.separator!!, deckExportModel?.includeSubdecks!!)
+            cardsToTextToUri(
+                cardViewModel.getActualDeck().deckId,
+                uri,
+                deckExportModel?.separator!!,
+                deckExportModel?.includeSubdecks!!
+            )
         }
     }
 
@@ -169,6 +181,7 @@ class CardFragment :
         _binding = FragmentCardBinding.inflate(themeInflater, container, false)
         appContext = container?.context
         tts = TextToSpeech(appContext, this)
+        cardViewModel.updateCardViewMode(getLayoutManager())
         return binding.root
     }
 
@@ -225,9 +238,11 @@ class CardFragment :
 //        deck = args.selectedDeck
 //        opener = args.opener
 
-        staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        staggeredGridLayoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
-        arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -356,7 +371,7 @@ class CardFragment :
         binding.searchView
             .editText
             .addTextChangedListener { text ->
-                if (text.isNullOrBlank() || text.isNullOrEmpty()) {
+                if (text.isNullOrBlank() || text.isEmpty()) {
                     // TODO: Initial state
                 } else {
                     val query = "%$text%"
@@ -364,146 +379,59 @@ class CardFragment :
                         repeatOnLifecycle(Lifecycle.State.STARTED) {
                             delay(500)
                             cardViewModel.searchCard(query, requireContext())
-                            cardViewModel.foundCards.collect { state ->
-                                when (state) {
-                                    is UiState.Loading -> {
-                                        binding.inSearchResult.pidSearchCardProgress.visibility = View.VISIBLE
-                                        binding.inSearchResult.tvNoCardFound.visibility = View.GONE
-                                        binding.inSearchResult.rvCards.visibility = View.GONE
-                                    }
-
-                                    is UiState.Error -> {
-                                        binding.inSearchResult.pidSearchCardProgress.visibility = View.GONE
-                                        binding.inSearchResult.tvNoCardFound.visibility = View.VISIBLE
-                                        binding.inSearchResult.rvCards.visibility = View.GONE
-                                    }
-
-                                    is UiState.Success -> {
-                                        binding.inSearchResult.pidSearchCardProgress.visibility = View.GONE
-                                        binding.inSearchResult.tvNoCardFound.visibility = View.GONE
-                                        binding.inSearchResult.rvCards.visibility = View.VISIBLE
-                                        val foundCardsRecyclerViewAdapter = CardsRecyclerViewAdapter(
-                                                context = requireContext(),
-                                                appTheme = getAppTheme(),
-                                                deck = cardViewModel.getActualDeck(),
-                                                cardList = state.data,
-                                                boxLevels = cardViewModel.getBoxLevels()!!,
-                                                editCardClickListener = { selectedCard ->
-                                                    lifecycleScope.launch {
-                                                        cardViewModel.getDeckById(selectedCard.card.deckOwnerId) { deckOwner ->
-                                                            onEditCard(deckOwner, selectedCard)
-                                                        }
-                                                    }
-                                                },
-                                                deleteCardClickListener = { card ->
-                                                    cardViewModel.deleteCard(card, requireContext())
-                                                },
-                                                onReadContent = { contentText ->
-                                                    // TODO: On read content
-                                                },
-                                                onReadDefinition = { definitionText ->
-                                                    //TODO: On read definition
-                                                },
-                                                onPlayAudio = { audio, view ->
-                                                    if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
-                                                        lifecycleScope.launch {
-                                                            lastPlayedAudioViw?.findViewById<MaterialButton>(
-                                                                R.id.bt_play
-                                                            )
-                                                                ?.setIconResource(R.drawable.icon_play)
-                                                            lastPlayedAudioViw?.findViewById<LinearProgressIndicator>(
-                                                                R.id.lpi_audio_progression
-                                                            )?.progress =
-                                                                0
-                                                            lastPlayedAudioViw = null
-                                                            lastPlayedAudioFile = null
-                                                            player.stop()
-                                                            delay(100L)
-                                                            val newProgressIndicator: LinearProgressIndicator =
-                                                                view.findViewById(R.id.lpi_audio_progression)
-                                                            playPauseAudio(
-                                                                view,
-                                                                newProgressIndicator,
-                                                                audio
-                                                            )
-                                                            lastPlayedAudioFile = audio
-                                                            lastPlayedAudioViw = view
-                                                        }
-                                                    } else {
-                                                        val newProgressIndicator: LinearProgressIndicator =
-                                                            view.findViewById(R.id.lpi_audio_progression)
-                                                        playPauseAudio(
-                                                            view,
-                                                            newProgressIndicator,
-                                                            audio
-                                                        )
-                                                    }
-                                                }
-                                            )
-                                        binding.inSearchResult.rvCards.apply {
-                                            adapter = foundCardsRecyclerViewAdapter
-                                            setHasFixedSize(true)
-                                            layoutManager = StaggeredGridLayoutManager(
-                                                2,
-                                                StaggeredGridLayoutManager.VERTICAL
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    lifecycleScope.launch {
-                        repeatOnLifecycle(Lifecycle.State.STARTED) {
-                            delay(500)
                             cardViewModel.searchDeck(query)
-                            cardViewModel.foundDecks.collect { state ->
-                                when (state) {
-                                    is UiState.Loading -> {
-                                        binding.inSearchResult.pidSearchDeckProgress.visibility = View.VISIBLE
-                                        binding.inSearchResult.tvNoDeckFound.visibility = View.GONE
-                                        binding.inSearchResult.rvDeck.visibility = View.GONE
-                                    }
+                            cardViewModel.searchResultUiState.collect { state ->
+                                binding.inSearchResult.searchCardProgress.isVisible =
+                                    state.isLoading == true
+                                binding.inSearchResult.tvNoItemFound.isVisible = state.isError
+                                val cardsAdapter = populateRecyclerView(
+                                    state.foundCards,
+                                    cardViewModel.getActualDeck(),
+                                    GRID
+                                )
+                                val decksAdapter = populateSubdecksRecyclerView(
+                                    cardViewModel.getActualDeck(),
+                                    state.foundDecks
+                                )
+                                val searchViewConcatAdapter = ConcatAdapter()
+                                if (state.isDeck) {
+                                    searchViewConcatAdapter.addAdapter(
+                                        SearchResultHeaderAdapter(
+                                            getString(R.string.tv_deck_text)
+                                        )
+                                    )
+                                    searchViewConcatAdapter.addAdapter(decksAdapter)
+                                }
+                                if (state.isCard) {
+                                    searchViewConcatAdapter.addAdapter(
+                                        SearchResultHeaderAdapter(
+                                            getString(R.string.tv_cards_text)
+                                        )
+                                    )
+                                    searchViewConcatAdapter.addAdapter(cardsAdapter)
+                                }
 
-                                    is UiState.Error -> {
-                                        binding.inSearchResult.pidSearchDeckProgress.visibility = View.GONE
-                                        binding.inSearchResult.tvNoDeckFound.visibility = View.VISIBLE
-                                        binding.inSearchResult.rvDeck.visibility = View.GONE
-                                    }
+                                val uiLayoutManager = StaggeredGridLayoutManager(
+                                    2,
+                                    StaggeredGridLayoutManager.VERTICAL
+                                )
+                                uiLayoutManager.gapStrategy =
+                                    StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
 
-                                    is UiState.Success -> {
-                                        binding.inSearchResult.pidSearchDeckProgress.visibility = View.GONE
-                                        binding.inSearchResult.tvNoDeckFound.visibility = View.GONE
-                                        binding.inSearchResult.rvDeck.visibility = View.VISIBLE
-                                        val foundDecksRecyclerViewAdapter =
-                                            SubdeckRecyclerViewAdapter(
-                                                listOfDecks = state.data,
-                                                context = requireContext(),
-                                                editDeckClickListener = { deck ->
-                                                    lifecycleScope.launch {
-                                                        cardViewModel.getDeckById(deck.deckId) { parentDeck ->
-                                                            onEditDeck(parentDeck, deck)
-                                                        }
-                                                    }
-                                                },
-                                                deleteDeckClickListener = { deck ->
-                                                    onDeleteSubdeck(deck)
-                                                },
-                                                startQuizListener = { deck ->
-                                                    //TODO: Start quiz
-                                                },
-                                                deckClickListener = { deck ->
-                                                    deckPathViewModel.setCurrentDeck(deck)
-                                                    switchTheme()
-                                                    binding.searchView.hide()
-                                                }
-                                            )
-                                        binding.inSearchResult.rvDeck.apply {
-                                            adapter = foundDecksRecyclerViewAdapter
-                                            setHasFixedSize(true)
-                                            layoutManager = LinearLayoutManager(requireContext())
-                                        }
-                                    }
+                                val spacingPx = (16 * resources.displayMetrics.density).toInt()
+                                val decoration = CardOnlySpacingDecoration(
+                                    spacingPx,
+                                    searchViewConcatAdapter,
+                                    cardsAdapter,
+                                    GRID
+                                )
+
+                                binding.inSearchResult.rvFoundItem.apply {
+                                    visibility = View.VISIBLE
+                                    layoutManager = uiLayoutManager
+                                    adapter = searchViewConcatAdapter
+                                    setHasFixedSize(true)
+                                    addItemDecoration(decoration)
                                 }
                             }
                         }
@@ -511,48 +439,48 @@ class CardFragment :
                 }
             }
 
-        binding.btViewMode.setOnClickListener {
-            if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
-                changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
-                binding.cardRecyclerView.layoutManager = linearLayoutManager
-                binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_view_agenda)
-            } else {
-                changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
-                binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
-                binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_dashboard)
-            }
-        }
-
-        binding.btSortCards.setOnClickListener {
-            sortCardsBottomSheetDialog = SortCardsBottomSheetDialog.newInstance(getSortPref())
-            sortCardsBottomSheetDialog.show(childFragmentManager, "Sort Cards Bottom Sheet")
-            childFragmentManager.setFragmentResultListener(
-                SortCardsBottomSheetDialog.SORT_CARD_PREF_REQUEST_CODE,
-                this
-            ) {_, bundle ->
-                val sortPref = bundle.getString(SortCardsBottomSheetDialog.SORT_CARD_PREF_BUNDLE_KEY)
-                sortPref?.let { sort ->
-                    changeCardSortPref(sort)
-                    displayAllCards(cardViewModel.getActualDeck().deckId)
-                }
-            }
-        }
-
-        binding.btSortSubdecks.setOnClickListener {
-            sortDecksBottomSheetDialog = SortDecksBottomSheetDialog.newInstance(getDeckSortPref())
-            sortDecksBottomSheetDialog.show(childFragmentManager, "Sort Decks Bottom Sheet")
-            childFragmentManager.setFragmentResultListener(
-                SortDecksBottomSheetDialog.SORT_DECK_PREF_REQUEST_CODE,
-                this,
-            ) {_, bundle ->
-                val data = bundle.getString(SortDecksBottomSheetDialog.SORT_DECK_PREF_BUNDLE_KEY)
-                data?.let { sortPref ->
-                    changeDeckSortPref(sortPref)
-                    displaySubdecks(cardViewModel.getActualDeck(), getDeckSortPref())
-                }
-            }
-
-        }
+//        binding.btViewMode.setOnClickListener {
+//            if (binding.cardRecyclerView.layoutManager == staggeredGridLayoutManager) {
+//                changeCardLayoutManager(LINEAR_LAYOUT_MANAGER)
+//                binding.cardRecyclerView.layoutManager = linearLayoutManager
+//                binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_view_agenda)
+//            } else {
+//                changeCardLayoutManager(STAGGERED_GRID_LAYOUT_MANAGER)
+//                binding.cardRecyclerView.layoutManager = staggeredGridLayoutManager
+//                binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_dashboard)
+//            }
+//        }
+//
+//        binding.btSortCards.setOnClickListener {
+//            sortCardsBottomSheetDialog = SortCardsBottomSheetDialog.newInstance(getSortPref())
+//            sortCardsBottomSheetDialog.show(childFragmentManager, "Sort Cards Bottom Sheet")
+//            childFragmentManager.setFragmentResultListener(
+//                SortCardsBottomSheetDialog.SORT_CARD_PREF_REQUEST_CODE,
+//                this
+//            ) {_, bundle ->
+//                val sortPref = bundle.getString(SortCardsBottomSheetDialog.SORT_CARD_PREF_BUNDLE_KEY)
+//                sortPref?.let { sort ->
+//                    changeCardSortPref(sort)
+//                    displayAllCards(cardViewModel.getActualDeck().deckId)
+//                }
+//            }
+//        }
+//
+//        binding.btSortSubdecks.setOnClickListener {
+//            sortDecksBottomSheetDialog = SortDecksBottomSheetDialog.newInstance(getDeckSortPref())
+//            sortDecksBottomSheetDialog.show(childFragmentManager, "Sort Decks Bottom Sheet")
+//            childFragmentManager.setFragmentResultListener(
+//                SortDecksBottomSheetDialog.SORT_DECK_PREF_REQUEST_CODE,
+//                this,
+//            ) {_, bundle ->
+//                val data = bundle.getString(SortDecksBottomSheetDialog.SORT_DECK_PREF_BUNDLE_KEY)
+//                data?.let { sortPref ->
+//                    changeDeckSortPref(sortPref)
+//                    displaySubdecks(cardViewModel.getActualDeck(), getDeckSortPref())
+//                }
+//            }
+//
+//        }
 
     }
 
@@ -589,20 +517,123 @@ class CardFragment :
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 cardViewModel.getDeckPath(deck) { path ->
                     recyclerViewAdapterDeckPath = RecyclerViewAdapterDeckPath(path) { pathTogo ->
-                            deckPathViewModel.setCurrentDeck(pathTogo)
-                            switchTheme()
-                        }
+                        deckPathViewModel.setCurrentDeck(pathTogo)
+                        switchTheme()
+                    }
                     binding.rvDeckPath.apply {
                         adapter = recyclerViewAdapterDeckPath
                         setHasFixedSize(true)
-                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                        layoutManager =
+                            LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
                     }
                 }
             }
         }
 
-        displayAllCards(deck.deckId)
-        displaySubdecks(deck, getDeckSortPref())
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                cardViewModel.fetchDecks(deck.deckId, getDeckSortPref())
+                cardViewModel.fetchCards(deck.deckId, requireContext(), getSortPref())
+                cardViewModel.uiState.collect { state ->
+
+                    binding.containerNoCardAndDeck.isVisible = state.isError
+                    binding.cardsActivityProgressBar.isVisible = state.isLoading == true
+
+                    val cardAdapter = populateRecyclerView(state.cards, deck, state.cardsViewMode)
+                    val decksAdapter = populateSubdecksRecyclerView(deck, state.decks)
+
+                    concatAdapter = ConcatAdapter()
+
+                    if (state.isDeck) {
+                        deckListHeaderAdapter = DeckListHeaderAdapter {
+                            sortDecksBottomSheetDialog =
+                                SortDecksBottomSheetDialog.newInstance(getDeckSortPref())
+                            sortDecksBottomSheetDialog.show(
+                                childFragmentManager,
+                                "Sort Decks Bottom Sheet"
+                            )
+                            childFragmentManager.setFragmentResultListener(
+                                SortDecksBottomSheetDialog.SORT_DECK_PREF_REQUEST_CODE,
+                                this@CardFragment,
+                            ) { _, bundle ->
+                                val data =
+                                    bundle.getString(SortDecksBottomSheetDialog.SORT_DECK_PREF_BUNDLE_KEY)
+                                data?.let { sortPref ->
+                                    changeDeckSortPref(sortPref)
+                                    cardViewModel.fetchDecks(deck.deckId, getDeckSortPref())
+                                }
+                            }
+
+                        }
+                        concatAdapter.apply {
+                            addAdapter(deckListHeaderAdapter)
+                            addAdapter(decksAdapter)
+                        }
+                    }
+
+                    if (state.isCard) {
+                        cardListHeaderAdapter = CardListHeaderAdapter(
+                            viewMode = state.cardsViewMode,
+                            sortCards = {
+                                sortCardsBottomSheetDialog =
+                                    SortCardsBottomSheetDialog.newInstance(getSortPref())
+                                sortCardsBottomSheetDialog.show(
+                                    childFragmentManager,
+                                    "Sort Cards Bottom Sheet"
+                                )
+                                childFragmentManager.setFragmentResultListener(
+                                    SortCardsBottomSheetDialog.SORT_CARD_PREF_REQUEST_CODE,
+                                    this@CardFragment
+                                ) { _, bundle ->
+                                    val sortPref =
+                                        bundle.getString(SortCardsBottomSheetDialog.SORT_CARD_PREF_BUNDLE_KEY)
+                                    sortPref?.let { sort ->
+                                        changeCardSortPref(sort)
+                                        cardViewModel.fetchCards(
+                                            deck.deckId,
+                                            requireContext(),
+                                            getSortPref()
+                                        )
+                                    }
+                                }
+                            },
+                            updateViewMode = {
+                                val isGridView = getLayoutManager() == GRID
+                                val newCardViewMode = if (isGridView) LINEAR else GRID
+                                changeCardLayoutManager(newCardViewMode)
+                                cardViewModel.updateCardViewMode(newCardViewMode)
+                            }
+                        )
+                        concatAdapter.apply {
+                            addAdapter(cardListHeaderAdapter)
+                            addAdapter(cardAdapter)
+                        }
+                    }
+
+                    val uiLayoutManager =
+                        StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                    uiLayoutManager.gapStrategy =
+                        StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+
+                    val spacingPx = (16 * resources.displayMetrics.density).toInt()
+                    val decoration = CardOnlySpacingDecoration(
+                        spacingPx,
+                        concatAdapter,
+                        cardAdapter,
+                        state.cardsViewMode
+                    )
+
+                    binding.recyclerView.apply {
+                        visibility = View.VISIBLE
+                        layoutManager = uiLayoutManager
+                        adapter = concatAdapter
+                        setHasFixedSize(true)
+                        addItemDecoration(decoration)
+                    }
+                }
+            }
+
+        }
 
         binding.searchBar.apply {
             title = null
@@ -643,41 +674,6 @@ class CardFragment :
                 }
             }
         }
-//        binding.bottomAppBar.apply {
-//            setNavigationOnClickListener {
-//                onChooseQuizMode(deck)
-//            }
-//            setOnMenuItemClickListener { menuItem ->
-//                when (menuItem.itemId) {
-////                        R.id.bt_flash_card_game -> {
-////                            onStartQuiz { deckWithCards ->
-////                                lunchQuiz(deckWithCards, FLASH_CARD_QUIZ)
-////                            }
-////                            true
-////                        }
-//
-//                    R.id.bt_quiz -> {
-//                        onStartQuiz(deck) { deckWithCards ->
-//                            lunchQuiz(deckWithCards, QUIZ)
-//                        }
-//                        true
-//                    }
-//
-////                        R.id.bt_test -> {
-////                            onStartQuiz { deckWithCards ->
-////                                lunchQuiz(deckWithCards, TEST)
-////                            }
-////                            true
-////                        }
-//
-//                    else -> false
-//                }
-//            }
-//        }
-
-//        binding.fabAddCard.setOnClickListener {
-//            onAddNewCard()
-//        }
 
         binding.btAddCard.setOnClickListener {
             onAddNewCard(deck)
@@ -690,16 +686,19 @@ class CardFragment :
     }
 
     private fun showCurrentDeckDetails() {
-        currentDeckDetailsBottomSheetDialog = CurrentDeckDetailsBottomSheetDialog.newInstance(cardViewModel.getActualDeck())
-        currentDeckDetailsBottomSheetDialog.show(childFragmentManager, "Current Deck Details Bottom Sheet")
+        currentDeckDetailsBottomSheetDialog =
+            CurrentDeckDetailsBottomSheetDialog.newInstance(cardViewModel.getActualDeck())
+        currentDeckDetailsBottomSheetDialog.show(
+            childFragmentManager,
+            "Current Deck Details Bottom Sheet"
+        )
         childFragmentManager.setFragmentResultListener(
             CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_REQUEST_CODE,
             this
         ) { _, bundle ->
-            val data = bundle.parcelable<ExternalDeck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
+            val data =
+                bundle.parcelable<ExternalDeck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
             data?.let { updatedDeck ->
-                //TODO: Update deck
-
                 cardViewModel.updateDeck(updatedDeck.toLocal())
                 deckPathViewModel.setCurrentDeck(updatedDeck)
                 switchTheme()
@@ -715,7 +714,8 @@ class CardFragment :
             REQUEST_EXPORT_DECK_CODE,
             this
         ) { _, bundle ->
-            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
+            deckExportModel =
+                bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
             createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
         }
     }
@@ -833,40 +833,43 @@ class CardFragment :
 //        }
 //    }
 
-    private fun displayAllCards(deckId: String) {
-        displayingCardsJob?.cancel()
-        displayingCardsJob = lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                cardViewModel.getDeckWithCards(deckId, appContext!!)
-                cardViewModel.deckWithAllCards.collect { state ->
-                    when (state) {
-                        is UiState.Loading -> {
-                            binding.tvNoCardFound.visibility = View.GONE
-                            binding.cardsActivityProgressBar.isVisible = true
-                        }
-
-                        is UiState.Error -> {
-                            binding.containerNoCardAndDeck.isVisible = !binding.subdeckRecyclerView.isVisible
-                            binding.cardsActivityProgressBar.isVisible = false
-                            binding.cardRecyclerView.isVisible = false
-                            binding.containerCardHeader.isVisible = false
-                        }
-
-                        is UiState.Success -> {
-//                            deck = state.data.deck
-                            binding.containerNoCardAndDeck.visibility = View.GONE
-                            binding.cardRecyclerView.visibility = View.VISIBLE
-                            binding.containerCardHeader.visibility = View.VISIBLE
-                            val sortedCards = cardViewModel.applyCardsSortPref(getSortPref(), state.data.cards)
-                            populateRecyclerView(sortedCards, state.data.deck)
-//                            bindDeckDetailsPanel(state.data.deck)
-//                            deckPathViewModel.setCurrentDeck(state.data.deck)
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    private fun displayAllCards(deckId: String) {
+//        displayingCardsJob?.cancel()
+//        displayingCardsJob = lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                cardViewModel.getDeckWithCards(deckId, appContext!!)
+//                cardViewModel.deckWithAllCards.collect { state ->
+//                    when (state) {
+//                        is UiState.Loading -> {
+//                            //binding.tvNoCardFound.visibility = View.GONE
+//                            //binding.cardsActivityProgressBar.isVisible = true
+//                        }
+//
+//                        is UiState.Error -> {
+//                            //binding.containerNoCardAndDeck.isVisible = !binding.subdeckRecyclerView.isVisible
+//                            //binding.cardsActivityProgressBar.isVisible = false
+//                            //binding.cardRecyclerView.isVisible = false
+//                            //binding.containerCardHeader.isVisible = false
+//                        }
+//
+//                        is UiState.Success -> {
+////                            deck = state.data.deck
+//                            //binding.containerNoCardAndDeck.visibility = View.GONE
+//                            //binding.cardRecyclerView.visibility = View.VISIBLE
+//                            //binding.containerCardHeader.visibility = View.VISIBLE
+//                            //binding.cardsActivityProgressBar.isVisible = false
+//                            val sortedCards =
+//                                cardViewModel.applyCardsSortPref(getSortPref(), state.data.cards)
+//
+//                            populateRecyclerView(sortedCards, state.data.deck)
+////                            bindDeckDetailsPanel(state.data.deck)
+////                            deckPathViewModel.setCurrentDeck(state.data.deck)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 
 //    private fun displaySubdecks() {
 //        displaySubdeckJob?.cancel()
@@ -900,23 +903,23 @@ class CardFragment :
                 cardViewModel.subdecks.collect { state ->
                     when (state) {
                         is UiState.Error -> {
-                            binding.divider.visibility = View.GONE
-                            binding.subdeckRecyclerView.isVisible = false
-                            binding.clContainerSubdecksHeader.visibility = View.GONE
-                            binding.containerNoCardAndDeck.isVisible =  !binding.cardRecyclerView.isVisible
+                            //binding.divider.visibility = View.GONE
+                            //binding.subdeckRecyclerView.isVisible = false
+                            //binding.clContainerSubdecksHeader.visibility = View.GONE
+                            //binding.containerNoCardAndDeck.isVisible =  !binding.cardRecyclerView.isVisible
                         }
 
                         is UiState.Loading -> {
-                            binding.divider.visibility = View.GONE
-                            binding.subdeckRecyclerView.visibility = View.GONE
-                            binding.clContainerSubdecksHeader.visibility = View.GONE
+                            //binding.divider.visibility = View.GONE
+                            //binding.subdeckRecyclerView.visibility = View.GONE
+                            //binding.clContainerSubdecksHeader.visibility = View.GONE
                         }
 
                         is UiState.Success -> {
-                            binding.containerNoCardAndDeck.visibility = View.GONE
-                            binding.divider.visibility = View.VISIBLE
-                            binding.subdeckRecyclerView.visibility = View.VISIBLE
-                            binding.clContainerSubdecksHeader.visibility = View.VISIBLE
+                            //binding.containerNoCardAndDeck.visibility = View.GONE
+                            //binding.divider.visibility = View.VISIBLE
+                            //binding.subdeckRecyclerView.visibility = View.VISIBLE
+                            //binding.clContainerSubdecksHeader.visibility = View.VISIBLE
                             populateSubdecksRecyclerView(deck = deck, subdecks = state.data)
                         }
                     }
@@ -928,8 +931,8 @@ class CardFragment :
     private fun populateSubdecksRecyclerView(
         deck: ExternalDeck,
         subdecks: List<ExternalDeck>
-    ) {
-        subdeckRecyclerViewAdapter = SubdeckRecyclerViewAdapter(
+    ): SubdeckRecyclerViewAdapter {
+        return SubdeckRecyclerViewAdapter(
             subdecks,
             appContext!!,
             {
@@ -938,19 +941,20 @@ class CardFragment :
                 onDeleteSubdeck(it)
             }, { deck ->
                 onChooseQuizMode(deck)
-            }) {
+            }, {
 //            deck = it
 //            displayData()
 //                displayData(it)
                 deckPathViewModel.setCurrentDeck(it)
                 switchTheme()
             }
-        binding.subdeckRecyclerView.apply {
-            isVisible = true
-            adapter = subdeckRecyclerViewAdapter
-            setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(appContext, RecyclerView.VERTICAL, false)
-        }
+        )
+        //binding.subdeckRecyclerView.apply {
+        //isVisible = true
+        //adapter = subdeckRecyclerViewAdapter
+        //setHasFixedSize(true)
+        //layoutManager = LinearLayoutManager(appContext, RecyclerView.VERTICAL, false)
+        //}
     }
 
     private fun onEditDeck(
@@ -983,7 +987,8 @@ class CardFragment :
         )
         newDeckDialog.show(childFragmentManager, "New Deck Dialog")
         childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
-            val result = bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
+            val result =
+                bundle.parcelable<OnSaveDeckWithCationModel>(NewDeckDialog.SAVE_DECK_BUNDLE_KEY)
             result?.let {
                 cardViewModel.insertSubdeck(it.deck)
             }
@@ -1027,13 +1032,13 @@ class CardFragment :
         }
     }
 
-    private fun onDeckEmpty() {
-        binding.containerNoCardAndDeck.isVisible = binding.subdeckRecyclerView.isVisible
-        binding.cardsActivityProgressBar.isVisible = false
-        binding.cardRecyclerView.isVisible = false
-        binding.tvNoCardFound.isVisible = false
-        binding.containerCardHeader.isVisible = false
-    }
+//    private fun onDeckEmpty() {
+//        binding.containerNoCardAndDeck.isVisible = binding.subdeckRecyclerView.isVisible
+//        binding.cardsActivityProgressBar.isVisible = false
+//        binding.cardRecyclerView.isVisible = false
+//        binding.tvNoCardFound.isVisible = false
+//        binding.containerCardHeader.isVisible = false
+//    }
 
     private fun onChooseQuizMode(deck: ExternalDeck) {
         val quizMode = QuizModeBottomSheet()
@@ -1061,7 +1066,11 @@ class CardFragment :
             val deckAndCards = cardViewModel.getDeckWithCardsOnStartQuiz(deck.deckId)
             binding.cardsActivityProgressBar.isVisible = false
             if (deckAndCards.cards.isEmpty()) {
-                Toast.makeText(requireContext(), getString(R.string.error_message_empty_deck), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_message_empty_deck),
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
                 start(deckAndCards)
             }
@@ -1233,21 +1242,19 @@ class CardFragment :
     @SuppressLint("RestrictedApi")
     private fun populateRecyclerView(
         cardList: List<ExternalCardWithContentAndDefinitions>,
-        deck: ExternalDeck
-    ) {
+        deck: ExternalDeck,
+        cardViewMode: String,
+    ): CardsRecyclerViewAdapter {
 //        item = binding.cardsTopAppBar.findViewById(R.id.view_deck_menu)
         val pref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         val appTheme = pref?.getString("themName", "WHITE THEM") ?: "WHITE THEM"
-        binding.cardsActivityProgressBar.isVisible = false
-        binding.tvNoCardFound.isVisible = false
-        binding.cardRecyclerView.isVisible = true
-
-        recyclerViewAdapter = CardsRecyclerViewAdapter(
+        return CardsRecyclerViewAdapter(
             appContext!!,
             appTheme,
             deck,
             cardList,
-            cardViewModel.getBoxLevels()!!,
+            cardViewModel.getBoxLevels(),
+            cardViewMode,
             { selectedCard ->
                 onEditCard(deck = deck, card = selectedCard)
             },
@@ -1301,29 +1308,29 @@ class CardFragment :
                 }
             })
 
-        binding.cardRecyclerView.apply {
-            adapter = recyclerViewAdapter
-            setHasFixedSize(true)
-            layoutManager = if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
+        //binding.cardRecyclerView.apply {
+        //  adapter = recyclerViewAdapter
+        //setHasFixedSize(true)
+        //layoutManager = if (this@CardFragment.getLayoutManager() == STAGGERED_GRID_LAYOUT_MANAGER) {
 //                    item?.setIcon(
 //                        ContextCompat.getDrawable(
 //                            requireContext(),
 //                            R.drawable.icon_grid_view
 //                        )
 //                    )
-                    binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_dashboard)
-                    staggeredGridLayoutManager
-                } else {
+        //      binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_dashboard)
+        //    staggeredGridLayoutManager
+        //} else {
 //                    item?.setIcon(
 //                        ContextCompat.getDrawable(
 //                            requireContext(),
 //                            R.drawable.icon_view_agenda
 //                        )
 //                    )
-                    binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_view_agenda)
-                    linearLayoutManager
-                }
-        }
+        //  binding.btViewMode.icon = AppCompatResources.getDrawable(requireContext(), R.drawable.icon_view_agenda)
+        //linearLayoutManager
+        //}
+        //}
 
     }
 
@@ -1551,7 +1558,8 @@ class CardFragment :
             REQUEST_CODE_CARD,
             this
         ) { _, bundle ->
-            val result = bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
+            val result =
+                bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let {
                 cardViewModel.updateCard(it)
                 Toast.makeText(
@@ -1665,11 +1673,11 @@ class CardFragment :
 //        }
 //    }
 
-    private fun onCardNotFound() {
-        binding.cardsActivityProgressBar.isVisible = false
-        binding.cardRecyclerView.isVisible = false
-        binding.tvNoCardFound.isVisible = true
-    }
+//    private fun onCardNotFound() {
+//        binding.cardsActivityProgressBar.isVisible = false
+//        binding.cardRecyclerView.isVisible = false
+//        binding.tvNoCardFound.isVisible = true
+//    }
 
 //    @SuppressLint("RestrictedApi")
 //    override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -1715,43 +1723,56 @@ class CardFragment :
 //    }
 
     private fun getLayoutManager(): String {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
-        return sharedPreferences.getString(LAYOUT_MANAGER, STAGGERED_GRID_LAYOUT_MANAGER)
-            ?: STAGGERED_GRID_LAYOUT_MANAGER
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(LAYOUT_MANAGER, LINEAR)
+            ?: LINEAR
     }
 
     private fun changeCardLayoutManager(which: String) {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
         sharedPreferences.edit {
             putString(LAYOUT_MANAGER, which)
         }
     }
 
     private fun getSortPref(): String {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
-        return sharedPreferences.getString(SORT_PREF, SORT_CARD_BY_CREATION_DATE) ?: SORT_CARD_BY_CREATION_DATE
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
+        return sharedPreferences.getString(SORT_PREF, SORT_CARD_BY_CREATION_DATE)
+            ?: SORT_CARD_BY_CREATION_DATE
     }
 
     private fun changeCardSortPref(sortPref: String) {
-        val sharedPreferences = requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("cardViewPref", Context.MODE_PRIVATE)
         sharedPreferences.edit {
             putString(SORT_PREF, sortPref)
         }
     }
 
     private fun changeDeckSortPref(sortPref: String) {
-        val deckViewPref = requireActivity().getSharedPreferences("deckViewPref", Context.MODE_PRIVATE)
+        val deckViewPref =
+            requireActivity().getSharedPreferences("deckViewPref", Context.MODE_PRIVATE)
         deckViewPref.edit {
             putString(SORT_PREF, sortPref)
         }
     }
 
     private fun getDeckSortPref(): String {
-        val deckViewPref = requireActivity().getSharedPreferences("deckViewPref", Context.MODE_PRIVATE)
-        return deckViewPref.getString(SORT_PREF, DECK_SORT_BY_CREATION_DATE) ?: DECK_SORT_BY_CREATION_DATE
+        val deckViewPref =
+            requireActivity().getSharedPreferences("deckViewPref", Context.MODE_PRIVATE)
+        return deckViewPref.getString(SORT_PREF, DECK_SORT_BY_CREATION_DATE)
+            ?: DECK_SORT_BY_CREATION_DATE
     }
 
-    private fun cardsToTextToUri(deckId: String, uri: Uri, separator: String, includeSubdecks: Boolean) {
+    private fun cardsToTextToUri(
+        deckId: String,
+        uri: Uri,
+        separator: String,
+        includeSubdecks: Boolean
+    ) {
         lifecycleScope.launch {
             val stringBuilder = StringBuilder()
             try {
@@ -1769,14 +1790,26 @@ class CardFragment :
                         }
                         outputStream.write(stringBuilder.toString().toByteArray())
                     }
-                    Toast.makeText(requireContext(), getString(R.string.message_cards_exported_successfully), Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.message_cards_exported_successfully),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), getString(R.string.error_message_file_not_found), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_message_file_not_found),
+                    Toast.LENGTH_LONG
+                ).show()
             } catch (e: IOException) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), getString(R.string.error_message_cards_exported_failed), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_message_cards_exported_failed),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }

@@ -1,105 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_found_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:visibility="gone"
+        android:id="@+id/search_card_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_no_item_found"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:text="@string/no_item_found"
+        android:textAlignment="center"
+        android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:drawableTint="?colorOnSurface"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        app:drawableTopCompat="@drawable/icon_search" />
 
-        <TextView
-            android:id="@+id/tv_decks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/tv_deck_text"
-            android:textColor="?colorPrimary"
-            android:textAppearance="@style/TextAppearance.App.TitleSmall"
-            android:layout_margin="@dimen/space_lg"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/tv_no_deck_found"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_deck_found"
-            android:textAlignment="center"
-            android:textColor="?colorOnSurface"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium"
-            android:drawableTint="?colorOnSurface"
-            android:layout_marginHorizontal="@dimen/space_lg"
-            app:drawableTopCompat="@drawable/icon_search" />
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:visibility="gone"
-            android:id="@+id/pid_search_deck_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:visibility="gone"
-            android:id="@+id/rv_deck"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:transitionGroup="true"
-            android:paddingHorizontal="@dimen/space_md"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root" />
-
-        <TextView
-            android:id="@+id/tv_cards"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.App.TitleSmall"
-            android:text="@string/tv_cards_text"
-            android:textColor="?colorPrimary"
-            android:layout_margin="@dimen/space_lg"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:visibility="gone"
-            android:id="@+id/tv_no_card_found"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_card_found"
-            android:textAlignment="center"
-            android:textColor="?colorOnSurface"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium"
-            android:drawableTint="?colorOnSurface"
-            android:layout_marginHorizontal="@dimen/space_lg"
-            app:drawableTopCompat="@drawable/icon_search" />
-
-        <com.google.android.material.progressindicator.CircularProgressIndicator
-            android:visibility="gone"
-            android:id="@+id/pid_search_card_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:visibility="gone"
-            android:id="@+id/rv_cards"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingHorizontal="@dimen/space_md"
-            android:transitionGroup="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cl_deck_overview_root" />
-
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>
+</FrameLayout>
