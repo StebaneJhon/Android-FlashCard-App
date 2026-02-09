@@ -6,4 +6,4 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="?colorSurfaceContainer"
     app:cardCornerRadius="@dimen/card_radius"
-    app:strokeWidth="0dp"/>
+    app:strokeWidth="0dp" />

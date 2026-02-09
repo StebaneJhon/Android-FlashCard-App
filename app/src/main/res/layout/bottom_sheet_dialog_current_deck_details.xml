@@ -59,7 +59,7 @@
         android:layout_height="wrap_content"
         android:text="@string/tv_language_section_settings"
         android:textColor="?colorPrimary"
-        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
         android:layout_marginHorizontal="@dimen/space_xxl"
         android:layout_marginBottom="@dimen/space_lg"/>
 

@@ -165,47 +165,7 @@ class QuizGameAdapter(
 //            tvContent.text = card.cardContent.contentText
             binding.tvCardType.text = card.cardType
 //            tvCardType.text = card.cardType
-            when {
-                card.cardType == SINGLE_ANSWER_CARD -> {
-                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
-                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_tap_to_flip)
-                    binding.tvHint.setTextColor(
-                        MaterialColors.getColor(
-                            itemView,
-                            com.google.android.material.R.attr.colorSurfaceContainerHighest
-                        )
-                    )
-                }
-
-                card.attemptTime == 0 -> {
-                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
-                    binding.tvHint.setTextColor(
-                        MaterialColors.getColor(
-                            itemView,
-                            com.google.android.material.R.attr.colorSurfaceContainerHighest
-                        )
-                    )
-                }
-
-                card.attemptTime > 0 && card.isCorrectlyAnswered -> {
-                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct)
-                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
-                }
-
-                card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
-                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
-                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
-                }
-
-                card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
-                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_wrong_answer)
-                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.red500))
-                }
-            }
+            bindHintOnLightTheme(card, context)
 
             if (card.cardType == SINGLE_ANSWER_CARD) {
                 if (card.flipCount == 0) {
@@ -247,6 +207,122 @@ class QuizGameAdapter(
                 }
             }
             bindAnswerAlternatives(card, cardOnClick)
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    bindHintOnLightTheme(card, context)
+                }
+                2 -> {
+                    bindHintOnDarkTheme(card, context)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        bindHintOnDarkTheme(card, context)
+                    } else {
+                        bindHintOnLightTheme(card, context)
+                    }
+                }
+            }
+        }
+
+        private fun bindHintOnLightTheme(
+            card: QuizGameCardModel,
+            context: Context
+        ) {
+            when {
+                card.cardType == SINGLE_ANSWER_CARD -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_tap_to_flip)
+                    binding.tvHint.setTextColor(
+                        MaterialColors.getColor(
+                            itemView,
+                            com.google.android.material.R.attr.colorOnSurfaceVariant
+                        )
+                    )
+                }
+
+                card.attemptTime == 0 -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_not_answered)
+                    binding.tvHint.setTextColor(
+                        MaterialColors.getColor(
+                            itemView,
+                            com.google.android.material.R.attr.colorOnSurfaceVariant
+                        )
+                    )
+                }
+
+                card.attemptTime > 0 && card.isCorrectlyAnswered -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                }
+
+                card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_correct_answer_more)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                }
+
+                card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_wrong_answer)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.red500))
+                }
+            }
+        }
+
+        private fun bindHintOnDarkTheme(
+            card: QuizGameCardModel,
+            context: Context
+        ) {
+            when {
+                card.cardType == SINGLE_ANSWER_CARD -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_tap_to_flip)
+                    binding.tvHint.setTextColor(
+                        MaterialColors.getColor(
+                            itemView,
+                            com.google.android.material.R.attr.colorOnSurfaceVariant
+                        )
+                    )
+                }
+
+                card.attemptTime == 0 -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_not_answered)
+                    binding.tvHint.setTextColor(
+                        MaterialColors.getColor(
+                            itemView,
+                            com.google.android.material.R.attr.colorOnSurfaceVariant
+                        )
+                    )
+                }
+
+                card.attemptTime > 0 && card.isCorrectlyAnswered -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green200))
+                }
+
+                card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green200))
+                }
+
+                card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
+                    binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    binding.tvHint.text =
+                        ContextCompat.getString(context, R.string.text_wrong_answer)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.red200))
+                }
+            }
         }
 
         private fun hasCardCorrectAnswer(card: QuizGameCardModel): Boolean {
@@ -316,7 +392,7 @@ class QuizGameAdapter(
         //                            R.drawable.icon_radio_button_checked
         //                        )
                 }
-                container.background.setTint(ContextCompat.getColor(context, R.color.green800))
+                container.background.setTint(ContextCompat.getColor(context, R.color.green500))
         //                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
         //                    button.setStrokeColorResource(R.color.green50)
                 alternative.imgLeadingIcon.setColorFilter(
@@ -333,7 +409,7 @@ class QuizGameAdapter(
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
         //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                 }
-                container.background.setTint(ContextCompat.getColor(context, R.color.red800))
+                container.background.setTint(ContextCompat.getColor(context, R.color.red500))
         //                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
         //                    button.setStrokeColorResource(R.color.red50)
                 alternative.imgLeadingIcon.setColorFilter(
@@ -360,13 +436,14 @@ class QuizGameAdapter(
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
                 }
 
-                container.background.setTint(ContextCompat.getColor(context, R.color.green50))
+                container.background.setTint(ContextCompat.getColor(context, R.color.green700))
         //                    button.setStrokeColorResource(R.color.green500)
         //                    button.setIconTintResource(R.color.green500)
                 alternative.imgLeadingIcon.setColorFilter(
-                    ContextCompat.getColor(context, R.color.green500),
+                    ContextCompat.getColor(context, R.color.green50),
                     PorterDuff.Mode.SRC_IN
                 )
+                alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
             } else {
                 if (cardType == MULTIPLE_ANSWER_CARD) {
         //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
@@ -375,14 +452,15 @@ class QuizGameAdapter(
         //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
                 }
-                container.background.setTint(ContextCompat.getColor(context, R.color.red50))
+                container.background.setTint(ContextCompat.getColor(context, R.color.red700))
         //                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
         //                    button.setStrokeColorResource(R.color.red500)
         //                    button.setIconTintResource(R.color.red500)
                 alternative.imgLeadingIcon.setColorFilter(
-                    ContextCompat.getColor(context, R.color.red500),
+                    ContextCompat.getColor(context, R.color.red50),
                     PorterDuff.Mode.SRC_IN
                 )
+                alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
             }
         }
 
@@ -421,6 +499,7 @@ class QuizGameAdapter(
                 view.imgLeadingIcon,
                 com.google.android.material.R.attr.colorOnSurface
             ))
+            view.tvText.setTextColor(MaterialColors.getColor(view.tvText, com.google.android.material.R.attr.colorOnSurface))
 //                ContextCompat.getColor(context, R.color.red50),
 //                android.graphics.PorterDuff.Mode.SRC_IN
 //            button.iconTint = MaterialColors.getColorStateList(

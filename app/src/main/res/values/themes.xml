@@ -55,7 +55,7 @@
         <item name="colorSurfaceContainerHigh">@color/neutral300</item>
         <item name="colorSurfaceContainerHighest">@color/neutral400</item>
         <item name="colorOnSurface">@color/neutral950</item>
-        <item name="colorOnSurfaceVariant">@color/neutral950</item>
+        <item name="colorOnSurfaceVariant">@color/neutral600</item>
     </style>
 
     <style name="Theme.FlashCard" parent="Base.Theme.FlashCard" />
@@ -74,7 +74,7 @@
         <item name="colorSurfaceContainerHigh">@color/stale300</item>
         <item name="colorSurfaceContainerHighest">@color/stale400</item>
         <item name="colorOnSurface">@color/stale950</item>
-        <item name="colorOnSurfaceVariant">@color/stale950</item>
+        <item name="colorOnSurfaceVariant">@color/stale600</item>
     </style>
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
@@ -110,7 +110,7 @@
         <item name="colorSurfaceContainerHigh">@color/red300</item>
         <item name="colorSurfaceContainerHighest">@color/red400</item>
         <item name="colorOnSurface">@color/red950</item>
-        <item name="colorOnSurfaceVariant">@color/red950</item>
+        <item name="colorOnSurfaceVariant">@color/red600</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
 
@@ -144,7 +144,7 @@
         <item name="colorSurfaceContainerHigh">@color/orange300</item>
         <item name="colorSurfaceContainerHighest">@color/orange400</item>
         <item name="colorOnSurface">@color/orange950</item>
-        <item name="colorOnSurfaceVariant">@color/orange950</item>
+        <item name="colorOnSurfaceVariant">@color/orange600</item>
     </style>
     <style name="OrangeTheme.Flashcard" parent="Orange.Theme.FlashCard" />
 
@@ -178,7 +178,7 @@
         <item name="colorSurfaceContainerHigh">@color/amber300</item>
         <item name="colorSurfaceContainerHighest">@color/amber400</item>
         <item name="colorOnSurface">@color/amber950</item>
-        <item name="colorOnSurfaceVariant">@color/amber950</item>
+        <item name="colorOnSurfaceVariant">@color/amber600</item>
     </style>
     <style name="AmberTheme.Flashcard" parent="Amber.Theme.FlashCard" />
 
@@ -212,7 +212,7 @@
         <item name="colorSurfaceContainerHigh">@color/yellow300</item>
         <item name="colorSurfaceContainerHighest">@color/yellow400</item>
         <item name="colorOnSurface">@color/yellow950</item>
-        <item name="colorOnSurfaceVariant">@color/yellow950</item>
+        <item name="colorOnSurfaceVariant">@color/yellow600</item>
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
@@ -246,7 +246,7 @@
         <item name="colorSurfaceContainerHigh">@color/lime300</item>
         <item name="colorSurfaceContainerHighest">@color/lime400</item>
         <item name="colorOnSurface">@color/lime950</item>
-        <item name="colorOnSurfaceVariant">@color/lime950</item>
+        <item name="colorOnSurfaceVariant">@color/lime600</item>
     </style>
     <style name="LimeTheme.Flashcard" parent="Lime.Theme.FlashCard" />
 
@@ -280,7 +280,7 @@
         <item name="colorSurfaceContainerHigh">@color/green300</item>
         <item name="colorSurfaceContainerHighest">@color/green400</item>
         <item name="colorOnSurface">@color/green950</item>
-        <item name="colorOnSurfaceVariant">@color/green950</item>
+        <item name="colorOnSurfaceVariant">@color/green600</item>
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
@@ -314,7 +314,7 @@
         <item name="colorSurfaceContainerHigh">@color/emerald300</item>
         <item name="colorSurfaceContainerHighest">@color/emerald400</item>
         <item name="colorOnSurface">@color/emerald950</item>
-        <item name="colorOnSurfaceVariant">@color/emerald950</item>
+        <item name="colorOnSurfaceVariant">@color/emerald600</item>
     </style>
     <style name="EmeraldTheme.Flashcard" parent="Emerald.Theme.FlashCard" />
 
@@ -348,7 +348,7 @@
         <item name="colorSurfaceContainerHigh">@color/teal300</item>
         <item name="colorSurfaceContainerHighest">@color/teal400</item>
         <item name="colorOnSurface">@color/teal950</item>
-        <item name="colorOnSurfaceVariant">@color/teal950</item>
+        <item name="colorOnSurfaceVariant">@color/teal600</item>
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
@@ -382,7 +382,7 @@
         <item name="colorSurfaceContainerHigh">@color/cyan300</item>
         <item name="colorSurfaceContainerHighest">@color/cyan400</item>
         <item name="colorOnSurface">@color/cyan950</item>
-        <item name="colorOnSurfaceVariant">@color/cyan950</item>
+        <item name="colorOnSurfaceVariant">@color/cyan600</item>
     </style>
     <style name="CyanTheme.Flashcard" parent="Cyan.Theme.FlashCard" />
 
@@ -416,7 +416,7 @@
         <item name="colorSurfaceContainerHigh">@color/sky300</item>
         <item name="colorSurfaceContainerHighest">@color/sky400</item>
         <item name="colorOnSurface">@color/sky950</item>
-        <item name="colorOnSurfaceVariant">@color/sky950</item>
+        <item name="colorOnSurfaceVariant">@color/sky600</item>
     </style>
     <style name="SkyTheme.Flashcard" parent="Sky.Theme.FlashCard" />
 
@@ -450,7 +450,7 @@
         <item name="colorSurfaceContainerHigh">@color/blue300</item>
         <item name="colorSurfaceContainerHighest">@color/blue400</item>
         <item name="colorOnSurface">@color/blue950</item>
-        <item name="colorOnSurfaceVariant">@color/blue950</item>
+        <item name="colorOnSurfaceVariant">@color/blue600</item>
     </style>
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
 
@@ -484,7 +484,7 @@
         <item name="colorSurfaceContainerHigh">@color/indigo300</item>
         <item name="colorSurfaceContainerHighest">@color/indigo400</item>
         <item name="colorOnSurface">@color/indigo950</item>
-        <item name="colorOnSurfaceVariant">@color/indigo950</item>
+        <item name="colorOnSurfaceVariant">@color/indigo600</item>
     </style>
     <style name="IndigoTheme.Flashcard" parent="Indigo.Theme.FlashCard" />
 
@@ -518,7 +518,7 @@
         <item name="colorSurfaceContainerHigh">@color/violet300</item>
         <item name="colorSurfaceContainerHighest">@color/violet400</item>
         <item name="colorOnSurface">@color/violet950</item>
-        <item name="colorOnSurfaceVariant">@color/violet950</item>
+        <item name="colorOnSurfaceVariant">@color/violet600</item>
     </style>
     <style name="VioletTheme.Flashcard" parent="Violet.Theme.FlashCard" />
 
@@ -552,7 +552,7 @@
         <item name="colorSurfaceContainerHigh">@color/purple300</item>
         <item name="colorSurfaceContainerHighest">@color/purple400</item>
         <item name="colorOnSurface">@color/purple950</item>
-        <item name="colorOnSurfaceVariant">@color/purple950</item>
+        <item name="colorOnSurfaceVariant">@color/purple600</item>
     </style>
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
 
@@ -586,7 +586,7 @@
         <item name="colorSurfaceContainerHigh">@color/fuchsia300</item>
         <item name="colorSurfaceContainerHighest">@color/fuchsia400</item>
         <item name="colorOnSurface">@color/fuchsia950</item>
-        <item name="colorOnSurfaceVariant">@color/fuchsia950</item>
+        <item name="colorOnSurfaceVariant">@color/fuchsia600</item>
     </style>
     <style name="FuchsiaTheme.Flashcard" parent="Fuchsia.Theme.FlashCard" />
 
@@ -620,7 +620,7 @@
         <item name="colorSurfaceContainerHigh">@color/pink300</item>
         <item name="colorSurfaceContainerHighest">@color/pink400</item>
         <item name="colorOnSurface">@color/pink950</item>
-        <item name="colorOnSurfaceVariant">@color/pink950</item>
+        <item name="colorOnSurfaceVariant">@color/pink600</item>
     </style>
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
 
@@ -654,7 +654,7 @@
         <item name="colorSurfaceContainerHigh">@color/rose300</item>
         <item name="colorSurfaceContainerHighest">@color/rose400</item>
         <item name="colorOnSurface">@color/rose950</item>
-        <item name="colorOnSurfaceVariant">@color/rose950</item>
+        <item name="colorOnSurfaceVariant">@color/rose600</item>
     </style>
     <style name="RoseTheme.Flashcard" parent="Rose.Theme.FlashCard" />
 
@@ -688,7 +688,7 @@
         <item name="colorSurfaceContainerHigh">@color/stone300</item>
         <item name="colorSurfaceContainerHighest">@color/stone400</item>
         <item name="colorOnSurface">@color/stone950</item>
-        <item name="colorOnSurfaceVariant">@color/stone950</item>
+        <item name="colorOnSurfaceVariant">@color/stone600</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
 
@@ -763,8 +763,8 @@
         <item name="android:fontFamily">@font/open_sans_light</item>
     </style>
     <style name="TextAppearance.App.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
-        <item name="fontFamily">@font/open_sans_light</item>
-        <item name="android:fontFamily">@font/open_sans_light</item>
+        <item name="fontFamily">@font/open_sans_regular</item>
+        <item name="android:fontFamily">@font/open_sans_regular</item>
     </style>
     <style name="TextAppearance.App.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
         <item name="fontFamily">@font/open_sans_regular</item>

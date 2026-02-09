@@ -292,6 +292,30 @@ class FlashCardGameActivity :
             }
         }
 
+        setActinButtonsColor()
+
+    }
+
+    fun setActinButtonsColor() {
+        when(AppThemeHelper.getSavedTheme(this)) {
+            1 -> {
+                setKnownButtonColorOnLightTheme()
+                setUnKnownButtonColorOnLightTheme()
+            }
+            2 -> {
+                setKnownButtonColorOnDarkTheme()
+                setUnKnownButtonColorOnDarkTheme()
+            }
+            else -> {
+                if (AppThemeHelper.isSystemDarkTheme(this))  {
+                    setKnownButtonColorOnDarkTheme()
+                    setUnKnownButtonColorOnDarkTheme()
+                } else {
+                    setKnownButtonColorOnLightTheme()
+                    setUnKnownButtonColorOnLightTheme()
+                }
+            }
+        }
     }
 
     fun setKnownButtonColorOnLightTheme() {

@@ -61,7 +61,8 @@
         android:layout_height="wrap_content"
         android:background="?colorSurfaceContainerLowest"
         android:transitionGroup="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_marginBottom="@dimen/extra_space_bottom"/>
 
 <!--    <androidx.core.widget.NestedScrollView-->
 <!--        android:layout_width="match_parent"-->
@@ -224,76 +225,49 @@
         android:backgroundTint="?colorSurfaceContainerLowest"
         android:layout_gravity="bottom">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/docked_toolbar_child"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <FrameLayout
-                android:id="@+id/frameLayout2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_more"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="48dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_text_translate"
                     app:icon="@drawable/icon_more"
                     app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow" />
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frameLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout2"
-                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_start_quiz"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="48dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/start_quiz_button_text"
                     app:icon="@drawable/icon_view_carousel"
                     app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frameLayout3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout"
-                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_start_flash_cards"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="48dp"
                     android:layout_gravity="center"
                     android:contentDescription="@string/bt_flash_card_game_start"
                     app:icon="@drawable/icon_cards_stack"
                     app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
-            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -323,7 +297,7 @@
                     android:outlineProvider="none"
                     app:useCompatPadding="false"/>
             </LinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.dockedtoolbar.DockedToolbarLayout>
 
