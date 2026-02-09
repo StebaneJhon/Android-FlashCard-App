@@ -7,7 +7,6 @@
     <string name="deck_second_language_hint">Deck definition language</string>
     <string name="deck_color">Deck Color</string>
     <string name="bt_description_add_new_card">Add New Card</string>
-    <!--    <string name="card_content_hint">%1$s word, sentence</string>-->
     <string name="card_content_definition_hint">%1$s word or sentence Definition</string>
     <string name="hint_text">Text</string>
     <string name="card_value_definition_hint">%1$s word or sentence Definition</string>
@@ -62,7 +61,6 @@
     <string name="hint_deck_search_field">Deck name</string>
     <string name="hint_card_search_field">Card content</string>
     <string name="text_accuracy_mini_game_review">%1$d%%</string>
-    <!--    <string name="tx_flash_card_game_progression">%1$s/%2$s</string>-->
     <string name="tx_flash_card_game_card_orientation_front">Front</string>
     <string name="text_back">Back</string>
     <string name="text_tap_to_flip">Tap to flip</string>
@@ -292,18 +290,6 @@
     <string name="error_message_cards_exported_failed">Cards exported failed.</string>
     <string name="give_a_feedback">Give a feedback</string>
     <string name="feedback">Feedback</string>
-    <string name="question_what_is_recall">What is Recall ?</string>
-    <string name="question_how_to_use_recall">How to use Recall ?</string>
-    <string name="question_in_a_few_sentence_how_does_memory_work">In a few sentences, how does memory work ?</string>
-    <string name="question_how_does_recall_help_in_memorization">How does Recall help in memorization ?</string>
-    <string name="question_what_is_spaced_repetition">What is spaced repetition ?</string>
-    <string name="question_what_are_mnemonics">What are mnemonics ?</string>
-    <string name="answer_what_is_recall">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-    <string name="answer_how_to_use_recall">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-    <string name="answer_in_a_few_sentence_how_does_memory_work">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-    <string name="answer_how_does_recall_help_in_memorization">HLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-    <string name="answer_what_is_spaced_repetition">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
-    <string name="answer_what_are_mnemonics">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="add_subdeck">Add subdeck</string>
     <string name="add_card">Add card</string>
     <string name="deck_location">%1$s/</string>
@@ -346,4 +332,12 @@
     <string name="format_clear">Format clear</string>
     <string name="error_message_cannot_edit_main_deck_name">Cannot edit main deck name.</string>
     <string name="error_message_cannot_edit_main_deck_background">Cannot edit main deck background.</string>
+    <string name="question_what_is_mneme">What is Mneme?</string>
+    <string name="answer_what_is_mneme">Mneme is a memory device, designed to help in memorization and recall. It is used to make quizzes and to create mnemonics. Quizzes are very efficient to test our knowledge and to improve long term memory. And mnemonics are tools used as hints when recalling a memory. Mneme is made for students and even people suffering from memory loss by stimulating the brain.</string>
+    <string name="question_how_to_use_mneme">How to use Mneme?</string>
+    <string name="answer_how_to_use_mneme">Mneme is a quiz based app. Start by creating cards as your question answer collection. Organize your cards into decks so that you can review them one at a time. And then test yourself through minigames such as flashcards or quizzes. Mneme categorizes your cards by level of memorization based on the leitner system. You can customize the leitner systems space repetition in the app settings.</string>
+    <string name="question_how_to_optimize_memorization">How to optimize memorization?</string>
+    <string name="answer_how_to_optimize_memorization">However the learning method, repetition is the key to memorization. Rote learning or repeating the information over and over until it is committed to memory has proven to be efficient in memorizing facts. Spaced repetition or actively recalling the memory repeatedly at an increasingly longer time interval is key to making the memory last a long time. Other things affect the memory such as emotions, sleep quality and the persons health.</string>
+    <string name="question_how_does_mneme_help_in_memorization">How does Mneme help in memorization?</string>
+    <string name="answer_how_does_mneme_help_in_memorization">Mneme helps you manage and practice your quizzes. It implements rote learning and spaced repetition algorithms to expose you to less likely known information. Its quiz creation tool allows you to create multiple question types and with different data types such as text, image and audio to help you diversify the way you learn. The minigames train you to actively recall information from your, making sure that your memory lasts a long time.</string>
 </resources>
