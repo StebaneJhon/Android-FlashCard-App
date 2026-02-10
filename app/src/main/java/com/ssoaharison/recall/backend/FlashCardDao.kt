@@ -85,7 +85,7 @@ interface FlashCardDao {
     @Query("SELECT COUNT(*) FROM card WHERE deckOwnerId = :deckId AND cardLevel = 'L1'")
     suspend fun countUnKnownCardsInDeck(deckId: String): Int
 
-    @Query("SELECT * FROM deck WHERE deckName LIKE :searchQuery OR deckDescription LIKE :searchQuery OR cardContentDefaultLanguage LIKE :searchQuery OR cardDefinitionDefaultLanguage LIKE :searchQuery OR deckColorCode LIKE :searchQuery")
+    @Query("SELECT * FROM deck WHERE deckName LIKE :searchQuery OR deckDescription LIKE :searchQuery OR cardContentDefaultLanguage LIKE :searchQuery OR cardDefinitionDefaultLanguage LIKE :searchQuery OR deckBackground LIKE :searchQuery")
     fun searchDeck(searchQuery: String): Flow<List<Deck>>
 
     @Transaction

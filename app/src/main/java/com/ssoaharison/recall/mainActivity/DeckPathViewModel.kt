@@ -5,8 +5,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.toExternal
+import com.ssoaharison.recall.util.MainDeck
 import com.ssoaharison.recall.util.ThemeConst.BASE_THEME
 import com.ssoaharison.recall.util.ThemePicker
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,12 +19,20 @@ import kotlinx.coroutines.launch
 class DeckPathViewModel(private val repository: FlashCardRepository): ViewModel() {
 
     private val themePicker = ThemePicker()
-    private var _currentDeck = MutableStateFlow<ExternalDeck?>(null)
-    val currentDeck: StateFlow<ExternalDeck?> = _currentDeck.asStateFlow()
+    private var _currentDeck = MutableStateFlow<ExternalDeck>(MainDeck().getExternalMainDeck())
+    val currentDeck: StateFlow<ExternalDeck> = _currentDeck.asStateFlow()
 
     init {
         viewModelScope.launch {
-            repository.getMainDeck()?.let { mainDeck ->
+            val mainDeck = repository.getMainDeck()
+            if (mainDeck == null) {
+                repository.insertDeck(MainDeck().getMainDeck())
+                repository.getMainDeck()?.let {
+                    _currentDeck.update {
+                        it
+                    }
+                }
+            } else {
                 _currentDeck.update {
                     mainDeck
                 }
@@ -37,11 +48,11 @@ class DeckPathViewModel(private val repository: FlashCardRepository): ViewModel(
 
 
     fun getViewTheme(): Int {
-        if (currentDeck.value?.deckColorCode == null) {
+        if (currentDeck.value.deckBackground == null) {
             val viewTheme = themePicker.selectTheme(BASE_THEME) ?: themePicker.getDefaultTheme()
             return (viewTheme)
         } else {
-            val viewTheme = themePicker.selectThemeByDeckColorCode(currentDeck.value?.deckColorCode!!)
+            val viewTheme = themePicker.selectThemeByDeckColorCode(currentDeck.value.deckBackground)
             return viewTheme
         }
     }

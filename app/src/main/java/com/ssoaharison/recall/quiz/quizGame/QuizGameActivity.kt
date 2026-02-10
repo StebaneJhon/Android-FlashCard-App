@@ -114,7 +114,7 @@ class QuizGameActivity :
 
         deckWithCards = intent?.parcelable(FlashCardGameActivity.DECK_ID_KEY)
 
-        val deckColorCode = deckWithCards?.deck?.deckColorCode
+        val deckColorCode = deckWithCards?.deck?.deckBackground
         val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
         setTheme(theme)
 

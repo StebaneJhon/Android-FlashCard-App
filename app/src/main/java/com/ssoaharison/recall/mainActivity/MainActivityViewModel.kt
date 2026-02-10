@@ -29,13 +29,7 @@ class MainActivityViewModel(private val repository: FlashCardRepository) : ViewM
     init {
 
         SpaceRepetitionAlgorithmHelper()
-        viewModelScope.launch {
-            val mainDeck = repository.getMainDeck()
-            if (mainDeck == null) {
-                repository.insertDeck(MainDeck().getMainDeck())
-            }
-            _isLoading.value = false
-        }
+        _isLoading.value = false
 
 //        getAllCards()
 //        SpaceRepetitionAlgorithmHelper()

@@ -89,7 +89,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
                     }
                 }
             }
-            currentDeckDetailsViewModel.initColorSelection(colors, currentDeck.deckColorCode)
+            currentDeckDetailsViewModel.initColorSelection(colors, currentDeck.deckBackground)
             currentDeckDetailsViewModel.colorSelectionList.collect { colors ->
                 displayColorPicker(colors, currentDeck.deckId != MAIN_DECK_ID)
             }
@@ -196,7 +196,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
             isItemsClickable = isItemsClickable,
             onColorClicked = { color ->
                 currentDeckDetailsViewModel.selectColor(color.id)
-                val updatedDeck = currentDeck.copy(deckColorCode = color.id)
+                val updatedDeck = currentDeck.copy(deckBackground = color.id)
                 onUpdateCurrentDeck(updatedDeck)
             }
         )

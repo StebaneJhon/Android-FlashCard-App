@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.models.ExternalCard
-import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
@@ -68,7 +66,7 @@ class TestQuizGameViewModel(
         missedCards.clear()
     }
 
-    fun getDeckColorCode() = deck?.deckColorCode ?: "black"
+    fun getDeckColorCode() = deck?.deckBackground ?: "black"
 
 
     private lateinit var localQuizGameCards: MutableList<QuizGameCardModel>

@@ -85,22 +85,6 @@ class MainActivity :
             WindowInsetsCompat.CONSUMED
         }
 
-//        setSupportActionBar(binding.appBarMain.toolbar)
-//
-//        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-//        val drawerLayout: DrawerLayout = binding.mainActivityRoot
-//        val navView: NavigationView = binding.navView
-//        val navController = navHostFragment.navController
-//
-//        appBarConfiguration = AppBarConfiguration(
-//            setOf(R.id.deckFragment,
-//                R.id.settingsFragment
-//            ), drawerLayout
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
-
-
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController
         drawerLayout = binding.mainActivityRoot
@@ -109,7 +93,6 @@ class MainActivity :
             setOf(R.id.settingsFragment, R.id.feedbackFragment, R.id.helpFragment, R.id.privacyPolicyFragment),
             drawerLayout
         )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {
@@ -117,8 +100,6 @@ class MainActivity :
     }
 
     override fun onSupportNavigateUp(): Boolean {
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-//        val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

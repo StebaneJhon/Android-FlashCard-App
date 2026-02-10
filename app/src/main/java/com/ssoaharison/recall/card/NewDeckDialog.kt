@@ -93,8 +93,8 @@ class NewDeckDialog(
             binding.deckDescriptionET.setText(deckToEdit.deckDescription)
             binding.deckFirstLanguageET.setText(deckToEdit.cardContentDefaultLanguage)
             binding.deckSecondLanguageET.setText(deckToEdit.cardDefinitionDefaultLanguage)
-            deckToEdit.deckColorCode?.let { newDeckDialogViewModel.selectColor(it) }
-            deckCategoryColor = deckToEdit.deckColorCode
+            deckToEdit.deckBackground?.let { newDeckDialogViewModel.selectColor(it) }
+            deckCategoryColor = deckToEdit.deckBackground
 
             builder.setView(binding.root)
 
@@ -202,7 +202,7 @@ class NewDeckDialog(
                 deckDescription = binding.deckDescriptionET.text.toString(),
                 cardContentDefaultLanguage = if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
                 cardDefinitionDefaultLanguage = if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
-                deckColorCode = deckCategoryColor,
+                deckBackground = deckCategoryColor,
                 deckCategory = null,
                 isFavorite = 0,
                 deckCreationDate = now()
@@ -224,7 +224,7 @@ class NewDeckDialog(
                 deckDescription = binding.deckDescriptionET.text.toString(),
                 cardContentDefaultLanguage = if (deckFirstLanguage.isBlank()) null else deckFirstLanguage.toString(),
                 cardDefinitionDefaultLanguage = if (deckSecondLanguage.isBlank()) null else deckSecondLanguage.toString(),
-                deckColorCode = deckCategoryColor,
+                deckBackground = deckCategoryColor,
                 deckCategory = deck.deckCategory,
                 isFavorite = deck.isFavorite,
                 deckCreationDate = deck.deckCreationDate

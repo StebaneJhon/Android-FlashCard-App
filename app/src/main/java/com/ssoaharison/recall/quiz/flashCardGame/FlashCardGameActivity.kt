@@ -143,7 +143,7 @@ class FlashCardGameActivity :
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
 
-        val deckColorCode = deckWithCards?.deck?.deckColorCode
+        val deckColorCode = deckWithCards?.deck?.deckBackground
         val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
         setTheme(theme)
 
@@ -694,7 +694,7 @@ class FlashCardGameActivity :
                         val deckColorCode =
                             DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
                                 this@FlashCardGameActivity,
-                                viewModel.deck?.deckColorCode
+                                viewModel.deck?.deckBackground
                             )
                         binding.cvCardFront.backgroundTintList = deckColorCode
                     }
@@ -844,7 +844,7 @@ class FlashCardGameActivity :
                 val deckColorCode =
                     DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
                         this,
-                        viewModel.deck?.deckColorCode
+                        viewModel.deck?.deckBackground
                     )
                 binding.cvCardFront.backgroundTintList = deckColorCode
                 binding.cvCardBack.backgroundTintList = deckColorCode
@@ -888,7 +888,7 @@ class FlashCardGameActivity :
 
         val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
             this,
-            viewModel.deck?.deckColorCode
+            viewModel.deck?.deckBackground
         )
 
         if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {

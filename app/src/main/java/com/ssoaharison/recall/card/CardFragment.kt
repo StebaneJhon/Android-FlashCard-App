@@ -241,17 +241,12 @@ class CardFragment :
         staggeredGridLayoutManager =
             StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         linearLayoutManager = LinearLayoutManager(appContext)
-        arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 deckPathViewModel.currentDeck.collect { deck ->
-                    if (deck == null) {
-                        // TODO: On No Data
-                    } else {
-                        displayData(deck)
-                    }
+                    displayData(deck)
                 }
             }
         }

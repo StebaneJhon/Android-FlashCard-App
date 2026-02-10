@@ -14,7 +14,7 @@ data class Deck (
     val deckDescription: String?,
     val cardContentDefaultLanguage: String?,
     val cardDefinitionDefaultLanguage: String?,
-    val deckColorCode: String?,
+    val deckBackground: String?,
     val deckCategory: String?,
     val isFavorite: Int?,
     val deckCreationDate: String?

@@ -19,6 +19,10 @@ import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.FragmentOnBoardingViewPagerBinding
 import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
+import com.ssoaharison.recall.backend.FlashCardApplication
+import com.ssoaharison.recall.util.MainDeck
+import kotlinx.coroutines.launch
 
 
 class OnBoardingViewPagerFragment : Fragment() {
@@ -123,6 +127,13 @@ class OnBoardingViewPagerFragment : Fragment() {
             putBoolean("Finished", true)
         }
 //        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
+        lifecycleScope.launch {
+            val repository = FlashCardApplication().repository
+            val mainDeck = repository.getMainDeck()
+            if (mainDeck == null) {
+                repository.insertDeck(MainDeck().getMainDeck())
+            }
+        }
         findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_cardFragment)
     }
 

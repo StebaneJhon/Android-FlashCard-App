@@ -182,7 +182,7 @@ class CardsRecyclerViewAdapter(
                     editCardClickListener,
                     deleteCardClickListener,
                     card,
-                    deck.deckColorCode
+                    deck.deckBackground
                 )
                 true
             }
@@ -267,7 +267,7 @@ class CardsRecyclerViewAdapter(
                     editCardClickListener,
                     deleteCardClickListener,
                     card,
-                    deck.deckColorCode
+                    deck.deckBackground
                 )
             }
 
@@ -281,7 +281,7 @@ class CardsRecyclerViewAdapter(
                         editCardClickListener,
                         deleteCardClickListener,
                         card,
-                        deck.deckColorCode
+                        deck.deckBackground
                     )
                     true
                 }

@@ -3,7 +3,6 @@ package com.ssoaharison.recall.card
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -14,23 +13,16 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.ColorInt
 import androidx.annotation.MenuRes
-import androidx.appcompat.content.res.AppCompatResources.getColorStateList
 import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.card.MaterialCardView
 import com.google.android.material.divider.MaterialDivider
-import com.google.android.material.textview.MaterialTextView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.helper.DeckColorCategorySelector
 
@@ -211,10 +203,10 @@ class SubdeckRecyclerViewAdapter(
         ) {
             deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(
                 context,
-                deck.deckColorCode
+                deck.deckBackground
             )
-            deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
-            deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
+            deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckBackground)
+            deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckBackground)
             knownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.green900)
             unknownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.red900)
             knownCardTextColor = context.getColor(R.color.green50)
@@ -227,11 +219,11 @@ class SubdeckRecyclerViewAdapter(
             deck: ExternalDeck
         ) {
             deckSurfaceColorCode =
-                deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckColorCode)
+                deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckBackground)
             deckTextColorCode =
-                deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
+                deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckBackground)
             deckSurfaceContainerColorCode =
-                deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
+                deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckBackground)
             knownCardViewBackgroundColor =
                 ContextCompat.getColorStateList(context, R.color.green200)
             knownCardTextColor = context.getColor(R.color.green950)

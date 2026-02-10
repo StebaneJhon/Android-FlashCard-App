@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ff5c438638e4b5395922afc66b460d97",
+    "identityHash": "b217cc981423fab22fad137565b8be68",
     "entities": [
       {
         "tableName": "Card",
@@ -80,7 +80,7 @@
       },
       {
         "tableName": "Deck",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` TEXT NOT NULL, `parentDeckId` TEXT, `deckName` TEXT NOT NULL, `deckDescription` TEXT, `cardContentDefaultLanguage` TEXT, `cardDefinitionDefaultLanguage` TEXT, `deckColorCode` TEXT, `deckCategory` TEXT, `isFavorite` INTEGER, `deckCreationDate` TEXT, PRIMARY KEY(`deckId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` TEXT NOT NULL, `parentDeckId` TEXT, `deckName` TEXT NOT NULL, `deckDescription` TEXT, `cardContentDefaultLanguage` TEXT, `cardDefinitionDefaultLanguage` TEXT, `deckBackground` TEXT, `deckCategory` TEXT, `isFavorite` INTEGER, `deckCreationDate` TEXT, PRIMARY KEY(`deckId`))",
         "fields": [
           {
             "fieldPath": "deckId",
@@ -115,8 +115,8 @@
             "affinity": "TEXT"
           },
           {
-            "fieldPath": "deckColorCode",
-            "columnName": "deckColorCode",
+            "fieldPath": "deckBackground",
+            "columnName": "deckBackground",
             "affinity": "TEXT"
           },
           {
@@ -368,7 +368,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff5c438638e4b5395922afc66b460d97')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b217cc981423fab22fad137565b8be68')"
     ]
   }
 }

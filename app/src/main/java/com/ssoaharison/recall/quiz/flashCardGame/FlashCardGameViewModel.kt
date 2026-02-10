@@ -7,8 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
 import com.ssoaharison.recall.backend.models.ExternalDeck
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel.L1
@@ -196,7 +194,7 @@ class FlashCardGameViewModel(
 
     fun getTotalCards() = cardToRevise.size
 
-    fun getCardBackground() = deck?.deckColorCode
+    fun getCardBackground() = deck?.deckBackground
 
     fun getCurrentCardNumber() = currentCardPosition.plus(1)
 
