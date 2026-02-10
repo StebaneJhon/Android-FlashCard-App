@@ -557,6 +557,12 @@ class QuizGameAdapter(
                 }
 
                 binding.tvCardTypeBack.text = card.cardType
+                binding.fronCardInnerContainer.setOnClickListener {
+                    card.cardDefinition.first().isSelected = true
+                    cardOnClick(
+                        card.cardDefinition.first()
+                    )
+                }
                 binding.flCardRoot.setOnClickListener {
                     card.cardDefinition.first().isSelected = true
                     cardOnClick(
