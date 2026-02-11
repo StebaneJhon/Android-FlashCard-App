@@ -10,12 +10,17 @@ import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -24,56 +29,68 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
 import com.ssoaharison.recall.databinding.ActivityTestQuizGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity
 import com.ssoaharison.recall.settings.MiniGameSettingsSheet
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.ssoaharison.recall.util.FlashCardMiniGameRef
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
-import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
+import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AppThemeHelper
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.quiz.flashCardGame.FlashCardGameActivity
 import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
-import com.ssoaharison.recall.util.parcelable
+import com.ssoaharison.recall.helper.parcelable
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Locale
 
 class QuizGameActivity :
     AppCompatActivity(),
     MiniGameSettingsSheet.SettingsApplication,
-    TextToSpeech.OnInitListener {
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityTestQuizGameBinding
     private val viewModel: TestQuizGameViewModel by viewModels {
         TestQuizGameViewModelFactory((application as FlashCardApplication).repository)
     }
-    private var sharedPref: SharedPreferences? = null
-    private var editor: SharedPreferences.Editor? = null
+//    private var sharedPref: SharedPreferences? = null
+//    private var editor: SharedPreferences.Editor? = null
 
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var appTheme: String? = null
 
-    private var deckWithCards: ImmutableDeckWithCards? = null
+    private var deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions? = null
     private lateinit var quizGameAdapter: QuizGameAdapter
     private lateinit var quizGameProgressBarAdapter: QuizGameProgressBarAdapter
 
     private var tts: TextToSpeech? = null
     private var quizJob: Job? = null
     private var fetchJob1: Job? = null
+
+    var lastPlayedAudioFile: AudioModel? = null
+    var lastPlayedAudioViw: LyAudioPlayerBinding? = null
+
+    private val player by lazy {
+        AndroidAudioPlayer(this)
+    }
 
     companion object {
         private const val TAG = "QuizGameActivity"
@@ -84,44 +101,56 @@ class QuizGameActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        editor = sharedPref?.edit()
+//        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        editor = sharedPref?.edit()
         miniGamePref = getSharedPreferences(
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
             Context.MODE_PRIVATE
         )
         val themePicker = ThemePicker()
         miniGamePrefEditor = miniGamePref?.edit()
-        appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = themePicker.selectTheme(appTheme)
+//        appTheme = sharedPref?.getString("themName", "WHITE THEM")
+//        val themRef = themePicker.selectTheme(appTheme)
 
         deckWithCards = intent?.parcelable(FlashCardGameActivity.DECK_ID_KEY)
 
-        val deckColorCode = deckWithCards?.deck?.deckColorCode
+        val deckColorCode = deckWithCards?.deck?.deckBackground
+        val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
+        setTheme(theme)
 
-        if (deckColorCode.isNullOrBlank() && themRef != null) {
-            setTheme(themRef)
-        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-            val deckTheme = if (appTheme == DARK_THEME) {
-                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
-            } else {
-                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
-            }
-            setTheme(deckTheme)
-        } else {
-            setTheme(themePicker.getDefaultTheme())
-        }
+//        if (deckColorCode.isNullOrBlank() && themRef != null) {
+//            setTheme(themRef)
+//        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+//            val deckTheme = if (appTheme == DARK_THEME) {
+//                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+//            } else {
+//                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+//            }
+//            setTheme(deckTheme)
+//        } else {
+//            setTheme(themePicker.getDefaultTheme())
+//        }
+
 
         binding = ActivityTestQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        WindowCompat.enableEdgeToEdge(window)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.topToolBar) { v, windowInserts ->
+            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            WindowInsetsCompat.CONSUMED
+        }
 
         tts = TextToSpeech(this, this)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
         deckWithCards?.let {
-            val cardList = it.cards?.toMutableList()
+            val cardList = it.cards.toMutableList()
             val deck = it.deck
-            if (!cardList.isNullOrEmpty() && deck != null) {
+            if (!cardList.isEmpty()) {
                 viewModel.initCardList(cardList)
                 viewModel.initOriginalCardList(cardList)
                 startTest(cardList, deck)
@@ -131,8 +160,7 @@ class QuizGameActivity :
         binding.vpCardHolder.isUserInputEnabled = false
 
         binding.topAppBar.apply {
-            title = getString(R.string.start_quiz_button_text)
-            subtitle = viewModel.deck?.deckName
+            title = viewModel.deck?.deckName
             setNavigationOnClickListener { finish() }
         }
 
@@ -148,6 +176,59 @@ class QuizGameActivity :
             } else {
                 false
             }
+        }
+
+        setActinButtonsColor()
+
+    }
+
+    fun setActinButtonsColor() {
+        when(AppThemeHelper.getSavedTheme(this)) {
+            1 -> {
+                setKnownButtonColorOnLightTheme()
+                setUnKnownButtonColorOnLightTheme()
+            }
+            2 -> {
+                setKnownButtonColorOnDarkTheme()
+                setUnKnownButtonColorOnDarkTheme()
+            }
+            else -> {
+                if (AppThemeHelper.isSystemDarkTheme(this))  {
+                    setKnownButtonColorOnDarkTheme()
+                    setUnKnownButtonColorOnDarkTheme()
+                } else {
+                    setKnownButtonColorOnLightTheme()
+                    setUnKnownButtonColorOnLightTheme()
+                }
+            }
+        }
+    }
+
+    fun setKnownButtonColorOnLightTheme() {
+        binding.btKnown.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setKnownButtonColorOnDarkTheme() {
+        binding.btKnown.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.green50)
+        }
+    }
+
+    fun setUnKnownButtonColorOnLightTheme() {
+        binding.btKnownNot.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setUnKnownButtonColorOnDarkTheme() {
+        binding.btKnownNot.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red50)
         }
     }
 
@@ -203,7 +284,6 @@ class QuizGameActivity :
         quizGameAdapter = QuizGameAdapter(
             this,
             data,
-            appTheme ?: "WHITE THEM",
             viewModel.deck!!,
             { userAnswer ->
                 viewModel.submitUserAnswer(userAnswer, binding.vpCardHolder.currentItem)
@@ -227,6 +307,23 @@ class QuizGameActivity :
                     )
                 }
 
+            },
+            { audio, view ->
+                if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
+                    lifecycleScope.launch {
+                        lastPlayedAudioViw?.btPlay?.setIconResource(R.drawable.icon_play)
+                        lastPlayedAudioViw?.lpiAudioProgression?.progress = 0
+                        lastPlayedAudioViw = null
+                        lastPlayedAudioFile = null
+                        player.stop()
+                        delay(100L)
+                        playPauseAudio(view, audio)
+                        lastPlayedAudioFile = audio
+                        lastPlayedAudioViw = view
+                    }
+                } else {
+                    playPauseAudio(view, audio)
+                }
             })
 
         binding.vpCardHolder.apply {
@@ -264,7 +361,7 @@ class QuizGameActivity :
                             backgroundTintList = MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorPrimary,
+                                    com.google.android.material.R.attr.colorPrimaryFixed,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral700
                                     )!!
@@ -301,7 +398,7 @@ class QuizGameActivity :
                             iconTint = MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorPrimary,
+                                    com.google.android.material.R.attr.colorPrimaryFixed,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral700
                                     )!!
@@ -311,7 +408,7 @@ class QuizGameActivity :
                                 MaterialColors
                                     .getColorStateList(
                                         this@QuizGameActivity,
-                                        com.google.android.material.R.attr.colorPrimary,
+                                        com.google.android.material.R.attr.colorPrimaryFixed,
                                         ContextCompat.getColorStateList(
                                             this@QuizGameActivity, R.color.neutral700
                                         )!!
@@ -354,6 +451,57 @@ class QuizGameActivity :
             })
         }
         viewModel.startTimer()
+    }
+
+    private fun playPauseAudio(
+        view: LyAudioPlayerBinding,
+        audio: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                // Resume audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                // Pause audio
+                view.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                // Play audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                val audioFile = File(this.filesDir, audio.name)
+                player.playFile(audioFile)
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+                player.onCompletion {
+                    lastPlayedAudioFile = null
+                    lastPlayedAudioViw = null
+                    view.btPlay.setIconResource(R.drawable.icon_play)
+                }
+            }
+        }
     }
 
     private fun displayProgression(data: List<QuizGameCardModel>, recyclerView: RecyclerView) {
@@ -610,8 +758,8 @@ class QuizGameActivity :
     }
 
     private fun startTest(
-        cardList: MutableList<ImmutableCard?>,
-        deck: ImmutableDeck
+        cardList: MutableList<ExternalCardWithContentAndDefinitions>,
+        deck: ExternalDeck
     ) {
         binding.gameReviewContainerMQ.visibility = View.GONE
         binding.vpCardHolder.visibility = View.VISIBLE
@@ -700,7 +848,7 @@ class QuizGameActivity :
 
     private fun readText(
         text: List<TextWithLanguageModel>,
-        view: List<View>,
+        view: List<TextView>,
     ) {
 
         var position = 0
@@ -710,17 +858,16 @@ class QuizGameActivity :
             com.google.android.material.R.attr.colorOnSurface,
             Color.BLACK
         )
-        val onReadColor =
-            MaterialColors.getColor(this, androidx.appcompat.R.attr.colorPrimary, Color.GRAY)
+        val onReadColor = MaterialColors.getColor(this, com.google.android.material.R.attr.colorSurfaceContainerHighest, Color.GRAY)
         val params = Bundle()
 
         val speechListener = object : UtteranceProgressListener() {
             override fun onStart(utteranceId: String?) {
-                onReading(position, view, onReadColor)
+                view[position].setTextColor(onReadColor)
             }
 
             override fun onDone(utteranceId: String?) {
-                onReadingStop(position, view, onStopColor)
+                view[position].setTextColor(onStopColor)
                 position += 1
                 if (position < textSum) {
                     onSpeak(params, text, position, this)
@@ -760,19 +907,19 @@ class QuizGameActivity :
 
     private fun stopReadingAllText() {
         tts?.stop()
-        val tvContent: TextView = findViewById(R.id.tv_content)
-        val tvDefinition: TextView = findViewById(R.id.tv_definition)
+        val tvContent: TextView = findViewById<View>(R.id.tv_content).findViewById(R.id.tv_text)
+        val tvDefinition: TextView = findViewById<View>(R.id.tv_definition).findViewById(R.id.tv_text)
         val alternatives = listOf(
-            findViewById<MaterialButton>(R.id.bt_alternative1),
-            findViewById<MaterialButton>(R.id.bt_alternative2),
-            findViewById<MaterialButton>(R.id.bt_alternative3),
-            findViewById<MaterialButton>(R.id.bt_alternative4),
-            findViewById<MaterialButton>(R.id.bt_alternative5),
-            findViewById<MaterialButton>(R.id.bt_alternative6),
-            findViewById<MaterialButton>(R.id.bt_alternative7),
-            findViewById<MaterialButton>(R.id.bt_alternative8),
-            findViewById<MaterialButton>(R.id.bt_alternative9),
-            findViewById<MaterialButton>(R.id.bt_alternative10),
+            findViewById<View>(R.id.in_alternative1).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative2).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative3).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative4).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative5).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative6).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative7).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative8).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative9).findViewById<TextView>(R.id.tv_text),
+            findViewById<View>(R.id.in_alternative10).findViewById<TextView>(R.id.tv_text),
         )
         tvContent.setTextColor(
             MaterialColors.getColor(
@@ -799,29 +946,29 @@ class QuizGameActivity :
         }
     }
 
-    private fun onReading(
-        position: Int,
-        view: List<View>,
-        onReadColor: Int
-    ) {
-        if (position == 0) {
-            (view[position] as TextView).setTextColor(onReadColor)
-        } else {
-            (view[position] as MaterialButton).setTextColor(onReadColor)
-        }
-    }
+//    private fun onReading(
+//        position: Int,
+//        view: List<View>,
+//        onReadColor: Int
+//    ) {
+//        if (position == 0) {
+//            (view[position] as TextView).setTextColor(onReadColor)
+//        } else {
+//            (view[position] as MaterialButton).setTextColor(onReadColor)
+//        }
+//    }
 
-    private fun onReadingStop(
-        position: Int,
-        view: List<View>,
-        onReadColor: Int
-    ) {
-        if (position == 0) {
-            (view[position] as TextView).setTextColor(onReadColor)
-        } else {
-            (view[position] as MaterialButton).setTextColor(onReadColor)
-        }
-    }
+//    private fun onReadingStop(
+//        position: Int,
+//        view: List<View>,
+//        onReadColor: Int
+//    ) {
+//        if (position == 0) {
+//            (view[position] as TextView).setTextColor(onReadColor)
+//        } else {
+//            (view[position] as Tex).setTextColor(onReadColor)
+//        }
+//    }
 
     private fun onSpeak(
         params: Bundle,
@@ -857,7 +1004,7 @@ class QuizGameActivity :
         speechListener: UtteranceProgressListener
     ) {
         tts?.language = Locale.forLanguageTag(
-            LanguageUtil().getLanguageCodeForTextToSpeech(language)!!
+            LanguageUtil().getLanguageCodeForTextToSpeech(language)
         )
         params.putString(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, "")
         tts?.speak(text, TextToSpeech.QUEUE_ADD, params, "UniqueID")

@@ -6,11 +6,13 @@
     app:cardBackgroundColor="?colorSurfaceContainerLow">
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.App.TextInputLayout"
         android:id="@+id/til_level_repeat_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="?colorOnSurface"
         android:layout_margin="10dp"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
         app:endIconMode="custom"
         app:endIconDrawable="@drawable/icon_help"
         app:endIconTint="?colorOnSurface">
@@ -18,8 +20,7 @@
             android:id="@+id/ti_level_repeat_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColorHint="?colorOnSurface"
-            android:textColor="?colorOnSurface"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
             android:hint="@string/ti_repeat_card_in_days_hint"
             android:inputType="number"/>
     </com.google.android.material.textfield.TextInputLayout>

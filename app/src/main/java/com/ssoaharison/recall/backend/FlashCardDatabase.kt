@@ -25,12 +25,7 @@ import com.ssoaharison.recall.backend.entities.WeeklyReview
         SpaceRepetitionBox::class,
         CardContent::class,
         CardDefinition::class,],
-    version = 4,
-    autoMigrations = [
-        AutoMigration(from = 1, to = 2),
-        AutoMigration(from = 2, to = 3, spec = FlashCardDatabase.Migration2To3::class),
-        AutoMigration(from = 3, to = 4, spec = FlashCardDatabase.Migration3To4::class)
-    ]
+    version = 1,
 )
 abstract class FlashCardDatabase : RoomDatabase() {
 
@@ -45,7 +40,7 @@ abstract class FlashCardDatabase : RoomDatabase() {
                 return INSTANCE ?: Room.databaseBuilder(
                     context.applicationContext,
                     FlashCardDatabase::class.java,
-                    "flash_card_database"
+                    "app_database"
                 ).fallbackToDestructiveMigration().build().also {
                     INSTANCE = it
                 }
@@ -53,13 +48,5 @@ abstract class FlashCardDatabase : RoomDatabase() {
         }
 
     }
-
-    @RenameColumn(tableName = "Deck", fromColumnName = "deck_first_language", toColumnName = "card_content_default_language")
-    @RenameColumn(tableName = "Deck", fromColumnName = "deck_second_language", toColumnName = "card_definition_default_language")
-    @DeleteColumn(tableName = "Deck", columnName = "card_sum")
-    class Migration2To3: AutoMigrationSpec
-
-    @DeleteColumn(tableName = "Deck", columnName = "card_sum")
-    class Migration3To4: AutoMigrationSpec
 
 }

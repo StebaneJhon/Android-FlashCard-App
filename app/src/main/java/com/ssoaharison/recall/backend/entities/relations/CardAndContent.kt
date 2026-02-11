@@ -9,7 +9,7 @@ data class CardAndContent(
     @Embedded val card: Card,
     @Relation(
         parentColumn = "cardId",
-        entityColumn = "cardId"
+        entityColumn = "cardOwnerId"
     )
     val cardContent: CardContent
 )

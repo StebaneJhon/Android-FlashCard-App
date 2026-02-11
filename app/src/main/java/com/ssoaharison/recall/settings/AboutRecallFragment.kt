@@ -16,7 +16,7 @@ class AboutRecallFragment : Fragment() {
     private val binding get() = _binding!!
 
     companion object {
-        private const val LINK_TO_RECALL_ABOUT = "https://sites.google.com/view/recall-mobileapp/accueil"
+        private const val LINK_TO_MNEME_ABOUT = "https://sites.google.com/view/recall-mobileapp/accueil"
     }
 
     override fun onCreateView(
@@ -38,7 +38,7 @@ class AboutRecallFragment : Fragment() {
     private fun weViewSetup() {
         binding.wvAbout.apply {
             webViewClient = WebViewClient()
-            loadUrl("https://sites.google.com/view/recall-mobileapp/accueil")
+            loadUrl(LINK_TO_MNEME_ABOUT)
             settings.safeBrowsingEnabled = true
         }
     }

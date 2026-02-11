@@ -35,7 +35,7 @@ class ExportDeckDialog: DialogFragment() {
             fileFormat = getFormat()
             fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
 
-            val deckExportModel = DeckExportModel(fileFormat, fileContentSeparator)
+            val deckExportModel = DeckExportModel(fileFormat, fileContentSeparator, binding.swIncludeSubdecks.isChecked)
             sendDeckExportModel(CardFragment.REQUEST_EXPORT_DECK_CODE, deckExportModel)
         }
 

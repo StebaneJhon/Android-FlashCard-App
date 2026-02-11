@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/img_photo"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@drawable/bg_radius_xs"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="@dimen/space_xxs"
+        android:src="@drawable/ic_launcher_background" />
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_definition_container_audio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:backgroundTint="?colorSurfaceContainer"
+        android:background="@drawable/bg_radius_xs"
+        android:layout_marginBottom="@dimen/space_xxs">
+
+        <include
+            android:id="@+id/ly_definition_audio"
+            layout="@layout/ly_audio_player" />
+    </LinearLayout>
+
+<!--    <LinearLayout-->
+<!--        android:visibility="gone"-->
+<!--        android:id="@+id/ll_container_audio"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="@dimen/space_xxs"-->
+<!--        android:background="@drawable/bg_radius_xs"-->
+<!--        android:backgroundTint="?colorSurfaceContainerHigh"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:orientation="horizontal">-->
+
+<!--        <com.google.android.material.button.MaterialButton-->
+<!--            android:id="@+id/bt_play_audio"-->
+<!--            style="?attr/materialIconButtonFilledTonalStyle"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="@dimen/space_xs"-->
+<!--            android:backgroundTint="?colorPrimary"-->
+<!--            android:clickable="false"-->
+<!--            android:contentDescription="@string/bt_description_next"-->
+<!--            android:fontFamily="@font/open_sans"-->
+<!--            android:textColor="?colorSurfaceContainerLowest"-->
+<!--            app:icon="@drawable/icon_play"-->
+<!--            app:iconGravity="end"-->
+<!--            app:iconTint="?colorSurfaceContainerLowest"-->
+<!--            app:rippleColor="?colorSurfaceContainerHighest" />-->
+
+<!--        <com.google.android.material.slider.Slider-->
+<!--            android:id="@+id/slider_audio"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:value="20.0"-->
+<!--            android:valueFrom="0.0"-->
+<!--            android:valueTo="100.0" />-->
+<!--    </LinearLayout>-->
+
+    <TextView
+        android:id="@+id/tv_definition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_card_content"
+        tools:text="Test deck description" />
+
+</LinearLayout>

@@ -9,28 +9,7 @@
         android:id="@+id/cardFragment"
         android:name="com.ssoaharison.recall.card.CardFragment"
         android:label="fragment_card"
-        tools:layout="@layout/fragment_card" >
-        <action
-            android:id="@+id/navigateToDeckFragment"
-            app:destination="@id/deckFragment" />
-        <argument
-            android:name="selectedDeck"
-            app:argType="com.ssoaharison.recall.backend.models.ImmutableDeck" />
-
-        <argument
-            android:name="opener"
-            app:argType="string" />
-    </fragment>
-    <fragment
-        android:id="@+id/deckFragment"
-        android:name="com.ssoaharison.recall.deck.DeckFragment"
-        android:label="fragment_deck"
-        tools:layout="@layout/fragment_deck" >
-        <action
-            android:id="@+id/navigateToCardFragment"
-            app:destination="@id/cardFragment" />
-
-    </fragment>
+        tools:layout="@layout/fragment_card" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.ssoaharison.recall.settings.SettingsFragment"
@@ -47,18 +26,18 @@
         <action
             android:id="@+id/action_settingsFragment_to_aboutRecallFragment"
             app:destination="@id/aboutRecallFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_creditsAndAttributionsFragment"
+            app:destination="@id/creditsAndAttributionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"
         android:name="com.ssoaharison.recall.onboarding.OnBoardingViewPagerFragment"
         android:label="fragment_on_boarding_view_pager"
         tools:layout="@layout/fragment_on_boarding_view_pager" >
-
         <action
-            android:id="@+id/action_onBoardingViewPagerFragment_to_deckFragment2"
-            app:destination="@id/deckFragment"
-            app:popUpTo="@id/onBoardingViewPagerFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_onBoardingViewPagerFragment_to_cardFragment"
+            app:destination="@id/cardFragment" />
     </fragment>
     <fragment
         android:id="@+id/hostFragment"
@@ -72,10 +51,8 @@
             app:popUpToInclusive="true" />
 
         <action
-            android:id="@+id/action_hostFragment_to_deckFragment2"
-            app:destination="@id/deckFragment"
-            app:popUpTo="@id/hostFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_hostFragment_to_cardFragment"
+            app:destination="@id/cardFragment" />
     </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
@@ -117,4 +94,13 @@
         android:name="com.ssoaharison.recall.help.HelpFragment"
         android:label="fragment_help"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/creditsAndAttributionsFragment"
+        android:name="com.ssoaharison.recall.settings.CreditsAndAttributionsFragment"
+        android:label="fragment_credits_and_attributions"
+        tools:layout="@layout/fragment_credits_and_attributions" >
+        <action
+            android:id="@+id/action_creditsAndAttributionsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 </navigation>

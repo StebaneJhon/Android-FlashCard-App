@@ -4,30 +4,47 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.ImageDecoder
+import android.graphics.Typeface
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.provider.MediaStore
 import android.speech.RecognizerIntent
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
+import android.text.Html.TO_HTML_PARAGRAPH_LINES_CONSECUTIVE
+import android.text.Spannable
+import android.text.style.CharacterStyle
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.TypedValue
-import android.view.ActionMode
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListPopupWindow
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -36,12 +53,14 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.backend.entities.CardContent
 import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.AddCardLayoutDialogBinding
@@ -50,7 +69,7 @@ import com.ssoaharison.recall.util.CardType.SINGLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
 import com.ssoaharison.recall.util.CardType.MULTIPLE_CHOICE_CARD
 import com.ssoaharison.recall.util.Constant
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -64,39 +83,63 @@ import com.google.mlkit.vision.text.japanese.JapaneseTextRecognizerOptions
 import com.google.mlkit.vision.text.korean.KoreanTextRecognizerOptions
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.deck.DeckFragment.Companion.REQUEST_CODE
-import com.ssoaharison.recall.deck.OpenTriviaQuizModel
+import com.ssoaharison.recall.backend.entities.Card
+import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
+import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalCard
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AppThemeHelper
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.PhotoModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
+import com.ssoaharison.recall.util.AttachRef.ATTACH_AUDIO_RECORD
+import com.ssoaharison.recall.util.AttachRef.ATTACH_IMAGE_FROM_CAMERA
+import com.ssoaharison.recall.util.AttachRef.ATTACH_IMAGE_FROM_GALERI
+import com.ssoaharison.recall.util.ScanRef.AUDIO_TO_TEXT
+import com.ssoaharison.recall.util.ScanRef.IMAGE_FROM_CAMERA_TO_TEXT
+import com.ssoaharison.recall.util.ScanRef.IMAGE_FROM_GALERI_TO_TEXT
 import com.ssoaharison.recall.util.UiState
-import com.ssoaharison.recall.util.parcelable
-import com.ssoaharison.recall.util.textToImmutableCard
+import com.ssoaharison.recall.helper.parcelable
+import com.ssoaharison.recall.helper.textToImmutableCard
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
-import java.lang.IndexOutOfBoundsException
 import java.util.Locale
+import java.util.UUID
 
 class NewCardDialog(
-    private var card: ImmutableCard?,
-    private val deck: ImmutableDeck,
+    private var card: ExternalCardWithContentAndDefinitions?,
+    private val deck: ExternalDeck,
     private val action: String
 ) : AppCompatDialogFragment() {
 
     private var _binding: AddCardLayoutDialogBinding? = null
     private val binding get() = _binding!!
     private var appContext: Context? = null
-    private var definitionList = mutableSetOf<CardDefinition>()
-    private var selectedField: EditText? = null
-    private var selectedFieldLy: TextInputLayout? = null
+    var imm: InputMethodManager? = null
     private var actualFieldLanguage: String? = null
     private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
     private lateinit var importCardsFromDeviceModel: CardImportFromDeviceModel
+    private lateinit var attachBottomSheetDialog: AttachBottomSheetDialog
+    private lateinit var scanBottomSheetDialog: ScanBottomSheetDialog
+
+    var colorSurfaceContainerLow: Int = Color.WHITE
+    var colorPrimary: Int = Color.BLACK
+
+    private val player by lazy {
+        AndroidAudioPlayer(requireContext())
+    }
 
     private val newCardViewModel by lazy {
-        val openTriviaRepository = (requireActivity().application as FlashCardApplication).openTriviaRepository
+        val openTriviaRepository =
+            (requireActivity().application as FlashCardApplication).openTriviaRepository
         val repository = (requireActivity().application as FlashCardApplication).repository
         ViewModelProvider(
             this,
@@ -104,10 +147,8 @@ class NewCardDialog(
         )[NewCardDialogViewModel::class.java]
     }
 
-    private var actionMode: ActionMode? = null
     private var uri: Uri? = null
-    private var revealedDefinitionFields: Int = 1
-    private lateinit var definitionFields: List<DefinitionFieldModel>
+    private lateinit var definitionFields: MutableList<FieldModel>
 
     private var takePreview =
         registerForActivityResult(ActivityResultContracts.TakePicture()) { success: Boolean ->
@@ -115,7 +156,27 @@ class NewCardDialog(
                 val image: InputImage
                 try {
                     image = InputImage.fromFilePath(requireContext(), uri!!)
-                    detectTextFromAnImageWithMLKit(image)
+                    detectTextFromAnImageWithMLKit(image) { text ->
+                        newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
+                            when {
+                                activeFieldIndex == null -> {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.error_message_no_field_selected),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                                activeFieldIndex < 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+
+                                activeFieldIndex >= 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+                            }
+                        }
+                    }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
@@ -128,12 +189,33 @@ class NewCardDialog(
                 val image: InputImage
                 try {
                     image = InputImage.fromFilePath(requireContext(), imageUri)
-                    detectTextFromAnImageWithMLKit(image)
+                    detectTextFromAnImageWithMLKit(image) { text ->
+                        newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
+                            when {
+                                activeFieldIndex == null -> {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.error_message_no_field_selected),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                                activeFieldIndex < 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+
+                                activeFieldIndex >= 0 -> {
+                                    setFieldText(text, activeFieldIndex)
+                                }
+                            }
+                        }
+                    }
                 } catch (e: IOException) {
                     e.printStackTrace()
                 }
             }
         }
+
     private var micListener =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultData ->
             if (resultData.resultCode == RESULT_OK) {
@@ -146,7 +228,25 @@ class NewCardDialog(
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    selectedField?.setText(result?.get(0))
+                    newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
+                        when {
+                            activeFieldIndex == null -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_message_no_field_selected),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                            activeFieldIndex < 0 -> {
+                                setFieldText(result[0], activeFieldIndex)
+                            }
+
+                            activeFieldIndex >= 0 -> {
+                                setFieldText(result[0], activeFieldIndex)
+                            }
+                        }
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -171,17 +271,105 @@ class NewCardDialog(
         }
     }
 
-    private var openFile = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-        if (uri != null) {
-            val cards = textFromUriToImmutableCards(uri, ":")
-            newCardViewModel.insertCards(cards)
+    private var openFile =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri != null) {
+                val cards = textFromUriToImmutableCards(uri, ":")
+                newCardViewModel.insertCards(cards)
+                Toast.makeText(
+                    appContext,
+                    getString(R.string.message_cards_added, "${cards.size}"),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    private var fileImageName: String? = null
+    private var isPhotoSaved: Boolean = false
+
+    val attachPhotoFromCamera =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+            it?.let {
+                fileImageName = "${UUID.randomUUID()}.jpg"
+                isPhotoSaved = saveImageToInternalStorage(fileImageName!!, it)
+                if (isPhotoSaved) {
+                    val newPhoto = PhotoModel(fileImageName!!, it)
+                    newCardViewModel.getActiveFieldIndex()?.let { activeFieldIndex ->
+                        if (activeFieldIndex == -1) {
+                            newCardViewModel.updateContentField(
+                                updatedContentField = newCardViewModel.contentField.value.copy(
+                                    contentImage = newPhoto
+                                )
+                            )
+                        } else {
+                            newCardViewModel.updateDefinitionImage(
+                                id = newCardViewModel.getDefinitionFieldAt(activeFieldIndex).definitionId,
+                                image = newPhoto
+                            )
+                            onSetDefinitionFieldPhoto(
+                                actualField = definitionFields[activeFieldIndex],
+                                imageBitmap = newPhoto.bmp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+    private val onAttachePhotoFromCameraRequestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            attachPhotoFromCamera.launch()
+        } else {
             Toast.makeText(
-                appContext,
-                getString(R.string.message_cards_added, "${cards.size}"),
+                requireContext(),
+                getString(R.string.error_message_permission_not_granted_camera),
                 Toast.LENGTH_LONG
             ).show()
         }
     }
+
+    private var onAttachPhotoFromGallery =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                val btm = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            requireContext().contentResolver,
+                            uri
+                        )
+                    )
+                } else {
+                    MediaStore.Images.Media.getBitmap(requireContext().contentResolver, uri)
+                }
+                val imageName = "${UUID.randomUUID()}.jpg"
+                val isImageSaved = saveImageToInternalStorage(imageName, btm)
+                if (isImageSaved) {
+                    val newPhoto = PhotoModel(imageName, btm)
+                    newCardViewModel.getActiveFieldIndex()?.let { activeFieldIndex ->
+                        if (activeFieldIndex == -1) {
+                            newCardViewModel.updateContentField(
+                                updatedContentField = newCardViewModel.contentField.value.copy(
+                                    contentImage = newPhoto
+                                )
+                            )
+                        } else {
+                            newCardViewModel.updateDefinitionImage(
+                                id = newCardViewModel.getDefinitionFieldAt(activeFieldIndex).definitionId,
+                                image = newPhoto
+                            )
+                            onSetDefinitionFieldPhoto(
+                                actualField = definitionFields[activeFieldIndex],
+                                imageBitmap = newPhoto.bmp
+                            )
+                        }
+                    }
+                }
+            } else {
+                Toast.makeText(requireContext(), "Could not get image", Toast.LENGTH_LONG).show()
+            }
+        }
 
 
     companion object {
@@ -192,11 +380,13 @@ class NewCardDialog(
         const val REQUEST_CODE_CARD = "0"
         const val REQUEST_CODE_CARD_IMPORT_SOURCE = "3"
         const val REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE = "4"
+        const val REQUEST_CODE_AUDIO_RECORDER = "5"
+        const val REQUEST_CODE_TRANSLATION_OPTION = "9"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.QuizeoFullscreenDialogTheme)
+        setStyle(STYLE_NO_TITLE, R.style.QuizeoFullscreenDialogTheme)
     }
 
     override fun onStart() {
@@ -221,70 +411,25 @@ class NewCardDialog(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        definitionFields = listOf(
-            DefinitionFieldModel(
-                binding.tilDefinition1MultiAnswerCard,
-                binding.tieDefinition1MultiAnswerCard,
-                binding.cpDefinition1IsTrue,
-                null
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition2MultiAnswerCard,
-                binding.tieDefinition2MultiAnswerCard,
-                binding.cpDefinition2IsTrue,
-                binding.btDeleteField2
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition3MultiAnswerCard,
-                binding.tieDefinition3MultiAnswerCard,
-                binding.cpDefinition3IsTrue,
-                binding.btDeleteField3
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition4MultiAnswerCard,
-                binding.tieDefinition4MultiAnswerCard,
-                binding.cpDefinition4IsTrue,
-                binding.btDeleteField4
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition5MultiAnswerCard,
-                binding.tieDefinition5MultiAnswerCard,
-                binding.cpDefinition5IsTrue,
-                binding.btDeleteField5
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition6MultiAnswerCard,
-                binding.tieDefinition6MultiAnswerCard,
-                binding.cpDefinition6IsTrue,
-                binding.btDeleteField6
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition7MultiAnswerCard,
-                binding.tieDefinition7MultiAnswerCard,
-                binding.cpDefinition7IsTrue,
-                binding.btDeleteField7
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition8MultiAnswerCard,
-                binding.tieDefinition8MultiAnswerCard,
-                binding.cpDefinition8IsTrue,
-                binding.btDeleteField8
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition9MultiAnswerCard,
-                binding.tieDefinition9MultiAnswerCard,
-                binding.cpDefinition9IsTrue,
-                binding.btDeleteField9
-            ),
-            DefinitionFieldModel(
-                binding.tilDefinition10MultiAnswerCard,
-                binding.tieDefinition10MultiAnswerCard,
-                binding.cpDefinition10IsTrue,
-                binding.btDeleteField10
-            ),
+
+        imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        initFields()
+
+        colorSurfaceContainerLow = MaterialColors.getColor(
+            binding.inFormatOptions.btFormatBold,
+            com.google.android.material.R.attr.colorSurfaceContainerLow
+        )
+        colorPrimary = MaterialColors.getColor(
+            binding.inFormatOptions.btFormatBold,
+            com.google.android.material.R.attr.colorPrimarySurface
         )
 
-        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        attachBottomSheetDialog = AttachBottomSheetDialog()
+        scanBottomSheetDialog = ScanBottomSheetDialog()
+
+        val arrayAdapterSupportedLanguages =
+            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
         listPopupWindow.setBackgroundDrawable(
             ResourcesCompat.getDrawable(
@@ -318,21 +463,6 @@ class NewCardDialog(
             }
         }
 
-        if (card != null && action == Constant.UPDATE) {
-
-            binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
-            onUpdateCard(card!!)
-        } else {
-            binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
-            setCardLanguages()
-            binding.btAdd.apply {
-                text = getString(R.string.bt_text_add)
-                setOnClickListener {
-                    onPositiveAction()
-                }
-            }
-        }
-
         binding.tabAddNewUpdateCard.setNavigationOnClickListener {
             onCloseDialog()
         }
@@ -353,101 +483,369 @@ class NewCardDialog(
             }
         }
 
-        val callback = object : ActionMode.Callback {
-            override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                mode?.menuInflater?.inflate(
-                    R.menu.menu_add_new_card_top_app_bar_contextual_action_bar,
-                    menu
+        binding.btMoreDefinition.setOnClickListener {
+            onAddMoreDefinition()
+        }
+
+        binding.btSave.setOnClickListener {
+            onPositiveAction()
+        }
+        binding.btTranslate.setOnClickListener {
+            onTranslateText(
+                newCardViewModel.getActiveFieldIndex()
+            )
+        }
+        binding.btAddMedia.setOnClickListener {
+            onAttach()
+        }
+        binding.btScan.setOnClickListener {
+            onScan()
+        }
+        binding.btFormat.setOnClickListener {
+            if (newCardViewModel.getActiveFieldIndex() != null) {
+                binding.containerFormatOptions.visibility = View.VISIBLE
+            } else {
+                Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
+            }
+        }
+
+        binding.inFormatOptions.btClose.setOnClickListener {
+            binding.containerFormatOptions.visibility = View.GONE
+        }
+
+        binding.inFormatOptions.btFormatBold.setOnClickListener {
+            onFormatButtonClicked(binding.inFormatOptions.btFormatBold, StyleSpan(Typeface.BOLD))
+        }
+        binding.inFormatOptions.btFormatItalic.setOnClickListener {
+            onFormatButtonClicked(binding.inFormatOptions.btFormatItalic, StyleSpan(Typeface.ITALIC))
+        }
+        binding.inFormatOptions.btFormatUnderlined.setOnClickListener {
+            onFormatButtonClicked(binding.inFormatOptions.btFormatUnderlined, UnderlineSpan())
+        }
+        binding.inFormatOptions.btFormatStrikethrough.setOnClickListener {
+            onFormatButtonClicked(binding.inFormatOptions.btFormatStrikethrough, StrikethroughSpan())
+        }
+
+    }
+
+    fun onFormatButtonClicked(button: MaterialButton, span: CharacterStyle) {
+        val selectedFieldIndex = newCardViewModel.getActiveFieldIndex()
+        if (selectedFieldIndex != null) {
+            if (selectedFieldIndex == -1) {
+                onFormatText(
+                    button = button,
+                    field = binding.lyContent.tieContentText,
+                    span = span
                 )
-                return true
+                val htmText = Html.toHtml(binding.lyContent.tieContentText.text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
+                newCardViewModel.updateContentText(htmText)
+            } else {
+                onFormatText(
+                    button = button,
+                    field = definitionFields[selectedFieldIndex].ly.tieText,
+                    span = span
+                )
+                val htmlText = Html.toHtml(definitionFields[selectedFieldIndex].ly.tieText.text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
+                newCardViewModel.updateDefinitionText(
+                    id = newCardViewModel.getDefinitionFieldAt(selectedFieldIndex).definitionId,
+                    text = htmlText
+                )
+            }
+        } else {
+            Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
+        }
+
+    }
+
+    fun onFormatText(button: MaterialButton, field: TextInputEditText, span: CharacterStyle) {
+        val start = field.selectionStart
+        val end = field.selectionEnd
+        val editable = field.text
+
+        editable?.let { editable ->
+            val spans = when (span) {
+                is StyleSpan -> editable.getSpans(start, end, StyleSpan::class.java)?.filter { it.style == span.style}
+                is UnderlineSpan -> editable.getSpans(start, end, UnderlineSpan::class.java).toList()
+                is StrikethroughSpan -> editable.getSpans(start, end, StrikethroughSpan::class.java).toList()
+                else -> emptyList<CharacterStyle>()
             }
 
-            override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-                return false
+            if (spans?.isNotEmpty() == true) {
+                button.apply {
+                    backgroundTintList = ColorStateList.valueOf(colorSurfaceContainerLow)
+                    iconTint = ColorStateList.valueOf(colorPrimary)
+                }
+                spans.forEach { span ->
+                    val s = editable.getSpanStart(span)
+                    if (start == end) {
+                        editable.setSpan(span, s, start, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    } else {
+                        editable.removeSpan(span)
+                    }
+                }
+            } else {
+                button.apply {
+                    backgroundTintList = ColorStateList.valueOf(colorPrimary)
+                    iconTint = ColorStateList.valueOf(colorSurfaceContainerLow)
+                }
+                applyFormatToSelection(field, span, start, end)
             }
+        }
+    }
 
-            override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.bt_scan_image -> {
-                        showImageSelectedDialog()
-                        true
+    private fun applyFormatToSelection(field: TextInputEditText, span: Any, start: Int, end: Int) {
+        field.text?.setSpan(
+            span,
+            start,
+            end,
+            Spannable.SPAN_INCLUSIVE_INCLUSIVE
+        )
+    }
+
+    private fun updateFormatButtonUi(field: TextInputEditText) {
+        val start = field.selectionStart
+        val end = field.selectionEnd
+        val editable = field.text
+
+        val isBold = editable?.getSpans(start, end, StyleSpan::class.java)?.any {it.style == Typeface.BOLD } ?: false
+        val isItalic = editable?.getSpans(start, end, StyleSpan::class.java)?.any {it.style == Typeface.ITALIC } ?: false
+        val underlineSpan = editable?.getSpans(start, end, UnderlineSpan::class.java)?.isNotEmpty() ?: false
+        val strikethroughSpan = editable?.getSpans(start, end, StrikethroughSpan::class.java)?.isNotEmpty() ?: false
+
+        binding.inFormatOptions.btFormatBold.apply {
+            backgroundTintList = ColorStateList.valueOf(if (isBold) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (isBold) colorSurfaceContainerLow else colorPrimary)
+        }
+        binding.inFormatOptions.btFormatItalic.apply {
+            backgroundTintList = ColorStateList.valueOf(if (isItalic) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (isItalic) colorSurfaceContainerLow else colorPrimary)
+        }
+        binding.inFormatOptions.btFormatUnderlined.apply {
+            backgroundTintList = ColorStateList.valueOf(if (underlineSpan) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (underlineSpan) colorSurfaceContainerLow else colorPrimary)
+        }
+        binding.inFormatOptions.btFormatStrikethrough.apply {
+            backgroundTintList = ColorStateList.valueOf(if (strikethroughSpan) colorPrimary else colorSurfaceContainerLow)
+            iconTint = ColorStateList.valueOf(if (strikethroughSpan) colorSurfaceContainerLow else colorPrimary)
+        }
+
+
+    }
+
+    private fun initFields() {
+        definitionFields = mutableListOf(
+            FieldModel(
+                binding.llDefinition1Container,
+                binding.lyDefinition1,
+            ),
+            FieldModel(
+                binding.llDefinition2Container,
+                binding.lyDefinition2,
+            ),
+            FieldModel(
+                binding.llDefinition3Container,
+                binding.lyDefinition3,
+            ),
+            FieldModel(
+                binding.llDefinition4Container,
+                binding.lyDefinition4,
+            ),
+            FieldModel(
+                binding.llDefinition5Container,
+                binding.lyDefinition5,
+            ),
+            FieldModel(
+                binding.llDefinition6Container,
+                binding.lyDefinition6,
+            ),
+            FieldModel(
+                binding.llDefinition7Container,
+                binding.lyDefinition7,
+            ),
+            FieldModel(
+                binding.llDefinition8Container,
+                binding.lyDefinition8,
+            ),
+            FieldModel(
+                binding.llDefinition9Container,
+                binding.lyDefinition9,
+            ),
+            FieldModel(
+                binding.llDefinition10Container,
+                binding.lyDefinition10,
+            ),
+        )
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.definitionFields.collect { fields ->
+                    displayDefinitionFields(fields)
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newCardViewModel.contentField.collect { content ->
+                    displayContentField(content)
+                }
+            }
+        }
+
+        if (card != null && action == Constant.UPDATE) {
+            binding.tabAddNewUpdateCard.title = getString(R.string.tv_update_card)
+            onUpdateCard(card!!)
+        } else {
+            binding.tabAddNewUpdateCard.title = getString(R.string.tv_add_new_card)
+            onAddCard()
+        }
+
+    }
+
+    private fun playPauseContendAudio() {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                        binding.lyContent.lyContentAudio.lpiAudioProgression.progress = progress
+                        delay(100L)
                     }
-
-                    R.id.bt_mic -> {
-                        listen(actualFieldLanguage)
-                        true
-                    }
-
-                    R.id.bt_translate -> {
-                        onTranslateText(
-                            binding.tieContentMultiAnswerCard.text.toString(),
-                            selectedField,
-                            selectedFieldLy
-                        )
-                        true
-                    }
-
-                    R.id.save -> {
-                        onPositiveAction()
-                        true
-                    }
-
-                    else -> false
                 }
             }
 
-            override fun onDestroyActionMode(mode: ActionMode?) {
+            player.hasPlayed() && player.isPlaying() -> {
+                binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                newCardViewModel.contentField.value.contentAudio?.let { audioModel ->
+                    binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                    val audioFile = File(context?.filesDir, audioModel.name)
+                    player.playFile(audioFile)
+                    lifecycleScope.launch {
+                        while (player.isPlaying()) {
+                            val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                            binding.lyContent.lyContentAudio.lpiAudioProgression.progress = progress
+                            delay(100L)
+                        }
+                    }
+                }
+                player.onCompletion {
+                    binding.lyContent.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                }
             }
         }
+    }
 
-        binding.btCancel.setOnClickListener {
-            initCardAdditionPanel()
-        }
+    private fun onAttach() {
+        attachBottomSheetDialog.show(childFragmentManager, "Attach Dialog")
+        childFragmentManager.setFragmentResultListener(
+            AttachBottomSheetDialog.ATTACH_REQUEST_CODE,
+            this
+        ) { _, bundle ->
+            val attach = bundle.getString(AttachBottomSheetDialog.ATTACH_BUNDLE_KEY)
+            attach?.let {
+                when (it) {
+                    ATTACH_IMAGE_FROM_CAMERA -> {
+                        if (newCardViewModel.getActiveFieldIndex() != null) {
+                            onTakePhoto()
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_message_no_field_selected),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
 
-        binding.tieContentMultiAnswerCard.apply {
-            setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    binding.tilContentMultiAnswerCard,
-                    v,
-                    getNewContentLanguage(),
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_content_hint)
-                )
+                    ATTACH_IMAGE_FROM_GALERI -> {
+                        if (newCardViewModel.getActiveFieldIndex() != null) {
+                            onPickPhoto()
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_message_no_field_selected),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                    ATTACH_AUDIO_RECORD -> {
+                        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                            checkRecordAudioPermission()
+                        } else {
+                            onRecordAudio(newCardViewModel.getActiveFieldIndex())
+                        }
+
+                    }
+                }
             }
         }
+    }
 
-        definitionFields.forEach { definitionField ->
-            definitionField.fieldEd.setOnFocusChangeListener { v, hasFocus ->
-                onActiveTopAppBarMode(
-                    definitionField.fieldLy,
-                    v,
-                    getNewDefinitionLanguage(),
-                    hasFocus,
-                    callback,
-                    getString(R.string.til_card_definition_hint)
-                )
+    private fun onScan() {
+        scanBottomSheetDialog.show(childFragmentManager, "Scan Dialog")
+        childFragmentManager.setFragmentResultListener(
+            ScanBottomSheetDialog.SCAN_REQUEST_CODE,
+            this
+        ) { _, bundle ->
+            val attach = bundle.getString(ScanBottomSheetDialog.SCAN_BUNDLE_KEY)
+            attach?.let {
+                when (it) {
+                    IMAGE_FROM_CAMERA_TO_TEXT -> {
+                        checkCameraPermission({
+                            openCamera()
+                        }) {
+                            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                        }
+                    }
+
+                    IMAGE_FROM_GALERI_TO_TEXT -> {
+                        onSelectImageFromGallery()
+                    }
+
+                    AUDIO_TO_TEXT -> {
+                        val fieldIndex = newCardViewModel.getActiveFieldIndex()
+                        when {
+                            fieldIndex == null -> {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_message_no_field_selected),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+
+                            fieldIndex < 0 -> {
+                                listen(getNewContentLanguage())
+                            }
+
+                            fieldIndex >= 0 -> {
+                                listen(getNewDefinitionLanguage())
+                            }
+                        }
+                    }
+                }
             }
-            definitionField.btDeleteField?.setOnClickListener {
-                deleteDefinitionField(definitionField.fieldEd)
-            }
-        }
-
-
-        binding.btMoreDefinition.setOnClickListener {
-            onAddMoreDefinition()
         }
     }
 
     private fun showCardImportSourceDialog() {
         val newImportCardsSourceDialog = ImportCardsSourceDialog()
         newImportCardsSourceDialog.show(childFragmentManager, "Import card source dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE_CARD_IMPORT_SOURCE, this) {_, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_CODE_CARD_IMPORT_SOURCE,
+            this
+        ) { _, bundle ->
             val result = bundle.getString(ImportCardsSourceDialog.IMPORT_CARDS_SOURCE_BUNDLE_KEY)
             when (result) {
                 ImportCardsSourceDialog.IMPORT_FROM_DEVICE -> {
                     showCardImportFromDeviceDialog()
                 }
+
                 ImportCardsSourceDialog.IMPORT_FROM_OTHERS -> {
                     showTriviaQuestionUploader()
                 }
@@ -458,13 +856,20 @@ class NewCardDialog(
     private fun showCardImportFromDeviceDialog() {
         val cardImportFromDeviceDialog = ImportCardsFromDeviceDialog()
         cardImportFromDeviceDialog.show(childFragmentManager, "Import card from device dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE, this) {_, bundle ->
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE,
+            this
+        ) { _, bundle ->
             val result = bundle.parcelable<CardImportFromDeviceModel>(ImportCardsFromDeviceDialog.EXPORT_CARD_FROM_DEVICE_BUNDLE_KEY)
             if (result != null) {
                 importCardsFromDeviceModel = result
                 openFile.launch(arrayOf("text/*"))
             } else {
-                Toast.makeText(appContext, getString(R.string.error_message_card_import_failed), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    appContext,
+                    getString(R.string.error_message_card_import_failed),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -473,7 +878,7 @@ class NewCardDialog(
     private fun showTriviaQuestionUploader() {
         val newDeckDialog = UploadOpenTriviaQuizDialog()
         newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
-        childFragmentManager.setFragmentResultListener(REQUEST_CODE, this) { _, bundle ->
+        childFragmentManager.setFragmentResultListener(CardFragment.REQUEST_CODE, this) { _, bundle ->
             val result =
                 bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
             cardUploadingJob?.cancel()
@@ -532,63 +937,35 @@ class NewCardDialog(
         }
     }
 
-    private fun onActiveTopAppBarMode(
-        ly: TextInputLayout?,
+    private fun onFieldFocused(
+        fieldViewContainer: ConstraintLayout,
         v: View?,
-        language: String?,
         hasFocus: Boolean,
-        callback: ActionMode.Callback,
-        title: String
     ) {
         if (hasFocus) {
-            selectedFieldLy = ly
-            selectedField = v as EditText
-            actionMode = view?.startActionMode(callback)
-            actionMode?.title = title
-            actualFieldLanguage = language
+            fieldViewContainer.setBackgroundResource(R.drawable.bg_add_card_field_focused)
+            //TODO: To be improved. Scroll to focused view.
+            v?.postDelayed({
+                val y = fieldViewContainer.bottom.plus(binding.dockedToolbar.height)
+                binding.nestedScrollView.smoothScrollTo(0, maxOf(y, 0))
+            }, 200)
+        } else {
+            fieldViewContainer.setBackgroundResource(R.drawable.bg_add_card_field)
         }
     }
 
-    private fun showImageSelectedDialog() {
-        val builder = MaterialAlertDialogBuilder(
-            requireActivity(),
-            R.style.ThemeOverlay_App_MaterialAlertDialog
-        )
-        builder.apply {
-            setTitle("Select Image")
-            setMessage("Please select an option")
-            setPositiveButton(
-                "Camera"
-            ) { dialog, _ ->
-                checkCameraPermission()
-                dialog?.dismiss()
-            }
-
-            setNeutralButton(
-                "Cancel"
-            ) { dialog, _ -> dialog?.dismiss() }
-
-            setNegativeButton(
-                "Gallery"
-            ) { dialog, _ ->
-                onSelectImageFromGallery()
-                dialog?.dismiss()
-            }
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
-
-    private fun checkCameraPermission() {
+    private fun checkCameraPermission(
+        onCameraPermissionGranted: () -> Unit,
+        onCameraPermissionNotGranted: () -> Unit
+    ) {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.CAMERA
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+            onCameraPermissionNotGranted()
         } else {
-            openCamera()
+            onCameraPermissionGranted()
         }
     }
 
@@ -649,7 +1026,8 @@ class NewCardDialog(
 
     private fun detectTextFromAnImageWithMLKit(
         image: InputImage,
-        language: String? = actualFieldLanguage
+        language: String? = actualFieldLanguage,
+        onTextDetected: (String) -> Unit
     ) {
         val recognizer = if (language.isNullOrBlank()) {
             getRecognizer(LanguageUtil().getLanguageByCode(Locale.getDefault().language))
@@ -665,7 +1043,7 @@ class NewCardDialog(
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    selectedField?.setText(visionText.text)
+                    onTextDetected(visionText.text)
                 }
             }
             .addOnFailureListener { e ->
@@ -674,15 +1052,97 @@ class NewCardDialog(
     }
 
     private fun initCardAdditionPanel() {
-        binding.tieContentMultiAnswerCard.text?.clear()
-        binding.tilContentMultiAnswerCard.error = null
-        definitionFields.forEach {
-            it.fieldEd.text?.clear()
-            it.fieldLy.error = null
-            it.chip.isChecked = false
+        newCardViewModel.clearFields()
+        definitionFields.first().ly.llErrorContainer.visibility = View.GONE
+        binding.lyContent.llError.visibility = View.GONE
+        binding.lyContent.tieContentText.text?.clear()
+        definitionFields.forEach { fieldView ->
+            fieldView.ly.tieText.text?.clear()
         }
-        binding.btAdd.text = getString(R.string.bt_text_add)
-        actionMode?.finish()
+    }
+
+    private fun chipState(chip: TextView): Boolean {
+        return chip.text == getString(R.string.cp_true_text)
+    }
+
+    private fun checkChip(chip: TextView) {
+        chip.apply {
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    checkChipLightTheme(chip)
+                }
+                2 -> {
+                    checkChipDarkTheme(chip)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        checkChipDarkTheme(chip)
+                    } else {
+                        checkChipLightTheme(chip)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun checkChipLightTheme(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green200))
+            setTextColor(ContextCompat.getColor(context, R.color.green500))
+            text = getString(R.string.cp_true_text)
+        }
+    }
+
+    private fun checkChipDarkTheme(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green700))
+            setTextColor(ContextCompat.getColor(context, R.color.green50))
+            text = getString(R.string.cp_true_text)
+        }
+    }
+
+    private fun unCheckChip(chip: TextView) {
+        chip.apply {
+            when (AppThemeHelper.getSavedTheme(context)) {
+                1 -> {
+                    unCheckLightChip(chip)
+                }
+                2 -> {
+                    unCheckDarkThemeChip(chip)
+                }
+                else -> {
+                    if (AppThemeHelper.isSystemDarkTheme(context)) {
+                        unCheckDarkThemeChip(chip)
+                    } else {
+                        unCheckLightChip(chip)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun unCheckLightChip(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red200))
+            setTextColor(ContextCompat.getColor(context, R.color.red500))
+            text = getString(R.string.cp_false_text)
+        }
+    }
+
+    private fun unCheckDarkThemeChip(chip: TextView) {
+        chip.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red700))
+            setTextColor(ContextCompat.getColor(context, R.color.red50))
+            text = getString(R.string.cp_false_text)
+        }
+    }
+
+    private fun onClickChip(state: Boolean, chip: TextView) {
+        if (state) {
+            checkChip(chip)
+        } else {
+            unCheckChip(chip)
+        }
     }
 
     private fun onCloseDialog() {
@@ -700,6 +1160,14 @@ class NewCardDialog(
                     dialog?.dismiss()
                 }
                 .setNegativeButton(getString(R.string.bt_description_exit)) { _, _ ->
+                    newCardViewModel.definitionFields.value.forEach { fieldModel ->
+                        fieldModel.definitionImage?.let { image ->
+                            deleteImageFromInternalStorage(image.name)
+                        }
+                        fieldModel.definitionAudio?.let { audio ->
+                            deleteAudioFromInternalStorage(audio)
+                        }
+                    }
                     sendCardsOnSave(newCardViewModel.getAddedCardSum())
                     dismiss()
                 }
@@ -708,59 +1176,293 @@ class NewCardDialog(
 
     }
 
-    private fun onUpdateCard(card: ImmutableCard) {
-        binding.tieContentMultiAnswerCard.setText(card.cardContent?.content)
-        binding.btAdd.apply {
-            text = getString(R.string.bt_text_update)
-            setOnClickListener {
-                onPositiveAction()
-            }
+    private fun onAddCard() {
+        newCardViewModel.initAddCardFields(card = null)
+        setCardLanguages()
+    }
+
+    private fun onUpdateCard(card: ExternalCardWithContentAndDefinitions) {
+        newCardViewModel.initAddCardFields(card = card)
+
+        setCardLanguages(card.card)
+
+    }
+
+    fun displayContentField(content: ContentFieldModel) {
+        content.contentText?.let { text ->
+            val spannableString = Html.fromHtml(text, FROM_HTML_MODE_LEGACY).trim()
+            binding.lyContent.tieContentText.setText(spannableString)
+            binding.lyContent.tieContentText.setSelection(spannableString.length)
         }
 
-        definitionFields.forEachIndexed { index, fl ->
-            if (index < card.cardDefinition?.size!!) {
-                fl.fieldLy.visibility = View.VISIBLE
-                fl.chip.visibility = View.VISIBLE
-                fl.btDeleteField?.visibility = View.VISIBLE
-                fl.fieldEd.setText(card.cardDefinition[index].definition)
-                fl.chip.isChecked = isCorrect(card.cardDefinition[index].isCorrectDefinition)
-                revealedDefinitionFields++
+        binding.lyContent.tieContentText.setOnClickListener {
+            updateFormatButtonUi(binding.lyContent.tieContentText)
+        }
+
+        binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
+            if (hasFocus) {
+                enableFormatButton(true)
+                onFieldFocused(
+                    fieldViewContainer = binding.lyContent.llContentField,
+                    v = v,
+                    hasFocus = true,
+                )
+                newCardViewModel.focusToContent()
+                if (newCardViewModel.hasDefinitionText()) {
+                    enableTranslateButton(true)
+                } else {
+                    enableTranslateButton(false)
+                }
             } else {
-                fl.fieldLy.visibility = View.GONE
-                fl.chip.visibility = View.GONE
+                enableFormatButton(false)
+                onFieldFocused(
+                    fieldViewContainer = binding.lyContent.llContentField,
+                    v = v,
+                    hasFocus = false,
+                )
+                v.clearFocus()
+                enableTranslateButton(false)
             }
         }
+        binding.lyContent.tieContentText.addTextChangedListener { text ->
+            updateFormatButtonUi(binding.lyContent.tieContentText)
+            val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
+            newCardViewModel.updateContentText(htmlText)
+        }
 
-        setCardLanguages(card)
+        if (content.contentImage != null) {
+            onSetContentFieldPhoto(content.contentImage!!.bmp!!)
+            binding.lyContent.btContentDeleteImage.setOnClickListener {
+                if (deleteImageFromInternalStorage(content.contentImage!!.name)) {
+                    newCardViewModel.deleteContentImageField()
+                    onRemoveContentFieldPhoto()
+                }
+            }
+        } else {
+            onRemoveContentFieldPhoto()
+        }
+
+        if (content.contentAudio != null) {
+            onSetContentFieldAudio(content.contentAudio?.duration!!)
+            binding.lyContent.lyContentAudio.btPlay.setOnClickListener {
+                playPauseContendAudio()
+            }
+            binding.lyContent.lyContentAudio.btDelete.setOnClickListener {
+                if (deleteAudioFromInternalStorage(content.contentAudio!!)) {
+                    newCardViewModel.deleteContentAudioField()
+                    onRemoveContentFieldAudio()
+                }
+            }
+        } else {
+            onRemoveContentFieldAudio()
+        }
 
     }
 
-    private fun setCardLanguages(card: ImmutableCard? = null) {
+    private fun enableTranslateButton(enable: Boolean) {
+        binding.btTranslate.isEnabled = enable
+        binding.btTranslate.isClickable = enable
+    }
+
+    private fun enableFormatButton(enable: Boolean) {
+        binding.btFormat.isEnabled = enable
+        binding.btFormat.isEnabled = enable
+    }
+
+    private fun displayDefinitionFields(fields: List<DefinitionFieldModel>) {
+        definitionFields.forEachIndexed { index, fieldView ->
+            if (index < fields.size) {
+                fieldView.container.visibility = View.VISIBLE
+                val actualDefinitionFieldModel = fields[index]
+
+                actualDefinitionFieldModel.definitionText?.let { text ->
+                    val spannableString = Html.fromHtml(text, FROM_HTML_MODE_LEGACY).trim()
+                    fieldView.ly.tieText.setText(spannableString)
+                    fieldView.ly.tieText.setSelection(spannableString.length)
+                }
+
+                if (actualDefinitionFieldModel.definitionImage != null) {
+                    onSetDefinitionFieldPhoto(
+                        fieldView,
+                        actualDefinitionFieldModel.definitionImage!!.bmp
+                    )
+                } else {
+                    onRemoveDefinitionFieldPhoto(fieldView)
+                }
+
+                if (actualDefinitionFieldModel.definitionAudio != null) {
+                    onSetDefinitionFieldAudio(fieldView, actualDefinitionFieldModel.definitionAudio!!.duration)
+                } else {
+                    onRemoveDefinitionFieldAudio(fieldView)
+                }
+                fieldView.ly.tieText.addTextChangedListener { text ->
+                    updateFormatButtonUi(fieldView.ly.tieText)
+                    val htmlText = Html.toHtml(text, TO_HTML_PARAGRAPH_LINES_CONSECUTIVE).trim()
+                    newCardViewModel.updateDefinitionText(
+                        id = actualDefinitionFieldModel.definitionId,
+                        text = htmlText
+                    )
+                }
+                fieldView.ly.tieText.setOnClickListener {
+                    updateFormatButtonUi(fieldView.ly.tieText)
+                }
+                fieldView.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
+                    if (hasFocus) {
+                        enableFormatButton(true)
+                        if (newCardViewModel.hasContentText()) {
+                            enableTranslateButton(true)
+                        } else {
+                            enableTranslateButton(false)
+                        }
+                        onFieldFocused(
+                            fieldViewContainer = fieldView.ly.clContainerField,
+                            v = v,
+                            hasFocus = true,
+                        )
+                        newCardViewModel.changeFieldFocus(index)
+                    } else {
+                        enableFormatButton(false)
+                        onFieldFocused(
+                            fieldViewContainer = fieldView.ly.clContainerField,
+                            v = v,
+                            hasFocus = false,
+                        )
+                        v.clearFocus()
+                        enableTranslateButton(false)
+                    }
+                }
+
+                onClickChip(
+                    state = actualDefinitionFieldModel.isCorrectDefinition,
+                    chip = fieldView.ly.btIsTrue
+                )
+
+                fieldView.ly.btIsTrue.setOnClickListener {
+                    onClickChip(
+                        state = !actualDefinitionFieldModel.isCorrectDefinition,
+                        chip = fieldView.ly.btIsTrue
+                    )
+                    newCardViewModel.updateDefinitionStatus(
+                        id = actualDefinitionFieldModel.definitionId,
+                        status = !newCardViewModel.getDefinitionStatusById(
+                            actualDefinitionFieldModel.definitionId
+                        )!!
+                    )
+                }
+
+                if (index == 0) {
+                    fieldView.ly.btDeleteField.visibility = View.GONE
+                } else {
+                    fieldView.ly.btDeleteField.visibility = View.VISIBLE
+                    fieldView.ly.btDeleteField.setOnClickListener {
+                        newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
+                            deleteImageFromInternalStorage(imageName)
+                        }
+                        newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                            deleteAudioFromInternalStorage(audioModel)
+                        }
+                        newCardViewModel.deleteDefinitionField(actualDefinitionFieldModel.definitionId)
+
+                    }
+                }
+
+                fieldView.ly.btDeleteImage.setOnClickListener {
+                    newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
+                        if (deleteImageFromInternalStorage(imageName)) {
+                            newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
+                            onRemoveDefinitionFieldPhoto(fieldView)
+                        }
+                    }
+                }
+
+                fieldView.ly.lyContentAudio.btPlay.setOnClickListener {
+                    newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                        playPauseDefinitionAudio(fieldView, audioModel)
+                    }
+                }
+
+                fieldView.ly.lyContentAudio.btDelete.setOnClickListener {
+                    newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                        if (deleteAudioFromInternalStorage(audioModel)) {
+                            newCardViewModel.deleteDefinitionAudioField(actualDefinitionFieldModel.definitionId)
+                            onRemoveDefinitionFieldAudio(definitionFields[index])
+                        }
+                    }
+                }
+
+                if (actualDefinitionFieldModel.hasFocus) {
+                    fieldView.ly.tieText.requestFocus()
+                    fieldView.ly.tieText.post {
+                        imm?.showSoftInput(fieldView.ly.tieText, InputMethodManager.SHOW_IMPLICIT)
+                    }
+                } else {
+                    fieldView.ly.tieText.clearFocus()
+                    imm?.hideSoftInputFromWindow(fieldView.ly.tieText.windowToken, 0)
+                }
+
+            } else {
+                fieldView.container.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun playPauseDefinitionAudio(
+        fieldView: FieldModel,
+        audioModel: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                        fieldView.ly.lyContentAudio.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_pause)
+                val audioFile = File(context?.filesDir, audioModel.name)
+                player.playFile(audioFile)
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(player.getCurrentPosition(), player.getDuration())
+                        fieldView.ly.lyContentAudio.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+                player.onCompletion {
+                    fieldView.ly.lyContentAudio.btPlay.setIconResource(R.drawable.icon_play)
+                }
+            }
+        }
+    }
+
+    private fun setCardLanguages(card: ExternalCard? = null) {
         val contentLanguage = getContentLanguage(card)
-
         val definitionLanguage = getDefinitionLanguage(card)
-
-        if (contentLanguage != null) {
-            binding.btContentLanguage.text = contentLanguage
-        } else {
-            binding.btContentLanguage.text = getString(R.string.text_content_language)
-        }
-
-        if (definitionLanguage != null) {
-            binding.btDefinitionLanguage.text = definitionLanguage
-        } else {
-            binding.btDefinitionLanguage.text = getString(R.string.text_definition_language)
-        }
+        binding.btContentLanguage.text =
+            contentLanguage ?: getString(R.string.text_content_language)
+        binding.btDefinitionLanguage.text =
+            definitionLanguage ?: getString(R.string.text_definition_language)
     }
 
-    private fun getDefinitionLanguage(card: ImmutableCard?) = when {
-        !card?.cardDefinitionLanguage.isNullOrBlank() -> card?.cardDefinitionLanguage
+    private fun getDefinitionLanguage(card: ExternalCard?) = when {
+        !card?.cardDefinitionLanguage.isNullOrBlank() -> card.cardDefinitionLanguage
         !deck.cardDefinitionDefaultLanguage.isNullOrBlank() -> deck.cardDefinitionDefaultLanguage
         else -> null
     }
 
-    private fun getContentLanguage(card: ImmutableCard?) = when {
-        !card?.cardContentLanguage.isNullOrBlank() -> card?.cardContentLanguage
+    private fun getContentLanguage(card: ExternalCard?) = when {
+        !card?.cardContentLanguage.isNullOrBlank() -> card.cardContentLanguage
         !deck.cardContentDefaultLanguage.isNullOrBlank() -> deck.cardContentDefaultLanguage
         else -> null
     }
@@ -780,7 +1482,8 @@ class NewCardDialog(
             dismiss()
         } else {
             newCardViewModel.insertCard(newCard)
-            Toast.makeText(appContext, getString(R.string.message_card_added), Toast.LENGTH_LONG).show()
+            Toast.makeText(appContext, getString(R.string.message_card_added), Toast.LENGTH_LONG)
+                .show()
         }
         initCardAdditionPanel()
         return true
@@ -788,14 +1491,11 @@ class NewCardDialog(
 
     private fun areThereAnOngoingCardCreation(): Boolean {
         when {
-            !binding.tieContentMultiAnswerCard.text.isNullOrBlank() -> return true
-            !binding.tieContentMultiAnswerCard.text.isNullOrEmpty() -> return true
+            newCardViewModel.contentField.value.contentText != null -> return true
+            newCardViewModel.contentField.value.contentImage != null -> return true
             else -> {
-                definitionFields.forEach {
-                    if (it.chip.isChecked) {
-                        return true
-                    }
-                    if (!it.fieldEd.text.isNullOrBlank() || !it.fieldEd.text.isNullOrEmpty()) {
+                newCardViewModel.definitionFields.value.forEach {
+                    if (it.definitionText != null || it.definitionImage != null) {
                         return true
                     }
                 }
@@ -805,81 +1505,49 @@ class NewCardDialog(
     }
 
 
-    private fun generateCardOnUpdate(card: ImmutableCard): ImmutableCard? {
-
-        val content = getContent(card.cardId, card.cardContent?.contentId!!, card.deckId)
-            ?: return null
-        val definitions =
-            getDefinition(card.cardId, card.cardContent.contentId, card.deckId)
-                ?: return null
-
-        val updateCardDefinitions = mutableListOf<CardDefinition>()
-        for (i in 0..card.cardDefinition?.size?.minus(1)!!) {
-            val definition = try {
-                definitions[i]
-            } catch (e: IndexOutOfBoundsException) {
-                newCardViewModel.createDefinition(
-                    "",
-                    false,
-                    card.cardId,
-                    card.cardContent.contentId,
-                    card.deckId
-                )
-            }
-
-            val updatedDefinition = CardDefinition(
-                card.cardDefinition[i].definitionId,
-                card.cardDefinition[i].cardId,
-                card.cardDefinition[i].deckId,
-                card.cardDefinition[i].contentId,
-                definition.definition,
-                definition.isCorrectDefinition
-            )
-            updateCardDefinitions.add(updatedDefinition)
-        }
-        if (definitions.size > card.cardDefinition.size) {
-            for (j in (card.cardDefinition.size)..definitions.size.minus(1)) {
-                updateCardDefinitions.add(definitions[j])
-            }
-        }
+    private fun generateCardOnUpdate(card: ExternalCardWithContentAndDefinitions): CardWithContentAndDefinitions? {
+        val content = getContent(
+            cardId = card.card.cardId,
+            contentId = card.contentWithDefinitions.content.contentId,
+            deckId = card.card.deckOwnerId
+        ) ?: return null
+        val definitions = getDefinition(
+            cardId = card.card.cardId,
+            contentId = card.contentWithDefinitions.content.contentId,
+            deckId = card.card.deckOwnerId
+        ) ?: return null
 
         val contentLanguage = getNewContentLanguage()
         val definitionLanguage = getNewDefinitionLanguage()
 
-//        if (contentLanguage != null && contentLanguage !in supportedLanguages) {
-//            binding.tilContentLanguage.error =
-//                getString(R.string.error_message_deck_language_not_supported)
-//            return null
-//        }
+        val updatedCard = Card(
+            cardId = card.card.cardId,
+            deckOwnerId = card.card.deckOwnerId,
+            cardLevel = card.card.cardLevel,
+            cardType = getCardType(definitions),
+            revisionTime = card.card.revisionTime,
+            missedTime = card.card.missedTime,
+            creationDate = card.card.creationDate,
+            lastRevisionDate = card.card.lastRevisionDate,
+            nextMissMemorisationDate = card.card.nextRevisionDate,
+            nextRevisionDate = card.card.nextRevisionDate,
+            cardContentLanguage = contentLanguage,
+            cardDefinitionLanguage = definitionLanguage
+        )
 
-//        if (definitionLanguage != null && definitionLanguage !in supportedLanguages) {
-//            binding.tilDefinitionLanguage.error =
-//                getString(R.string.error_message_deck_language_not_supported)
-//            return null
-//        }
+        val updatedContentWithDefinitions =
+            CardContentWithDefinitions(content = content, definitions = definitions)
 
-        return ImmutableCard(
-            card.cardId,
-            content,
-            updateCardDefinitions,
-            card.deckId,
-            card.isFavorite,
-            card.revisionTime,
-            card.missedTime,
-            card.creationDate,
-            card.lastRevisionDate,
-            card.cardStatus,
-            card.nextMissMemorisationDate,
-            card.nextRevisionDate,
-            getCardType(definitions),
-            contentLanguage,
-            definitionLanguage,
+        return CardWithContentAndDefinitions(
+            card = updatedCard,
+            contentWithDefinitions = updatedContentWithDefinitions
         )
     }
 
-    private fun generateCardOnAdd(): ImmutableCard? {
-        val cardId = now()
-        val contentId = now()
+    private fun generateCardOnAdd(): CardWithContentAndDefinitions? {
+
+        val cardId = UUID.randomUUID().toString()
+        val contentId = UUID.randomUUID().toString()
         val newCardContent = getContent(cardId, contentId, deck.deckId)
         val newCardDefinition = getDefinition(cardId, contentId, deck.deckId)
 
@@ -893,52 +1561,46 @@ class NewCardDialog(
             return null
         }
 
-        return ImmutableCard(
-            cardId,
-            newCardContent,
-            newCardDefinition,
-            deck.deckId,
-            isCorrect(0),
-            0,
-            0,
-            today(),
-            null,
-            L1,
-            null,
-            null,
-            getCardType(newCardDefinition),
-            contentLanguage,
-            definitionLanguage
+        val newCard = Card(
+            cardId = cardId,
+            deckOwnerId = deck.deckId,
+            cardLevel = L1,
+            cardType = getCardType(newCardDefinition),
+            revisionTime = 0,
+            missedTime = 0,
+            creationDate = today(),
+            lastRevisionDate = null,
+            nextMissMemorisationDate = null,
+            nextRevisionDate = null,
+            cardContentLanguage = contentLanguage,
+            cardDefinitionLanguage = definitionLanguage
+        )
+
+        return CardWithContentAndDefinitions(
+            card = newCard,
+            contentWithDefinitions = CardContentWithDefinitions(
+                content = newCardContent,
+                definitions = newCardDefinition
+            )
         )
     }
 
     private fun getNewContentLanguage(): String? {
         val addedContentLanguage = binding.btContentLanguage.text
-        if (addedContentLanguage.toString() !in supportedLanguages) {
-            val defaultContentLanguage = deck.cardContentDefaultLanguage
-            return if (defaultContentLanguage.isNullOrBlank()) {
-                null
-            } else {
-                defaultContentLanguage
-            }
+        return if (addedContentLanguage.toString() !in supportedLanguages) {
+            deck.cardContentDefaultLanguage
         } else {
-            return addedContentLanguage.toString()
+            addedContentLanguage.toString()
         }
     }
 
     private fun getNewDefinitionLanguage(): String? {
         val addedDefinitionLanguage = binding.btDefinitionLanguage.text
-        if (addedDefinitionLanguage.toString() !in supportedLanguages) {
-            val defaultDefinitionLanguage = deck.cardDefinitionDefaultLanguage
-            return if (defaultDefinitionLanguage.isNullOrBlank()) {
-                null
-            } else {
-                defaultDefinitionLanguage
-            }
+        return if (addedDefinitionLanguage.toString() !in supportedLanguages) {
+            deck.cardDefinitionDefaultLanguage
         } else {
-            return addedDefinitionLanguage.toString()
+            addedDefinitionLanguage.toString()
         }
-
     }
 
     private fun getCardType(definitions: List<CardDefinition>): String {
@@ -948,9 +1610,11 @@ class NewCardDialog(
             correctDefinitions == 1 && definitionSum == 1 -> {
                 SINGLE_ANSWER_CARD
             }
+
             correctDefinitions == 1 && definitionSum > 1 -> {
                 MULTIPLE_CHOICE_CARD
             }
+
             else -> {
                 MULTIPLE_ANSWER_CARD
             }
@@ -958,49 +1622,65 @@ class NewCardDialog(
     }
 
     private fun getContent(cardId: String, contentId: String, deckId: String): CardContent? {
-        val cardContentText = binding.tieContentMultiAnswerCard.text.toString()
-        return if (cardContentText.isNotEmpty() && cardContentText.isNotBlank()) {
+        val contentField = newCardViewModel.contentField.value
+        val cardContentText = contentField.contentText
+        val cardContentImageName = contentField.contentImage?.name
+        val cardContentAudioName = contentField.contentAudio?.name
+        val cardContentAudioDuration = contentField.contentAudio?.duration
+        return if (
+            (cardContentText != null && cardContentText.isNotEmpty() && cardContentText.isNotBlank())||
+            cardContentImageName != null ||
+            cardContentAudioName != null
+            ) {
             newCardViewModel.generateCardContent(
                 contentId = contentId,
+                imageName = cardContentImageName,
+                audioName = cardContentAudioName,
+                audioDuration = cardContentAudioDuration,
                 cardId = cardId,
                 deckId = deckId,
                 text = cardContentText
             )
         } else {
-            binding.tilContentMultiAnswerCard.error = getString(R.string.til_error_card_content)
+            binding.lyContent.llError.visibility = View.VISIBLE
+            binding.lyContent.viewError.tvErrorMessage.text = getString(R.string.til_error_card_content)
             null
         }
     }
 
     private fun isDefinitionError(): Boolean {
         var isText = false
+        var isAudio = false
+        var isImage = false
         var isTrueAnswer = false
-        definitionFields.forEach {
-            if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString()
-                    .isNotBlank()
-            ) {
+
+        newCardViewModel.definitionFields.value.forEach { field ->
+            if (field.definitionText != null && field.definitionText!!.isNotEmpty() && field.definitionText!!.isNotBlank()) {
                 isText = true
             }
-            if (it.chip.isChecked && it.fieldEd.text.toString()
-                    .isNotEmpty() && it.fieldEd.text.toString().isNotBlank()
-            ) {
-                if (isText) {
-                    return false
-                }
+            if (field.definitionImage != null) {
+                isImage = true
             }
-            if (it.chip.isChecked) {
+            if (field.definitionAudio != null) {
+                isAudio = true
+            }
+            if ((isText || isImage || isAudio) && field.isCorrectDefinition) {
                 isTrueAnswer = true
             }
         }
+        // TODO: Show errors
+        if (!isText && !isImage && !isAudio) {
+            definitionFields.first().ly.llErrorContainer.visibility = View.VISIBLE
+            definitionFields.first().ly.viewError.tvErrorMessage.text = getString(R.string.til_error_card_definition)
+            return true
+        }
         if (!isTrueAnswer) {
-            binding.tilDefinition1MultiAnswerCard.error =
-                getString(R.string.cp_error_correct_definition)
+            definitionFields.first().ly.llErrorContainer.visibility = View.VISIBLE
+            definitionFields.first().ly.viewError.tvErrorMessage.text = getString(R.string.cp_error_correct_definition)
+            return true
         }
-        if (!isText) {
-            binding.tilDefinition1MultiAnswerCard.error =
-                getString(R.string.til_error_card_definition)
-        }
-        return true
+
+        return false
     }
 
     private fun getDefinition(
@@ -1008,27 +1688,18 @@ class NewCardDialog(
         contentId: String,
         deckId: String
     ): List<CardDefinition>? {
-        if (isDefinitionError()) {
-            return null
-        } else {
-            definitionList.clear()
-            definitionFields.forEach {
-                if (it.fieldEd.text.toString().isNotEmpty() && it.fieldEd.text.toString()
-                        .isNotBlank()
-                ) {
-                    definitionList.add(
-                        newCardViewModel.createDefinition(
-                            it.fieldEd.text.toString(),
-                            it.chip.isChecked,
-                            cardId,
-                            contentId,
-                            deckId
-                        )
-                    )
-                }
-            }
+        if(isDefinitionError()) return null
+        val definitions = arrayListOf<CardDefinition>()
+        newCardViewModel.definitionFields.value.forEach { definitionField ->
+            val definition = newCardViewModel.definitionFieldToCardDefinition(
+                field = definitionField,
+                cardId = cardId,
+                contentId = contentId,
+                deckId = deckId
+            )
+            definitions.add(definition)
         }
-        return definitionList.toList()
+        return definitions
     }
 
     private fun NewCardDialog.listen(language: String?) {
@@ -1037,7 +1708,7 @@ class NewCardDialog(
                 Manifest.permission.RECORD_AUDIO
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            checkPermission()
+            checkRecordAudioPermission()
         } else {
             val languageExtra =
                 if (language != null) LanguageUtil().getLanguageCodeForSpeechAndText(
@@ -1067,7 +1738,7 @@ class NewCardDialog(
         }
     }
 
-    private fun checkPermission() {
+    private fun checkRecordAudioPermission() {
         ActivityCompat.requestPermissions(
             requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO),
             RECORD_AUDIO_REQUEST_CODE
@@ -1075,33 +1746,131 @@ class NewCardDialog(
     }
 
     private fun onTranslateText(
-        text: String,
-        actualField: EditText?,
-        ly: TextInputLayout?
+        selectedFieldPosition: Int?,
     ) {
-        ly?.error = null
-        animProgressBar(ly)
-        actualField?.setText(getString(R.string.message_translation_in_progress))
-        val definitionLanguage = getNewDefinitionLanguage()
-        val contentLanguage = getNewContentLanguage()
+        if (selectedFieldPosition != null) {
 
-        LanguageUtil().startTranslation(
-            text = text,
-            definitionLanguage = definitionLanguage,
-            contentLanguage = contentLanguage,
-            onStartTranslation = { translationLanguages ->
-                translate(
-                    fl = translationLanguages.fl,
-                    tl = translationLanguages.tl,
-                    actualField = actualField,
-                    ly = ly,
-                    text = text,
+            val definitionLanguage = getNewDefinitionLanguage()
+            val contentLanguage = getNewContentLanguage()
+
+            if (selectedFieldPosition < 0) {
+                val definitionTexts = newCardViewModel.getDefinitionTexts()
+                if (definitionTexts != null) {
+                    if (definitionTexts.size > 1) {
+                        TranslationOptionsDialog.newInstance(definitionTexts)
+                            .show(childFragmentManager, TranslationOptionsDialog.TAG)
+                        childFragmentManager.setFragmentResultListener(
+                            REQUEST_CODE_TRANSLATION_OPTION, this
+                        ) { _, bundle ->
+                            val result = bundle.getString(TranslationOptionsDialog.TRANSLATION_OPTIONS_BUNDLE_KEY)
+                            result?.let { text ->
+                                animProgressBar(binding.lyContent.tilContentText)
+                                LanguageUtil().startTranslation(
+                                    text = text,
+                                    definitionLanguage = contentLanguage,
+                                    contentLanguage = definitionLanguage,
+                                    onStartTranslation = { translationLanguages ->
+                                        translate(
+                                            fl = translationLanguages.fl,
+                                            tl = translationLanguages.tl,
+                                            actualField = binding.lyContent.tieContentText,
+                                            ly = binding.lyContent.tilContentText,
+                                            text = text,
+                                            result = { translation ->
+                                                if (translation == null) {
+                                                    setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                                } else {
+                                                    binding.lyContent.tieContentText.setText(translation)
+                                                    binding.lyContent.tieContentText.setSelection(translation.length)
+                                                    setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                                }
+                                            }
+                                        )
+                                    },
+                                    onLanguageDetectionLanguageNotSupported = {
+                                        showSnackBar(R.string.error_message_language_not_supported)
+                                    },
+                                )
+                            }
+                        }
+                    } else {
+                        animProgressBar(binding.lyContent.tilContentText)
+                        LanguageUtil().startTranslation(
+                            text = definitionTexts.first(),
+                            definitionLanguage = contentLanguage,
+                            contentLanguage = definitionLanguage,
+                            onStartTranslation = { translationLanguages ->
+                                translate(
+                                    fl = translationLanguages.fl,
+                                    tl = translationLanguages.tl,
+                                    actualField = binding.lyContent.tieContentText,
+                                    ly = binding.lyContent.tilContentText,
+                                    text = definitionTexts.first(),
+                                    result = { translation ->
+                                        if (translation == null) {
+                                            setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                        } else {
+                                            binding.lyContent.tieContentText.setText(translation)
+                                            binding.lyContent.tieContentText.setSelection(translation.length)
+                                            setEditTextEndIconOnClick(binding.lyContent.tilContentText)
+                                        }
+                                    }
+                                )
+                            },
+                            onLanguageDetectionLanguageNotSupported = {
+                                showSnackBar(R.string.error_message_language_not_supported)
+                            },
+                        )
+                    }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.no_definition_found),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            } else {
+                val field = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition)
+                val fieldView = definitionFields[selectedFieldPosition]
+                val text = newCardViewModel.contentField.value.contentText
+
+                animProgressBar(fieldView.ly.tilText)
+                LanguageUtil().startTranslation(
+                    text = text!!,
+                    definitionLanguage = definitionLanguage,
+                    contentLanguage = contentLanguage,
+                    onStartTranslation = { translationLanguages ->
+                        translate(
+                            fl = translationLanguages.fl,
+                            tl = translationLanguages.tl,
+                            actualField = binding.lyContent.tieContentText,
+                            ly = binding.lyContent.tilContentText,
+                            text = text,
+                            result = { translation ->
+                                if (translation == null) {
+                                    setEditTextEndIconOnClick(fieldView.ly.tilText)
+                                } else {
+                                    definitionFields[selectedFieldPosition].ly.tieText.setText(translation)
+                                    definitionFields[selectedFieldPosition].ly.tieText.setSelection(translation.length)
+                                    setEditTextEndIconOnClick(fieldView.ly.tilText)
+                                }
+                            }
+                        )
+                    },
+                    onLanguageDetectionLanguageNotSupported = {
+                        showSnackBar(R.string.error_message_language_not_supported)
+                    },
                 )
-            },
-            onLanguageDetectionLanguageNotSupported = {
-                showSnackBar(R.string.error_message_language_not_supported)
-            },
-        )
+            }
+
+        } else {
+            Toast.makeText(
+                appContext,
+                getString(R.string.error_message_no_field_selected),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
     }
 
     private fun showSnackBar(
@@ -1119,7 +1888,8 @@ class NewCardDialog(
         tl: String?,
         actualField: EditText?,
         ly: TextInputLayout?,
-        text: String
+        text: String,
+        result: (String?) -> Unit
     ) {
         val languageUtil = LanguageUtil()
         languageUtil.prepareTranslation(
@@ -1127,16 +1897,18 @@ class NewCardDialog(
             fl = fl,
             tl = tl,
             onDownloadingLanguageMode = {
-                actualField?.setText(getString(R.string.message_translation_downloading_language_model))
+//                result(getString(R.string.message_translation_downloading_language_model))
+//                actualField?.setText(getString(R.string.message_translation_downloading_language_model))
             },
             onMissingCardDefinitionLanguage = {
                 setEditTextEndIconOnClick(ly)
-                ly?.error =
-                    appContext?.getString(R.string.error_message_no_card_definition_language)
+//                ly?.error = appContext?.getString(R.string.error_message_no_card_definition_language)
                 showSnackBar(R.string.error_message_no_card_definition_language)
             },
             onModelDownloadingFailure = {
-                ly?.error = getString(R.string.error_translation_unknown)
+//                ly?.error = getString(R.string.error_translation_unknown)
+                result(null)
+                showSnackBar(R.string.error_translation_failed)
             },
             onSuccess = { translatorModel ->
                 languageUtil.translate(
@@ -1144,23 +1916,29 @@ class NewCardDialog(
                     conditions = translatorModel.condition,
                     text = text,
                     onSuccess = { translation ->
-                        actualField?.setText(translation)
-                        setEditTextEndIconOnClick(ly)
+                        result(translation)
+//                        actualField?.setText(translation)
+//                        setEditTextEndIconOnClick(ly)
                     },
                     onTranslationFailure = { exception ->
-                        ly?.error = exception.toString()
-                        setEditTextEndIconOnClick(ly)
+//                        ly?.error = exception.toString()
+//                        setEditTextEndIconOnClick(ly)
+                        result(null)
+                        showSnackBar(R.string.error_translation_failed)
                     },
                     onModelDownloadingFailure = {
-                        setEditTextEndIconOnClick(ly)
-                        ly?.error =
-                            getString(R.string.error_translation_language_model_not_downloaded)
+//                        setEditTextEndIconOnClick(ly)
+//                        ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                        result(null)
+                        showSnackBar(R.string.error_translation_language_model_not_downloaded)
                     },
                 )
             },
             onNoInternet = {
-                setEditTextEndIconOnClick(ly)
-                ly?.error = getString(R.string.error_translation_no_internet)
+//                setEditTextEndIconOnClick(ly)
+//                ly?.error = getString(R.string.error_translation_no_internet)
+                result(null)
+                showSnackBar(R.string.error_translation_no_internet)
             },
             onInternetViaCellular = { translatorModel ->
                 MaterialAlertDialogBuilder(
@@ -1170,8 +1948,9 @@ class NewCardDialog(
                     .setTitle(getString(R.string.title_no_wifi))
                     .setMessage(getString(R.string.message_no_wifi))
                     .setNegativeButton(getString(R.string.option2_no_wifi)) { dialog, _ ->
-                        setEditTextEndIconOnClick(ly)
-                        actualField?.text?.clear()
+//                        setEditTextEndIconOnClick(ly)
+//                        actualField?.text?.clear()
+                        result(null)
                         dialog.dismiss()
                     }
                     .setPositiveButton(getString(R.string.option1_no_wifi)) { dialog, _ ->
@@ -1180,17 +1959,21 @@ class NewCardDialog(
                             conditions = translatorModel.condition,
                             text = text,
                             onSuccess = { translation ->
-                                actualField?.setText(translation)
-                                setEditTextEndIconOnClick(ly)
+                                result(translation)
+//                                actualField?.setText(translation)
+//                                setEditTextEndIconOnClick(ly)
                             },
                             onTranslationFailure = { exception ->
-                                ly?.error = exception.toString()
-                                setEditTextEndIconOnClick(ly)
+//                                ly?.error = exception.toString()
+//                                setEditTextEndIconOnClick(ly)
+                                result(null)
+                                showSnackBar(R.string.error_translation_failed)
                             },
                             onModelDownloadingFailure = {
-                                setEditTextEndIconOnClick(ly)
-                                ly?.error =
-                                    getString(R.string.error_translation_language_model_not_downloaded)
+//                                setEditTextEndIconOnClick(ly)
+//                                ly?.error = getString(R.string.error_translation_language_model_not_downloaded)
+                                result(null)
+                                showSnackBar(R.string.error_translation_language_model_not_downloaded)
                             },
                         )
                         dialog.dismiss()
@@ -1209,7 +1992,8 @@ class NewCardDialog(
 
     private fun setEditTextEndIconOnClick(ly: TextInputLayout?) {
         lifecycleScope.launch {
-            val states = ColorStateList(arrayOf(intArrayOf()),
+            val states = ColorStateList(
+                arrayOf(intArrayOf()),
                 appContext?.fetchPrimaryColor()?.let { intArrayOf(it) })
             val drawable =
                 AppCompatResources.getDrawable(requireContext(), R.drawable.icon_translate)
@@ -1247,7 +2031,7 @@ class NewCardDialog(
     }
 
     private fun sendCardsOnEdit(
-        card: ImmutableCard
+        card: CardWithContentAndDefinitions
     ) {
         parentFragmentManager.setFragmentResult(
             REQUEST_CODE_CARD,
@@ -1256,72 +2040,23 @@ class NewCardDialog(
     }
 
     private fun onAddMoreDefinition() {
-        if (revealedDefinitionFields < definitionFields.size) {
-            definitionFields[revealedDefinitionFields].apply {
-                fieldLy.isVisible = true
-                fieldEd.isVisible = true
-                chip.isVisible = true
-                btDeleteField?.isVisible = true
-            }
-            revealedDefinitionFields++
-
+        if (newCardViewModel.getDefinitionFieldCount() < 10) {
+            newCardViewModel.addDefinitionField(null)
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.error_message_max_10_definitions),
+                Toast.LENGTH_LONG
+            ).show()
         }
-    }
-
-    private fun deleteDefinitionField(field: TextInputEditText) {
-        if (field == binding.tieDefinition10MultiAnswerCard) {
-            clearField(definitionFields.last())
-            return
-        }
-        var index = 0
-        while (true) {
-            val actualField = definitionFields[index]
-            if (actualField.fieldEd == field) {
-                break
-            }
-            index++
-        }
-        while (true) {
-            val actualField = definitionFields[index]
-            val nextField = definitionFields[index.plus(1)]
-            if (!nextField.fieldLy.isVisible) {
-                clearField(actualField)
-                break
-            }
-            if (
-                nextField.fieldEd.text?.isNotBlank() == true &&
-                nextField.fieldEd.text?.isNotEmpty() == true
-            ) {
-                actualField.fieldEd.text = nextField.fieldEd.text
-                nextField.fieldEd.text?.clear()
-            } else {
-                actualField.fieldEd.text?.clear()
-                clearField(definitionFields.last { it.fieldLy.isVisible })
-                break
-            }
-            index++
-        }
-    }
-
-    private fun clearField(field: DefinitionFieldModel) {
-        field.apply {
-            btDeleteField?.visibility = View.GONE
-            fieldLy.visibility = View.GONE
-            fieldEd.apply {
-                visibility = View.GONE
-                text?.clear()
-            }
-            chip.apply {
-                visibility = View.GONE
-                isChecked = false
-            }
-        }
-        revealedDefinitionFields--
     }
 
     @Throws(IOException::class)
-    private fun textFromUriToImmutableCards(uri: Uri, separator: String): List<ImmutableCard> {
-        val result: MutableList<ImmutableCard> = mutableListOf()
+    private fun textFromUriToImmutableCards(
+        uri: Uri,
+        separator: String
+    ): List<CardWithContentAndDefinitions> {
+        val result: MutableList<CardWithContentAndDefinitions> = mutableListOf()
         appContext?.contentResolver?.openInputStream(uri)?.use { inputStream ->
             BufferedReader(InputStreamReader(inputStream)).use { reader ->
                 reader.forEachLine { line ->
@@ -1331,6 +2066,178 @@ class NewCardDialog(
             }
         }
         return result
+    }
+
+    fun onTakePhoto() {
+        //TODO: Improve onTakePhoto
+        checkCameraPermission(
+            {
+                attachPhotoFromCamera.launch()
+            },
+            {
+                onAttachePhotoFromCameraRequestPermissionLauncher.launch(Manifest.permission.CAMERA)
+            }
+        )
+    }
+
+    fun onPickPhoto() {
+        onAttachPhotoFromGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+
+    fun onRecordAudio(selectedFieldPosition: Int?) {
+
+        if (selectedFieldPosition != null) {
+            val audioRecorder = AudioRecorderDialog()
+            audioRecorder.show(childFragmentManager, "AudioRecorderDialog")
+            childFragmentManager.setFragmentResultListener(
+                REQUEST_CODE_AUDIO_RECORDER, this
+            ) { _, bundle ->
+
+                val result = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    bundle.getParcelable(
+                        AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY,
+                        AudioModel::class.java
+                    )
+                } else {
+                    bundle.getParcelable<AudioModel>(AudioRecorderDialog.AUDIO_RECORDER_BUNDLE_KEY)
+                }
+
+                result?.let { newAudio ->
+                    // TODO: Update audio field
+                    if (selectedFieldPosition < 0) {
+                        binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+                        newCardViewModel.updateContentField(
+                            updatedContentField = newCardViewModel.contentField.value.copy(
+                                contentAudio = newAudio
+                            )
+                        )
+                        onSetContentFieldAudio(newAudio.duration)
+                    } else {
+                        newCardViewModel.updateDefinitionAudio(
+                            id = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition).definitionId,
+                            audio = newAudio
+                        )
+                        onSetDefinitionFieldAudio(definitionFields[selectedFieldPosition], newAudio.duration)
+                    }
+                }
+            }
+        } else {
+            Toast.makeText(
+                appContext,
+                getString(R.string.error_message_no_field_selected),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+    }
+
+    fun onDeleteAudio(selectedFieldPosition: Int) {
+        //TODO: Implement Delete audio
+        if (selectedFieldPosition < 0) {
+            // TODO: Content field
+//            binding.lyContent.llContentContainerAudio.visibility = View.GONE
+        } else {
+            // TODO: Definition field
+//            selectedField.llContainerAudio.visibility = View.VISIBLE
+        }
+
+        Toast.makeText(appContext, "Delete audio in development", Toast.LENGTH_SHORT).show()
+    }
+
+    fun onDeleteImage(fieldPosition: Int) {
+        val imageName = if (fieldPosition == -1) {
+            newCardViewModel.contentField.value.contentImage?.name
+        } else {
+            newCardViewModel.definitionFields.value[fieldPosition].definitionImage?.name
+        }
+        imageName?.let {
+            deleteImageFromInternalStorage(it)
+        }
+    }
+
+    private fun saveImageToInternalStorage(filename: String, bmp: Bitmap): Boolean {
+        return try {
+            appContext!!.openFileOutput(filename, MODE_PRIVATE).use { stream ->
+                if (!bmp.compress(Bitmap.CompressFormat.JPEG, 95, stream)) {
+                    throw IOException("Couldn't save bitmap.")
+                }
+            }
+            true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun deleteImageFromInternalStorage(filename: String): Boolean {
+        return try {
+            appContext!!.deleteFile(filename)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    private fun deleteAudioFromInternalStorage(audio: AudioModel): Boolean {
+        return try {
+            appContext!!.deleteFile(audio.name)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(appContext, "Could not delete audio", Toast.LENGTH_SHORT).show()
+            false
+        }
+    }
+
+    fun onSetDefinitionFieldPhoto(actualField: FieldModel, imageBitmap: Bitmap?) {
+        actualField.ly.clContainerImage.visibility = View.VISIBLE
+        actualField.ly.imgPhoto.setImageBitmap(imageBitmap)
+    }
+
+    fun onSetDefinitionFieldAudio(actualField: FieldModel, duration: String) {
+        actualField.ly.lyContentAudio.tvLength.text = duration
+        actualField.ly.llContainerAudio.visibility = View.VISIBLE
+    }
+
+    fun onRemoveDefinitionFieldPhoto(actualField: FieldModel) {
+        actualField.ly.clContainerImage.visibility = View.GONE
+        actualField.ly.imgPhoto.setImageBitmap(null)
+    }
+
+    fun onRemoveDefinitionFieldAudio(actualField: FieldModel) {
+        actualField.ly.llContainerAudio.visibility = View.GONE
+    }
+
+    fun onRemoveContentFieldAudio() {
+        binding.lyContent.llContentContainerAudio.visibility = View.GONE
+    }
+
+    fun onSetContentFieldPhoto(imageBitmap: Bitmap) {
+        binding.lyContent.clContentContainerImage.visibility = View.VISIBLE
+        binding.lyContent.imgContentPhoto.setImageBitmap(imageBitmap)
+    }
+
+    fun onRemoveContentFieldPhoto() {
+        binding.lyContent.clContentContainerImage.visibility = View.GONE
+        binding.lyContent.imgContentPhoto.setImageBitmap(null)
+    }
+
+    fun onSetContentFieldAudio(duration: String) {
+        binding.lyContent.lyContentAudio.tvLength.text = duration
+        binding.lyContent.llContentContainerAudio.visibility = View.VISIBLE
+    }
+
+    private fun setFieldText(text: String, fieldIndex: Int) {
+        if (fieldIndex == -1) {
+            newCardViewModel.updateContentField(
+                updatedContentField = newCardViewModel.contentField.value.copy(contentText = text)
+            )
+        } else {
+            newCardViewModel.updateDefinitionText(
+                id = newCardViewModel.getDefinitionFieldAt(fieldIndex).definitionId,
+                text = text
+            )
+            definitionFields[fieldIndex].ly.tieText.setText(text)
+        }
     }
 
 }

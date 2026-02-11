@@ -33,8 +33,9 @@ object DeckCategoryColorConst {
 }
 
 object ThemeConst {
-    const val WHITE_THEME = "WHITE THEM"
-    const val DARK_THEME = "DARK THEME"
+    const val BASE_THEME = "BASE THEME"
+//    const val WHITE_THEME = "WHITE THEM"
+//    const val DARK_THEME = "DARK THEME"
     const val RED_THEME = "RED THEME"
     const val ORANGE_THEME = "ORANGE THEME"
     const val AMBER_THEME = "AMBER THEME"
@@ -54,26 +55,26 @@ object ThemeConst {
     const val ROSE_THEME = "ROSE THEME"
     const val BROWN_THEME = "BROWN THEME"
 
-    const val DARK_WHITE_THEME = "DARK WHITE THEM"
-    const val DARK_DARK_THEME = "DARK DARK THEME"
-    const val DARK_RED_THEME = "DARK RED THEME"
-    const val DARK_ORANGE_THEME = "DARK ORANGE THEME"
-    const val DARK_AMBER_THEME = "DARK AMBER THEME"
-    const val DARK_YELLOW_THEME = "DARK YELLOW THEME"
-    const val DARK_LIME_THEME = "DARK LIME THEME"
-    const val DARK_GREEN_THEME = "DARK GREEN THEME"
-    const val DARK_EMERALD_THEME = "DARK EMERALD THEME"
-    const val DARK_TEAL_THEME = "DARK TEAL THEME"
-    const val DARK_CYAN_THEME = "DARK CYAN THEME"
-    const val DARK_SKY_THEME = "DARK SKY THEME"
-    const val DARK_BLUE_THEME = "DARK BLUE THEME"
-    const val DARK_INDIGO_THEME = "DARK INDIGO THEME"
-    const val DARK_VIOLET_THEME = "DARK VIOLET THEME"
-    const val DARK_PURPLE_THEME = "DARK PURPLE THEME"
-    const val DARK_FUCHSIA_THEME = "DARK FUCHSIA THEME"
-    const val DARK_PINK_THEME = "DARK PINK THEME"
-    const val DARK_ROSE_THEME = "DARK ROSE THEME"
-    const val DARK_BROWN_THEME = "DARK BROWN THEME"
+//    const val DARK_WHITE_THEME = "DARK WHITE THEM"
+//    const val DARK_DARK_THEME = "DARK DARK THEME"
+//    const val DARK_RED_THEME = "DARK RED THEME"
+//    const val DARK_ORANGE_THEME = "DARK ORANGE THEME"
+//    const val DARK_AMBER_THEME = "DARK AMBER THEME"
+//    const val DARK_YELLOW_THEME = "DARK YELLOW THEME"
+//    const val DARK_LIME_THEME = "DARK LIME THEME"
+//    const val DARK_GREEN_THEME = "DARK GREEN THEME"
+//    const val DARK_EMERALD_THEME = "DARK EMERALD THEME"
+//    const val DARK_TEAL_THEME = "DARK TEAL THEME"
+//    const val DARK_CYAN_THEME = "DARK CYAN THEME"
+//    const val DARK_SKY_THEME = "DARK SKY THEME"
+//    const val DARK_BLUE_THEME = "DARK BLUE THEME"
+//    const val DARK_INDIGO_THEME = "DARK INDIGO THEME"
+//    const val DARK_VIOLET_THEME = "DARK VIOLET THEME"
+//    const val DARK_PURPLE_THEME = "DARK PURPLE THEME"
+//    const val DARK_FUCHSIA_THEME = "DARK FUCHSIA THEME"
+//    const val DARK_PINK_THEME = "DARK PINK THEME"
+//    const val DARK_ROSE_THEME = "DARK ROSE THEME"
+//    const val DARK_BROWN_THEME = "DARK BROWN THEME"
 }
 
 object LevelColors {
@@ -117,10 +118,30 @@ object FlashCardMiniGameRef {
     const val CARD_COUNT = "Card count"
 }
 
+object AttachRef {
+    const val ATTACH_IMAGE_FROM_CAMERA = "Attach image from camera"
+    const val ATTACH_IMAGE_FROM_GALERI = "Attach image from galeri"
+    const val ATTACH_AUDIO_RECORD = "Attach audio record"
+}
+
+object ScanRef {
+    const val IMAGE_FROM_GALERI_TO_TEXT = "Image from galeri to text"
+    const val IMAGE_FROM_CAMERA_TO_TEXT = "Image from camera to text"
+    const val AUDIO_TO_TEXT = "Audio to text"
+}
+
 object DeckRef {
+    const val SORT_PREF = "sort_pref"
     const val DECK_SORT_ALPHABETICALLY = "Deck sort alphabetically"
     const val DECK_SORT_BY_CARD_SUM = "Deck sort by card sum"
     const val DECK_SORT_BY_CREATION_DATE = "Deck sort by creation date"
+}
+
+object CardSortOptions {
+    const val SORT_PREF = "sort_pref"
+    const val SORT_CARD_BY_CREATION_DATE = "Sort card by creation date"
+    const val SORT_CARD_BY_LEVEL = "Sort card by level"
+    const val SORT_CARD_ALPHABETICALLY = "Sort card alphabetically"
 }
 
 object CardLevel {
@@ -155,8 +176,8 @@ object TestResultAction {
 }
 
 object ItemLayoutManager {
-    const val STAGGERED_GRID_LAYOUT_MANAGER = "STAGGERED GRID LAYOUT MANAGER"
-    const val LINEAR_LAYOUT_MANAGER = "LINEAR LAYOUT MANAGER"
+    const val GRID = "GRID"
+    const val LINEAR = "LINEAR"
     const val LAYOUT_MANAGER = "LAYOUT_MANAGER"
 }
 
@@ -170,3 +191,6 @@ object TextType {
     const val CONTENT = "content"
     const val DEFINITION = "definition"
 }
+
+const val MAIN_DECK_ID = "000000"
+const val MAIN_DECK_NAME = "Main"

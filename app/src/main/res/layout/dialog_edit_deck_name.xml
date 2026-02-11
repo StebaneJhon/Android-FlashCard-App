@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/space_lg"
+    android:backgroundTint="?colorSurfaceContainerLowest">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_deck_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.App.TextInputLayout"
+        app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.App.TextInputEditText"
+            android:id="@+id/tie_deck_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="@string/deck_name_hint"
+            android:inputType="textMultiLine"
+            android:maxLines="5"
+            android:hint="@string/deck_name_hint"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+</LinearLayout>

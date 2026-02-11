@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id="@+id/bt_flash_card_game"
-        android:icon="@drawable/icon_flip"
-        android:title="@string/flash_card_button_text"
-        android:contentDescription="@string/flash_card_button_text"
-        app:showAsAction="ifRoom"/>
+<!--    <item-->
+<!--        android:id="@+id/bt_flash_card_game"-->
+<!--        android:icon="@drawable/icon_flip"-->
+<!--        android:title="@string/flash_card_button_text"-->
+<!--        android:contentDescription="@string/flash_card_button_text"-->
+<!--        app:showAsAction="ifRoom"/>-->
     <item
         android:id="@+id/bt_quiz"
         android:icon="@drawable/icon_neurology"
         android:title="@string/bt_test_quiz_game_text"
         android:contentDescription="@string/bt_test_quiz_game_text"
         app:showAsAction="ifRoom"/>
-    <item
-        android:id="@+id/bt_test"
-        android:icon="@drawable/icon_fire"
-        android:title="@string/bt_text_test"
-        android:contentDescription="@string/bt_text_test"
-        app:showAsAction="ifRoom"/>
+<!--    <item-->
+<!--        android:id="@+id/bt_test"-->
+<!--        android:icon="@drawable/icon_fire"-->
+<!--        android:title="@string/bt_text_test"-->
+<!--        android:contentDescription="@string/bt_text_test"-->
+<!--        app:showAsAction="ifRoom"/>-->
 </menu>

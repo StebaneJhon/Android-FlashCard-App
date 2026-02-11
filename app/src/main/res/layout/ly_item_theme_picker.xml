@@ -9,6 +9,6 @@
     android:backgroundTint="?colorSurfaceContainerLow"
     android:contentDescription="@string/bt_description_deck_color"
     app:iconTint="?colorOnSurface"
-    app:cornerRadius="@dimen/radius_base"
+    app:cornerRadius="@dimen/radius_sm"
     app:shapeAppearance="@style/ShapeAppearance.App.Button.Single"
     app:iconGravity="textStart"/>

@@ -5,42 +5,53 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:backgroundTint="?colorSurfaceContainerLowest"
-    android:padding="@dimen/space_sm">
-    
+    android:paddingBottom="@dimen/space_lg">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_dismiss"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/bt_description_exit"
+        app:icon="@drawable/icon_exit"
+        app:iconSize="25sp"
+        app:iconTint="?colorOnSurface"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/tv_title"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/export_deck"
-        android:textSize="@dimen/text_lg" 
-        android:fontFamily="@font/open_sans"
-        android:textStyle="bold"
-        android:textAlignment="center"
-        android:textColor="?colorOnSurface" />
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:textColor="?colorOnSurface"
+        android:layout_marginEnd="@dimen/space_lg"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_dismiss"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bt_dismiss"
+        app:layout_constraintTop_toTopOf="@+id/bt_dismiss" />
 
     <TextView
         android:id="@+id/tv_title_format"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans_bold"
         android:text="@string/format"
         android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
-        android:textStyle="bold"
-        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginHorizontal="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+        app:layout_constraintTop_toBottomOf="@+id/bt_dismiss" />
 
     <RadioGroup
         android:id="@+id/rg_format"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:checkedButton="@+id/enabled_selected"
+        android:layout_marginHorizontal="@dimen/space_lg"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_format"
         tools:layout_editor_absoluteX="8dp">
         <RadioButton
@@ -53,59 +64,68 @@
     </RadioGroup>
 
     <com.google.android.material.textfield.TextInputLayout
+        style="@style/Widget.App.TextInputLayout"
         android:id="@+id/til_separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
-        android:textColor="?colorOnSurface"
-        android:textColorHint="@color/neutral400"
-        app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-        app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-        app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-        app:boxCornerRadiusTopStart="@dimen/ed_radius"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:boxBackgroundColor="?colorSurfaceContainer"
         android:layout_marginTop="@dimen/space_sm"
+        android:layout_marginHorizontal="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rg_format">
 
         <com.google.android.material.textfield.TextInputEditText
+            style="@style/Widget.App.TextInputEditText"
             android:id="@+id/tie_separator"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fontFamily="@font/open_sans"
             android:hint="@string/text_separator"
             android:inputType="textMultiLine"
             android:maxLines="5"
-            android:textColor="?colorOnSurface"
-            android:textColorHint="?colorOnSurface" />
+            android:textAppearance="@style/TextAppearance.App.BodyMedium" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/sw_include_subdecks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checked="false"
+        android:text="@string/include_subdecks"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        style="@style/Widget.App.Switch"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        app:layout_constraintTop_toBottomOf="@+id/til_separator"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/bt_cancel"
-        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:fontFamily="@font/open_sans_bold"
+        android:background="@drawable/bg_radius_base"
+        android:backgroundTint="?colorPrimary"
         android:text="@string/bt_text_cancel"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        android:textStyle="bold"
+        android:textColor="?colorOnPrimary"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         android:layout_marginTop="@dimen/space_md"
+        android:layout_marginEnd="@dimen/space_md"
         app:layout_constraintEnd_toStartOf="@+id/bt_export"
-        app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+        app:layout_constraintTop_toBottomOf="@+id/sw_include_subdecks" />
 
     <Button
         android:id="@+id/bt_export"
-        style="@style/Widget.Material3.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
-        android:fontFamily="@font/open_sans_bold"
+        android:background="@drawable/bg_radius_base"
+        android:backgroundTint="?colorPrimary"
         android:text="@string/export"
-        android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_sm"
-        android:textStyle="bold"
+        android:textColor="?colorOnPrimary"
+        android:layout_marginStart="@dimen/space_lg"
+        android:layout_marginEnd="@dimen/space_lg"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bt_cancel" />
     

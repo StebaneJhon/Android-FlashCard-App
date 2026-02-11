@@ -1,7 +1,6 @@
 package com.ssoaharison.recall.backend.entities
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
@@ -10,11 +9,13 @@ import kotlinx.parcelize.Parcelize
 @Entity
 data class Deck (
     @PrimaryKey(autoGenerate = false) val deckId: String,
-    @ColumnInfo(name = "deck_name") val deckName: String?,
-    @ColumnInfo(name = "deck_description") val deckDescription: String?,
-    @ColumnInfo(name = "card_content_default_language") val cardContentDefaultLanguage: String?,
-    @ColumnInfo(name = "card_definition_default_language") val cardDefinitionDefaultLanguage: String?,
-    @ColumnInfo(name = "deck_color_code") val deckColorCode: String?,
-    @ColumnInfo(name = "deck_category") val deckCategory: String?,
-    @ColumnInfo(name = "is_favorite") val isFavorite: Int?,
+    val parentDeckId: String?,
+    val deckName: String,
+    val deckDescription: String?,
+    val cardContentDefaultLanguage: String?,
+    val cardDefinitionDefaultLanguage: String?,
+    val deckBackground: String?,
+    val deckCategory: String?,
+    val isFavorite: Int?,
+    val deckCreationDate: String?
 ): Parcelable

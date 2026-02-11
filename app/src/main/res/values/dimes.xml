@@ -8,28 +8,37 @@
     <dimen name="space_xl">20dp</dimen>
     <dimen name="space_xxl">24dp</dimen>
 
+    <dimen name="height_sm">30dp</dimen>
+    <dimen name="width_sm">30dp</dimen>
+    <dimen name="height_xxs">10dp</dimen>
+    <dimen name="width_xxs">10dp</dimen>
+
     <dimen name="text_xxs">10sp</dimen>
     <dimen name="text_xs">12sp</dimen>
-    <dimen name="text_sm">14sp</dimen>
+    <dimen name="text_sm">17sp</dimen>
     <dimen name="text_base">16sp</dimen>
     <dimen name="text_lg">18sp</dimen>
     <dimen name="text_xl">20sp</dimen>
     <dimen name="text_xl2">24sp</dimen>
     <dimen name="text_xl3">30sp</dimen>
 
-    <dimen name="radius_xs">2dp</dimen>
-    <dimen name="radius_sm">4dp</dimen>
-    <dimen name="radius_base">10dp</dimen>
+    <dimen name="radius_xs">4dp</dimen>
+    <dimen name="radius_sm">10dp</dimen>
+    <dimen name="radius_base">16dp</dimen>
+    <dimen name="radius_lg">12dp</dimen>
     <dimen name="radius_xl">18dp</dimen>
+    <dimen name="radius_xxl">22dp</dimen>
     <dimen name="bt_radius">4dp</dimen>
     <dimen name="card_radius">10dp</dimen>
     <dimen name="card_radius_sm">4dp</dimen>
     <dimen name="popUpMenu_radius">2dp</dimen>
     <dimen name="ed_radius">4dp</dimen>
     <dimen name="cp_radius">2dp</dimen>
-    <dimen name="radius_rounded">50pt</dimen>
+    <dimen name="radius_rounded">100pt</dimen>
 
-    <dimen name="icon_base">25dp</dimen>
+    <dimen name="icon_xs">10dp</dimen>
+    <dimen name="icon_sm">15dp</dimen>
+    <dimen name="icon_base">44dp</dimen>
     <dimen name="icon_lg">30dp</dimen>
     <dimen name="icon_card_top_width">39dp</dimen>
     <dimen name="icon_card_top_height">20dp</dimen>
@@ -44,5 +53,12 @@
     <dimen name="card_info_height">85dp</dimen>
 
     <dimen name="progression_region_height">9dp</dimen>
-    
+
+    <dimen name="wave_view_max_height">400px</dimen>
+
+    <dimen name="img_height_large">150dp</dimen>
+    <dimen name="img_height_base">75dp</dimen>
+
+    <dimen name="extra_space_bottom">100dp</dimen>
+
 </resources>

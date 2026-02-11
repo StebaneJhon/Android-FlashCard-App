@@ -13,7 +13,7 @@ import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.models.ImmutableDeck
 import com.ssoaharison.recall.quiz.quizGame.QuizSpeakModel
 import com.ssoaharison.recall.util.CardType.MULTIPLE_ANSWER_CARD
-import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
@@ -73,113 +73,113 @@ class TestAdapter(
             onUserAnswered: (TestCardDefinitionModel) -> Unit,
             onSpeak: (QuizSpeakModel) -> Unit
         ) {
-            tvContent.text = card.cardContent.content
-            tvCardType.text = card.cardType
-            if (card.cardType == MULTIPLE_ANSWER_CARD) {
-                tvHint.text = ContextCompat.getString(context, R.string.text_not_answered_2)
-            } else {
-                tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
-            }
-            btAlternatives.forEachIndexed { index, materialButton ->
-                if (index < card.cardDefinition.size) {
-                    materialButton.visibility = View.VISIBLE
-                    if (card.cardDefinition[index].isSelected) {
-                        onButtonClicked(materialButton, card.cardType, context)
-                    } else {
-                        onButtonUnClicked(materialButton, card.cardType, context)
-                    }
-                } else {
-                    materialButton.visibility = View.GONE
-                }
-            }
-
-            bindAnswerAlternatives(card, onUserAnswered, onSpeak)
+//            tvContent.text = card.cardContent.content
+//            tvCardType.text = card.cardType
+//            if (card.cardType == MULTIPLE_ANSWER_CARD) {
+//                tvHint.text = ContextCompat.getString(context, R.string.text_not_answered_2)
+//            } else {
+//                tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
+//            }
+//            btAlternatives.forEachIndexed { index, materialButton ->
+//                if (index < card.cardDefinition.size) {
+//                    materialButton.visibility = View.VISIBLE
+//                    if (card.cardDefinition[index].isSelected) {
+//                        onButtonClicked(materialButton, card.cardType, context)
+//                    } else {
+//                        onButtonUnClicked(materialButton, card.cardType, context)
+//                    }
+//                } else {
+//                    materialButton.visibility = View.GONE
+//                }
+//            }
+//
+//            bindAnswerAlternatives(card, onUserAnswered, onSpeak)
 
         }
 
-        private fun bindAnswerAlternatives(
-            card: TestCardModel,
-            onUserAnswered: (TestCardDefinitionModel) -> Unit,
-            onSpeak: (QuizSpeakModel) -> Unit
-        ) {
-            val texts = arrayListOf(
-                TextWithLanguageModel(
-                    card.cardId,
-                    card.cardContent.content,
-                    CONTENT,
-                    card.cardContentLanguage
-                )
-            )
-            val views = arrayListOf(tvContent)
-            btAlternatives.forEachIndexed { index, materialButton ->
-                if (index < card.cardDefinition.size) {
-                    materialButton.apply {
-                        visibility = View.VISIBLE
-                        text = card.cardDefinition[index].definition.text
-                        setOnClickListener {
-                            selectAnswer(card.cardDefinition[index], onUserAnswered)
-                        }
-                    }
-                    texts.add(card.cardDefinition[index].definition)
-                    views.add(materialButton)
-                } else {
-                    materialButton.visibility = View.GONE
-                }
-            }
-
-            btSpeak.setOnClickListener {
-                onSpeak(
-                    QuizSpeakModel(
-                        text = texts,
-                        views = views,
-                    )
-                )
-            }
-        }
-
-        private fun selectAnswer(
-            selectedAnswer: TestCardDefinitionModel,
-            onUserAnswered: (TestCardDefinitionModel) -> Unit
-        ) {
-            selectedAnswer.isSelected = !selectedAnswer.isSelected
-            onUserAnswered(selectedAnswer)
-        }
-
-        private fun onButtonClicked(button: MaterialButton, cardType: String, context: Context) {
-            if (cardType == MULTIPLE_ANSWER_CARD) {
-                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
-            } else {
-                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
-            }
-            button.backgroundTintList = MaterialColors.getColorStateList(
-                context,
-                com.google.android.material.R.attr.colorSurfaceContainer,
-                ContextCompat.getColorStateList(context, R.color.neutral950)!!
-            )
-            button.strokeColor = MaterialColors.getColorStateList(
-                context,
-                com.google.android.material.R.attr.colorSurfaceContainerHighest,
-                ContextCompat.getColorStateList(context, R.color.neutral700)!!
-            )
-        }
-
-        private fun onButtonUnClicked(button: MaterialButton, cardType: String, context: Context) {
-            if (cardType == MULTIPLE_ANSWER_CARD) {
-                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
-            } else {
-                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
-            }
-            button.backgroundTintList = MaterialColors.getColorStateList(
-                context,
-                com.google.android.material.R.attr.colorSurfaceContainerLowest,
-                ContextCompat.getColorStateList(context, R.color.neutral300)!!
-            )
-            button.strokeColor = MaterialColors.getColorStateList(
-                context,
-                com.google.android.material.R.attr.colorSurfaceContainerHigh,
-                ContextCompat.getColorStateList(context, R.color.neutral500)!!
-            )
-        }
+//        private fun bindAnswerAlternatives(
+//            card: TestCardModel,
+//            onUserAnswered: (TestCardDefinitionModel) -> Unit,
+//            onSpeak: (QuizSpeakModel) -> Unit
+//        ) {
+//            val texts = arrayListOf(
+//                TextWithLanguageModel(
+//                    card.cardId,
+//                    card.cardContent.content,
+//                    CONTENT,
+//                    card.cardContentLanguage
+//                )
+//            )
+//            val views = arrayListOf(tvContent)
+//            btAlternatives.forEachIndexed { index, materialButton ->
+//                if (index < card.cardDefinition.size) {
+//                    materialButton.apply {
+//                        visibility = View.VISIBLE
+//                        text = card.cardDefinition[index].definition.text
+//                        setOnClickListener {
+//                            selectAnswer(card.cardDefinition[index], onUserAnswered)
+//                        }
+//                    }
+//                    texts.add(card.cardDefinition[index].definition)
+//                    views.add(materialButton)
+//                } else {
+//                    materialButton.visibility = View.GONE
+//                }
+//            }
+//
+//            btSpeak.setOnClickListener {
+//                onSpeak(
+//                    QuizSpeakModel(
+//                        text = texts,
+//                        views = views,
+//                    )
+//                )
+//            }
+//        }
+//
+//        private fun selectAnswer(
+//            selectedAnswer: TestCardDefinitionModel,
+//            onUserAnswered: (TestCardDefinitionModel) -> Unit
+//        ) {
+//            selectedAnswer.isSelected = !selectedAnswer.isSelected
+//            onUserAnswered(selectedAnswer)
+//        }
+//
+//        private fun onButtonClicked(button: MaterialButton, cardType: String, context: Context) {
+//            if (cardType == MULTIPLE_ANSWER_CARD) {
+//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
+//            } else {
+//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_checked)
+//            }
+//            button.backgroundTintList = MaterialColors.getColorStateList(
+//                context,
+//                com.google.android.material.R.attr.colorSurfaceContainer,
+//                ContextCompat.getColorStateList(context, R.color.neutral950)!!
+//            )
+//            button.strokeColor = MaterialColors.getColorStateList(
+//                context,
+//                com.google.android.material.R.attr.colorSurfaceContainerHighest,
+//                ContextCompat.getColorStateList(context, R.color.neutral700)!!
+//            )
+//        }
+//
+//        private fun onButtonUnClicked(button: MaterialButton, cardType: String, context: Context) {
+//            if (cardType == MULTIPLE_ANSWER_CARD) {
+//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
+//            } else {
+//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
+//            }
+//            button.backgroundTintList = MaterialColors.getColorStateList(
+//                context,
+//                com.google.android.material.R.attr.colorSurfaceContainerLowest,
+//                ContextCompat.getColorStateList(context, R.color.neutral300)!!
+//            )
+//            button.strokeColor = MaterialColors.getColorStateList(
+//                context,
+//                com.google.android.material.R.attr.colorSurfaceContainerHigh,
+//                ContextCompat.getColorStateList(context, R.color.neutral500)!!
+//            )
+//        }
 
         companion object {
             fun create(parent: ViewGroup): ViewHolder {

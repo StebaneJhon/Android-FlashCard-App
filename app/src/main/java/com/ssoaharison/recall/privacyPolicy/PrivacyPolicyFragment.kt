@@ -38,7 +38,7 @@ class PrivacyPolicyFragment : Fragment() {
     private fun weViewSetup() {
         binding.wvPrivacyPolicy.apply {
             webViewClient = WebViewClient()
-            loadUrl("https://sites.google.com/view/recall-mobileapp/privacy-policy")
+            loadUrl("https://stebanejhon.github.io/mneme_privacy_policy/")
             settings.safeBrowsingEnabled = true
         }
     }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="7e65115e-7cf5-420c-b216-cb3a158fceb4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/card/AttachBottomSheetDialog.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/card/ScanBottomSheetDialog.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/icon_attach.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/icon_photo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/bottom_sheet_attach.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/bottom_sheet_scan.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/card/CardFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/card/CardFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/card/NewCardDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/card/NewCardDialog.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/quiz/quizGame/QuizGameActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/quiz/quizGame/QuizGameActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/util/Constant.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/util/Constant.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/util/QuizModeBottomSheet.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ssoaharison/recall/util/QuizModeBottomSheet.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/add_card_layout_dialog.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/add_card_layout_dialog.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5
+}]]></component>
+  <component name="ProjectId" id="34ebKqQXEUetm3wwwRC9dZxrjdl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "db__redesign"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="7e65115e-7cf5-420c-b216-cb3a158fceb4" name="Changes" comment="" />
+      <created>1761576923914</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761576923914</updated>
+    </task>
+    <servers />
+  </component>
+</project>

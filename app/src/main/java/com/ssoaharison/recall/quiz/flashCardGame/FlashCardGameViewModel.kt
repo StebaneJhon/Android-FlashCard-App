@@ -5,12 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
-import com.ssoaharison.recall.util.Calculations
+import com.ssoaharison.recall.helper.Calculations
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -30,8 +31,8 @@ class FlashCardGameViewModel(
     private var flashCardCardsFetchJob: Job? = null
     private var currentCardPosition: Int = 0
 
-    private var originalCardList: List<ImmutableCard?>? = null
-    private lateinit var cardList: MutableList<ImmutableCard?>
+    private var originalCardList: List<ExternalCardWithContentAndDefinitions>? = null
+    private lateinit var cardList: MutableList<ExternalCardWithContentAndDefinitions>
 
     private lateinit var cardToRevise: MutableList<FlashCardCardModel?>
     private var flowOfCardToRevise: Flow<List<FlashCardCardModel?>?> = flow {
@@ -39,7 +40,7 @@ class FlashCardGameViewModel(
     }
     private val missedCards: ArrayList<FlashCardCardModel?> = arrayListOf()
 
-    var deck: ImmutableDeck? = null
+    var deck: ExternalDeck? = null
     private var progress: Int = 0
     private var passedCards = 0
     private var restCards = 0
@@ -50,22 +51,22 @@ class FlashCardGameViewModel(
     private val roteLearningHelper = RoteLearningAlgorithmHelper()
 
 
-    fun initCardList(gameCards: MutableList<ImmutableCard?>) {
+    fun initCardList(gameCards: MutableList<ExternalCardWithContentAndDefinitions>) {
         cardList = gameCards
         initRestCards()
     }
 
-    fun initOriginalCardList(gameCards: MutableList<ImmutableCard?>) {
+    fun initOriginalCardList(gameCards: MutableList<ExternalCardWithContentAndDefinitions>) {
         originalCardList = gameCards
     }
 
-    fun initDeck(gameDeck: ImmutableDeck) {
+    fun initDeck(gameDeck: ExternalDeck) {
         deck = gameDeck
     }
 
     fun updateCardToRevise(amount: Int) {
-        val cards = getCardAmount(amount)
-        cardToRevise = immutableCardsToFlashCardCards(cards).toMutableList()
+        val cards = getCardAmount(cards = cardList, amount = amount) ?: emptyList()
+        cardToRevise = externalCardsToFlashCardCards(cards).toMutableList()
         cardToRevise.first()?.setAsActualOrPassed()
         revisedCardsCount = cardToRevise.size
     }
@@ -78,29 +79,30 @@ class FlashCardGameViewModel(
         cardToRevise[position]?.setAsNotActualOrNotPassed()
     }
 
-    private fun getCardAmount(amount: Int): List<ImmutableCard?>? {
+    private fun getCardAmount(
+        cards: List<ExternalCardWithContentAndDefinitions>,
+        amount: Int): List<ExternalCardWithContentAndDefinitions>? {
         return when {
-            cardList.isEmpty() -> {
+            cards.isEmpty() -> {
                 null
             }
 
-            cardList.size == amount -> {
+            cards.size == amount -> {
                 cardList
             }
 
             else -> {
-                var result = listOf<ImmutableCard?>()
-                if (passedCards <= cardList.size) {
+                var result = listOf<ExternalCardWithContentAndDefinitions>()
+                if (passedCards <= cards.size) {
                     if (restCards >= amount) {
-                        result = cardList.slice(passedCards..passedCards.plus(amount).minus(1))
-                            .toMutableList()
+                        result = cards.slice(passedCards..passedCards.plus(amount).minus(1)).toMutableList()
                         passedCards += amount
                     } else {
-                        result = cardList.slice(passedCards..cardList.size.minus(1)).toMutableList()
-                        passedCards += cardList.size.plus(50)
+                        result = cards.slice(passedCards..cards.size.minus(1)).toMutableList()
+                        passedCards += cards.size.plus(50)
                     }
                 }
-                restCards = cardList.size - passedCards
+                restCards = cards.size - passedCards
                 result
             }
         }
@@ -113,15 +115,15 @@ class FlashCardGameViewModel(
 //        missedCardsCount = 0
 //    }
 
-    fun immutableCardsToFlashCardCards(cards: List<ImmutableCard?>?): List<FlashCardCardModel> {
+    fun externalCardsToFlashCardCards(cards: List<ExternalCardWithContentAndDefinitions>): List<FlashCardCardModel> {
         val newList = mutableListOf<FlashCardCardModel>()
-        cards?.forEach { card ->
-            newList.add(immutableCardToFlashCardCard(card!!))
+        cards.forEach { card ->
+            newList.add(externalCardToFlashCardCard(card))
         }
         return newList
     }
 
-    fun immutableCardToFlashCardCard(card: ImmutableCard): FlashCardCardModel {
+    fun externalCardToFlashCardCard(card: ExternalCardWithContentAndDefinitions): FlashCardCardModel {
         return FlashCardCardModel(
             card = card,
             isActualOrPassed = false
@@ -129,7 +131,7 @@ class FlashCardGameViewModel(
     }
 
     fun sortCardsByLevel() {
-        cardList.sortBy { it?.cardStatus }
+        cardList.sortBy { it.card.cardLevel }
     }
 
     fun shuffleCards() {
@@ -139,16 +141,15 @@ class FlashCardGameViewModel(
     fun getCardLeft() = restCards
 
     fun sortByCreationDate() {
-        cardList.sortBy { it?.cardId }
+        cardList.sortBy { it.card.creationDate }
     }
 
     fun unknownCardsOnly() {
-        cardList = cardList.filter { it?.cardStatus == L1 } as MutableList<ImmutableCard?>
+        cardList = cardList.filter { it.card.cardLevel == L1 } as MutableList<ExternalCardWithContentAndDefinitions>
     }
 
     fun cardToReviseOnly() {
-        cardList =
-            cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it.card) } as MutableList<ExternalCardWithContentAndDefinitions>
     }
 
     fun restoreCardList() {
@@ -193,7 +194,7 @@ class FlashCardGameViewModel(
 
     fun getTotalCards() = cardToRevise.size
 
-    fun getCardBackground() = deck?.deckColorCode
+    fun getCardBackground() = deck?.deckBackground
 
     fun getCurrentCardNumber() = currentCardPosition.plus(1)
 
@@ -212,7 +213,7 @@ class FlashCardGameViewModel(
     private fun getBottomCard(
         cards: List<FlashCardCardModel?>,
         currentCartPosition: Int
-    ): ImmutableCard? {
+    ): ExternalCardWithContentAndDefinitions? {
         return if (currentCartPosition > cards.size - 2) {
             null
         } else {
@@ -223,7 +224,7 @@ class FlashCardGameViewModel(
     private fun getTopCard(
         cards: List<FlashCardCardModel?>,
         currentCartPosition: Int
-    ): ImmutableCard? {
+    ): ExternalCardWithContentAndDefinitions? {
         return cards[currentCartPosition]?.card
     }
 
@@ -316,17 +317,19 @@ class FlashCardGameViewModel(
     }
 
     private fun onCardSwiped(isKnown: Boolean) {
-        val card = cardToRevise[currentCardPosition]
+        val card = cardToRevise[currentCardPosition]?.card
         if (card != null) {
-            val newCard = spaceRepetitionHelper.rescheduleCard(card.card, isKnown)
+//            val newCard = spaceRepetitionHelper.rescheduleCard(card.card, isKnown)
+            val newCard = spaceRepetitionHelper.rescheduleExternalCardWithContentAndDefinitions(card, isKnown)
             updateCard(newCard)
         }
     }
 
     fun updateCard(
-        card: ImmutableCard,
+        card: ExternalCardWithContentAndDefinitions,
     ) = viewModelScope.launch {
-        repository.updateCardWithContentAndDefinition(card)
+//        repository.updateCardWithContentAndDefinition(card)
+        repository.updateCard(card.card.toLocal())
     }
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {

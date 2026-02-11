@@ -1,6 +1,5 @@
 package com.ssoaharison.recall.util
 
-import android.R
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
@@ -8,12 +7,10 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import androidx.annotation.Nullable
 import androidx.core.os.bundleOf
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.ssoaharison.recall.backend.models.ImmutableDeck
+import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.databinding.QuizModeFragmentBinding
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.MATCHING_QUIZ
@@ -21,12 +18,9 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.MULTIPLE_CHOICE_QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.QUIZ
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.TEST
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.WRITING_QUIZ
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
 
 
-class QuizModeBottomSheet(
-    private val deck: ImmutableDeck
-): BottomSheetDialogFragment() {
+class QuizModeBottomSheet(): BottomSheetDialogFragment() {
 
     private lateinit var binding: QuizModeFragmentBinding
 
@@ -36,53 +30,53 @@ class QuizModeBottomSheet(
         const val REQUEST_CODE_QUIZ_MODE = "300"
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val themePicker = ThemePicker()
-        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
-        val appTheme = themePicker.selectTheme(appThemeName)
-        val contextThemeWrapper = if (!deck.deckColorCode.isNullOrBlank()) {
-            val deckTheme = if (appThemeName == DARK_THEME) {
-                themePicker.selectDarkThemeByDeckColorCode(deck.deckColorCode, themePicker.getDefaultTheme())
-            } else {
-                themePicker.selectThemeByDeckColorCode(deck.deckColorCode, themePicker.getDefaultTheme())
-            }
-            ContextThemeWrapper(activity, deckTheme)
-        } else {
-
-            ContextThemeWrapper(activity, appTheme!!)
-        }
-        return BottomSheetDialog(contextThemeWrapper, theme)
-    }
+//    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+//        val themePicker = ThemePicker()
+//        val sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        val appThemeName = sharedPref?.getString("themName", "WHITE THEM")
+//        val appTheme = themePicker.selectTheme(appThemeName)
+//        val contextThemeWrapper = if (!deck.deckColorCode.isNullOrBlank()) {
+//            val deckTheme = if (appThemeName == DARK_THEME) {
+//                themePicker.selectDarkThemeByDeckColorCode(deck.deckColorCode, themePicker.getDefaultTheme())
+//            } else {
+//                themePicker.selectThemeByDeckColorCode(deck.deckColorCode, themePicker.getDefaultTheme())
+//            }
+//            ContextThemeWrapper(activity, deckTheme)
+//        } else {
+//
+//            ContextThemeWrapper(activity, appTheme!!)
+//        }
+//        return BottomSheetDialog(contextThemeWrapper, theme)
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = QuizModeFragmentBinding.inflate(inflater, container, false)
+        binding = QuizModeFragmentBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.btWritingQuizGame.setOnClickListener {
-            sendQuizMode(
-                REQUEST_CODE_QUIZ_MODE,
-                START_QUIZ_BUNDLE_KEY,
-                WRITING_QUIZ
-            )
-        }
-
-        binding.btMatchingQuizGame.setOnClickListener {
-            sendQuizMode(
-                REQUEST_CODE_QUIZ_MODE,
-                START_QUIZ_BUNDLE_KEY,
-                MATCHING_QUIZ
-            )
-        }
-
+//        binding.btWritingQuizGame.setOnClickListener {
+//            sendQuizMode(
+//                REQUEST_CODE_QUIZ_MODE,
+//                START_QUIZ_BUNDLE_KEY,
+//                WRITING_QUIZ
+//            )
+//        }
+//
+//        binding.btMatchingQuizGame.setOnClickListener {
+//            sendQuizMode(
+//                REQUEST_CODE_QUIZ_MODE,
+//                START_QUIZ_BUNDLE_KEY,
+//                MATCHING_QUIZ
+//            )
+//        }
+//
         binding.btFlashCardGame.setOnClickListener {
             sendQuizMode(
                 REQUEST_CODE_QUIZ_MODE,
@@ -99,21 +93,21 @@ class QuizModeBottomSheet(
             )
         }
 
-        binding.multiChoiceQuizButton.setOnClickListener {
-            sendQuizMode(
-                REQUEST_CODE_QUIZ_MODE,
-                START_QUIZ_BUNDLE_KEY,
-                MULTIPLE_CHOICE_QUIZ
-            )
-        }
-
-        binding.btTest.setOnClickListener {
-            sendQuizMode(
-                REQUEST_CODE_QUIZ_MODE,
-                START_QUIZ_BUNDLE_KEY,
-                TEST
-            )
-        }
+//        binding.multiChoiceQuizButton.setOnClickListener {
+//            sendQuizMode(
+//                REQUEST_CODE_QUIZ_MODE,
+//                START_QUIZ_BUNDLE_KEY,
+//                MULTIPLE_CHOICE_QUIZ
+//            )
+//        }
+//
+//        binding.btTest.setOnClickListener {
+//            sendQuizMode(
+//                REQUEST_CODE_QUIZ_MODE,
+//                START_QUIZ_BUNDLE_KEY,
+//                TEST
+//            )
+//        }
 
     }
 
@@ -133,7 +127,7 @@ class QuizModeBottomSheet(
 //    }
 
 //    override fun getTheme(): Int {
-//        var contextThemeWrapper: Context? = null
+////        var contextThemeWrapper: Context? = null
 //        val themePicker = ThemePicker()
 //        if (!deck.deckColorCode.isNullOrBlank()) {
 //            val deckTheme = themePicker.selectThemeByDeckColorCode(deck.deckColorCode, themePicker.getDefaultTheme())

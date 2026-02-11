@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/deckFragment"
+        android:id="@+id/cardFragment"
         android:icon="@drawable/icon_nav_decks"
-        android:title="@string/deck_tab_hint"
+        android:title="@string/home"
         android:checkable="true"/>
     <item
         android:id="@+id/settingsFragment"
@@ -11,6 +11,7 @@
         android:title="@string/settings_hint"
         android:checkable="true"/>
     <item
+        android:visible="false"
         android:id="@+id/bt_rate_app"
         android:icon="@drawable/icon_nav_rate_app"
         android:title="@string/bt_rate_the_app_text"
@@ -28,6 +29,6 @@
     <item
         android:id="@+id/privacyPolicyFragment"
         android:icon="@drawable/icon_nav_privacy_policy"
-        android:title="@string/bt_help_text"
+        android:title="@string/bt_privacy_text"
         android:checkable="true"/>
 </menu>

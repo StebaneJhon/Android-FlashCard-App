@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_found_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:visibility="gone"
+        android:id="@+id/search_card_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_no_item_found"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/no_item_found"
+        android:textAlignment="center"
+        android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:drawableTint="?colorOnSurface"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        app:drawableTopCompat="@drawable/icon_search" />
+
+</FrameLayout>

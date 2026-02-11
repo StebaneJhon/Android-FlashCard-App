@@ -5,5 +5,5 @@
     android:layout_height="wrap_content"
     android:padding="15dp"
     android:textColor="?colorOnSurface"
-    android:textSize="@dimen/text_sm"
-    android:fontFamily="@font/open_sans"/>
+    android:textAppearance="@style/TextAppearance.App.BodyMedium"
+    android:background="?colorSurfaceContainer"/>

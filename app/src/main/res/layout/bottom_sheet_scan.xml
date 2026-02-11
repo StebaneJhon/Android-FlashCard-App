@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/Widget.Material3.BottomSheet"
+    android:orientation="vertical"
+    android:backgroundTint="?colorSurfaceContainerLow"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+    android:paddingStart="@dimen/space_sm"
+    android:paddingEnd="@dimen/space_sm"
+    android:paddingBottom="@dimen/space_xs">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_photo_from_camera_to_text"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/photo_from_camera_to_text"
+        android:textColor="?colorOnSurface"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        app:icon="@drawable/icon_camera"
+        app:iconTint="?colorOnSurface"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/space_xl"
+        style="@style/Widget.Material3.Button.TextButton"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_photo_form_galeri_to_text"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/photo_from_galeri_to_text"
+        android:textColor="?colorOnSurface"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        app:icon="@drawable/icon_photo"
+        app:iconTint="?colorOnSurface"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/space_xl"
+        style="@style/Widget.Material3.Button.TextButton"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_audio_to_text"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/audio_to_text"
+        android:textColor="?colorOnSurface"
+        android:textAlignment="textStart"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        app:icon="@drawable/icon_mic"
+        app:iconTint="?colorOnSurface"
+        app:iconGravity="start"
+        app:iconPadding="@dimen/space_xl"
+        style="@style/Widget.Material3.Button.TextButton"/>
+
+</LinearLayout>

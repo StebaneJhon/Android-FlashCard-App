@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="?colorSurfaceContainerLow">
+    android:backgroundTint="?colorSurfaceContainerLowest">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/space_sm">
+        android:layout_margin="@dimen/space_lg">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,10 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/bt_exit"
-                android:fontFamily="@font/open_sans_bold"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xl"
-                android:textStyle="bold"
+                android:textAppearance="@style/TextAppearance.App.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="@+id/bt_exit"
                 app:layout_constraintEnd_toStartOf="@+id/bt_add_top"
                 app:layout_constraintStart_toEndOf="@+id/bt_exit"
@@ -61,13 +58,8 @@
                 android:id="@+id/deckNameLY"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
-                android:textColor="?colorOnSurface"
-                android:textColorHint="@color/neutral400"
-                app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
-                app:boxCornerRadiusBottomStart="@dimen/ed_radius"
-                app:boxCornerRadiusTopEnd="@dimen/ed_radius"
-                app:boxCornerRadiusTopStart="@dimen/ed_radius"
+                style="@style/Widget.App.TextInputLayout"
+                app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
                 app:layout_constraintTop_toBottomOf="@+id/bt_exit"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -76,13 +68,11 @@
                     android:id="@+id/deckNameET"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    style="@style/Widget.App.TextInputEditText"
                     android:autofillHints="@string/deck_name_hint"
-                    android:fontFamily="@font/open_sans"
-                    android:hint="@string/deck_name_hint"
                     android:inputType="textMultiLine"
                     android:maxLines="5"
-                    android:textColor="?colorOnSurface"
-                    android:textColorHint="?colorOnSurface" />
+                    android:hint="@string/deck_name_hint" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -90,8 +80,8 @@
                 android:id="@+id/deckDescriptionLY"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
+                app:hintTextAppearance="@style/TextAppearance.App.Hint"
                 android:textColorHint="@color/neutral400"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
@@ -106,10 +96,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints="@string/deck_description_hint"
-                    android:fontFamily="@font/open_sans"
                     android:hint="@string/deck_description_hint"
                     android:inputType="textMultiLine"
                     android:maxLines="10"
+                    style="@style/TextAppearance.App.Hint"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="@color/neutral400" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -120,11 +110,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/space_sm"
-                android:fontFamily="@font/open_sans"
                 android:padding="0dp"
                 android:text="@string/bt_text_add_details"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_xs"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 app:icon="@drawable/icon_expand_more"
                 app:iconTint="?colorOnSurface"
                 app:layout_constraintTop_toBottomOf="@+id/deckDescriptionLY"
@@ -136,9 +125,10 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
                 android:textColorHint="@color/neutral400"
+                app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+                app:hintTextAppearance="@style/TextAppearance.App.Hint"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
@@ -156,13 +146,13 @@
                     android:background="@null"
                     android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
                     android:ellipsize="end"
-                    android:fontFamily="@font/open_sans"
                     android:hint="@string/deck_first_language_hint"
                     android:inputType="text"
                     android:maxLines="1"
                     android:singleLine="true"
                     android:textColor="?colorOnSurface"
                     android:textColorHint="?colorOnSurface"
+                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
                     tools:ignore="LabelFor" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -172,9 +162,10 @@
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
                 android:textColor="?colorOnSurface"
                 android:textColorHint="@color/neutral400"
+                app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+                app:hintTextAppearance="@style/TextAppearance.App.Hint"
                 app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
                 app:boxCornerRadiusBottomStart="@dimen/ed_radius"
                 app:boxCornerRadiusTopEnd="@dimen/ed_radius"
@@ -193,7 +184,7 @@
                     android:background="@null"
                     android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
                     android:ellipsize="end"
-                    android:fontFamily="@font/open_sans"
+                    android:textAppearance="@style/TextAppearance.App.BodyMedium"
                     android:hint="@string/deck_second_language_hint"
                     android:inputType="text"
                     android:maxLines="1"
@@ -233,32 +224,32 @@
                 android:id="@+id/dialogPositiveBT"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/transparent"
-                android:fontFamily="@font/open_sans_bold"
+                android:layout_marginTop="@dimen/space_lg"
+                android:backgroundTint="?colorPrimary"
                 android:text="@string/bt_add_deck"
-                android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
-                android:textStyle="bold"
-                android:layout_margin="@dimen/space_lg"
-                app:layout_constraintEnd_toStartOf="@+id/bt_add_card"
+                android:textColor="?colorOnPrimary"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                app:cornerRadius="@dimen/radius_base"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
                 android:id="@+id/bt_add_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@color/transparent"
                 android:drawableEnd="@drawable/icon_arrow_right"
+                android:drawableTint="?colorOnPrimary"
                 android:fontFamily="@font/open_sans_bold"
                 android:text="@string/bt_add_card"
-                android:textColor="?colorOnSurface"
+                android:textColor="?colorOnPrimary"
                 android:textSize="@dimen/text_sm"
-                android:textStyle="bold"
-                android:visibility="visible"
-                android:layout_marginTop="@dimen/space_lg"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />
+                app:cornerRadius="@dimen/radius_base"
+                android:layout_marginEnd="@dimen/space_lg"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/dialogPositiveBT"
+                app:layout_constraintTop_toTopOf="@+id/dialogPositiveBT" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

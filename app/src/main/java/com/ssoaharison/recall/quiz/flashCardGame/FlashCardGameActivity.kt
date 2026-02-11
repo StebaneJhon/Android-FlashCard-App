@@ -11,12 +11,16 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -24,23 +28,22 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.backend.models.ImmutableDeckWithCards
-import com.ssoaharison.recall.backend.entities.CardDefinition
 import com.ssoaharison.recall.databinding.ActivityFlashCardGameBinding
 import com.ssoaharison.recall.mainActivity.MainActivity
 import com.ssoaharison.recall.settings.MiniGameSettingsSheet
-import com.ssoaharison.recall.util.DeckColorCategorySelector
+import com.ssoaharison.recall.helper.DeckColorCategorySelector
 import com.ssoaharison.recall.util.FlashCardMiniGameRef
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_BACK_AND_FRONT
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_ORIENTATION_FRONT_AND_BACK
@@ -51,26 +54,37 @@ import com.ssoaharison.recall.util.FlashCardMiniGameRef.FILTER_CREATION_DATE
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.FILTER_RANDOM
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIRST
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
-import com.ssoaharison.recall.util.LanguageUtil
+import com.ssoaharison.recall.helper.LanguageUtil
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.ssoaharison.recall.backend.models.ExternalCardDefinition
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
+import com.ssoaharison.recall.databinding.LyAudioPlayerBinding
+import com.ssoaharison.recall.helper.AppMath
+import com.ssoaharison.recall.helper.AppThemeHelper
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.PhotoModel
+import com.ssoaharison.recall.helper.playback.AndroidAudioPlayer
 import com.ssoaharison.recall.util.FlashCardMiniGameRef.CARD_COUNT
 import com.ssoaharison.recall.util.TextType.CONTENT
 import com.ssoaharison.recall.util.TextType.DEFINITION
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
-import com.ssoaharison.recall.util.parcelable
+import com.ssoaharison.recall.helper.parcelable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Locale
 
 
 class FlashCardGameActivity :
     AppCompatActivity(),
     MiniGameSettingsSheet.SettingsApplication,
-    TextToSpeech.OnInitListener {
+    TextToSpeech.OnInitListener
+{
 
     private lateinit var binding: ActivityFlashCardGameBinding
     private val viewModel: FlashCardGameViewModel by viewModels {
@@ -79,11 +93,11 @@ class FlashCardGameActivity :
 
     private lateinit var flashCardProgressBarAdapter: FlashCardProgressBarAdapter
 
-    private var sharedPref: SharedPreferences? = null
-    private var editor: SharedPreferences.Editor? = null
+//    private var sharedPref: SharedPreferences? = null
+//    private var editor: SharedPreferences.Editor? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
-    private var deckWithCards: ImmutableDeckWithCards? = null
+    private var deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions? = null
     private lateinit var frontAnim: AnimatorSet
     private lateinit var backAnim: AnimatorSet
     var isFront = true
@@ -93,8 +107,18 @@ class FlashCardGameActivity :
     private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var tts: TextToSpeech? = null
 
-    private lateinit var tvDefinitions: List<TextView>
+//    private lateinit var tvDefinitions: List<TextView>
+    private lateinit var tvDefinitions: List<FlashcardContentLyModel>
     private val EXTRA_MARGIN = -2
+
+    var lastPlayedAudioFile: AudioModel? = null
+    var lastPlayedAudioViw: LyAudioPlayerBinding? = null
+
+    var statusBarHeight: Float = 58f
+
+    private val player by lazy {
+        AndroidAudioPlayer(this)
+    }
 
     companion object {
         const private val MIN_SWIPE_DISTANCE = -275
@@ -106,33 +130,35 @@ class FlashCardGameActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
+//        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         miniGamePref = getSharedPreferences(
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
             Context.MODE_PRIVATE
         )
-        editor = sharedPref?.edit()
+//        editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
         val themePicker = ThemePicker()
-        val appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = themePicker.selectTheme(appTheme)
+//        val appTheme = sharedPref?.getString("themName", "BASE THEME")
+//        val themRef = themePicker.selectTheme(appTheme)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
 
-        val deckColorCode = deckWithCards?.deck?.deckColorCode
+        val deckColorCode = deckWithCards?.deck?.deckBackground
+        val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
+        setTheme(theme)
 
-        if (deckColorCode.isNullOrBlank() && themRef != null) {
-            setTheme(themRef)
-        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-            val deckTheme = if (appTheme == DARK_THEME) {
-                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
-            } else {
-                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
-            }
-            setTheme(deckTheme)
-        } else {
-            setTheme(themePicker.getDefaultTheme())
-        }
+//        if (deckColorCode.isNullOrBlank() && themRef != null) {
+//            setTheme(themRef)
+//        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
+//            val deckTheme = if (appTheme == DARK_THEME) {
+//                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
+//            } else {
+//                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
+//            }
+//            setTheme(deckTheme)
+//        } else {
+//            setTheme(themePicker.getDefaultTheme())
+//        }
 
         tts = TextToSpeech(this, this)
 
@@ -140,6 +166,26 @@ class FlashCardGameActivity :
         val view = binding.root
 
         setContentView(view)
+
+        WindowCompat.enableEdgeToEdge(window)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout2) { v, windowInserts ->
+            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+            val px = insets.top
+            statusBarHeight = px / resources.displayMetrics.density
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            WindowInsetsCompat.CONSUMED
+        }
+
+//        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+//        statusBarHeight = if (resourceId > 0) {
+//            val px = resources.getDimensionPixelSize(resourceId).toFloat()
+//            px / resources.displayMetrics.density
+//        } else {
+//            0f
+//        }
+
         deckWithCards?.let {
             val cardList = it.cards?.toMutableList()
             val deck = it.deck
@@ -150,17 +196,30 @@ class FlashCardGameActivity :
             }
         }
 
+//        tvDefinitions = listOf(
+//            binding.tvQuizBack1,
+//            binding.tvQuizBack2,
+//            binding.tvQuizBack3,
+//            binding.tvQuizBack4,
+//            binding.tvQuizBack5,
+//            binding.tvQuizBack6,
+//            binding.tvQuizBack7,
+//            binding.tvQuizBack8,
+//            binding.tvQuizBack9,
+//            binding.tvQuizBack10,
+//        )
+
         tvDefinitions = listOf(
-            binding.tvQuizBack1,
-            binding.tvQuizBack2,
-            binding.tvQuizBack3,
-            binding.tvQuizBack4,
-            binding.tvQuizBack5,
-            binding.tvQuizBack6,
-            binding.tvQuizBack7,
-            binding.tvQuizBack8,
-            binding.tvQuizBack9,
-            binding.tvQuizBack10,
+            FlashcardContentLyModel(container = binding.containerBack1, view = binding.inBack1),
+            FlashcardContentLyModel(container = binding.containerBack2, view = binding.inBack2),
+            FlashcardContentLyModel(container = binding.containerBack3, view = binding.inBack3),
+            FlashcardContentLyModel(container = binding.containerBack4, view = binding.inBack4),
+            FlashcardContentLyModel(container = binding.containerBack5, view = binding.inBack5),
+            FlashcardContentLyModel(container = binding.containerBack6, view = binding.inBack6),
+            FlashcardContentLyModel(container = binding.containerBack7, view = binding.inBack7),
+            FlashcardContentLyModel(container = binding.containerBack8, view = binding.inBack8),
+            FlashcardContentLyModel(container = binding.containerBack9, view = binding.inBack9),
+            FlashcardContentLyModel(container = binding.containerBack10, view = binding.inBack10),
         )
 
         applySettings()
@@ -200,9 +259,8 @@ class FlashCardGameActivity :
         gameOn(binding.clOnScreenCardRoot)
 
         binding.btKnow.setOnClickListener {
-            onKnownButtonClicked()
+                onKnownButtonClicked()
         }
-
         binding.btNotKnow.setOnClickListener {
             onKnownNotButtonClicked()
         }
@@ -234,6 +292,58 @@ class FlashCardGameActivity :
             }
         }
 
+        setActinButtonsColor()
+
+    }
+
+    fun setActinButtonsColor() {
+        when(AppThemeHelper.getSavedTheme(this)) {
+            1 -> {
+                setKnownButtonColorOnLightTheme()
+                setUnKnownButtonColorOnLightTheme()
+            }
+            2 -> {
+                setKnownButtonColorOnDarkTheme()
+                setUnKnownButtonColorOnDarkTheme()
+            }
+            else -> {
+                if (AppThemeHelper.isSystemDarkTheme(this))  {
+                    setKnownButtonColorOnDarkTheme()
+                    setUnKnownButtonColorOnDarkTheme()
+                } else {
+                    setKnownButtonColorOnLightTheme()
+                    setUnKnownButtonColorOnLightTheme()
+                }
+            }
+        }
+    }
+
+    fun setKnownButtonColorOnLightTheme() {
+        binding.btKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setKnownButtonColorOnDarkTheme() {
+        binding.btKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.green700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.green50)
+        }
+    }
+
+    fun setUnKnownButtonColorOnLightTheme() {
+        binding.btNotKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red100))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red950)
+        }
+    }
+
+    fun setUnKnownButtonColorOnDarkTheme() {
+        binding.btNotKnow.apply {
+            background.setTint(ContextCompat.getColor(context, R.color.red700))
+            iconTint = ContextCompat.getColorStateList(context, R.color.red50)
+        }
     }
 
     override fun onSettingsApplied() {
@@ -309,10 +419,9 @@ class FlashCardGameActivity :
         val card = binding.clOnScreenCardRoot
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
-        val cardHeight = binding.cvCardFront.height
-        val extraPaddings = resources.getDimension(R.dimen.space_md)
+        val cardHeight = card.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + binding.appBarLayout2.height
         val currentX = card.x
         val currentY = card.y
         completeSwipeToRight(card, currentX)
@@ -329,10 +438,9 @@ class FlashCardGameActivity :
         val card = binding.clOnScreenCardRoot
         val displayMetrics = resources.displayMetrics
         val cardWidth = card.width
-        val cardHeight = binding.cvCardFront.height
-        val extraPaddings = resources.getDimension(R.dimen.space_md)
+        val cardHeight = card.height
         val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
+        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + binding.appBarLayout2.height
         val currentX = card.x
         val currentY = card.y
         completeSwipeToLeft(card, currentX)
@@ -500,10 +608,9 @@ class FlashCardGameActivity :
         card.setOnTouchListener { view, motionEvent ->
             val displayMetrics = resources.displayMetrics
             val cardWidth = view.width
-            val cardHeight = binding.cvCardFront.height
-            val extraPaddings = resources.getDimension(R.dimen.space_md)
+            val cardHeight = view.height
             val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + extraPaddings
+            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)  + binding.appBarLayout2.height
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -587,7 +694,7 @@ class FlashCardGameActivity :
                         val deckColorCode =
                             DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
                                 this@FlashCardGameActivity,
-                                viewModel.deck?.deckColorCode
+                                viewModel.deck?.deckBackground
                             )
                         binding.cvCardFront.backgroundTintList = deckColorCode
                     }
@@ -737,7 +844,7 @@ class FlashCardGameActivity :
                 val deckColorCode =
                     DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
                         this,
-                        viewModel.deck?.deckColorCode
+                        viewModel.deck?.deckBackground
                     )
                 binding.cvCardFront.backgroundTintList = deckColorCode
                 binding.cvCardBack.backgroundTintList = deckColorCode
@@ -781,7 +888,7 @@ class FlashCardGameActivity :
 
         val deckColorCode = DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
             this,
-            viewModel.deck?.deckColorCode
+            viewModel.deck?.deckBackground
         )
 
         if (cardOrientation == CARD_ORIENTATION_BACK_AND_FRONT) {
@@ -790,24 +897,35 @@ class FlashCardGameActivity :
                 this,
                 com.google.android.material.R.attr.colorSurfaceContainerHigh
             )
-            val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
+//            val text = onScreenCards.bottom?.cardDefinition?.first()?.definition
+//            onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText?.let { text ->
+//
+//            }
+            val text = onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionText
+
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
                 deckColorCode,
                 text,
+                onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionImage,
+                onScreenCards.bottom?.contentWithDefinitions?.definitions?.first()?.definitionAudio,
             )
         } else {
             val onFlippedBackgroundColor = MaterialColors.getColorStateListOrNull(
                 this,
                 com.google.android.material.R.attr.colorSurfaceContainer
             )
-            val text = onScreenCards.bottom?.cardContent?.content
+//            val text = onScreenCards.bottom?.cardContent?.content
+            val text = onScreenCards.bottom?.contentWithDefinitions?.content?.contentText
             bindCardBottom(
                 onFlippedBackgroundColor,
                 onScreenCards,
                 deckColorCode,
-                text,)
+                text,
+                onScreenCards.bottom?.contentWithDefinitions?.content?.contentImage,
+                onScreenCards.bottom?.contentWithDefinitions?.content?.contentAudio,
+                )
         }
         bindCardFrontAndBack(deckColorCode, onScreenCards,)
     }
@@ -818,17 +936,88 @@ class FlashCardGameActivity :
     ) {
         binding.cvCardFront.backgroundTintList = deckColorCode
 
-        binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
+//        binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
+        //binding.inFront.tvText.text = onScreenCards.top.contentWithDefinitions.content.contentText
+        val contentText = onScreenCards.top.contentWithDefinitions.content.contentText
+        val contentImage = onScreenCards.top.contentWithDefinitions.content.contentImage
+        val contentAudio = onScreenCards.top.contentWithDefinitions.content.contentAudio
+        if (contentText != null) {
+            val spannableString = Html.fromHtml(contentText, FROM_HTML_MODE_LEGACY).trim()
+            binding.inFront.tvText.apply {
+                visibility = View.VISIBLE
+                text = spannableString
+            }
+        } else {
+            binding.inFront.tvText.visibility = View.GONE
+        }
 
-        val correctDefinitions = getCorrectDefinition(onScreenCards.top.cardDefinition)
+        if (contentImage != null) {
+            val photoFile = File(this.filesDir, contentImage.name)
+            val photoBytes = photoFile.readBytes()
+            val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+            binding.inFront.imgPhoto.apply {
+                visibility = View.VISIBLE
+                setImageBitmap(photoBtm)
+            }
+        } else {
+            binding.inFront.imgPhoto.visibility = View.GONE
+        }
+
+        if (contentAudio != null) {
+            binding.inFront.llAudioContainer.visibility = View.VISIBLE
+            binding.inFront.inAudioPlayer.btPlay.setOnClickListener {
+                playPauseAudio(binding.inFront.inAudioPlayer, contentAudio)
+            }
+        } else {
+            binding.inFront.llAudioContainer.visibility = View.GONE
+        }
+
+//        val correctDefinitions = getCorrectDefinition(onScreenCards.top.cardDefinition)
+        val correctDefinitions = getCorrectDefinition(onScreenCards.top.contentWithDefinitions.definitions)
         val views = arrayListOf<TextView>()
-        tvDefinitions.forEachIndexed { index, tv ->
+        tvDefinitions.forEachIndexed { index, ly ->
             if (index < correctDefinitions?.size!!) {
-                tv.visibility = View.VISIBLE
-                tv.text = correctDefinitions[index].definition
-                views.add(tv)
+                ly.container.visibility = View.VISIBLE
+//                tv.text = correctDefinitions[index].definition
+                //ly.view.tvText.text = correctDefinitions[index].definitionText
+                val definitionText = correctDefinitions[index].definitionText
+                val definitionImage = correctDefinitions[index].definitionImage
+                val definitionAudio = correctDefinitions[index].definitionAudio
+
+                if (definitionText != null) {
+                    val spannableString = Html.fromHtml(definitionText, FROM_HTML_MODE_LEGACY).trim()
+                    ly.view.tvText.apply {
+                        visibility = View.VISIBLE
+                        text = spannableString
+                    }
+                } else {
+                    ly.view.tvText.visibility = View.GONE
+                }
+
+                if (definitionImage != null) {
+                    val photoFile = File(this.filesDir, definitionImage.name)
+                    val photoBytes = photoFile.readBytes()
+                    val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                    ly.view.imgPhoto.apply {
+                        visibility = View.VISIBLE
+                        setImageBitmap(photoBtm)
+                    }
+                } else {
+                    ly.view.imgPhoto.visibility = View.GONE
+                }
+
+                if (definitionAudio != null) {
+                    ly.view.llAudioContainer.visibility = View.VISIBLE
+                    ly.view.inAudioPlayer.btPlay.setOnClickListener {
+                        playPauseAudio(ly.view.inAudioPlayer, definitionAudio)
+                    }
+                } else {
+                    ly.view.llAudioContainer.visibility = View.GONE
+                }
+
+                views.add(ly.view.tvText)
             } else {
-                tv.visibility = View.GONE
+                ly.container.visibility = View.GONE
             }
         }
 
@@ -836,45 +1025,54 @@ class FlashCardGameActivity :
 
         binding.btCardFrontSpeak.setOnClickListener {
             if (tts?.isSpeaking == true) {
-                stopReading(listOf(binding.tvQuizFront))
+                stopReading(listOf(binding.inFront.tvText))
             } else {
-                val language = onScreenCards.top.cardContentLanguage
+//                val language = onScreenCards.top.cardContentLanguage
+                val language = onScreenCards.top.card.cardContentLanguage
                     ?: viewModel.deck?.cardContentDefaultLanguage
                 if (language.isNullOrBlank()) {
+                    val text = Html.fromHtml(onScreenCards.top.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).toString()
                     LanguageUtil().detectLanguage(
-                        text = onScreenCards.top.cardContent?.content!!,
+//                        text = onScreenCards.top.cardContent?.content!!,
+                        text = text,
                         onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
                         onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
                         onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
                         onSuccess = { detectedLanguage ->
                             viewModel.updateCardContentLanguage(
-                                onScreenCards.top.cardId,
+//                                onScreenCards.top.cardId,
+                                onScreenCards.top.card.cardId,
                                 detectedLanguage
                             )
                             readText(
                                 listOf(
                                     TextWithLanguageModel(
-                                        onScreenCards.top.cardId,
-                                        onScreenCards.top.cardContent.content,
-                                        CONTENT,
+//                                        onScreenCards.top.cardId,
+                                        cardId = onScreenCards.top.card.cardId,
+//                                        text = onScreenCards.top.cardContent.content,
+                                        text = text,
+                                        textType = CONTENT,
                                         detectedLanguage
                                     )
                                 ),
-                                listOf(binding.tvQuizFront),
+                                listOf(binding.inFront.tvText),
                             )
                         }
                     )
                 } else {
+                    val text = Html.fromHtml(onScreenCards.top.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).toString()
                     readText(
                         listOf(
                             TextWithLanguageModel(
-                                onScreenCards.top.cardId,
-                                onScreenCards.top.cardContent?.content!!,
-                                CONTENT,
+//                                cardId = onScreenCards.top.cardId,
+                                cardId = onScreenCards.top.card.cardId,
+//                                text = onScreenCards.top.cardContent?.content!!,
+                                text = text,
+                                textType = CONTENT,
                                 language
                             )
                         ),
-                        listOf(binding.tvQuizFront),
+                        listOf(binding.inFront.tvText),
                     )
                 }
 
@@ -885,25 +1083,27 @@ class FlashCardGameActivity :
                 stopReading(views)
             } else {
                 val definitions = cardDefinitionsToStrings(correctDefinitions)
-                val language = onScreenCards.top.cardDefinitionLanguage
-                    ?: viewModel.deck?.cardDefinitionDefaultLanguage
+//                val language = onScreenCards.top.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage
+                val language = onScreenCards.top.card.cardDefinitionLanguage ?: viewModel.deck?.cardDefinitionDefaultLanguage
                 if (language.isNullOrBlank()) {
                     LanguageUtil().detectLanguage(
-                        text = definitions.first(),
+                        text = Html.fromHtml(definitions.first(), FROM_HTML_MODE_LEGACY).toString(),
                         onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
                         onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
                         onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
                         onSuccess = { detectedLanguage ->
                             viewModel.updateCardDefinitionLanguage(
-                                onScreenCards.top.cardId,
-                                detectedLanguage
+//                                cardId = onScreenCards.top.cardId,
+                                cardId = onScreenCards.top.card.cardId,
+                                language = detectedLanguage
                             )
                             val textsToRead = definitions.map { d ->
                                 TextWithLanguageModel(
-                                    onScreenCards.top.cardId,
-                                    d,
-                                    DEFINITION,
-                                    detectedLanguage
+//                                    cardId = onScreenCards.top.cardId,
+                                    cardId = onScreenCards.top.card.cardId,
+                                    text = Html.fromHtml(d, FROM_HTML_MODE_LEGACY).toString(),
+                                    textType = DEFINITION,
+                                    language = detectedLanguage
                                 )
                             }
                             readText(
@@ -914,7 +1114,13 @@ class FlashCardGameActivity :
                     )
                 } else {
                     val textsToRead = definitions.map { d ->
-                        TextWithLanguageModel(onScreenCards.top.cardId, d, DEFINITION, language)
+                        TextWithLanguageModel(
+//                            cardId = onScreenCards.top.cardId,
+                            cardId = onScreenCards.top.card.cardId,
+                            text = Html.fromHtml(d, FROM_HTML_MODE_LEGACY).toString(),
+                            textType = DEFINITION,
+                            language = language
+                        )
                     }
                     readText(
                         textsToRead,
@@ -951,9 +1157,9 @@ class FlashCardGameActivity :
 
     private fun stopReadingAllText() {
         tts?.stop()
-        val views = tvDefinitions + listOf(binding.tvQuizFront)
+        val views = tvDefinitions + listOf(FlashcardContentLyModel(container = binding.containerFront, view = binding.inFront))
         views.forEach { v ->
-            v.setTextColor(
+            v.view.tvText.setTextColor(
                 MaterialColors.getColor(
                     this,
                     com.google.android.material.R.attr.colorOnSurface,
@@ -963,10 +1169,12 @@ class FlashCardGameActivity :
         }
     }
 
-    private fun cardDefinitionsToStrings(definitions: List<CardDefinition>?): List<String> {
+    private fun cardDefinitionsToStrings(definitions: List<ExternalCardDefinition>?): List<String> {
         val correctAlternative = mutableListOf<String>()
         definitions?.forEach {
-            correctAlternative.add(it.definition)
+            it.definitionText?.let { text ->
+                correctAlternative.add(text)
+            }
         }
         return correctAlternative
     }
@@ -1037,18 +1245,107 @@ class FlashCardGameActivity :
         onScreenCards: FlashCardGameModel,
         deckColorCode: ColorStateList?,
         text: String?,
+        image: PhotoModel?,
+        audioModel: AudioModel?
     ) {
         binding.clCardBottomContainer.backgroundTintList = onFlippedBackgroundColor
         if (onScreenCards.bottom != null) {
             binding.cvCardBottom.backgroundTintList = deckColorCode
-            binding.tvQuizBottom.text = text
+            //binding.inBottom.tvText.text = text
+            if (text != null) {
+                val spannableString = Html.fromHtml(text, FROM_HTML_MODE_LEGACY).trim()
+                binding.inBottom.tvText.visibility = View.VISIBLE
+                binding.inBottom.tvText.text = spannableString
+            } else {
+                binding.inBottom.tvText.visibility = View.GONE
+            }
+
+            if (image != null) {
+                val photoFile = File( this.filesDir, image.name)
+                val photoBytes = photoFile.readBytes()
+                val photoBtm = BitmapFactory.decodeByteArray(photoBytes, 0, photoBytes.size)
+                binding.inBottom.imgPhoto.apply {
+                    visibility = View.VISIBLE
+                    setImageBitmap(photoBtm)
+                }
+            } else {
+                binding.inBottom.imgPhoto.visibility = View.GONE
+            }
+
+            if (audioModel != null) {
+                binding.inBottom.llAudioContainer.visibility = View.VISIBLE
+                binding.inBottom.inAudioPlayer.btPlay.setOnClickListener {
+                    playPauseAudio(binding.inBottom.inAudioPlayer, audioModel)
+                }
+            } else {
+                binding.inBottom.llAudioContainer.visibility = View.GONE
+            }
+
         } else {
             binding.cvCardBottom.backgroundTintList = deckColorCode
-            binding.tvQuizBottom.text = "..."
+            binding.inBottom.tvText.text = "..."
         }
     }
 
-    private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
+    private fun playPauseAudio(
+        view: LyAudioPlayerBinding,
+        audio: AudioModel
+    ) {
+        when {
+            player.hasPlayed() && !player.isPlaying() -> {
+                // Resume audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                player.play()
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+            }
+
+            player.hasPlayed() && player.isPlaying() -> {
+                // Pause audio
+                view.btPlay.setIconResource(R.drawable.icon_play)
+                player.pause()
+            }
+
+            !player.hasPlayed() && !player.isPlaying() -> {
+                // Play audio
+                view.btPlay.setIconResource(R.drawable.icon_pause)
+                val audioFile = File(this.filesDir, audio.name)
+                player.playFile(audioFile)
+                lifecycleScope.launch {
+                    while (player.isPlaying()) {
+                        val progress = AppMath().normalize(
+                            player.getCurrentPosition(),
+                            player.getDuration()
+                        )
+                        view.lpiAudioProgression.progress = progress
+                        delay(100L)
+                    }
+                }
+                player.onCompletion {
+                    lastPlayedAudioFile = null
+                    lastPlayedAudioViw = null
+                    view.btPlay.setIconResource(R.drawable.icon_play)
+                }
+            }
+        }
+    }
+
+//    private fun getCorrectDefinition(definitions: List<CardDefinition>?): List<CardDefinition>? {
+//        definitions?.let { defins ->
+//            return defins.filter { isCorrect(it.isCorrectDefinition) }
+//        }
+//        return null
+//    }
+
+    private fun getCorrectDefinition(definitions: List<ExternalCardDefinition>?): List<ExternalCardDefinition>? {
         definitions?.let { defins ->
             return defins.filter { isCorrect(it.isCorrectDefinition) }
         }
@@ -1058,8 +1355,8 @@ class FlashCardGameActivity :
     fun isCorrect(index: Int?) = index == 1
 
     private fun initFlashCard(
-        cardList: MutableList<ImmutableCard?>,
-        deck: ImmutableDeck,
+        cardList: MutableList<ExternalCardWithContentAndDefinitions>,
+        deck: ExternalDeck,
         initOriginalCardList: Boolean = false
     ) {
         isFlashCardGameScreenHidden(false)
@@ -1075,8 +1372,7 @@ class FlashCardGameActivity :
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
             setNavigationOnClickListener { finish() }
-            title = getString(R.string.bt_flash_card_game_start)
-            subtitle = deck.deckName
+            title = deck.deckName
         }
 
     }

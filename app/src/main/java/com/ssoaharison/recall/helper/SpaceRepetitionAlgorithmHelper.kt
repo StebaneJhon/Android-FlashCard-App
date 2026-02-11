@@ -2,10 +2,16 @@ package com.ssoaharison.recall.helper
 
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
+import com.ssoaharison.recall.backend.entities.Card
 import com.ssoaharison.recall.backend.models.ImmutableCard
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.models.toExternal
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
+import com.ssoaharison.recall.backend.entities.relations.CardContentWithDefinitions
+import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalCard
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.util.CardLevel.L1
 import com.ssoaharison.recall.util.CardLevel.L2
 import com.ssoaharison.recall.util.CardLevel.L3
@@ -13,7 +19,6 @@ import com.ssoaharison.recall.util.CardLevel.L4
 import com.ssoaharison.recall.util.CardLevel.L5
 import com.ssoaharison.recall.util.CardLevel.L6
 import com.ssoaharison.recall.util.CardLevel.L7
-import com.ssoaharison.recall.util.ImmutableCardWithPosition
 import com.ssoaharison.recall.util.LevelColors.BROWNE
 import com.ssoaharison.recall.util.LevelColors.GREEN500
 import com.ssoaharison.recall.util.LevelColors.GREEN700
@@ -59,18 +64,19 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun getActualBoxLevels(): List<ImmutableSpaceRepetitionBox>? {
-        return boxLevels
+    fun getActualBoxLevels(): List<ImmutableSpaceRepetitionBox> {
+
+        return boxLevels ?: getInitialSpaceRepetitionBox().toExternal()
     }
 
     private val colors = mapOf(
-        RED to R.color.red800,
-        ORANGE to R.color.orange800,
-        BROWNE to R.color.amber800,
-        YELLOW700 to R.color.yellow800,
-        YELLOW500 to R.color.lime800,
-        GREEN500 to R.color.green800,
-        GREEN700 to R.color.emerald800
+        RED to R.color.red600,
+        ORANGE to R.color.orange600,
+        BROWNE to R.color.amber600,
+        YELLOW700 to R.color.yellow600,
+        YELLOW500 to R.color.lime600,
+        GREEN500 to R.color.green600,
+        GREEN700 to R.color.emerald600
     )
 
     private val carBackgroundColors = mapOf(
@@ -169,7 +175,7 @@ class SpaceRepetitionAlgorithmHelper{
         return formatter.format(LocalDate.now())
     }
 
-    fun isForgotten(card: ImmutableCard): Boolean {
+    fun isForgotten(card: ExternalCard): Boolean {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return if (!card.nextMissMemorisationDate.isNullOrEmpty() && card.nextMissMemorisationDate != "0") {
@@ -186,7 +192,7 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun isToBeRevised(card: ImmutableCard): Boolean {
+    fun isToBeRevised(card: ExternalCard): Boolean {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return if (!card.nextRevisionDate.isNullOrEmpty() && card.nextRevisionDate != "0") {
@@ -203,13 +209,13 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun status(card: ImmutableCard, isKnown: Boolean): String {
+    fun status(card: ExternalCard, isKnown: Boolean): String {
         val today = LocalDate.now()
         val lastRevision = lastRevisionDate(card)
         val nextForgetting = getNextForgottenDate(card)
         lastRevision?.let {
             if (lastRevision == today && isKnown && nextForgetting != today && !isToBeRevised(card)) {
-                return card.cardStatus!!
+                return card.cardLevel!!
             }
         }
 
@@ -218,10 +224,10 @@ class SpaceRepetitionAlgorithmHelper{
 
     private fun nextLV(
         isKnown: Boolean,
-        card: ImmutableCard
+        card: ExternalCard
     ): String {
         return if (isKnown) {
-            when (card.cardStatus) {
+            when (card.cardLevel) {
                 "L1" -> { "L2" }
                 "L2" -> { "L3" }
                 "L3" -> { "L4" }
@@ -234,7 +240,7 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun lastRevisionDate(card: ImmutableCard): LocalDate? {
+    fun lastRevisionDate(card: ExternalCard): LocalDate? {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return if (!card.lastRevisionDate.isNullOrEmpty() && card.lastRevisionDate != "0") {
             LocalDate.parse(card.lastRevisionDate, formatter)
@@ -244,7 +250,7 @@ class SpaceRepetitionAlgorithmHelper{
 
     }
 
-    fun getNextForgottenDate(card: ImmutableCard): LocalDate? {
+    fun getNextForgottenDate(card: ExternalCard): LocalDate? {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return if (!card.nextMissMemorisationDate.isNullOrEmpty() && card.nextMissMemorisationDate != "0") {
             LocalDate.parse(card.nextMissMemorisationDate, formatter)
@@ -253,7 +259,7 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun getNextRevisionDate(card: ImmutableCard): LocalDate? {
+    fun getNextRevisionDate(card: ExternalCard): LocalDate? {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         return if (!card.nextRevisionDate.isNullOrEmpty() && card.nextRevisionDate != "0") {
             LocalDate.parse(card.nextRevisionDate, formatter)
@@ -262,7 +268,7 @@ class SpaceRepetitionAlgorithmHelper{
         }
     }
 
-    fun nextForgettingDate(card: ImmutableCard, isKnown: Boolean, newCardStatus: String): String {
+    fun nextForgettingDate(card: ExternalCard, isKnown: Boolean, newCardStatus: String): String {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -297,7 +303,7 @@ class SpaceRepetitionAlgorithmHelper{
             return result
         }
 
-        card.cardStatus?.let {
+        card.cardLevel?.let {
             val newBoxLevel = boxLevels?.let { it1 -> getBoxLevelByStatus(it1, newCardStatus) }
             val newRepeatDay = newBoxLevel?.levelRepeatIn?.plus(newBoxLevel.levelRevisionMargin!!) ?: 1
             //val days = box[newCardStatus]?.repeatDay!!.plus(box[newCardStatus]!!.revisionMargin)
@@ -325,7 +331,7 @@ class SpaceRepetitionAlgorithmHelper{
         return null
     }
 
-    fun nextRevisionDate(card: ImmutableCard, isKnown: Boolean, newCardStatus: String): String {
+    fun nextRevisionDate(card: ExternalCard, isKnown: Boolean, newCardStatus: String): String {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
@@ -359,7 +365,7 @@ class SpaceRepetitionAlgorithmHelper{
             return result
         }
 
-        card.cardStatus?.let {
+        card.cardLevel?.let {
             val newBoxLevel = boxLevels?.let { it1 -> getBoxLevelByStatus(it1, newCardStatus) }
             val repeatIn = newBoxLevel?.levelRepeatIn ?: 1
             val period = Period.of(0, 0, repeatIn)
@@ -372,30 +378,95 @@ class SpaceRepetitionAlgorithmHelper{
     }
 
     fun rescheduleCard(
-        card: ImmutableCard,
+        card: ExternalCard,
         isKnown: Boolean
-    ): ImmutableCard {
+    ): Card {
         val newStatus = status(card, isKnown)
         val nextRevision = nextRevisionDate(card, isKnown, newStatus)
         val lastRevision = today()
         val nextForgettingDate = nextForgettingDate(card, isKnown, newStatus)
-        return ImmutableCard(
-            card.cardId,
-            card.cardContent,
-            card.cardDefinition,
-            card.deckId,
-            card.isFavorite,
-            card.revisionTime,
-            card.missedTime,
-            card.creationDate,
-            lastRevision,
-            newStatus,
-            nextForgettingDate,
-            nextRevision,
-            card.cardType,
-            card.cardContentLanguage,
-            card.cardDefinitionLanguage,
+//        return ImmutableCard(
+//            card.cardId,
+//            card.cardContent,
+//            card.cardDefinition,
+//            card.deckId,
+//            card.isFavorite,
+//            card.revisionTime,
+//            card.missedTime,
+//            card.creationDate,
+//            lastRevision,
+//            newStatus,
+//            nextForgettingDate,
+//            nextRevision,
+//            card.cardType,
+//            card.cardContentLanguage,
+//            card.cardDefinitionLanguage,
+//        )
+
+        return Card(
+            cardId = card.cardId,
+            deckOwnerId = card.deckOwnerId,
+            cardLevel = newStatus,
+            cardType = card.cardType,
+            revisionTime = card.revisionTime,
+            missedTime = card.missedTime,
+            creationDate = card.creationDate,
+            lastRevisionDate = lastRevision,
+            nextMissMemorisationDate = nextForgettingDate,
+            nextRevisionDate = nextRevision,
+            cardContentLanguage = card.cardContentLanguage,
+            cardDefinitionLanguage = card.cardDefinitionLanguage
         )
+    }
+
+    fun rescheduleExternalCardWithContentAndDefinitions(
+        externalCardWithContentAndDefinitions: ExternalCardWithContentAndDefinitions,
+        isKnown: Boolean
+    ): ExternalCardWithContentAndDefinitions {
+        val newStatus = status(externalCardWithContentAndDefinitions.card, isKnown)
+        val nextRevision = nextRevisionDate(externalCardWithContentAndDefinitions.card, isKnown, newStatus)
+        val lastRevision = today()
+        val nextForgettingDate = nextForgettingDate(externalCardWithContentAndDefinitions.card, isKnown, newStatus)
+
+        val card = externalCardWithContentAndDefinitions.card
+        val contentWithDefinitions = externalCardWithContentAndDefinitions.contentWithDefinitions
+        val updatedCard = ExternalCard(
+            cardId = card.cardId,
+            deckOwnerId = card.deckOwnerId,
+            cardLevel = newStatus,
+            cardType = card.cardType,
+            revisionTime = card.revisionTime,
+            missedTime = card.missedTime,
+            creationDate = card.creationDate,
+            lastRevisionDate = lastRevision,
+            nextMissMemorisationDate = nextForgettingDate,
+            nextRevisionDate = nextRevision,
+            cardContentLanguage = card.cardContentLanguage,
+            cardDefinitionLanguage = card.cardDefinitionLanguage
+        )
+        val updateCardWithContentAndDefinitions = ExternalCardWithContentAndDefinitions(
+            card = updatedCard,
+            contentWithDefinitions = contentWithDefinitions
+        )
+//        return ImmutableCard(
+//            card.cardId,
+//            card.cardContent,
+//            card.cardDefinition,
+//            card.deckId,
+//            card.isFavorite,
+//            card.revisionTime,
+//            card.missedTime,
+//            card.creationDate,
+//            lastRevision,
+//            newStatus,
+//            nextForgettingDate,
+//            nextRevision,
+//            card.cardType,
+//            card.cardContentLanguage,
+//            card.cardDefinitionLanguage,
+//        )
+
+        return updateCardWithContentAndDefinitions
     }
 
 }

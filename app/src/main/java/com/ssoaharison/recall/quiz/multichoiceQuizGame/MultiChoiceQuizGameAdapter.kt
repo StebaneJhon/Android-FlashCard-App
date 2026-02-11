@@ -15,8 +15,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.util.TextWithLanguageModel
-import com.ssoaharison.recall.util.ThemeConst.DARK_THEME
-
 class MultiChoiceQuizGameAdapter(
     val context: Context,
     val cardList: List<MultiChoiceGameCardModel>,
@@ -142,29 +140,29 @@ class MultiChoiceQuizGameAdapter(
         isAnswerCorrect: Boolean,
         appTheme: String
     ) {
-        if (appTheme != DARK_THEME) {
-            if (isAnswerCorrect) {
-                button.background.setTint(ContextCompat.getColor(context, R.color.green50))
-                button.setStrokeColorResource(R.color.green500)
-                button.setIconTintResource(R.color.green500)
-            } else {
-                button.background.setTint(ContextCompat.getColor(context, R.color.red50))
-                button.setStrokeColorResource(R.color.red500)
-                button.setIconTintResource(R.color.red500)
-            }
-        } else {
-            if (isAnswerCorrect) {
-                button.background.setTint(ContextCompat.getColor(context, R.color.green800))
-                button.setStrokeColorResource(R.color.green50)
-                button.setIconTintResource(R.color.green50)
-                button.setTextColor(ContextCompat.getColor(context, R.color.green50))
-            } else {
-                button.background.setTint(ContextCompat.getColor(context, R.color.red800))
-                button.setStrokeColorResource(R.color.red50)
-                button.setIconTintResource(R.color.red50)
-                button.setTextColor(ContextCompat.getColor(context, R.color.red50))
-            }
-        }
+//        if (appTheme != DARK_THEME) {
+//            if (isAnswerCorrect) {
+//                button.background.setTint(ContextCompat.getColor(context, R.color.green50))
+//                button.setStrokeColorResource(R.color.green500)
+//                button.setIconTintResource(R.color.green500)
+//            } else {
+//                button.background.setTint(ContextCompat.getColor(context, R.color.red50))
+//                button.setStrokeColorResource(R.color.red500)
+//                button.setIconTintResource(R.color.red500)
+//            }
+//        } else {
+//            if (isAnswerCorrect) {
+//                button.background.setTint(ContextCompat.getColor(context, R.color.green800))
+//                button.setStrokeColorResource(R.color.green50)
+//                button.setIconTintResource(R.color.green50)
+//                button.setTextColor(ContextCompat.getColor(context, R.color.green50))
+//            } else {
+//                button.background.setTint(ContextCompat.getColor(context, R.color.red800))
+//                button.setStrokeColorResource(R.color.red50)
+//                button.setIconTintResource(R.color.red50)
+//                button.setTextColor(ContextCompat.getColor(context, R.color.red50))
+//            }
+//        }
     }
 
 }

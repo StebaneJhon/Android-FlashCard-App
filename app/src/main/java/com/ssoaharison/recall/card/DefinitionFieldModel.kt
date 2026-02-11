@@ -1,13 +1,13 @@
 package com.ssoaharison.recall.card
 
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.checkbox.MaterialCheckBox
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
+import com.ssoaharison.recall.helper.AudioModel
+import com.ssoaharison.recall.helper.PhotoModel
 
-data class DefinitionFieldModel(
-    val fieldLy: TextInputLayout,
-    val fieldEd: TextInputEditText,
-    val chip: MaterialCheckBox,
-    val btDeleteField: MaterialButton?,
+data class DefinitionFieldModel (
+    var definitionId: String,
+    var definitionText: String?,
+    var definitionImage: PhotoModel?,
+    var definitionAudio: AudioModel?,
+    var isCorrectDefinition: Boolean,
+    var hasFocus: Boolean,
 )

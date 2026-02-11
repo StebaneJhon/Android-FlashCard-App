@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -18,17 +18,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardApplication
 import com.ssoaharison.recall.backend.models.ImmutableSpaceRepetitionBox
 import com.ssoaharison.recall.backend.entities.SpaceRepetitionBox
 import com.ssoaharison.recall.databinding.FragmentSettingsBinding
-import com.ssoaharison.recall.util.ContactActions.CONTACT
-import com.ssoaharison.recall.util.ContactActions.HELP
+import com.ssoaharison.recall.helper.AppThemeHelper
 import com.ssoaharison.recall.util.ThemePicker
 import com.ssoaharison.recall.util.UiState
-import com.ssoaharison.recall.util.ThemeConst.WHITE_THEME
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -42,11 +39,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
         ViewModelProvider(this, SettingsFragmentViewModelFactory(repository))[SettingsFragmentViewModel::class.java]
     }
 
-    private var appTheme: String? = null
-    private lateinit var themePickerAdapter: ThemePickerAdapter
-
-//    private lateinit var gridLayoutManager: GridLayoutManager
-//    private lateinit var linearLayoutManager: LinearLayoutManager
 
     private var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
@@ -68,14 +60,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
 
         sharedPref = activity?.getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         editor = sharedPref?.edit()
-        appTheme = sharedPref?.getString("themName", "WHITE THEM")
-        val themRef = appTheme?.let { ThemePicker().selectTheme(it) }
-        if (themRef != null) {
-            activity?.setTheme(themRef)
-        }
-
-//        gridLayoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
-//        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         binding.settingsTopAppBar.setNavigationOnClickListener {
             activity?.findViewById<DrawerLayout>(R.id.mainActivityRoot)?.open()
@@ -112,71 +96,30 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
                 }
         }
 
-        lifecycleScope.launch {
-            delay(50)
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                settingsFragmentViewModel.initThemeSelection(ThemePicker().getThemes(), appTheme ?: WHITE_THEME)
-                settingsFragmentViewModel.themSelectionList.collect {listOfTheme ->
-                    displayThemes(listOfTheme)
+        when (AppThemeHelper.getSavedTheme(requireContext())) {
+            1 -> binding.rgAppThemes.check(R.id.rb_light)
+            2 -> binding.rgAppThemes.check(R.id.rb_dark)
+            else -> binding.rgAppThemes.check(R.id.rb_system)
+        }
+
+        binding.rgAppThemes.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.rb_light -> {
+                    AppThemeHelper.saveTheme(requireContext(), AppCompatDelegate.MODE_NIGHT_NO)
+                }
+                R.id.rb_dark -> {
+                    AppThemeHelper.saveTheme(requireContext(), AppCompatDelegate.MODE_NIGHT_YES)
+                }
+                R.id.rb_system -> {
+                    AppThemeHelper.saveTheme(requireContext(), AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                 }
             }
+         }
+
+        binding.btCreditsAndAttributions.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_creditsAndAttributionsFragment)
         }
 
-//        binding.btPrivacyOthersSection.setOnClickListener {
-//            findNavController().navigate(R.id.action_settingsFragment_to_privacyPolicyFragment)
-//        }
-//        binding.btAboutOthersSection.setOnClickListener {
-//            findNavController().navigate(R.id.action_settingsFragment_to_aboutRecallFragment)
-//        }
-//        binding.btHelpOthersSection.setOnClickListener {
-//            sendEmail(HELP)
-//        }
-//        binding.btContactOthersSection.setOnClickListener {
-//            sendEmail(CONTACT)
-//        }
-//        binding.btRateOthersSection.setOnClickListener {
-//            Toast.makeText(requireContext(), getString(R.string.error_message_function_not_available), Toast.LENGTH_LONG).show()
-//        }
-
-//        binding.tvThemeSectionTitle.setOnClickListener { v ->
-//            if (binding.rvSettingsThemePicker.layoutManager == gridLayoutManager) {
-//                binding.rvSettingsThemePicker.layoutManager = linearLayoutManager
-//                (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
-//                    0, 0, R.drawable.icon_expand_more, 0
-//                )
-//            } else {
-//                binding.rvSettingsThemePicker.layoutManager = gridLayoutManager
-//                (v as TextView).setCompoundDrawablesRelativeWithIntrinsicBounds(
-//                    0, 0, R.drawable.icon_expand_less, 0
-//                )
-//            }
-//        }
-
-    }
-
-    private fun displayThemes(listOfTheme: ArrayList<ThemeModel>) {
-        themePickerAdapter = ThemePickerAdapter(
-            requireContext(),
-            listOfTheme
-        ) {selectedTheme ->
-            settingsFragmentViewModel.selectTheme(selectedTheme.themeId)
-            setAppTheme(selectedTheme.themeId)
-            updateAppTheme()
-            themePickerAdapter.notifyDataSetChanged()
-        }
-        binding.rvSettingsThemePicker.apply {
-            adapter = themePickerAdapter
-            setHasFixedSize(true)
-            layoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
-        }
-    }
-
-    private fun sendEmail(subject: String) {
-        val action = SettingsFragmentDirections.actionSettingsFragmentToEmailFragment(subject)
-        findNavController().navigate(
-            action,
-            NavOptions.Builder().setPopUpTo(R.id.emailFragment, true).build()
-        )
     }
 
     private fun bindSpaceRepetitionBox(boxLevels: List<ImmutableSpaceRepetitionBox>) {
@@ -195,17 +138,6 @@ class SettingsFragment : Fragment(), SettingsFragmentEditBoxLevelDialog.Settings
     fun onBoxLevelCilcked(boxLevel: ImmutableSpaceRepetitionBox, boxLevelList: List<ImmutableSpaceRepetitionBox>) {
         val newDialog = SettingsFragmentEditBoxLevelDialog(boxLevel, boxLevelList)
         newDialog.show(parentFragmentManager, "Update Box Level Dialog")
-    }
-
-    private fun updateAppTheme() {
-        activity?.recreate()
-    }
-
-    private fun setAppTheme(themName: String) {
-        editor?.apply {
-            putString("themName", themName)
-            apply()
-        }
     }
 
     override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {

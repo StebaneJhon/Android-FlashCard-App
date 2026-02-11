@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="@dimen/space_sm">
+
+    <ImageView
+        android:id="@+id/img_leading_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/icon_check_box"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/img_photo"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/img_height_base"
+        android:background="@drawable/bg_radius_xs"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_launcher_background"
+        android:layout_marginStart="@dimen/space_md"
+        app:layout_constraintStart_toEndOf="@id/img_leading_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_container_audio_player"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xxs"
+        android:background="@drawable/bg_radius_xs"
+        android:backgroundTint="?colorSurfaceContainerLow"
+        android:layout_marginStart="@dimen/space_md"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_leading_icon"
+        app:layout_constraintTop_toBottomOf="@id/img_photo">
+
+        <include
+            android:id="@+id/in_audio_player"
+            layout="@layout/ly_audio_player" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:layout_marginStart="@dimen/space_md"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_leading_icon"
+        app:layout_constraintTop_toBottomOf="@+id/ll_container_audio_player"
+        tools:text="Alternative 1" />
+</androidx.constraintlayout.widget.ConstraintLayout>

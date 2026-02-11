@@ -17,11 +17,10 @@ class HostFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_host, container, false)
         if (onBoardingFinished()) {
-            findNavController().navigate(R.id.action_hostFragment_to_deckFragment2)
+            findNavController().navigate(R.id.action_hostFragment_to_cardFragment)
         } else {
             findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
         }
-//        findNavController().navigate(R.id.action_hostFragment_to_onBoardingViewPagerFragment)
         return view
     }
 

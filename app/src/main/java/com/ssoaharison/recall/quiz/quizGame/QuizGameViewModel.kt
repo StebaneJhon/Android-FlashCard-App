@@ -5,13 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.ssoaharison.recall.backend.FlashCardRepository
-import com.ssoaharison.recall.backend.models.ImmutableCard
-import com.ssoaharison.recall.backend.models.ImmutableDeck
-import com.ssoaharison.recall.backend.entities.CardDefinition
+import com.ssoaharison.recall.backend.models.ExternalCardDefinition
+import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.backend.models.toLocal
 import com.ssoaharison.recall.helper.RoteLearningAlgorithmHelper
 import com.ssoaharison.recall.helper.SpaceRepetitionAlgorithmHelper
-import com.ssoaharison.recall.util.Calculations
-import com.ssoaharison.recall.util.ImmutableCardWithPosition
+import com.ssoaharison.recall.helper.Calculations
+import com.ssoaharison.recall.util.ExternalCardWithContentAndDefinitionAndPosition
 import com.ssoaharison.recall.util.UiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,10 +28,10 @@ class TestQuizGameViewModel(
     private val repository: FlashCardRepository
 ) : ViewModel() {
 
-    lateinit var cardList: MutableList<ImmutableCard?>
-    private var originalCardList: List<ImmutableCard?>? = null
-    private val missedCards: ArrayList<ImmutableCard?> = arrayListOf()
-    var deck: ImmutableDeck? = null
+    lateinit var cardList: MutableList<ExternalCardWithContentAndDefinitions>
+    private var originalCardList: List<ExternalCardWithContentAndDefinitions>? = null
+    private val missedCards: ArrayList<ExternalCardWithContentAndDefinitions> = arrayListOf()
+    var deck: ExternalDeck? = null
 
     //    private var attemptTime = 0
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
@@ -40,15 +41,15 @@ class TestQuizGameViewModel(
     private var revisedCardsCount = 0
     private var missedAnswersCount = 0
 
-    fun initCardList(gameCards: MutableList<ImmutableCard?>) {
+    fun initCardList(gameCards: MutableList<ExternalCardWithContentAndDefinitions>) {
         cardList = gameCards
     }
 
-    fun initDeck(gameDeck: ImmutableDeck) {
+    fun initDeck(gameDeck: ExternalDeck) {
         deck = gameDeck
     }
 
-    fun initOriginalCardList(gameCards: List<ImmutableCard?>) {
+    fun initOriginalCardList(gameCards: List<ExternalCardWithContentAndDefinitions>) {
         originalCardList = gameCards
         initRestCards()
     }
@@ -65,7 +66,7 @@ class TestQuizGameViewModel(
         missedCards.clear()
     }
 
-    fun getDeckColorCode() = deck?.deckColorCode ?: "black"
+    fun getDeckColorCode() = deck?.deckBackground ?: "black"
 
 
     private lateinit var localQuizGameCards: MutableList<QuizGameCardModel>
@@ -112,7 +113,7 @@ class TestQuizGameViewModel(
     fun updateActualCards(amount: Int) {
         val cards = getCardsAmount(cardList, amount)
         localQuizGameCards = cards?.map { card ->
-            localCardToQuizGameCardModel(card)
+            externalCardWithContentAndDefinitionsToQuizGameCardModel(card)
         }!!.toMutableList()
         localQuizGameCards.first().setAsActualOrPassed()
         revisedCardsCount = localQuizGameCards.size
@@ -120,26 +121,26 @@ class TestQuizGameViewModel(
 
     fun updateActualCardsWithMissedCards() {
         localQuizGameCards = missedCards.map { card ->
-            localCardToQuizGameCardModel(card)
+            externalCardWithContentAndDefinitionsToQuizGameCardModel(card)
         }.toMutableList()
         revisedCardsCount = localQuizGameCards.size
         missedCards.clear()
     }
 
-    private fun localCardToQuizGameCardModel(card: ImmutableCard?): QuizGameCardModel {
+    private fun externalCardWithContentAndDefinitionsToQuizGameCardModel(cardWithContentAndDefinitions: ExternalCardWithContentAndDefinitions): QuizGameCardModel {
         val externalDefinitions = toQuizGameCardDefinitionModel(
-            card?.cardId!!,
-            card.cardType!!,
-            card.cardDefinition!!
+            cardWithContentAndDefinitions.card.cardId,
+            cardWithContentAndDefinitions.card.cardType!!,
+            cardWithContentAndDefinitions.contentWithDefinitions.definitions
         )
         return QuizGameCardModel(
-            card.cardId,
-            card.cardContent,
-            card.cardContentLanguage ?: deck?.cardContentDefaultLanguage,
+            cardWithContentAndDefinitions.card.cardId,
+            cardWithContentAndDefinitions.contentWithDefinitions.content,
+            cardWithContentAndDefinitions.card.cardContentLanguage ?: deck?.cardContentDefaultLanguage,
             externalDefinitions,
-            card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
-            card.cardType,
-            card.cardStatus
+            cardWithContentAndDefinitions.card.cardDefinitionLanguage ?: deck?.cardDefinitionDefaultLanguage,
+            cardWithContentAndDefinitions.card.cardType,
+            cardWithContentAndDefinitions.card.cardLevel
         )
     }
 
@@ -167,16 +168,18 @@ class TestQuizGameViewModel(
     private fun toQuizGameCardDefinitionModel(
         cardId: String,
         cardType: String,
-        d: List<CardDefinition>
+        d: List<ExternalCardDefinition>
     ): List<QuizGameCardDefinitionModel> {
         val formatedDefinitions = d.map {
             QuizGameCardDefinitionModel(
                 definitionId = it.definitionId,
                 cardId = cardId,
-                definition = it.definition,
+                definition = it.definitionText ?: "No text found",
                 cardType = cardType,
                 isCorrect = it.isCorrectDefinition,
-                isSelected = false
+                isSelected = false,
+                definitionImage = it.definitionImage,
+                definitionAudio = it.definitionAudio,
             )
         }.shuffled()
         return formatedDefinitions.mapIndexed { index, item ->
@@ -188,7 +191,7 @@ class TestQuizGameViewModel(
 
 
     fun sortCardsByLevel() {
-        cardList.sortBy { it?.cardStatus }
+        cardList.sortBy { it.card.cardLevel }
     }
 
     fun shuffleCards() {
@@ -196,12 +199,11 @@ class TestQuizGameViewModel(
     }
 
     fun sortByCreationDate() {
-        cardList.sortBy { it?.cardId }
+        cardList.sortBy { it.card.creationDate }
     }
 
     fun cardToReviseOnly() {
-        cardList =
-            cardList.filter { spaceRepetitionHelper.isToBeRevised(it!!) } as MutableList<ImmutableCard?>
+        cardList = cardList.filter { spaceRepetitionHelper.isToBeRevised(it.card) } as MutableList<ExternalCardWithContentAndDefinitions>
     }
 
     fun restoreCardList() {
@@ -250,12 +252,13 @@ class TestQuizGameViewModel(
             upOrDowngradeCard(true, answer.cardId)
         } else {
             upOrDowngradeCard(false, answer.cardId)
-            val currentCard = getLocalCardWithPositionById(actualCard.cardId)?.card
-            missedCards.add(currentCard)
-            val cardToRepeat = localCardToQuizGameCardModel(currentCard)
-            val cardToRepeatNewPosition = roteLearningHelper.onRepeatCardPosition(localQuizGameCards, cardPosition)
-            localQuizGameCards.add(cardToRepeatNewPosition, cardToRepeat)
-            missedAnswersCount++
+            getExternalCardWithContentAndDefinitionsAndPositionById(actualCard.cardId)?.card?.let {
+                missedCards.add(it)
+                val cardToRepeat = externalCardWithContentAndDefinitionsToQuizGameCardModel(it)
+                val cardToRepeatNewPosition = roteLearningHelper.onRepeatCardPosition(localQuizGameCards, cardPosition)
+                localQuizGameCards.add(cardToRepeatNewPosition, cardToRepeat)
+                missedAnswersCount++
+            }
         }
     }
 
@@ -266,10 +269,12 @@ class TestQuizGameViewModel(
         val actualCard = localQuizGameCards[cardPosition]
         upOrDowngradeCard(knownOrNot, actualCard.cardId)
         if (!knownOrNot) {
-            missedCards.add(getLocalCardWithPositionById(actualCard.cardId)?.card)
-            val currentCard = localCardToQuizGameCardModel(getLocalCardWithPositionById(actualCard.cardId)?.card)
-            localQuizGameCards.add(currentCard)
-            missedAnswersCount++
+            getExternalCardWithContentAndDefinitionsAndPositionById(actualCard.cardId)?.card?.let {
+                missedCards.add(it)
+                val currentCard = externalCardWithContentAndDefinitionsToQuizGameCardModel(it)
+                localQuizGameCards.add(currentCard)
+                missedAnswersCount++
+            }
         } else {
             actualCard.isCorrectlyAnswered = true
         }
@@ -288,12 +293,12 @@ class TestQuizGameViewModel(
 
     fun getUserAnswerAccuracy() = Calculations().percentageOfRest(getAnswersCount(), missedAnswersCount)
 
-    private fun getLocalCardWithPositionById(cardId: String): ImmutableCardWithPosition? {
+    private fun getExternalCardWithContentAndDefinitionsAndPositionById(cardId: String): ExternalCardWithContentAndDefinitionAndPosition? {
         var i = 0
         while (i < cardList.size) {
             val c = cardList[i]
-            if (c?.cardId == cardId) {
-                return ImmutableCardWithPosition(c, i)
+            if (c.card.cardId == cardId) {
+                return ExternalCardWithContentAndDefinitionAndPosition(c, i)
             }
             i++
         }
@@ -301,9 +306,9 @@ class TestQuizGameViewModel(
     }
 
     private fun getCardsAmount(
-        quizCardList: List<ImmutableCard?>,
+        quizCardList: List<ExternalCardWithContentAndDefinitions>,
         amount: Int
-    ): List<ImmutableCard?>? {
+    ): List<ExternalCardWithContentAndDefinitions>? {
 
         return when {
             quizCardList.isEmpty() -> {
@@ -315,7 +320,7 @@ class TestQuizGameViewModel(
             }
 
             else -> {
-                var result = listOf<ImmutableCard?>()
+                var result = listOf<ExternalCardWithContentAndDefinitions>()
                 if (passedCards <= quizCardList.size) {
                     if (restCard > amount) {
                         result = quizCardList.slice(passedCards..passedCards.plus(amount).minus(1))
@@ -335,21 +340,21 @@ class TestQuizGameViewModel(
     fun getRevisedCardsCount() = revisedCardsCount
 
     private fun upOrDowngradeCard(isKnown: Boolean, cardId: String) {
-        val cardWithPosition = getLocalCardWithPositionById(cardId)
+        val cardWithPosition = getExternalCardWithContentAndDefinitionsAndPositionById(cardId)
         val card = cardWithPosition?.card
         val cardPosition = cardWithPosition?.position
         if (card != null) {
-            val newCard = spaceRepetitionHelper.rescheduleCard(card, isKnown)
+            val newCard = spaceRepetitionHelper.rescheduleExternalCardWithContentAndDefinitions(card, isKnown)
             updateCard(newCard, cardPosition!!)
         }
     }
 
     fun updateCard(
-        card: ImmutableCard,
+        card: ExternalCardWithContentAndDefinitions,
         position: Int
     ) = viewModelScope.launch {
         cardList[position] = card
-        repository.updateCardWithContentAndDefinition(card)
+        repository.updateCard(card.card.toLocal())
     }
 
     fun updateCardContentLanguage(cardId: String, language: String) = viewModelScope.launch {

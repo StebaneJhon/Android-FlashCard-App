@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="?colorSurfaceContainerLowest"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/space_lg">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:fontFamily="@font/open_sans_bold"
+        android:text="@string/deck_details"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:layout_marginBottom="@dimen/space_lg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/deck_name_hint"
+        android:textColor="?colorPrimary"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:layout_marginHorizontal="@dimen/space_xxl"
+        android:layout_marginBottom="@dimen/space_lg"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/bt_edit_deck_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?colorSurfaceContainer"
+        android:text="Deck name"
+        android:textAlignment="textStart"
+        android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:drawableEnd="@drawable/icon_edit"
+        app:cornerRadius="@dimen/radius_base"
+        android:layout_marginBottom="@dimen/space_lg"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:paddingVertical="@dimen/space_md"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tv_language_section_settings"
+        android:textColor="?colorPrimary"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:layout_marginHorizontal="@dimen/space_xxl"
+        android:layout_marginBottom="@dimen/space_lg"/>
+
+    <LinearLayout
+        android:id="@+id/ll_content_language_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_sm">
+        <include
+            android:id="@+id/in_deck_content_language"
+            layout="@layout/ly_language_field" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_definition_language_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg">
+        <include
+            android:id="@+id/in_deck_definition_language"
+            layout="@layout/ly_language_field" />
+    </LinearLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="gone"
+        android:id="@+id/deckNameLY"
+        style="@style/Widget.App.TextInputLayout"
+        app:boxBackgroundColor="?colorSurfaceContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_sm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/deckNameET"
+            style="@style/Widget.App.TextInputEditText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:autofillHints="@string/deck_name_hint"
+            android:hint="@string/deck_name_hint"
+            android:inputType="textMultiLine"
+            android:maxLines="5" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="gone"
+        android:id="@+id/deckFirstLanguageLY"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:textColor="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+        app:endIconTint="?colorOnSurface"
+        android:layout_marginTop="@dimen/space_sm"
+        app:shapeAppearance="@style/ShapeAppearance.App.Corner.ExtraSmall"
+        app:boxBackgroundColor="?colorSurfaceContainer"
+        app:boxStrokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bt_edit_deck_name">
+
+        <AutoCompleteTextView
+            android:id="@+id/deckFirstLanguageET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints="@string/deck_first_language_hint"
+            android:background="@null"
+            android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
+            android:hint="@string/deck_first_language_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="?colorOnSurface"
+            android:textColorHint="?colorOnSurface"
+            tools:ignore="LabelFor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:visibility="gone"
+        android:id="@+id/deckSecondLanguageLY"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:textColor="?colorOnSurface"
+        android:textColorHint="@color/neutral400"
+        app:hintTextAppearance="@style/TextAppearance.App.Hint"
+        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+        app:endIconTint="?colorOnSurface"
+        app:shapeAppearance="@style/ShapeAppearance.App.Corner.ExtraSmall"
+        app:boxBackgroundColor="?colorSurfaceContainer"
+        app:boxStrokeWidth="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deckFirstLanguageLY">
+
+        <AutoCompleteTextView
+            android:id="@+id/deckSecondLanguageET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:autofillHints="@string/deck_second_language_hint"
+            android:background="@null"
+            android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
+            android:ellipsize="end"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
+            android:hint="@string/deck_second_language_hint"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="?colorOnSurface"
+            android:textColorHint="?colorOnSurface"
+            tools:ignore="LabelFor" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/category_color_picker_title"
+        android:textColor="?colorPrimary"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:layout_marginHorizontal="@dimen/space_xxl"
+        android:layout_marginVertical="@dimen/space_lg"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_deck_color_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_xs"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/colorPickerTitle" />
+
+
+</LinearLayout>

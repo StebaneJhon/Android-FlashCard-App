@@ -9,10 +9,13 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @Entity
 data class CardDefinition(
-    @PrimaryKey(autoGenerate = true) val definitionId: Int?,
-    @ColumnInfo(name = "cardId") var cardId: String,
-    @ColumnInfo(name = "deckId") var deckId: String?,
-    @ColumnInfo(name = "contentId") val contentId: String,
-    @ColumnInfo(name = "definition") val definition: String,
-    @ColumnInfo(name = "isCorrectDefinition") val isCorrectDefinition: Int,
+    @PrimaryKey(autoGenerate = false) val definitionId: String,
+    val cardOwnerId: String,
+    val deckOwnerId: String?,
+    val contentOwnerId: String,
+    val isCorrectDefinition: Int,
+    val definitionText: String?,
+    val definitionImageName: String?,
+    val definitionAudioName: String?,
+    val definitionAudioDuration: String?
 ): Parcelable

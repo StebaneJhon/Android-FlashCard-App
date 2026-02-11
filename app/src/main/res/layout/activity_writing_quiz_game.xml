@@ -71,7 +71,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:fontFamily="@font/open_sans"
+                    android:fontFamily="@font/open_sans_regular"
                     android:text="Something went wrong"
                     android:textAlignment="center"
                     android:textColor="?colorOnError"
@@ -191,7 +191,7 @@
             app:icon="@drawable/icon_arrow_right"
             app:iconTint="?colorSurfaceContainerLowest"
             android:textColor="?colorSurfaceContainerLowest"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/open_sans_regular"
             app:iconGravity="end"
             android:contentDescription="@string/bt_text_next_question" />
 

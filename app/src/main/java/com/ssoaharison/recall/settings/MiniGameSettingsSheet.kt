@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.LyFlashCardBottomSheetMenuBinding
@@ -32,6 +33,7 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
     private var flashCardMiniGamePref: SharedPreferences? = null
     private var editor: SharedPreferences.Editor? = null
     private var listener: SettingsApplication? = null
+    var imm: InputMethodManager? = null
 
     companion object {
         const val TAG = "ModalBottomSheet"
@@ -114,6 +116,12 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
         }
         binding.cbUnknownCardFirst.setOnCheckedChangeListener { _, isChecked ->
             isUnknownCardFirstBoxChecked(isChecked)
+        }
+
+        binding.containerCardCount.setOnClickListener {
+            binding.tieCardCount.requestFocus()
+            imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm?.showSoftInput(binding.tieCardCount, InputMethodManager.SHOW_IMPLICIT)
         }
 
     }

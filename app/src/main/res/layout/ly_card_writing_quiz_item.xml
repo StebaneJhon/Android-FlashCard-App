@@ -41,7 +41,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/space_sm"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/open_sans_regular"
             android:gravity="center"
             android:textAlignment="center"
             android:textColor="?colorOnSurface"
@@ -75,7 +75,7 @@
                 android:id="@+id/ti_top_card_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/open_sans"
+                android:fontFamily="@font/open_sans_regular"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -85,7 +85,7 @@
             style="@style/Widget.Material3.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/open_sans_regular"
             android:padding="0dp"
             android:text="@string/text_show_answer"
             android:textAlignment="textStart"
@@ -101,7 +101,7 @@
             android:id="@+id/tv_answer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/open_sans"
+            android:fontFamily="@font/open_sans_regular"
             tools:text="Correct answer: "
             android:textAlignment="textStart"
             android:textColor="@color/red500"

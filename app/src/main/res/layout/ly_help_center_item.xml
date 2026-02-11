@@ -4,20 +4,19 @@
     android:id="@+id/cl_help_center_item_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/settings_section_bg"
-    android:padding="@dimen/space_md"
-    android:layout_marginTop="@dimen/space_xs">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/tv_question"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
         tools:text="@string/question_what_is_recall"
-        android:textSize="@dimen/text_base"
-        android:textStyle="bold"
         android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.BodyLarge"
+        android:layout_marginVertical="@dimen/space_md"
+        android:layout_marginStart="@dimen/space_lg"
+        android:layout_marginEnd="@dimen/space_md"
+        android:layout_marginBottom="@dimen/space_md"
         app:layout_constraintEnd_toStartOf="@+id/bt_expand_minimise"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,24 +26,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/space_lg"
         android:background="@color/transparent"
         android:src="@drawable/icon_expand_more"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/tv_answer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_md"
+        android:layout_marginStart="@dimen/space_lg"
+        android:layout_marginEnd="@dimen/space_md"
+        android:textColor="?colorOnSurface"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        app:layout_constraintEnd_toStartOf="@+id/bt_expand_minimise"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_question"
+        tools:text="@string/answer_what_is_recall" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/open_sans"
-        tools:text="@string/answer_what_is_recall"
-        android:textSize="@dimen/text_sm"
-        android:textStyle="normal"
-        android:visibility="gone"
-        android:textColor="?colorOnSurface"
+        android:layout_marginTop="@dimen/space_md"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_question" />
-
+        app:layout_constraintTop_toBottomOf="@+id/tv_answer"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

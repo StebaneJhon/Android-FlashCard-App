@@ -15,11 +15,10 @@
         android:layout_marginTop="@dimen/space_xl"
         android:layout_marginBottom="@dimen/space_xl"
         android:layout_marginEnd="@dimen/space_sm"
-        android:fontFamily="@font/open_sans_extra_bold"
         android:text="@string/text_congratulations"
         android:textAlignment="center"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_xl3"
+        android:textAppearance="@style/TextAppearance.App.TitleLarge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -78,11 +77,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_sm"
-                android:fontFamily="@font/open_sans_extra_bold"
                 android:text="@string/total_revised_cards_text"
                 android:textAlignment="center"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
+                android:textAppearance="@style/TextAppearance.App.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -120,7 +118,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="5" />
+                tools:text="5%" />
 
             <TextView
                 android:id="@+id/tv_accuracy_cards_score_layout"
@@ -206,11 +204,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/space_sm"
-                android:fontFamily="@font/open_sans_extra_bold"
                 android:text="@string/text_cards_left_in_deck"
                 android:textAlignment="center"
                 android:textColor="?colorOnSurface"
-                android:textSize="@dimen/text_sm"
+                android:textAppearance="@style/TextAppearance.App.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -245,11 +242,9 @@
         android:layout_marginStart="@dimen/space_md"
         android:layout_marginEnd="@dimen/space_md"
         android:backgroundTint="?colorPrimary"
-        android:fontFamily="@font/open_sans_bold"
         android:text="@string/bt_continue_match_quiz_score"
         android:textColor="?colorSurfaceContainerLowest"
-        android:textStyle="bold"
-        app:cornerRadius="@dimen/bt_radius"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
         app:layout_constraintBottom_toTopOf="@+id/bt_restart_quiz_with_previous_cards_score_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -296,11 +291,10 @@
         android:layout_marginEnd="@dimen/space_md"
         android:layout_marginBottom="@dimen/space_xs"
         android:backgroundTint="?colorPrimary"
-        android:fontFamily="@font/open_sans_bold"
         android:text="@string/back_to_deck_text_button"
         android:textColor="?colorSurfaceContainerLowest"
-        android:textStyle="bold"
-        app:cornerRadius="@dimen/bt_radius"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        app:cornerRadius="@dimen/radius_base"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

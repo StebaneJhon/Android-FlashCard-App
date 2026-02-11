@@ -4,8 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -41,6 +46,10 @@ class MainActivity :
         MainActivityViewModelFactory((application as FlashCardApplication).repository)
     }
 
+    val deckPathViewModel: DeckPathViewModel by viewModels {
+        DeckPathViewModelFactory((application as FlashCardApplication).repository)
+    }
+
     private var sharedPref: SharedPreferences? = null
     var editor: SharedPreferences.Editor? = null
 
@@ -67,31 +76,23 @@ class MainActivity :
 
         setContentView(binding.root)
 
-//        setSupportActionBar(binding.appBarMain.toolbar)
-//
-//        val navHostFragment: NavHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-//        val drawerLayout: DrawerLayout = binding.mainActivityRoot
-//        val navView: NavigationView = binding.navView
-//        val navController = navHostFragment.navController
-//
-//        appBarConfiguration = AppBarConfiguration(
-//            setOf(R.id.deckFragment,
-//                R.id.settingsFragment
-//            ), drawerLayout
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
-//        navView.setupWithNavController(navController)
-
+        WindowCompat.enableEdgeToEdge(window)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.vwSpaceTop) { v, windowInserts ->
+            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
+            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = insets.top
+            }
+            WindowInsetsCompat.CONSUMED
+        }
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
         navController = navHostFragment.navController
         drawerLayout = binding.mainActivityRoot
         binding.navView.setupWithNavController(navController)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.deckFragment, R.id.settingsFragment, R.id.feedbackFragment, R.id.helpFragment, R.id.privacyPolicyFragment),
+            setOf(R.id.settingsFragment, R.id.feedbackFragment, R.id.helpFragment, R.id.privacyPolicyFragment),
             drawerLayout
         )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
     override fun getUpdatedBoxLevel(boxLevel: SpaceRepetitionBox) {
@@ -99,8 +100,6 @@ class MainActivity :
     }
 
     override fun onSupportNavigateUp(): Boolean {
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_main) as NavHostFragment
-//        val navController = navHostFragment.navController
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 }

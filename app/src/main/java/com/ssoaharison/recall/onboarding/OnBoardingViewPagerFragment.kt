@@ -18,6 +18,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.color.MaterialColors
 import com.ssoaharison.recall.R
 import com.ssoaharison.recall.databinding.FragmentOnBoardingViewPagerBinding
+import androidx.core.content.edit
+import androidx.lifecycle.lifecycleScope
+import com.ssoaharison.recall.backend.FlashCardApplication
+import com.ssoaharison.recall.util.MainDeck
+import kotlinx.coroutines.launch
 
 
 class OnBoardingViewPagerFragment : Fragment() {
@@ -113,15 +118,21 @@ class OnBoardingViewPagerFragment : Fragment() {
         binding.tvAppIntroduction.text = spannableText
 
         applyLayoutTransition()
-//        binding.svAppIntroduction.fullScroll(View.FOCUS_DOWN)
     }
 
     private fun onBoardingFinished() {
-//        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-//        val editor = sharedPreferences.edit()
-//        editor.putBoolean("Finished", true)
-//        editor.apply()
-        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
+        val sharedPreferences = requireActivity().getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+        sharedPreferences.edit {
+            putBoolean("Finished", true)
+        }
+        lifecycleScope.launch {
+            val repository = FlashCardApplication().repository
+            val mainDeck = repository.getMainDeck()
+            if (mainDeck == null) {
+                repository.insertDeck(MainDeck().getMainDeck())
+            }
+        }
+        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_cardFragment)
     }
 
     private fun applyLayoutTransition() {

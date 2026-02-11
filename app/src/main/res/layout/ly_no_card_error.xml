@@ -19,11 +19,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/space_sm"
-            android:fontFamily="@font/open_sans"
             android:text="@string/text_on_no_more_cards_error"
             android:textAlignment="center"
             android:textColor="?colorOnError"
-            android:textSize="@dimen/text_base" />
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_unable_unknown_card_only"
@@ -32,9 +31,9 @@
             android:backgroundTint="?colorOnError"
             android:text="@string/bt_unable_unknown_cards_only_text"
             android:textColor="@color/red200"
-            app:cornerRadius="@dimen/bt_radius"
+            app:cornerRadius="@dimen/radius_base"
             android:layout_marginTop="@dimen/space_sm"
-            android:fontFamily="@font/open_sans"/>
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_back_to_deck"
@@ -43,7 +42,7 @@
         android:backgroundTint="?colorOnError"
         android:text="@string/back_to_deck_text_button"
         android:textColor="@color/red200"
-        app:cornerRadius="@dimen/bt_radius"
-        android:fontFamily="@font/open_sans"/>
+        app:cornerRadius="@dimen/radius_base"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
 </LinearLayout>

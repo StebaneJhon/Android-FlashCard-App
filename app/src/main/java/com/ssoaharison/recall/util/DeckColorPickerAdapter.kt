@@ -4,14 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.ssoaharison.recall.R
-import com.ssoaharison.recall.deck.ColorModel
+import com.ssoaharison.recall.backend.models.ExternalDeck
+import com.ssoaharison.recall.util.ColorModel
 
 class DeckColorPickerAdapter(
     private val context: Context,
     private val listOfColors: List<ColorModel>,
+    private val isItemsClickable: Boolean,
     private val onColorClicked: (ColorModel) -> Unit
 ): RecyclerView.Adapter<DeckColorPickerAdapter.ViewHolder>() {
 
@@ -38,6 +42,7 @@ class DeckColorPickerAdapter(
         return holder.bind(
             context,
             listOfColors[position],
+            isItemsClickable,
             onColorClicked
         )
     }
@@ -53,12 +58,20 @@ class DeckColorPickerAdapter(
         fun bind(
             context: Context,
             color: ColorModel,
+            isItemsClickable: Boolean,
             onColorClicked: (ColorModel) -> Unit
         ) {
 
             item.apply {
                 background.setTint(context.getColor(color.color))
-                setOnClickListener { onColorClicked(color) }
+                setOnClickListener {
+                    if (isItemsClickable) {
+                        onColorClicked(color)
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.error_message_cannot_edit_main_deck_background), Toast.LENGTH_SHORT).show()
+                    }
+
+                }
                 icon = if (color.isSelected) context.getDrawable(R.drawable.icon_check) else null
             }
         }

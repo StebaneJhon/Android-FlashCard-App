@@ -30,7 +30,7 @@ class FlashCardProgressBarAdapter(
 
     override fun onBindViewHolder(holder: FlashCardProgressBarAdapterViewHolder, position: Int) {
         val spacingPx = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, 2f, recyclerView.context.resources.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, 4f, recyclerView.context.resources.displayMetrics
         ).toInt()
         val itemCount = maxOf(1, cardList.size)
         val recyclerViewWidth = recyclerView.width

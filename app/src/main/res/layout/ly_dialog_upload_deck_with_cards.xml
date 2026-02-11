@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp">
+        android:padding="@dimen/space_lg">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_back_to_quiz"
@@ -20,9 +20,8 @@
             app:icon="@drawable/icon_exit"
             app:iconSize="25sp"
             app:iconTint="?colorOnSurface"
-            app:layout_constraintBottom_toBottomOf="@+id/textView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView"
@@ -34,9 +33,10 @@
             android:textAlignment="textStart"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_base"
+            app:layout_constraintBottom_toBottomOf="@+id/bt_back_to_quiz"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/bt_back_to_quiz"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/bt_back_to_quiz" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -56,7 +56,8 @@
             app:layout_constraintTop_toBottomOf="@+id/textView"
             app:endIconTint="?colorOnSurface"
             android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans">
+            app:hintTextAppearance="@style/TextAppearance.App.Hint"
+            app:errorTextAppearance="@style/TextAppearance.App.BodySmall">
 
             <AutoCompleteTextView
                 android:id="@+id/tv_category"
@@ -65,7 +66,7 @@
                 android:inputType="none"
                 android:text="Any"
                 android:textColor="?colorOnSurface"
-                android:fontFamily="@font/open_sans"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -92,7 +93,8 @@
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
             app:endIconTint="?colorOnSurface"
             android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans">
+            app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
+            app:hintTextAppearance="@style/TextAppearance.App.Hint">
 
             <AutoCompleteTextView
                 android:id="@+id/tv_difficulty"
@@ -100,7 +102,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:textColor="?colorOnSurface"
-                android:fontFamily="@font/open_sans"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -127,7 +129,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tf_difficulty"
             app:endIconTint="?colorOnSurface"
             android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans">
+            app:hintTextAppearance="@style/TextAppearance.App.Hint"
+            app:errorTextAppearance="@style/TextAppearance.App.BodySmall">
 
 
             <AutoCompleteTextView
@@ -136,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="none"
                 android:textColor="?colorOnSurface"
-                android:fontFamily="@font/open_sans"
+                android:textAppearance="@style/TextAppearance.App.Hint"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -161,7 +164,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tf_type"
             android:textColor="?colorOnSurface"
-            android:fontFamily="@font/open_sans">
+            app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
+            app:hintTextAppearance="@style/TextAppearance.App.Hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/tv_question_number"
@@ -170,7 +174,7 @@
                 android:inputType="number"
                 android:text="10"
                 android:textColor="?colorOnSurface"
-                android:fontFamily="@font/open_sans"/>
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 

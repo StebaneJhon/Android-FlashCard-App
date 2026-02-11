@@ -63,18 +63,16 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_lg"
-        android:fontFamily="@font/open_sans"
         android:text="1/4"
         android:textColor="?colorOnSurface"
-        android:textSize="@dimen/text_base"
-        android:textStyle="normal"
+        android:textAppearance="@style/TextAppearance.App.BodySmall"
         app:layout_constraintBottom_toBottomOf="@+id/bt_next"
         app:layout_constraintEnd_toStartOf="@+id/bt_next"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/bt_next" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_next"
         style="?attr/materialIconButtonFilledStyle"
         android:layout_width="wrap_content"
@@ -88,6 +86,7 @@
         app:icon="@drawable/icon_arrow_forward"
         app:iconGravity="end"
         app:iconPadding="@dimen/icon_padding_submit_button"
+        app:cornerRadius="@dimen/radius_rounded"
         app:iconTint="?colorSurfaceContainerLowest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
