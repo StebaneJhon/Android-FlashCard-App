@@ -1491,11 +1491,12 @@ class NewCardDialog(
 
     private fun areThereAnOngoingCardCreation(): Boolean {
         when {
-            newCardViewModel.contentField.value.contentText != null -> return true
-            newCardViewModel.contentField.value.contentImage != null -> return true
+            !binding.lyContent.tieContentText.text.isNullOrBlank() || !binding.lyContent.tieContentText.text.isNullOrEmpty() -> return true
+            binding.lyContent.llContentContainerAudio.isVisible -> return true
+            binding.lyContent.clContentContainerImage.isVisible -> return true
             else -> {
-                newCardViewModel.definitionFields.value.forEach {
-                    if (it.definitionText != null || it.definitionImage != null) {
+                definitionFields.forEach {
+                    if (!it.ly.tieText.text.isNullOrEmpty() || !it.ly.tieText.text.isNullOrBlank() || it.ly.llContainerAudio.isVisible || it.ly.clContainerImage.isVisible) {
                         return true
                     }
                 }
