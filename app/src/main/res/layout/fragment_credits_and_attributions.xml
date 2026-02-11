@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".settings.CreditsAndAttributionsFragment"
+    android:background="?colorSurfaceContainerLowest"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorSurfaceContainerLowest">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIconTint="?colorOnSurface"
+            app:title="@string/credits_and_attributions"
+            app:navigationIcon="@drawable/icon_arrow_back"
+            app:navigationContentDescription="@string/bt_description_back_to_settings">
+
+        </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/tv_credits_title_open_tdb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:textColor="?colorOnSurface"
+        android:text="@string/credits_title_open_trivia_database_opentdb"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_xs"/>
+
+    <TextView
+        android:id="@+id/tv_credits_text_open_tdb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:textColor="?colorOnSurface"
+        android:text="@string/credits_open_tdb"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_lg"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:textColor="?colorOnSurface"
+        android:text="@string/credits_title_leitner_system"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_xs"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:textColor="?colorOnSurface"
+        android:text="@string/credits_leitner_system"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_lg"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:textColor="?colorOnSurface"
+        android:text="@string/credits_title_google_ml_kit"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_xs"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:textColor="?colorOnSurface"
+        android:text="@string/credits_text_google_ml_kit"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginBottom="@dimen/space_lg"/>
+
+
+
+</LinearLayout>

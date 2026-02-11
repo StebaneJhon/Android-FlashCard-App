@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_aboutRecallFragment"
             app:destination="@id/aboutRecallFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_creditsAndAttributionsFragment"
+            app:destination="@id/creditsAndAttributionsFragment" />
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"
@@ -91,4 +94,13 @@
         android:name="com.ssoaharison.recall.help.HelpFragment"
         android:label="fragment_help"
         tools:layout="@layout/fragment_help" />
+    <fragment
+        android:id="@+id/creditsAndAttributionsFragment"
+        android:name="com.ssoaharison.recall.settings.CreditsAndAttributionsFragment"
+        android:label="fragment_credits_and_attributions"
+        tools:layout="@layout/fragment_credits_and_attributions" >
+        <action
+            android:id="@+id/action_creditsAndAttributionsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
 </navigation>

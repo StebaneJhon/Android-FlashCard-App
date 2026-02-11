@@ -118,7 +118,6 @@ class OnBoardingViewPagerFragment : Fragment() {
         binding.tvAppIntroduction.text = spannableText
 
         applyLayoutTransition()
-//        binding.svAppIntroduction.fullScroll(View.FOCUS_DOWN)
     }
 
     private fun onBoardingFinished() {
@@ -126,7 +125,6 @@ class OnBoardingViewPagerFragment : Fragment() {
         sharedPreferences.edit {
             putBoolean("Finished", true)
         }
-//        findNavController().navigate(R.id.action_onBoardingViewPagerFragment_to_deckFragment2)
         lifecycleScope.launch {
             val repository = FlashCardApplication().repository
             val mainDeck = repository.getMainDeck()

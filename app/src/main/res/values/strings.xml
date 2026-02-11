@@ -127,11 +127,11 @@
     <string name="tv_quiz_mode_title">Study</string>
     <string name="bt_save">SAVE</string>
     <string name="content_description_save">Save the all created cards</string>
-    <string name="content_welcome_to_recall">📣 Welcome to Recall! \nAn app that lets you create your own quizzes and interact with them in multiple ways. Whether you\'re looking to quickly revise your courses 📚, test your knowledge 🎓, or simply take notes 🗒️, Recall has you covered.</string>
-    <string name="content_cards">In Recall, questions are represented as cards 🃏 stored in decks. Each question can have one or multiple answers, which can be correct ✅ or incorrect ❎.</string>
+    <string name="content_welcome_to_recall">📣 Welcome to Mneme! \nAn app that lets you create your own quizzes and interact with them in multiple ways. Whether you\'re looking to quickly revise your courses 📚, test your knowledge 🎓, or simply take notes 🗒️, Mneme has you covered.</string>
+    <string name="content_cards">In Mneme, questions are represented as cards 🃏 stored in decks. Each question can have one or multiple answers. And each answer can be correct ✅ or incorrect ❎.</string>
     <string name="next">Next</string>
-    <string name="content_quiz">Recall offers a variety of question types to help trigger your memory in different ways 🛣️. These include FlashCards, Multiple-choice, Writing, Matching, Quiz, and Test.</string>
-    <string name="content_space_repetition">Additionally, Recall classifies your cards by memorization level 🧮. This helps you understand how well you know a specific card and how frequent it will appear during quizzes.</string>
+    <string name="content_quiz">Study with mneme through quizzes and flash cards.</string>
+    <string name="content_space_repetition">Additionally, Mneme classifies your cards by memorization level 🧮. This helps you understand how well you know a specific card and how frequent it will appear during quizzes.</string>
     <string name="error_message_on_no_description_found">No description found</string>
     <string name="title_unsaved_cards">Unsaved card</string>
     <string name="message_unsaved_cards">You have an ongoing card creation.</string>
@@ -340,4 +340,11 @@
     <string name="answer_how_to_optimize_memorization">However the learning method, repetition is the key to memorization. Rote learning or repeating the information over and over until it is committed to memory has proven to be efficient in memorizing facts. Spaced repetition or actively recalling the memory repeatedly at an increasingly longer time interval is key to making the memory last a long time. Other things affect the memory such as emotions, sleep quality and the persons health.</string>
     <string name="question_how_does_mneme_help_in_memorization">How does Mneme help in memorization?</string>
     <string name="answer_how_does_mneme_help_in_memorization">Mneme helps you manage and practice your quizzes. It implements rote learning and spaced repetition algorithms to expose you to less likely known information. Its quiz creation tool allows you to create multiple question types and with different data types such as text, image and audio to help you diversify the way you learn. The minigames train you to actively recall information from your, making sure that your memory lasts a long time.</string>
+    <string name="credits_and_attributions">Credits And Attributions</string>
+    <string name="credits_open_tdb">The trivia questions available for download are provided by OpenTDB. This content is used under the Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0).</string>
+    <string name="credits_title_open_trivia_database_opentdb">Open Trivia Database (OpenTDB)</string>
+    <string name="credits_title_google_ml_kit">Google ML Kit</string>
+    <string name="credits_text_google_ml_kit">Powering our on-device intelligence for a private learning experience.</string>
+    <string name="credits_leitner_system">Our spaced repetition logic is based on the research of Sebastian Leitner.</string>
+    <string name="credits_title_leitner_system">Leitner System</string>
 </resources>

@@ -267,19 +267,6 @@
                 android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
         </RadioGroup>
 
-<!--        <androidx.recyclerview.widget.RecyclerView-->
-<!--            android:id="@+id/rv_settings_theme_picker"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/space_lg"-->
-<!--            android:layout_marginHorizontal="@dimen/space_lg"-->
-<!--            android:background="@drawable/bg_radius_xl"-->
-<!--            android:backgroundTint="?colorSurfaceContainerLow"-->
-<!--            android:padding="@dimen/space_xs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_theme_section_title" />-->
-
         <TextView
             android:id="@+id/tv_space_repetition_title"
             android:layout_width="match_parent"
@@ -311,12 +298,11 @@
             android:id="@+id/tv_language_section_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/tv_language_section_settings"
-            android:textColor="?colorPrimary"
-            android:textAppearance="@style/TextAppearance.App.TitleSmall"
-            android:layout_marginTop="@dimen/space_lg"
             android:layout_marginHorizontal="@dimen/radius_xxl"
-            android:layout_marginBottom="@dimen/space_lg"
+            android:layout_marginTop="@dimen/space_lg"
+            android:text="@string/tv_language_section_settings"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
+            android:textColor="?colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rv_space_repetition_section" />
@@ -337,71 +323,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_language_section_title" />
 
-<!--        <Button-->
-<!--            style="@style/Widget.App.Settings.Button.Top"-->
-<!--            android:id="@+id/bt_rate_others_section"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/bt_rate_the_app_text"-->
-<!--            app:icon="@drawable/icon_star_filled"-->
-<!--            android:layout_marginTop="@dimen/space_md"-->
-<!--            android:layout_marginStart="@dimen/space_lg"-->
-<!--            android:layout_marginEnd="@dimen/space_lg"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_language"/>-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/bt_credits_and_attributions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginTop="@dimen/space_lg"
+            android:backgroundTint="?colorSurfaceContainerLow"
+            android:text="@string/credits_and_attributions"
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
+            android:textColor="?colorOnSurface"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            app:iconTint="?colorOnSurface"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_language" />
 
-<!--        <Button-->
-<!--            style="@style/Widget.App.Settings.Button.Middle"-->
-<!--            android:id="@+id/bt_about_others_section"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/bt_about_recall_text"-->
-<!--            app:icon="@drawable/icon_auto_stories"-->
-<!--            android:layout_marginStart="@dimen/space_lg"-->
-<!--            android:layout_marginEnd="@dimen/space_lg"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/bt_rate_others_section"/>-->
-
-<!--        <Button-->
-<!--            style="@style/Widget.App.Settings.Button.Middle"-->
-<!--            android:id="@+id/bt_privacy_others_section"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/bt_privacy_text"-->
-<!--            app:icon="@drawable/icon_policy"-->
-<!--            android:layout_marginStart="@dimen/space_lg"-->
-<!--            android:layout_marginEnd="@dimen/space_lg"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/bt_about_others_section"/>-->
-
-<!--        <Button-->
-<!--            style="@style/Widget.App.Settings.Button.Middle"-->
-<!--            android:id="@+id/bt_contact_others_section"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/bt_contact_text"-->
-<!--            app:icon="@drawable/icon_mail"-->
-<!--            android:layout_marginStart="@dimen/space_lg"-->
-<!--            android:layout_marginEnd="@dimen/space_lg"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/bt_privacy_others_section"/>-->
-
-<!--        <Button-->
-<!--            style="@style/Widget.App.Settings.Button.Bottom"-->
-<!--            android:id="@+id/bt_help_others_section"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:text="@string/bt_help_text"-->
-<!--            app:icon="@drawable/icon_help"-->
-<!--            android:layout_marginStart="@dimen/space_lg"-->
-<!--            android:layout_marginEnd="@dimen/space_lg"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/bt_contact_others_section"/>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

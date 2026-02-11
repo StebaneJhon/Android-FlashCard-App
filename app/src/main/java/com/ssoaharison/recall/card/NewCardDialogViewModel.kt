@@ -1,11 +1,9 @@
 package com.ssoaharison.recall.card
 
-import android.content.Context
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.ssoaharison.recall.R
 import com.ssoaharison.recall.backend.FlashCardRepository
 import com.ssoaharison.recall.backend.models.OpenTriviaQuestion
 import com.ssoaharison.recall.backend.models.QuizQuestions
@@ -19,7 +17,6 @@ import com.ssoaharison.recall.backend.entities.relations.CardWithContentAndDefin
 import com.ssoaharison.recall.backend.models.ExternalCardContent
 import com.ssoaharison.recall.backend.models.ExternalCardDefinition
 import com.ssoaharison.recall.backend.models.ExternalCardWithContentAndDefinitions
-import com.ssoaharison.recall.backend.models.ExternalDeck
 import com.ssoaharison.recall.helper.AudioModel
 import com.ssoaharison.recall.helper.PhotoModel
 import com.ssoaharison.recall.util.CardLevel.L1
@@ -29,7 +26,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -120,30 +116,10 @@ class NewCardDialogViewModel(
     private var _definitionFields = MutableStateFlow<MutableList<DefinitionFieldModel>>(mutableListOf())
     val definitionFields: StateFlow<MutableList<DefinitionFieldModel>> = _definitionFields.asStateFlow()
 
-//    fun initDefinitionFields(cardDefinitions: List<ExternalCardDefinition>?) {
-//        if (cardDefinitions != null) {
-//            cardDefinitions.forEach { definition ->
-//                addDefinitionField(definition)
-//            }
-//        } else {
-//            addDefinitionField(null)
-//        }
-//
-//    }
-
 
     fun initAddCardFields(card: ExternalCardWithContentAndDefinitions?) {
         if (card != null) {
             initContentField(card.contentWithDefinitions.content)
-//            _contentField.update {
-//                ContentFieldModel(
-//                    contentId = card.contentWithDefinitions.content.contentId,
-//                    contentText = card.contentWithDefinitions.content.contentText,
-//                    contentImage = card.contentWithDefinitions.content.contentImage,
-//                    contentAudio = card.contentWithDefinitions.content.contentAudio,
-//                    hasFocus = false
-//                )
-//            }
             _definitionFields.update { mutableListOf() }
             card.contentWithDefinitions.definitions.forEach { definition ->
                 addDefinitionField(definition)
