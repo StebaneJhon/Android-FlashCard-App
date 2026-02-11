@@ -642,6 +642,7 @@
     <style name="Widget.App.TextInputEditText" parent="ThemeOverlay.Material3.TextInputEditText">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputEditText</item>
         <item name="android:textColorHint">?colorSurfaceContainerHighest</item>
+        <item name="android:textColorHighlight">?colorSurfaceContainerHighest</item>
     </style>
 
     <style name="ThemeOverlay.App.TextInputEditText" parent="">

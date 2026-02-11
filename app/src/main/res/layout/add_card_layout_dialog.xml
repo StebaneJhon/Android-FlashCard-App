@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:background="?colorSurfaceContainerLowest">
+        android:background="?colorSurfaceContainerLowest"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$Behavior">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/tab_add_new_update_card"
@@ -25,7 +26,7 @@
             app:title="New card" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -37,7 +38,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_add_multi_answer_card_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/space_lg">
 
             <LinearLayout
@@ -332,109 +333,72 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
     <com.google.android.material.dockedtoolbar.DockedToolbarLayout
         android:id="@+id/docked_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="?colorSurfaceContainerLowest"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:id="@+id/docked_toolbar_child"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="bottom">
 
-            <FrameLayout
-                android:id="@+id/frameLayout2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                android:layout_marginBottom="@dimen/space_sm"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_add_media"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:minWidth="48dp"
                     android:contentDescription="@string/bt_text_translate"
                     app:icon="@drawable/icon_attach"
                     app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frameLayout"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                android:layout_marginBottom="@dimen/space_sm"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout2">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_scan"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:minWidth="48dp"
                     android:contentDescription="@string/add_card"
                     app:icon="@drawable/icon_document_scanner"
                     app:iconTint="?colorOnSurface"
                     android:backgroundTint="?colorSurfaceContainerLow"/>
-            </FrameLayout>
 
-            <FrameLayout
-                android:id="@+id/frameLayout3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                android:layout_marginBottom="@dimen/space_sm"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/bt_translate"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:minWidth="48dp"
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_translate"
                     android:backgroundTint="?colorSurfaceContainerLow"
                     android:enabled="false"
                     android:clickable="false"/>
-            </FrameLayout>
-
-            <FrameLayout
-                android:id="@+id/frameLayout4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:minWidth="48dp"
-                android:layout_marginBottom="@dimen/space_sm"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/frameLayout3">
 
                 <Button
                     android:id="@+id/bt_format"
                     style="?attr/materialIconButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:minWidth="48dp"
                     android:contentDescription="@string/format_text"
                     app:icon="@drawable/icon_text_format"
                     android:backgroundTint="?colorSurfaceContainerLow"
                     android:enabled="false"
                     android:clickable="false"/>
-            </FrameLayout>
 
             <FrameLayout
                 android:visibility="gone"
@@ -454,10 +418,11 @@
 
             <FrameLayout
                 android:id="@+id/frameLayout6"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:minWidth="48dp"
+                app:layout_anchorGravity="bottom|end"
                 android:layout_marginVertical="@dimen/space_sm"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
@@ -479,7 +444,7 @@
                     app:useCompatPadding="false"/>
             </FrameLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.dockedtoolbar.DockedToolbarLayout>
 
