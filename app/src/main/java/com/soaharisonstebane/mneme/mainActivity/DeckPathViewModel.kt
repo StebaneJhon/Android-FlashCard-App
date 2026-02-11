@@ -1,0 +1,68 @@
+package com.soaharisonstebane.mneme.mainActivity
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.soaharisonstebane.mneme.backend.FlashCardRepository
+import com.soaharisonstebane.mneme.backend.models.ExternalDeck
+import com.soaharisonstebane.mneme.util.MainDeck
+import com.soaharisonstebane.mneme.util.ThemeConst.BASE_THEME
+import com.soaharisonstebane.mneme.util.ThemePicker
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+class DeckPathViewModel(private val repository: FlashCardRepository): ViewModel() {
+
+    private val themePicker = ThemePicker()
+    private var _currentDeck = MutableStateFlow<ExternalDeck>(MainDeck().getExternalMainDeck())
+    val currentDeck: StateFlow<ExternalDeck> = _currentDeck.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            val mainDeck = repository.getMainDeck()
+            if (mainDeck == null) {
+                repository.insertDeck(MainDeck().getMainDeck())
+                repository.getMainDeck()?.let {
+                    _currentDeck.update {
+                        it
+                    }
+                }
+            } else {
+                _currentDeck.update {
+                    mainDeck
+                }
+            }
+        }
+    }
+
+    fun setCurrentDeck(deck: ExternalDeck) {
+        _currentDeck.update {
+            deck
+        }
+    }
+
+
+    fun getViewTheme(): Int {
+        if (currentDeck.value.deckBackground == null) {
+            val viewTheme = themePicker.selectTheme(BASE_THEME) ?: themePicker.getDefaultTheme()
+            return (viewTheme)
+        } else {
+            val viewTheme = themePicker.selectThemeByDeckColorCode(currentDeck.value.deckBackground)
+            return viewTheme
+        }
+    }
+
+}
+
+class DeckPathViewModelFactory(private val repository: FlashCardRepository): ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(DeckPathViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return DeckPathViewModel(repository) as T
+        }
+        throw throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}

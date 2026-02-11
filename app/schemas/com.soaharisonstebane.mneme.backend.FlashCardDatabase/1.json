@@ -1,0 +1,374 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "b217cc981423fab22fad137565b8be68",
+    "entities": [
+      {
+        "tableName": "Card",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`cardId` TEXT NOT NULL, `deckOwnerId` TEXT NOT NULL, `cardLevel` TEXT, `cardType` TEXT, `revisionTime` INTEGER, `missedTime` INTEGER, `creationDate` TEXT, `lastRevisionDate` TEXT, `nextMissMemorisationDate` TEXT, `nextRevisionDate` TEXT, `cardContentLanguage` TEXT, `cardDefinitionLanguage` TEXT, PRIMARY KEY(`cardId`))",
+        "fields": [
+          {
+            "fieldPath": "cardId",
+            "columnName": "cardId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deckOwnerId",
+            "columnName": "deckOwnerId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardLevel",
+            "columnName": "cardLevel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cardType",
+            "columnName": "cardType",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "revisionTime",
+            "columnName": "revisionTime",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "missedTime",
+            "columnName": "missedTime",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creationDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "lastRevisionDate",
+            "columnName": "lastRevisionDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nextMissMemorisationDate",
+            "columnName": "nextMissMemorisationDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "nextRevisionDate",
+            "columnName": "nextRevisionDate",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cardContentLanguage",
+            "columnName": "cardContentLanguage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cardDefinitionLanguage",
+            "columnName": "cardDefinitionLanguage",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "cardId"
+          ]
+        }
+      },
+      {
+        "tableName": "Deck",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`deckId` TEXT NOT NULL, `parentDeckId` TEXT, `deckName` TEXT NOT NULL, `deckDescription` TEXT, `cardContentDefaultLanguage` TEXT, `cardDefinitionDefaultLanguage` TEXT, `deckBackground` TEXT, `deckCategory` TEXT, `isFavorite` INTEGER, `deckCreationDate` TEXT, PRIMARY KEY(`deckId`))",
+        "fields": [
+          {
+            "fieldPath": "deckId",
+            "columnName": "deckId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentDeckId",
+            "columnName": "parentDeckId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deckName",
+            "columnName": "deckName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deckDescription",
+            "columnName": "deckDescription",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cardContentDefaultLanguage",
+            "columnName": "cardContentDefaultLanguage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cardDefinitionDefaultLanguage",
+            "columnName": "cardDefinitionDefaultLanguage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deckBackground",
+            "columnName": "deckBackground",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "deckCategory",
+            "columnName": "deckCategory",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "isFavorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "deckCreationDate",
+            "columnName": "deckCreationDate",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "deckId"
+          ]
+        }
+      },
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT, `name` TEXT, `initial` TEXT, `status` TEXT, `creation` TEXT DEFAULT '0')",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "initial",
+            "columnName": "initial",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "creation",
+            "columnName": "creation",
+            "affinity": "TEXT",
+            "defaultValue": "'0'"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "userId"
+          ]
+        }
+      },
+      {
+        "tableName": "WeeklyReview",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`dayId` INTEGER PRIMARY KEY AUTOINCREMENT, `dayName` TEXT, `date` TEXT, `revisedCardSum` INTEGER, `colorGrade` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "dayId",
+            "columnName": "dayId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "dayName",
+            "columnName": "dayName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "revisedCardSum",
+            "columnName": "revisedCardSum",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "colorGrade",
+            "columnName": "colorGrade",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "dayId"
+          ]
+        }
+      },
+      {
+        "tableName": "SpaceRepetitionBox",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`levelId` INTEGER PRIMARY KEY AUTOINCREMENT, `levelNme` TEXT, `levelColor` TEXT, `levelRepeatIn` INTEGER, `levelRevisionMargin` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "levelId",
+            "columnName": "levelId",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "levelName",
+            "columnName": "levelNme",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "levelColor",
+            "columnName": "levelColor",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "levelRepeatIn",
+            "columnName": "levelRepeatIn",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "levelRevisionMargin",
+            "columnName": "levelRevisionMargin",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "levelId"
+          ]
+        }
+      },
+      {
+        "tableName": "CardContent",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contentId` TEXT NOT NULL, `cardOwnerId` TEXT NOT NULL, `deckOwnerId` TEXT NOT NULL, `contentText` TEXT, `contentImageName` TEXT, `contentAudioName` TEXT, `contentAudioDuration` TEXT, PRIMARY KEY(`contentId`))",
+        "fields": [
+          {
+            "fieldPath": "contentId",
+            "columnName": "contentId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardOwnerId",
+            "columnName": "cardOwnerId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deckOwnerId",
+            "columnName": "deckOwnerId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contentText",
+            "columnName": "contentText",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contentImageName",
+            "columnName": "contentImageName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contentAudioName",
+            "columnName": "contentAudioName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contentAudioDuration",
+            "columnName": "contentAudioDuration",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "contentId"
+          ]
+        }
+      },
+      {
+        "tableName": "CardDefinition",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`definitionId` TEXT NOT NULL, `cardOwnerId` TEXT NOT NULL, `deckOwnerId` TEXT, `contentOwnerId` TEXT NOT NULL, `isCorrectDefinition` INTEGER NOT NULL, `definitionText` TEXT, `definitionImageName` TEXT, `definitionAudioName` TEXT, `definitionAudioDuration` TEXT, PRIMARY KEY(`definitionId`))",
+        "fields": [
+          {
+            "fieldPath": "definitionId",
+            "columnName": "definitionId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cardOwnerId",
+            "columnName": "cardOwnerId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deckOwnerId",
+            "columnName": "deckOwnerId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "contentOwnerId",
+            "columnName": "contentOwnerId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isCorrectDefinition",
+            "columnName": "isCorrectDefinition",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "definitionText",
+            "columnName": "definitionText",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "definitionImageName",
+            "columnName": "definitionImageName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "definitionAudioName",
+            "columnName": "definitionAudioName",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "definitionAudioDuration",
+            "columnName": "definitionAudioDuration",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "definitionId"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b217cc981423fab22fad137565b8be68')"
+    ]
+  }
+}

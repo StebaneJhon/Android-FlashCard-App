@@ -7,12 +7,12 @@
 
     <fragment
         android:id="@+id/cardFragment"
-        android:name="com.ssoaharison.recall.card.CardFragment"
+        android:name="com.soaharisonstebane.mneme.card.CardFragment"
         android:label="fragment_card"
         tools:layout="@layout/fragment_card" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.ssoaharison.recall.settings.SettingsFragment"
+        android:name="com.soaharisonstebane.mneme.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" >
 
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/onBoardingViewPagerFragment"
-        android:name="com.ssoaharison.recall.onboarding.OnBoardingViewPagerFragment"
+        android:name="com.soaharisonstebane.mneme.onboarding.OnBoardingViewPagerFragment"
         android:label="fragment_on_boarding_view_pager"
         tools:layout="@layout/fragment_on_boarding_view_pager" >
         <action
@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/hostFragment"
-        android:name="com.ssoaharison.recall.mainActivity.HostFragment"
+        android:name="com.soaharisonstebane.mneme.mainActivity.HostFragment"
         android:label="fragment_host"
         tools:layout="@layout/fragment_host" >
         <action
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/privacyPolicyFragment"
-        android:name="com.ssoaharison.recall.privacyPolicy.PrivacyPolicyFragment"
+        android:name="com.soaharisonstebane.mneme.privacyPolicy.PrivacyPolicyFragment"
         android:label="fragment_privacy_policy"
         tools:layout="@layout/fragment_privacy_policy" >
         <action
@@ -65,7 +65,7 @@
     </fragment>
     <fragment
         android:id="@+id/emailFragment"
-        android:name="com.ssoaharison.recall.settings.EmailFragment"
+        android:name="com.soaharisonstebane.mneme.settings.EmailFragment"
         android:label="fragment_email"
         tools:layout="@layout/fragment_email" >
         <argument
@@ -77,7 +77,7 @@
     </fragment>
     <fragment
         android:id="@+id/aboutRecallFragment"
-        android:name="com.ssoaharison.recall.settings.AboutRecallFragment"
+        android:name="com.soaharisonstebane.mneme.settings.AboutRecallFragment"
         android:label="fragment_about_recall"
         tools:layout="@layout/fragment_about_recall" >
         <action
@@ -86,17 +86,17 @@
     </fragment>
     <fragment
         android:id="@+id/feedbackFragment"
-        android:name="com.ssoaharison.recall.feedback.FeedbackFragment"
+        android:name="com.soaharisonstebane.mneme.feedback.FeedbackFragment"
         android:label="fragment_feedback"
         tools:layout="@layout/fragment_feedback" />
     <fragment
         android:id="@+id/helpFragment"
-        android:name="com.ssoaharison.recall.help.HelpFragment"
+        android:name="com.soaharisonstebane.mneme.help.HelpFragment"
         android:label="fragment_help"
         tools:layout="@layout/fragment_help" />
     <fragment
         android:id="@+id/creditsAndAttributionsFragment"
-        android:name="com.ssoaharison.recall.settings.CreditsAndAttributionsFragment"
+        android:name="com.soaharisonstebane.mneme.settings.CreditsAndAttributionsFragment"
         android:label="fragment_credits_and_attributions"
         tools:layout="@layout/fragment_credits_and_attributions" >
         <action

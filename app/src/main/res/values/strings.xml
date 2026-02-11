@@ -127,7 +127,7 @@
     <string name="tv_quiz_mode_title">Study</string>
     <string name="bt_save">SAVE</string>
     <string name="content_description_save">Save the all created cards</string>
-    <string name="content_welcome_to_recall">📣 Welcome to Mneme! \nAn app that lets you create your own quizzes and interact with them in multiple ways. Whether you\'re looking to quickly revise your courses 📚, test your knowledge 🎓, or simply take notes 🗒️, Mneme has you covered.</string>
+    <string name="content_welcome_to_recall">📣 Welcome to Mneme! \nAn app that lets you create your own quizzes and interact with them in multiple ways. Whether you\'re looking to quickly revise your courses 📚, to test your knowledge 🎓, or simply to take notes 🗒️, Mneme has you covered.</string>
     <string name="content_cards">In Mneme, questions are represented as cards 🃏 stored in decks. Each question can have one or multiple answers. And each answer can be correct ✅ or incorrect ❎.</string>
     <string name="next">Next</string>
     <string name="content_quiz">Study with mneme through quizzes and flash cards.</string>

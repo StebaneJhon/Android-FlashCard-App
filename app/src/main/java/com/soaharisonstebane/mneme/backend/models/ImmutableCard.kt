@@ -1,0 +1,25 @@
+package com.soaharisonstebane.mneme.backend.models
+
+import android.os.Parcelable
+import com.soaharisonstebane.mneme.backend.entities.CardContent
+import com.soaharisonstebane.mneme.backend.entities.CardDefinition
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class ImmutableCard(
+    val cardId: String = "",
+    val cardContent: CardContent? = null,
+    val cardDefinition: List<CardDefinition>? = null,
+    val deckId: String = "",
+    val isFavorite: Boolean? = false,
+    val revisionTime: Int? = 0,
+    val missedTime: Int? = 0,
+    val creationDate: String? = null,
+    val lastRevisionDate: String? = null,
+    val cardStatus: String? = null,
+    val nextMissMemorisationDate: String? = null,
+    val nextRevisionDate: String? = null,
+    val cardType: String? = null,
+    val cardContentLanguage: String? = null,
+    val cardDefinitionLanguage: String? = null,
+): Parcelable

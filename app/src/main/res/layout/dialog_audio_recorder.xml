@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.ssoaharison.recall.appView.WaveformView
+    <com.soaharisonstebane.mneme.appView.WaveformView
         android:id="@+id/waveformView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/wave_view_max_height"

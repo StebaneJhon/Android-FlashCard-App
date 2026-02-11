@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
+    android:fitsSystemWindows="true"
     tools:context=".onboarding.OnBoardingViewPagerFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/topToolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?colorSurfaceContainerLowest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,7 +21,6 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?colorSurfaceContainerLow"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/menu_on_boarding_screen"
             app:title="@string/app_name" />

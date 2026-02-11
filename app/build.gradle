@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace 'com.ssoaharison.recall'
+    namespace 'com.soaharisonstebane.mneme'
     compileSdk = 36
 
     room {
@@ -16,11 +16,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.ssoaharison.recall"
+        applicationId "com.soaharisonstebane.mneme"
         minSdk 26
         targetSdk 35
         versionCode 5
-        versionName "1.2.4"
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
