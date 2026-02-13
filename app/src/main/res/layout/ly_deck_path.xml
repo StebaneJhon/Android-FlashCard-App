@@ -9,6 +9,7 @@
     android:gravity="center"
     android:textAppearance="@style/TextAppearance.App.TitleMedium"
     tools:text="Location/"
+    android:background="?colorSurfaceContainerLowest"
     android:textColor="?colorOnSurface"
     android:layout_marginStart="@dimen/space_lg"/>
 
