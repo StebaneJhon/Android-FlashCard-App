@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -108,6 +109,8 @@ class CardFragment :
     var deckExportModel: DeckExportModel? = null
     var lastPlayedAudioFile: AudioModel? = null
     var lastPlayedAudioViw: LinearLayout? = null
+
+    var lastReadTextView: TextView? = null
 
     private val player by lazy {
         AndroidAudioPlayer(requireContext())
@@ -491,8 +494,7 @@ class CardFragment :
             REQUEST_EXPORT_DECK_CODE,
             this
         ) { _, bundle ->
-            deckExportModel =
-                bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
+            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
             createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
         }
     }
@@ -711,28 +713,10 @@ class CardFragment :
                 cardViewModel.deleteCard(selectedCard, appContext!!)
             },
             { text ->
-                if (tts?.isSpeaking == true) {
-                    stopReading(text)
-                } else {
-                    onStartReadingText(
-                        deck = deck,
-                        textAndView = text,
-                        language = text.text.language,
-                        type = text.type
-                    )
-                }
+                onRead(text, deck)
             },
             { text ->
-                if (tts?.isSpeaking == true) {
-                    stopReading(text)
-                } else {
-                    onStartReadingText(
-                        deck = deck,
-                        textAndView = text,
-                        language = text.text.language,
-                        type = text.type
-                    )
-                }
+                onRead(text, deck)
             }, { audio, view ->
                 if (lastPlayedAudioViw != view || lastPlayedAudioFile != audio) {
                     lifecycleScope.launch {
@@ -756,7 +740,36 @@ class CardFragment :
                     playPauseAudio(view, newProgressIndicator, audio)
                 }
             })
+    }
 
+    fun onRead(text:  TextClickedModel, deck: ExternalDeck) {
+        when {
+            lastReadTextView == text.view && tts?.isSpeaking == true -> {
+                tts?.stop()
+                resetCardTextColor(lastReadTextView)
+            }
+            lastReadTextView != text.view && tts?.isSpeaking == true -> {
+                tts?.stop()
+                resetCardTextColor(lastReadTextView)
+                onStartReadingText(
+                    deck = deck,
+                    textAndView = text,
+                    language = text.text.language,
+                    type = text.type
+                )
+                lastReadTextView = text.view
+            }
+            else -> {
+                tts?.stop()
+                onStartReadingText(
+                    deck = deck,
+                    textAndView = text,
+                    language = text.text.language,
+                    type = text.type
+                )
+                lastReadTextView = text.view
+            }
+        }
     }
 
     private fun playPauseAudio(
@@ -939,9 +952,12 @@ class CardFragment :
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 
-    private fun stopReading(textAndView: TextClickedModel) {
-        textAndView.view.setTextColor(requireContext().getColor(textAndView.textColor))
-        tts?.stop()
+    private fun resetCardTextColor(textView: TextView?) {
+        textView?.setTextColor(MaterialColors.getColor(
+            appContext!!,
+            com.google.android.material.R.attr.colorOnSurface,
+            Color.GRAY
+        ))
     }
 
     private fun onAddNewCard(deck: ExternalDeck) {

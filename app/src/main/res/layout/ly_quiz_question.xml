@@ -13,8 +13,7 @@
         android:layout_height="@dimen/img_height_large"
         android:background="@drawable/bg_radius_sm"
         android:clipToOutline="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background" />
+        android:scaleType="centerCrop" />
 
     <LinearLayout
         android:visibility="gone"

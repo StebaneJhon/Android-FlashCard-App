@@ -43,9 +43,16 @@ interface FlashCardDao {
 //    }
 
     @Transaction
+    suspend fun insertCardsWithContentAndDefinition(cards: List<CardWithContentAndDefinitions>) {
+        cards.forEach { cardWithContentAndDefinitions ->
+            insertCardWithContentAndDefinitions(cardWithContentAndDefinitions)
+        }
+    }
+
+    @Transaction
     suspend fun insertCardWithContentAndDefinitions(cardWithContentAndDefinitions: CardWithContentAndDefinitions) {
         insertCard(cardWithContentAndDefinitions.card)
-        insertCardContent(cardWithContentAndDefinitions.contentWithDefinitions?.content!!)
+        insertCardContent(cardWithContentAndDefinitions.contentWithDefinitions.content)
         cardWithContentAndDefinitions.contentWithDefinitions.definitions.forEach { definition ->
             insertCardDefinition(definition)
         }
@@ -283,10 +290,10 @@ interface FlashCardDao {
 
     @Transaction
     suspend fun deleteCardWithContentAndDefinition(cardWithContentAndDefinition: CardWithContentAndDefinitions) {
-        cardWithContentAndDefinition.contentWithDefinitions?.definitions?.forEach { cardDefinition ->
+        cardWithContentAndDefinition.contentWithDefinitions.definitions.forEach { cardDefinition ->
             deleteCardDefinition(cardDefinition)
         }
-        deleteCardContent(cardWithContentAndDefinition.contentWithDefinitions!!.content)
+        deleteCardContent(cardWithContentAndDefinition.contentWithDefinitions.content)
         deleteCard(cardWithContentAndDefinition.card)
     }
 
@@ -302,7 +309,7 @@ interface FlashCardDao {
     @Transaction
     suspend fun deleteDeckWithCards(deckId: String) {
         val deckWithCards = gettDeckWithCards(deckId)
-        deleteCardsWithContentAndDefinition(deckWithCards.cards!!)
+        deleteCardsWithContentAndDefinition(deckWithCards.cards)
         deleteDeck(deckWithCards.deck)
     }
 

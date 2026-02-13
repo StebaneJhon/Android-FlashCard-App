@@ -879,8 +879,7 @@ class NewCardDialog(
         val newDeckDialog = UploadOpenTriviaQuizDialog()
         newDeckDialog.show(childFragmentManager, "upload open trivia quiz dialog")
         childFragmentManager.setFragmentResultListener(CardFragment.REQUEST_CODE, this) { _, bundle ->
-            val result =
-                bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
+            val result = bundle.parcelable<OpenTriviaQuizModel>(UploadOpenTriviaQuizDialog.OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY)
             cardUploadingJob?.cancel()
             cardUploadingJob = lifecycleScope.launch {
                 newCardViewModel.getOpenTriviaQuestions(
@@ -918,6 +917,9 @@ class NewCardDialog(
                         }
 
                         is UiState.Success -> {
+
+                            val a = response.data.results
+
                             val newCards = newCardViewModel.resultsToImmutableCards(
                                 deck.deckId,
                                 response.data.results
@@ -1781,8 +1783,9 @@ class NewCardDialog(
                                                 if (translation == null) {
                                                     setEditTextEndIconOnClick(binding.lyContent.tilContentText)
                                                 } else {
-                                                    binding.lyContent.tieContentText.setText(translation)
-                                                    binding.lyContent.tieContentText.setSelection(translation.length)
+                                                    val spannable = Html.fromHtml(translation, FROM_HTML_MODE_LEGACY).trim()
+                                                    binding.lyContent.tieContentText.setText(spannable)
+                                                    binding.lyContent.tieContentText.setSelection(spannable.length)
                                                     setEditTextEndIconOnClick(binding.lyContent.tilContentText)
                                                 }
                                             }
@@ -1811,8 +1814,9 @@ class NewCardDialog(
                                         if (translation == null) {
                                             setEditTextEndIconOnClick(binding.lyContent.tilContentText)
                                         } else {
-                                            binding.lyContent.tieContentText.setText(translation)
-                                            binding.lyContent.tieContentText.setSelection(translation.length)
+                                            val spannable = Html.fromHtml(translation, FROM_HTML_MODE_LEGACY).trim()
+                                            binding.lyContent.tieContentText.setText(spannable)
+                                            binding.lyContent.tieContentText.setSelection(spannable.length)
                                             setEditTextEndIconOnClick(binding.lyContent.tilContentText)
                                         }
                                     }
@@ -1851,8 +1855,9 @@ class NewCardDialog(
                                 if (translation == null) {
                                     setEditTextEndIconOnClick(fieldView.ly.tilText)
                                 } else {
-                                    definitionFields[selectedFieldPosition].ly.tieText.setText(translation)
-                                    definitionFields[selectedFieldPosition].ly.tieText.setSelection(translation.length)
+                                    val spannable = Html.fromHtml(translation, FROM_HTML_MODE_LEGACY).trim()
+                                    definitionFields[selectedFieldPosition].ly.tieText.setText(spannable)
+                                    definitionFields[selectedFieldPosition].ly.tieText.setSelection(spannable.length)
                                     setEditTextEndIconOnClick(fieldView.ly.tilText)
                                 }
                             }

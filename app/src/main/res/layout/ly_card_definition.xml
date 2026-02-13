@@ -14,8 +14,7 @@
         android:background="@drawable/bg_radius_xs"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
-        android:layout_marginBottom="@dimen/space_xxs"
-        android:src="@drawable/ic_launcher_background" />
+        android:layout_marginBottom="@dimen/space_xxs" />
 
     <LinearLayout
         android:visibility="gone"

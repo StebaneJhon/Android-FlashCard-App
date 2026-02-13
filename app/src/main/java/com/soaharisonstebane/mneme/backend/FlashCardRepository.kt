@@ -16,6 +16,7 @@ import com.soaharisonstebane.mneme.backend.models.ExternalDeck
 import com.soaharisonstebane.mneme.backend.models.ExternalDeckWithCardsAndContentAndDefinitions
 import com.soaharisonstebane.mneme.helper.AudioModel
 import com.soaharisonstebane.mneme.helper.PhotoModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -302,9 +303,7 @@ class FlashCardRepository(private val flashCardDao: FlashCardDao) {
 
     @WorkerThread
     suspend fun insertCardsWithContentAndDefinition(cardsWithContentAndDefinitions: List<CardWithContentAndDefinitions>) {
-        cardsWithContentAndDefinitions.forEach { cardWithContentAndDefinitions ->
-            insertCardWithContentAndDefinition(cardWithContentAndDefinitions)
-        }
+        flashCardDao.insertCardsWithContentAndDefinition(cardsWithContentAndDefinitions)
     }
 
 //    @WorkerThread

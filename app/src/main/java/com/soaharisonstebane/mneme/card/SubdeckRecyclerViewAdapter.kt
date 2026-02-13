@@ -79,6 +79,7 @@ class SubdeckRecyclerViewAdapter(
         var deckSurfaceColorCode: Int? = null
         var deckTextColorCode: Int? = null
         var deckSurfaceContainerColorCode: Int? = null
+        var deckSurfaceContainerColorLowCode: Int? = null
         var knownCardViewBackgroundColor: ColorStateList? = null
         var unknownCardViewBackgroundColor: ColorStateList? = null
         var knownCardTextColor: Int? = null
@@ -111,16 +112,6 @@ class SubdeckRecyclerViewAdapter(
                     }
                 }
             }
-
-//            if (appTheme == DARK_THEME) {
-//                deckSurfaceColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLowEst(context, deck.deckColorCode)
-//                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckColorCode)
-//                deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckColorCode)
-//            } else {
-//                deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckColorCode)
-//                deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckColorCode)
-//                deckSurfaceContainerColorCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckColorCode)
-//            }
 
             deckNameTV?.apply {
                 text = deck.deckName
@@ -191,7 +182,7 @@ class SubdeckRecyclerViewAdapter(
             divider.dividerColor = deckSurfaceContainerColorCode!!
             ivDeck.setColorFilter(deckTextColorCode!!)
             ivDeck.backgroundTintList = ColorStateList.valueOf(
-                deckSurfaceContainerColorCode!!
+                deckSurfaceContainerColorLowCode!!
             )
 
         }
@@ -206,7 +197,8 @@ class SubdeckRecyclerViewAdapter(
                 deck.deckBackground
             )
             deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColorDark(context, deck.deckBackground)
-            deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckBackground)
+            deckSurfaceContainerColorLowCode = deckColorHelper.selectDeckDarkColorSurfaceContainerLow(context, deck.deckBackground)
+            deckSurfaceContainerColorCode = deckColorHelper.selectDeckDarkColorSurfaceContainer(context, deck.deckBackground)
             knownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.green900)
             unknownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.red900)
             knownCardTextColor = context.getColor(R.color.green50)
@@ -218,18 +210,14 @@ class SubdeckRecyclerViewAdapter(
             context: Context,
             deck: ExternalDeck
         ) {
-            deckSurfaceColorCode =
-                deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckBackground)
-            deckTextColorCode =
-                deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckBackground)
-            deckSurfaceContainerColorCode =
-                deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckBackground)
-            knownCardViewBackgroundColor =
-                ContextCompat.getColorStateList(context, R.color.green200)
+            deckSurfaceColorCode = deckColorHelper.selectDeckColorSurfaceContainerLowEst(context, deck.deckBackground)
+            deckTextColorCode = deckColorHelper.selectDeckOnSurfaceColor(context, deck.deckBackground)
+            deckSurfaceContainerColorLowCode = deckColorHelper.selectDeckColorSurfaceContainerLow(context, deck.deckBackground)
+            deckSurfaceContainerColorCode = deckColorHelper.selectDeckColorSurfaceContainer(context, deck.deckBackground)
+            knownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.green200)
             knownCardTextColor = context.getColor(R.color.green950)
             unknownCardTextColor = context.getColor(R.color.red950)
-            unknownCardViewBackgroundColor =
-                ContextCompat.getColorStateList(context, R.color.red200)
+            unknownCardViewBackgroundColor = ContextCompat.getColorStateList(context, R.color.red200)
         }
 
         @SuppressLint("RestrictedApi")

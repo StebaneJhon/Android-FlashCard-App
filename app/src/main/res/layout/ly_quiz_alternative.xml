@@ -24,7 +24,6 @@
         android:background="@drawable/bg_radius_xs"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_launcher_background"
         android:layout_marginStart="@dimen/space_md"
         app:layout_constraintStart_toEndOf="@id/img_leading_icon"
         app:layout_constraintEnd_toEndOf="parent"

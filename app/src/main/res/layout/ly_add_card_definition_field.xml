@@ -45,7 +45,6 @@
                 android:background="@drawable/bg_radius_sm"
                 android:clipToOutline="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

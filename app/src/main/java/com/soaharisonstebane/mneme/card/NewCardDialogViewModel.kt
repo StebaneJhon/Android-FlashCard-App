@@ -63,6 +63,8 @@ class NewCardDialogViewModel(
                 type
             )
             if (response.isSuccessful) {
+                val a = response.body()
+                println(a)
                 _openTriviaResponse.value = UiState.Success(response.body()!!)
             } else {
                 val message = response.code().toString()
