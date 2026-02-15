@@ -21,26 +21,6 @@
         <item name="android:navigationBarColor">?colorSurfaceContainerLowest</item>
     </style>
 
-<!--    <style name="Common.App.Theme.FlashCard.Dark" parent="Theme.Material3.Light.NoActionBar">-->
-<!--        <item name="colorError">@color/red700</item>-->
-<!--        <item name="colorOnError">@color/white</item>-->
-<!--        <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>-->
-<!--        <item name="textAppearanceLargePopupMenu">@style/TextAppearance.App.BodyLarge</item>-->
-<!--        <item name="textAppearanceSmallPopupMenu">@style/TextAppearance.App.BodyLarge</item>-->
-<!--        <item name="popupMenuBackground">@drawable/custom_popup_background</item>-->
-<!--        <item name="linearProgressIndicatorStyle">@style/Widget.App.LinearProgressIndicator</item>-->
-<!--        <item name="toolbarStyle">@style/Widget.App.Toolbar</item>-->
-<!--        <item name="colorControlActivated">@color/black</item>-->
-<!--        <item name="android:windowLightStatusBar">false</item>-->
-<!--        <item name="bottomNavigationStyle">@style/Widget.App.BottomNavigationView</item>-->
-<!--        <item name="actionMenuTextColor">?colorOnSurface</item>-->
-<!--        <item name="windowActionModeOverlay">true</item>-->
-<!--        <item name="actionModeCloseDrawable">@drawable/icon_exit</item>-->
-<!--        <item name="android:actionOverflowButtonStyle">@style/RecallOverflowButton</item>-->
-<!--        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>-->
-<!--        <item name="android:navigationBarColor">?colorSurfaceContainerLowest</item>-->
-<!--    </style>-->
-
     <style name="Base.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/neutral600</item>
         <item name="colorOnPrimary">@color/neutral50</item>
@@ -79,24 +59,6 @@
 
     <style name="StaleTheme.FlashCard" parent="Stale.Theme.FlashCard" />
 
-<!--    <style name="Dark.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/neutral50</item>-->
-<!--        <item name="colorOnPrimary">@color/neutral950</item>-->
-<!--        <item name="colorSecondaryContainer">@color/neutral800_transparent</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="android:textColorPrimary">@color/neutral50</item>-->
-<!--        <item name="colorPrimaryContainer">@color/neutral50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/neutral950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/neutral950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/neutral700</item>-->
-<!--        <item name="colorSurfaceContainer">@color/neutral500</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/neutral400</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/neutral300</item>-->
-<!--        <item name="colorOnSurface">@color/neutral50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/neutral950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkTheme.FlashCard" parent="Dark.Theme.FlashCard" />-->
-
     <style name="Red.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/red700</item>
         <item name="colorOnPrimary">@color/red50</item>
@@ -113,23 +75,6 @@
         <item name="colorOnSurfaceVariant">@color/red600</item>
     </style>
     <style name="RedTheme.Flashcard" parent="Red.Theme.FlashCard" />
-
-<!--    <style name="Dark.Red.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/red50</item>-->
-<!--        <item name="colorOnPrimary">@color/red950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/red800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/red50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/red950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/red950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/red900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/red800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/red700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/red600</item>-->
-<!--        <item name="colorOnSurface">@color/red50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/red950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkRedTheme.Flashcard" parent="Dark.Red.Theme.FlashCard" />-->
 
     <style name="Orange.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/orange700</item>
@@ -148,23 +93,6 @@
     </style>
     <style name="OrangeTheme.Flashcard" parent="Orange.Theme.FlashCard" />
 
-<!--    <style name="Dark.Orange.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/orange50</item>-->
-<!--        <item name="colorOnPrimary">@color/orange950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/orange800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/orange50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/orange950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/orange950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/orange900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/orange800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/orange700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/orange600</item>-->
-<!--        <item name="colorOnSurface">@color/orange50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/orange950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkOrangeTheme.Flashcard" parent="Dark.Orange.Theme.FlashCard" />-->
-
     <style name="Amber.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/amber700</item>
         <item name="colorOnPrimary">@color/amber50</item>
@@ -181,23 +109,6 @@
         <item name="colorOnSurfaceVariant">@color/amber600</item>
     </style>
     <style name="AmberTheme.Flashcard" parent="Amber.Theme.FlashCard" />
-
-<!--    <style name="Dark.Amber.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/amber50</item>-->
-<!--        <item name="colorOnPrimary">@color/amber950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/amber800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/amber50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/amber950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/amber950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/amber900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/amber800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/amber700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/amber600</item>-->
-<!--        <item name="colorOnSurface">@color/amber50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/amber950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkAmberTheme.Flashcard" parent="Dark.Amber.Theme.FlashCard" />-->
 
     <style name="Yellow.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/yellow700</item>
@@ -216,23 +127,6 @@
     </style>
     <style name="YellowTheme.Flashcard" parent="Yellow.Theme.FlashCard" />
 
-<!--    <style name="Dark.Yellow.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/yellow50</item>-->
-<!--        <item name="colorOnPrimary">@color/yellow950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/yellow800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/yellow50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/yellow950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/yellow950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/yellow900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/yellow800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/yellow700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/yellow600</item>-->
-<!--        <item name="colorOnSurface">@color/yellow50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/yellow950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkYellowTheme.Flashcard" parent="Dark.Yellow.Theme.FlashCard" />-->
-
     <style name="Lime.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/lime700</item>
         <item name="colorOnPrimary">@color/lime50</item>
@@ -249,23 +143,6 @@
         <item name="colorOnSurfaceVariant">@color/lime600</item>
     </style>
     <style name="LimeTheme.Flashcard" parent="Lime.Theme.FlashCard" />
-
-<!--    <style name="Dark.Lime.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/lime50</item>-->
-<!--        <item name="colorOnPrimary">@color/lime950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/lime800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/lime50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/lime950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/lime950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/lime900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/lime800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/lime700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/lime600</item>-->
-<!--        <item name="colorOnSurface">@color/lime50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/lime950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkLimeTheme.Flashcard" parent="Dark.Lime.Theme.FlashCard" />-->
 
     <style name="Green.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/green700</item>
@@ -284,23 +161,6 @@
     </style>
     <style name="GreenTheme.Flashcard" parent="Green.Theme.FlashCard" />
 
-<!--    <style name="Dark.Green.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/green50</item>-->
-<!--        <item name="colorOnPrimary">@color/green950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/green50</item>-->
-<!--        <item name="colorSecondaryContainer">@color/green800_transparent</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/green950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/green950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/green900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/green800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/green700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/green600</item>-->
-<!--        <item name="colorOnSurface">@color/green50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/green950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkGreenTheme.Flashcard" parent="Dark.Green.Theme.FlashCard" />-->
-
     <style name="Emerald.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/emerald700</item>
         <item name="colorOnPrimary">@color/emerald50</item>
@@ -317,23 +177,6 @@
         <item name="colorOnSurfaceVariant">@color/emerald600</item>
     </style>
     <style name="EmeraldTheme.Flashcard" parent="Emerald.Theme.FlashCard" />
-
-<!--    <style name="Dark.Emerald.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/emerald50</item>-->
-<!--        <item name="colorOnPrimary">@color/emerald950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/emerald50</item>-->
-<!--        <item name="colorSecondaryContainer">@color/emerald800_transparent</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/emerald950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/emerald950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/emerald900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/emerald800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/emerald700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/emerald600</item>-->
-<!--        <item name="colorOnSurface">@color/emerald50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/emerald950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkEmeraldTheme.Flashcard" parent="Dark.Emerald.Theme.FlashCard" />-->
 
     <style name="Teal.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/teal700</item>
@@ -352,23 +195,6 @@
     </style>
     <style name="TealTheme.Flashcard" parent="Teal.Theme.FlashCard" />
 
-<!--    <style name="Dark.Teal.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/teal50</item>-->
-<!--        <item name="colorOnPrimary">@color/teal950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/teal800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/teal50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/teal950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/teal950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/teal900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/teal800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/teal700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/teal600</item>-->
-<!--        <item name="colorOnSurface">@color/teal50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/teal950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkTealTheme.Flashcard" parent="Dark.Teal.Theme.FlashCard" />-->
-
     <style name="Cyan.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/cyan700</item>
         <item name="colorOnPrimary">@color/cyan50</item>
@@ -385,23 +211,6 @@
         <item name="colorOnSurfaceVariant">@color/cyan600</item>
     </style>
     <style name="CyanTheme.Flashcard" parent="Cyan.Theme.FlashCard" />
-
-<!--    <style name="Dark.Cyan.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/cyan50</item>-->
-<!--        <item name="colorOnPrimary">@color/cyan950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/cyan800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/cyan50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/cyan950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/cyan950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/cyan900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/cyan800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/cyan700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/cyan600</item>-->
-<!--        <item name="colorOnSurface">@color/cyan50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/cyan950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkCyanTheme.Flashcard" parent="Dark.Cyan.Theme.FlashCard" />-->
 
     <style name="Sky.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/sky700</item>
@@ -420,23 +229,6 @@
     </style>
     <style name="SkyTheme.Flashcard" parent="Sky.Theme.FlashCard" />
 
-<!--    <style name="Dark.Sky.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/sky50</item>-->
-<!--        <item name="colorOnPrimary">@color/sky950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/sky800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/sky50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/sky950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/sky950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/sky900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/sky800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/sky700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/sky600</item>-->
-<!--        <item name="colorOnSurface">@color/sky50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/sky950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkSkyTheme.Flashcard" parent="Dark.Sky.Theme.FlashCard" />-->
-
     <style name="Blue.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/blue700</item>
         <item name="colorOnPrimary">@color/blue50</item>
@@ -453,23 +245,6 @@
         <item name="colorOnSurfaceVariant">@color/blue600</item>
     </style>
     <style name="BlueTheme.Flashcard" parent="Blue.Theme.FlashCard" />
-
-<!--    <style name="Dark.Blue.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/blue50</item>-->
-<!--        <item name="colorOnPrimary">@color/blue950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/blue800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/blue50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/blue950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/blue950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/blue900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/blue800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/blue700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/blue600</item>-->
-<!--        <item name="colorOnSurface">@color/blue50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/blue950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkBlueTheme.Flashcard" parent="Dark.Blue.Theme.FlashCard" />-->
 
     <style name="Indigo.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/indigo700</item>
@@ -488,23 +263,6 @@
     </style>
     <style name="IndigoTheme.Flashcard" parent="Indigo.Theme.FlashCard" />
 
-<!--    <style name="Dark.Indigo.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/indigo50</item>-->
-<!--        <item name="colorOnPrimary">@color/indigo950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/indigo800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/indigo50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/indigo950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/indigo950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/indigo900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/indigo800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/indigo700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/indigo600</item>-->
-<!--        <item name="colorOnSurface">@color/indigo50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/indigo950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkIndigoTheme.Flashcard" parent="Dark.Indigo.Theme.FlashCard" />-->
-
     <style name="Violet.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/violet700</item>
         <item name="colorOnPrimary">@color/violet50</item>
@@ -521,23 +279,6 @@
         <item name="colorOnSurfaceVariant">@color/violet600</item>
     </style>
     <style name="VioletTheme.Flashcard" parent="Violet.Theme.FlashCard" />
-
-<!--    <style name="Dark.Violet.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/violet50</item>-->
-<!--        <item name="colorOnPrimary">@color/violet950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorSecondaryContainer">@color/violet800_transparent</item>-->
-<!--        <item name="colorPrimaryContainer">@color/violet50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/violet950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/violet950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/violet900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/violet800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/violet700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/violet600</item>-->
-<!--        <item name="colorOnSurface">@color/violet50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/violet950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkVioletTheme.Flashcard" parent="Dark.Violet.Theme.FlashCard" />-->
 
     <style name="Purple.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/purple700</item>
@@ -556,23 +297,6 @@
     </style>
     <style name="PurpleTheme.Flashcard" parent="Purple.Theme.FlashCard" />
 
-<!--    <style name="Dark.Purple.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/purple50</item>-->
-<!--        <item name="colorOnPrimary">@color/purple950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/purple50</item>-->
-<!--        <item name="colorSecondaryContainer">@color/purple800_transparent</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/purple950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/purple950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/purple900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/purple800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/purple700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/purple600</item>-->
-<!--        <item name="colorOnSurface">@color/purple50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/purple950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkPurpleTheme.Flashcard" parent="Dark.Purple.Theme.FlashCard" />-->
-
     <style name="Fuchsia.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/fuchsia700</item>
         <item name="colorOnPrimary">@color/fuchsia50</item>
@@ -589,23 +313,6 @@
         <item name="colorOnSurfaceVariant">@color/fuchsia600</item>
     </style>
     <style name="FuchsiaTheme.Flashcard" parent="Fuchsia.Theme.FlashCard" />
-
-<!--    <style name="Dark.Fuchsia.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/fuchsia50</item>-->
-<!--        <item name="colorOnPrimary">@color/fuchsia950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/fuchsia50</item>-->
-<!--        <item name="colorSecondaryContainer">@color/fuchsia800_transparent</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/fuchsia950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/fuchsia950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/fuchsia900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/fuchsia800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/fuchsia700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/fuchsia600</item>-->
-<!--        <item name="colorOnSurface">@color/fuchsia50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/fuchsia950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkFuchsiaTheme.Flashcard" parent="Dark.Fuchsia.Theme.FlashCard" />-->
 
     <style name="Pink.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/pink700</item>
@@ -624,23 +331,6 @@
     </style>
     <style name="PinkTheme.Flashcard" parent="Pink.Theme.FlashCard" />
 
-<!--    <style name="Dark.Pink.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/pink50</item>-->
-<!--        <item name="colorOnPrimary">@color/pink950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/pink50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/pink950</item>-->
-<!--        <item name="colorSecondaryContainer">@color/pink800_transparent</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/pink950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/pink900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/pink800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/pink700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/pink600</item>-->
-<!--        <item name="colorOnSurface">@color/pink50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/pink950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkPinkTheme.Flashcard" parent="Dark.Pink.Theme.FlashCard" />-->
-
     <style name="Rose.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/rose700</item>
         <item name="colorOnPrimary">@color/rose50</item>
@@ -658,23 +348,6 @@
     </style>
     <style name="RoseTheme.Flashcard" parent="Rose.Theme.FlashCard" />
 
-<!--    <style name="Dark.Rose.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/rose50</item>-->
-<!--        <item name="colorOnPrimary">@color/rose950</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/rose50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/rose950</item>-->
-<!--        <item name="colorSecondaryContainer">@color/rose800_transparent</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/rose950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/rose900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/rose800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/rose700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/rose600</item>-->
-<!--        <item name="colorOnSurface">@color/rose50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/rose950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkRoseTheme.Flashcard" parent="Dark.Rose.Theme.FlashCard" />-->
-
     <style name="Brown.Theme.FlashCard" parent="Common.App.Theme.FlashCard">
         <item name="colorPrimary">@color/stone700</item>
         <item name="colorOnPrimary">@color/stone50</item>
@@ -691,23 +364,6 @@
         <item name="colorOnSurfaceVariant">@color/stone600</item>
     </style>
     <style name="BrownTheme.Flashcard" parent="Brown.Theme.FlashCard" />
-
-<!--    <style name="Dark.Brown.Theme.FlashCard" parent="Common.App.Theme.FlashCard.Dark">-->
-<!--        <item name="colorPrimary">@color/stone50</item>-->
-<!--        <item name="colorOnPrimary">@color/stone950</item>-->
-<!--        <item name="colorSecondaryContainer">@color/stone800_transparent</item>-->
-<!--        <item name="colorPrimaryDark">?colorSurfaceContainerLowest</item>-->
-<!--        <item name="colorPrimaryContainer">@color/stone50</item>-->
-<!--        <item name="colorOnPrimaryContainer">@color/stone950</item>-->
-<!--        <item name="colorSurfaceContainerLowest">@color/stone950</item>-->
-<!--        <item name="colorSurfaceContainerLow">@color/stone900</item>-->
-<!--        <item name="colorSurfaceContainer">@color/stone800</item>-->
-<!--        <item name="colorSurfaceContainerHigh">@color/stone700</item>-->
-<!--        <item name="colorSurfaceContainerHighest">@color/stone600</item>-->
-<!--        <item name="colorOnSurface">@color/stone50</item>-->
-<!--        <item name="colorOnSurfaceVariant">@color/stone950</item>-->
-<!--    </style>-->
-<!--    <style name="DarkBrownTheme.Flashcard" parent="Dark.Brown.Theme.FlashCard" />-->
 
     <!-- Text Appearance -->
     <style name="TextAppearance.App.Medium" parent="TextAppearance.Material3.TitleLarge">
@@ -835,7 +491,7 @@
         <item name="colorOnSurfaceVariant">?colorOnSurface</item>
         <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
         <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.App.Title.Text</item>
-        <item name="backgroundColor">?colorSurfaceContainerHighest</item>
+        <item name="backgroundColor">?colorSurfaceContainerLow</item>
         <item name="android:background">?colorSurfaceContainerLow</item>
     </style>
 
@@ -848,14 +504,9 @@
         <item name="fontFamily">@font/open_sans_regular</item>
     </style>
 
-    <!-- Rounded dialog theme -->
-    <style name="MaterialAlertDialog_rounded" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
-    </style>
-
     <style name="DialogCorners">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/card_radius</item>
+        <item name="cornerSize">@dimen/radius_base</item>
     </style>
 
     <!-- PopUpMenu theme -->
@@ -872,22 +523,6 @@
     <style name="ThemeOverlay.App.Toolbar" parent="">
 
     </style>
-
-    <!-- Toolbar edit&add theme -->
-<!--    <style name="Widget.App.Toolbar.Add.Edit.Card" parent="Widget.Material3.Toolbar">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>-->
-<!--        <item name="titleTextColor">?attr/colorOnSurface</item>-->
-<!--        <item name="subtitleTextColor">?attr/colorOnSurface</item>-->
-<!--        <item name="titleTextAppearance">@style/TextAppearance.App.Medium</item>-->
-<!--        <item name="actionMenuTextAppearance">@style/TextAppearance.App.Small</item>-->
-<!--        <item name="actionMenuTextColor">@color/red950</item>-->
-<!--        <item name="android:actionMenuTextColor">@color/red950</item>-->
-
-<!--    </style>-->
-
-<!--    <style name="ThemeOverlay.App.Toolbar.Add.Edit.Card" parent="">-->
-
-<!--    </style>-->
 
 
     <!--Progress bar style-->
@@ -931,7 +566,6 @@
     </style>
     
     <!-- Card definition field -->
-    
     <style name="App.Theme.Card_definition_field" parent="">
         <item name="colorPrimary">?colorOnSurface</item>
         <item name="colorControlActivated">?colorOnSurface</item>
@@ -941,43 +575,6 @@
     <style name="Widget.App.MaterialDivider" parent="Widget.Material3.MaterialDivider">
         <item name="dividerColor">?colorSurfaceContainer</item>
     </style>
-
-    <!-- Settings buttons -->
-<!--    <style name="Widget.App.Settings.Button.Top" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Top</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.App.Settings.Button.Middle" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Middle</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.App.Settings.Button.Bottom" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Bottom</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.App.Settings.Button.Single" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Single</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="ThemeOverlay.App.Button" parent="ThemeOverlay.Material3.Button">-->
-<!--        <item name="colorContainer">?colorSurfaceContainer</item>-->
-<!--        <item name="colorOnContainer">?colorOnSurface</item>-->
-<!--        <item name="android:padding">@dimen/space_lg</item>-->
-<!--        <item name="iconTint">?colorOnSurface</item>-->
-<!--        <item name="android:textAlignment">textStart</item>-->
-<!--    </style>-->
 
     <style name="Theme.NavigationdrawerViewTest.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

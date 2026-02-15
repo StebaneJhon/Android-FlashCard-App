@@ -59,8 +59,10 @@ class SettingsFragmentEditBoxLevelDialog(
 
         }
 
+
+        view?.findViewById<TextView>(R.id.tv_title)?.text = getString(R.string.update_box_level_title, boxLevel.levelName)
+
         builder.setView(view)
-            .setTitle("Update ${boxLevel.levelName}")
             .setNegativeButton("Cancel") {_, _ -> dismiss()}
             .setPositiveButton("Update") {_, _ ->
                 if(onUpdate()) {

@@ -4,13 +4,23 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="@dimen/space_lg"
-    android:backgroundTint="?colorSurfaceContainerLowest">
+    android:backgroundTint="?colorSurfaceContainerLowest"
+    android:orientation="vertical">
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/edit_deck_name"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:layout_marginBottom="@dimen/space_lg"/>
+
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_deck_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/Widget.App.TextInputLayout"
+        app:boxBackgroundColor="?colorSurfaceContainer"
         app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
         app:hintTextAppearance="@style/TextAppearance.App.Hint">
 

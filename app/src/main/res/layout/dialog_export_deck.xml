@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:backgroundTint="?colorSurfaceContainerLowest"
     android:paddingBottom="@dimen/space_lg">
 
     <com.google.android.material.button.MaterialButton
@@ -100,33 +99,5 @@
         app:layout_constraintTop_toBottomOf="@+id/til_separator"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/bt_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_radius_base"
-        android:backgroundTint="?colorPrimary"
-        android:text="@string/bt_text_cancel"
-        android:textColor="?colorOnPrimary"
-        android:textAppearance="@style/TextAppearance.App.BodyMedium"
-        android:layout_marginTop="@dimen/space_md"
-        android:layout_marginEnd="@dimen/space_md"
-        app:layout_constraintEnd_toStartOf="@+id/bt_export"
-        app:layout_constraintTop_toBottomOf="@+id/sw_include_subdecks" />
-
-    <Button
-        android:id="@+id/bt_export"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_radius_base"
-        android:backgroundTint="?colorPrimary"
-        android:text="@string/export"
-        android:textColor="?colorOnPrimary"
-        android:layout_marginStart="@dimen/space_lg"
-        android:layout_marginEnd="@dimen/space_lg"
-        android:textAppearance="@style/TextAppearance.App.BodyMedium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/bt_cancel" />
     
 </androidx.constraintlayout.widget.ConstraintLayout>

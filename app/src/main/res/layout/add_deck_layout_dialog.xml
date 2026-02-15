@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="?colorSurfaceContainerLowest">
+    android:backgroundTint="?colorSurfaceContainerLow">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -59,6 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.App.TextInputLayout"
+                app:boxBackgroundColor="?colorSurfaceContainer"
                 app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
                 app:layout_constraintTop_toBottomOf="@+id/bt_exit"
                 app:layout_constraintStart_toStartOf="parent"
@@ -229,7 +230,7 @@
                 android:text="@string/bt_add_deck"
                 android:textColor="?colorOnPrimary"
                 android:textAppearance="@style/TextAppearance.App.BodyMedium"
-                app:cornerRadius="@dimen/radius_base"
+                app:cornerRadius="@dimen/radius_rounded"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_deck_color_picker" />
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.soaharisonstebane.mneme.R
 import com.soaharisonstebane.mneme.databinding.LyFlashCardBottomSheetMenuBinding
@@ -22,6 +23,8 @@ import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_FIR
 import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.IS_UNKNOWN_CARD_ONLY
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.CARD_COUNT
+import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
+import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.QUIZ
 
 class MiniGameSettingsSheet: BottomSheetDialogFragment() {
 
@@ -35,8 +38,16 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
     private var listener: SettingsApplication? = null
     var imm: InputMethodManager? = null
 
+    private val gameMode: String by lazy {
+        requireArguments().getString(ARG_GAME_MODE).orEmpty()
+    }
+
     companion object {
         const val TAG = "ModalBottomSheet"
+        private const val ARG_GAME_MODE = "game_mode"
+        fun newInstance(gameMode: String) = MiniGameSettingsSheet().apply {
+            arguments = bundleOf(ARG_GAME_MODE to gameMode)
+        }
     }
 
     interface SettingsApplication {
@@ -72,6 +83,18 @@ class MiniGameSettingsSheet: BottomSheetDialogFragment() {
 
         binding.rlFilterTitleSection.setOnClickListener {
             isFilterSectionRevealed(!isFilterSectionRevealed)
+        }
+
+        when(gameMode) {
+            QUIZ -> {
+                binding.llCardOrientationSettingsContainer.isVisible = false
+            }
+            FLASH_CARD_QUIZ -> {
+                binding.llCardOrientationSettingsContainer.isVisible = true
+            }
+            else -> {
+                binding.llCardOrientationSettingsContainer.isVisible = true
+            }
         }
 
         binding.rlCardOrientationTitleSection.setOnClickListener {

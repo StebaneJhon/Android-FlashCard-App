@@ -347,4 +347,5 @@
     <string name="credits_text_google_ml_kit">Powering our on-device intelligence for a private learning experience.</string>
     <string name="credits_leitner_system">Our spaced repetition logic is based on the research of Sebastian Leitner.</string>
     <string name="credits_title_leitner_system">Leitner System</string>
+    <string name="update_box_level_title">Update %1$s</string>
 </resources>

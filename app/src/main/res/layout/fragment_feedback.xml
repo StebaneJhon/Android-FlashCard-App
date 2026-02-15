@@ -113,7 +113,7 @@
         android:id="@+id/imv_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/space_md"
+        android:layout_marginStart="@dimen/space_lg"
         android:layout_marginTop="@dimen/space_md"
         android:layout_marginBottom="@dimen/space_md"
         android:src="@drawable/icon_check_circle"
@@ -134,17 +134,18 @@
         app:layout_constraintStart_toEndOf="@+id/imv_check"
         app:layout_constraintTop_toBottomOf="@+id/til_message" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_send_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/space_lg"
         android:layout_marginTop="@dimen/space_md"
         android:backgroundTint="?colorPrimary"
-        android:background="@drawable/bg_radius_base"
         android:text="@string/bt_text_send"
         android:textColor="?colorOnPrimary"
+        app:cornerRadius="@dimen/radius_rounded"
         android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:drawableTint="?colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_success_message" />
 

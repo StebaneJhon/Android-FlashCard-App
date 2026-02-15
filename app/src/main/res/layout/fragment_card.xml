@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    android:fitsSystemWindows="false"
+    android:fitsSystemWindows="true"
     tools:context=".card.CardFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -62,6 +62,7 @@
         android:layout_height="wrap_content"
         android:background="?colorSurfaceContainerLowest"
         android:transitionGroup="true"
+        android:layout_marginBottom="@dimen/extra_space_bottom"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <LinearLayout
@@ -203,7 +204,8 @@
         android:background="@color/neutral800_transparent"
         android:orientation="vertical"
         android:gravity="bottom|end"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:fitsSystemWindows="true">
 
         <Button
             android:id="@+id/bt_add_subdeck"
@@ -235,8 +237,8 @@
             app:borderWidth="0dp"
             android:outlineProvider="none"
             app:useCompatPadding="false"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="@dimen/space_lg"/>
+            android:layout_marginEnd="@dimen/space_lg"
+            android:layout_marginBottom="@dimen/space_sm"/>
     </LinearLayout>
 
 

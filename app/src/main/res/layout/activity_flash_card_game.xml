@@ -5,8 +5,11 @@
     android:id="@+id/cl_flash_card_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="?colorSurfaceContainerLowest"
-    tools:context=".quiz.flashCardGame.FlashCardGameActivity">
+    tools:context=".quiz.flashCardGame.FlashCardGameActivity"
+    android:clipChildren="false"
+    android:clipToPadding="false">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout2"
@@ -14,13 +17,13 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?colorSurfaceContainerLowest">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?colorSurfaceContainerLowest"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/mn_flash_card_top_app_bar"
             app:navigationIcon="@drawable/icon_arrow_back"
@@ -47,11 +50,13 @@
         app:cardCornerRadius="@dimen/radius_xxl"
         app:strokeWidth="2dp"
         app:strokeColor="?colorSurfaceContainerHigh"
-        android:layout_marginBottom="@dimen/space_lg"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_lg"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/bt_rewind"
-        app:layout_constraintEnd_toEndOf="@+id/cl_on_screen_card_root"
-        app:layout_constraintStart_toStartOf="@+id/cl_on_screen_card_root"
-        app:layout_constraintTop_toTopOf="@+id/cl_on_screen_card_root">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_mini_game_progression">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_card_bottom_container"
             android:layout_width="match_parent"
@@ -122,31 +127,32 @@
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:id="@+id/cl_on_screen_card_root"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/space_sm"
         android:layout_marginHorizontal="@dimen/space_lg"
         android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/bt_rewind"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_mini_game_progression">
 
         <com.google.android.material.card.MaterialCardView
-            android:alpha="0"
             android:id="@+id/cv_card_back"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:alpha="0"
             android:backgroundTint="?colorPrimary"
-            android:layout_marginBottom="@dimen/space_lg"
             app:cardCornerRadius="@dimen/radius_xxl"
-            app:strokeWidth="2dp"
-            app:strokeColor="?colorSurfaceContainerHigh"
-            app:layout_constraintBottom_toTopOf="@+id/bt_iv_rewind"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeColor="?colorSurfaceContainerHigh"
+            app:strokeWidth="2dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -175,6 +181,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/bt_card_back_speak">
+
                     <include
                         android:id="@+id/in_back_1"
                         layout="@layout/ly_quiz_question" />
@@ -189,6 +196,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_1">
+
                     <include
                         android:id="@+id/in_back_2"
                         layout="@layout/ly_quiz_question" />
@@ -203,6 +211,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_2">
+
                     <include
                         android:id="@+id/in_back_3"
                         layout="@layout/ly_quiz_question" />
@@ -218,6 +227,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_3">
+
                     <include
                         android:id="@+id/in_back_4"
                         layout="@layout/ly_quiz_question" />
@@ -233,6 +243,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_4">
+
                     <include
                         android:id="@+id/in_back_5"
                         layout="@layout/ly_quiz_question" />
@@ -247,6 +258,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_5">
+
                     <include
                         android:id="@+id/in_back_6"
                         layout="@layout/ly_quiz_question" />
@@ -261,6 +273,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_6">
+
                     <include
                         android:id="@+id/in_back_7"
                         layout="@layout/ly_quiz_question" />
@@ -276,6 +289,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_7">
+
                     <include
                         android:id="@+id/in_back_8"
                         layout="@layout/ly_quiz_question" />
@@ -290,6 +304,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_8">
+
                     <include
                         android:id="@+id/in_back_9"
                         layout="@layout/ly_quiz_question" />
@@ -304,6 +319,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/container_back_9">
+
                     <include
                         android:id="@+id/in_back_10"
                         layout="@layout/ly_quiz_question" />
@@ -314,12 +330,12 @@
                     android:id="@+id/tv_flip_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_md"
                     android:fontFamily="@font/open_sans_light"
                     android:text="@string/text_tap_to_flip"
                     android:textAlignment="center"
                     android:textColor="?colorOnSurfaceVariant"
                     android:textSize="@dimen/text_xs"
-                    android:layout_margin="@dimen/space_md"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
@@ -331,15 +347,14 @@
             android:id="@+id/cv_card_front"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginBottom="@dimen/space_lg"
             android:backgroundTint="?colorPrimary"
             app:cardCornerRadius="@dimen/radius_xxl"
-            app:strokeWidth="2dp"
-            app:strokeColor="?colorSurfaceContainerHigh"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/bt_iv_rewind">
+            app:strokeColor="?colorSurfaceContainerHigh"
+            app:strokeWidth="2dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -355,9 +370,9 @@
                     android:contentDescription="@string/bt_description_button_speak"
                     app:icon="@drawable/icon_speak"
                     app:iconTint="?colorOnSurface"
-                    app:rippleColor="@color/transparent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:rippleColor="@color/transparent" />
 
 
                 <FrameLayout
@@ -369,63 +384,64 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/bt_card_front_speak">
+
                     <include
                         android:id="@+id/in_front"
                         layout="@layout/ly_quiz_question" />
                 </FrameLayout>
 
-<!--                <TextView-->
-<!--                    android:visibility="gone"-->
-<!--                    android:id="@+id/tv_quiz_front"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="0dp"-->
-<!--                    android:fontFamily="@font/montserrat_bold"-->
-<!--                    android:gravity="center"-->
-<!--                    android:textAlignment="center"-->
-<!--                    android:textColor="?colorOnSurface"-->
-<!--                    app:autoSizeMaxTextSize="@dimen/text_xl3"-->
-<!--                    app:autoSizeMinTextSize="@dimen/text_base"-->
-<!--                    app:autoSizeStepGranularity="2sp"-->
-<!--                    app:autoSizeTextType="uniform"-->
-<!--                    app:layout_constraintBottom_toTopOf="@+id/tv_card_front_flip_hint"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/bt_card_front_speak"-->
-<!--                    tools:text="1. What is the capital of Madagascar?" />-->
+                <!--                <TextView-->
+                <!--                    android:visibility="gone"-->
+                <!--                    android:id="@+id/tv_quiz_front"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="0dp"-->
+                <!--                    android:fontFamily="@font/montserrat_bold"-->
+                <!--                    android:gravity="center"-->
+                <!--                    android:textAlignment="center"-->
+                <!--                    android:textColor="?colorOnSurface"-->
+                <!--                    app:autoSizeMaxTextSize="@dimen/text_xl3"-->
+                <!--                    app:autoSizeMinTextSize="@dimen/text_base"-->
+                <!--                    app:autoSizeStepGranularity="2sp"-->
+                <!--                    app:autoSizeTextType="uniform"-->
+                <!--                    app:layout_constraintBottom_toTopOf="@+id/tv_card_front_flip_hint"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toBottomOf="@+id/bt_card_front_speak"-->
+                <!--                    tools:text="1. What is the capital of Madagascar?" />-->
 
                 <TextView
-                    android:layout_margin="@dimen/space_md"
                     android:id="@+id/tv_card_front_flip_hint"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/space_md"
                     android:fontFamily="@font/open_sans_light"
+                    android:text="@string/text_tap_to_flip"
                     android:textAlignment="center"
                     android:textColor="?colorOnSurfaceVariant"
                     android:textSize="@dimen/text_xs"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    android:text="@string/text_tap_to_flip" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <Button
-            android:id="@+id/bt_iv_rewind"
-            style="?attr/materialIconButtonFilledTonalStyle"
-            android:alpha="0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:backgroundTint="?colorSurfaceContainerLow"
-            android:contentDescription="@string/bt_rewind"
-            android:padding="@dimen/space_md"
-            app:icon="@drawable/icon_rewind"
-            app:iconTint="?colorPrimary"
-            app:rippleColor="?colorSurfaceContainerHighest"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+        <!--        <Button-->
+        <!--            android:id="@+id/bt_iv_rewind"-->
+        <!--            style="?attr/materialIconButtonFilledTonalStyle"-->
+        <!--            android:alpha="0"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_alignParentStart="true"-->
+        <!--            android:backgroundTint="?colorSurfaceContainerLow"-->
+        <!--            android:contentDescription="@string/bt_rewind"-->
+        <!--            android:padding="@dimen/space_md"-->
+        <!--            app:icon="@drawable/icon_rewind"-->
+        <!--            app:iconTint="?colorPrimary"-->
+        <!--            app:rippleColor="?colorSurfaceContainerHighest"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -441,11 +457,10 @@
         android:padding="@dimen/space_md"
         app:icon="@drawable/icon_exit"
         app:iconTint="@color/red700"
-        app:rippleColor="@color/red400"
-        app:layout_constraintBottom_toBottomOf="@+id/cl_on_screen_card_root"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_rewind"
         app:layout_constraintEnd_toStartOf="@+id/bt_rewind"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintTop_toTopOf="@+id/bt_rewind" />
+        app:layout_constraintTop_toTopOf="@+id/bt_rewind"
+        app:rippleColor="@color/red400" />
 
     <Button
         android:id="@+id/bt_rewind"
@@ -459,11 +474,11 @@
         android:padding="@dimen/space_md"
         app:icon="@drawable/icon_rewind"
         app:iconTint="?colorPrimary"
-        app:rippleColor="?colorSurfaceContainerHighest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:rippleColor="?colorSurfaceContainerHighest" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_Know"
@@ -477,11 +492,10 @@
         android:padding="@dimen/space_md"
         app:icon="@drawable/icon_check"
         app:iconTint="@color/green700"
-        app:rippleColor="@color/green400"
-        app:layout_constraintBottom_toBottomOf="@+id/cl_on_screen_card_root"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_rewind"
         app:layout_constraintStart_toEndOf="@+id/bt_rewind"
-        app:layout_constraintTop_toTopOf="@+id/bt_rewind" />
+        app:layout_constraintTop_toTopOf="@+id/bt_rewind"
+        app:rippleColor="@color/green400" />
 
     <LinearLayout
         android:id="@+id/ly_game_review_container"

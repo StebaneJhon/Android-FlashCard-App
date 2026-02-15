@@ -53,6 +53,7 @@ import com.soaharisonstebane.mneme.util.TextType.CONTENT
 import com.soaharisonstebane.mneme.util.TextType.DEFINITION
 import com.soaharisonstebane.mneme.util.TextWithLanguageModel
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.QUIZ
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -71,8 +72,6 @@ class QuizGameActivity :
     }
 //    private var sharedPref: SharedPreferences? = null
 //    private var editor: SharedPreferences.Editor? = null
-
-    private var modalBottomSheet: MiniGameSettingsSheet? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var appTheme: String? = null
@@ -167,11 +166,9 @@ class QuizGameActivity :
         applySettings()
         completelyRestartQuiz()
 
-        modalBottomSheet = MiniGameSettingsSheet()
-
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.mn_bt_settings) {
-                modalBottomSheet?.show(supportFragmentManager, MiniGameSettingsSheet.TAG)
+                MiniGameSettingsSheet.newInstance(QUIZ).show(supportFragmentManager, MiniGameSettingsSheet.TAG)
                 true
             } else {
                 false

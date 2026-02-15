@@ -41,7 +41,6 @@ class EditDeckNameDialog(): AppCompatDialogFragment() {
         deckNameField?.setText(currentDeckName)
 
         builder.setView(view)
-            .setTitle(getString(R.string.edit_deck_name))
             .setNegativeButton(getString(R.string.bt_text_cancel)) {_, _ -> dismiss()}
             .setPositiveButton(getString(R.string.ok)) {_, _ ->
                 val newDeckName = deckNameField?.text.toString()

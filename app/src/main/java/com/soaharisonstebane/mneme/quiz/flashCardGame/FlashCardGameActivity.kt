@@ -74,10 +74,12 @@ import com.soaharisonstebane.mneme.util.TextType.CONTENT
 import com.soaharisonstebane.mneme.util.TextType.DEFINITION
 import com.soaharisonstebane.mneme.util.TextWithLanguageModel
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.Locale
+import kotlin.math.abs
 
 
 class FlashCardGameActivity :
@@ -93,8 +95,6 @@ class FlashCardGameActivity :
 
     private lateinit var flashCardProgressBarAdapter: FlashCardProgressBarAdapter
 
-//    private var sharedPref: SharedPreferences? = null
-//    private var editor: SharedPreferences.Editor? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
     private var deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions? = null
@@ -104,10 +104,9 @@ class FlashCardGameActivity :
     private var dx: Float = 0.0f
     private var dy: Float = 0.0f
 
-    private var modalBottomSheet: MiniGameSettingsSheet? = null
+    private var isDragging = false
     private var tts: TextToSpeech? = null
 
-//    private lateinit var tvDefinitions: List<TextView>
     private lateinit var tvDefinitions: List<FlashcardContentLyModel>
     private val EXTRA_MARGIN = -2
 
@@ -130,36 +129,18 @@ class FlashCardGameActivity :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
         miniGamePref = getSharedPreferences(
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
             Context.MODE_PRIVATE
         )
-//        editor = sharedPref?.edit()
         miniGamePrefEditor = miniGamePref?.edit()
         val themePicker = ThemePicker()
-//        val appTheme = sharedPref?.getString("themName", "BASE THEME")
-//        val themRef = themePicker.selectTheme(appTheme)
 
         deckWithCards = intent?.parcelable(DECK_ID_KEY)
 
         val deckColorCode = deckWithCards?.deck?.deckBackground
         val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
         setTheme(theme)
-
-//        if (deckColorCode.isNullOrBlank() && themRef != null) {
-//            setTheme(themRef)
-//        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-//            val deckTheme = if (appTheme == DARK_THEME) {
-//                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
-//            } else {
-//                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
-//            }
-//            setTheme(deckTheme)
-//        } else {
-//            setTheme(themePicker.getDefaultTheme())
-//        }
-
         tts = TextToSpeech(this, this)
 
         binding = ActivityFlashCardGameBinding.inflate(layoutInflater)
@@ -167,47 +148,18 @@ class FlashCardGameActivity :
 
         setContentView(view)
 
-        WindowCompat.enableEdgeToEdge(window)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout2) { v, windowInserts ->
-            val insets = windowInserts.getInsets(WindowInsetsCompat.Type.statusBars())
-            val px = insets.top
-            statusBarHeight = px / resources.displayMetrics.density
-            v.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = insets.top
-            }
-            WindowInsetsCompat.CONSUMED
-        }
-
-//        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
-//        statusBarHeight = if (resourceId > 0) {
-//            val px = resources.getDimensionPixelSize(resourceId).toFloat()
-//            px / resources.displayMetrics.density
-//        } else {
-//            0f
-//        }
-
         deckWithCards?.let {
-            val cardList = it.cards?.toMutableList()
+            val cardList = it.cards.toMutableList()
             val deck = it.deck
-            if (!cardList.isNullOrEmpty() && deck != null) {
+            if (cardList.isNotEmpty()) {
+                viewModel.initCardList(cardList)
+                viewModel.initOriginalCardList(cardList)
+                viewModel.initDeck(deck)
                 initFlashCard(cardList, deck, true)
             } else {
                 onNoCardToRevise()
             }
         }
-
-//        tvDefinitions = listOf(
-//            binding.tvQuizBack1,
-//            binding.tvQuizBack2,
-//            binding.tvQuizBack3,
-//            binding.tvQuizBack4,
-//            binding.tvQuizBack5,
-//            binding.tvQuizBack6,
-//            binding.tvQuizBack7,
-//            binding.tvQuizBack8,
-//            binding.tvQuizBack9,
-//            binding.tvQuizBack10,
-//        )
 
         tvDefinitions = listOf(
             FlashcardContentLyModel(container = binding.containerBack1, view = binding.inBack1),
@@ -222,7 +174,6 @@ class FlashCardGameActivity :
             FlashcardContentLyModel(container = binding.containerBack10, view = binding.inBack10),
         )
 
-        applySettings()
         lifecycleScope.launch {
             viewModel
                 .actualCards
@@ -256,13 +207,16 @@ class FlashCardGameActivity :
             }
         }
 
+        applySettings()
+        completelyRestartFlashCard(getCardOrientation())
+
         gameOn(binding.clOnScreenCardRoot)
 
         binding.btKnow.setOnClickListener {
-                onKnownButtonClicked()
+            onCardKnown(binding.clOnScreenCardRoot)
         }
         binding.btNotKnow.setOnClickListener {
-            onKnownNotButtonClicked()
+            onCardKnownNot(binding.clOnScreenCardRoot)
         }
 
         binding.btRewind.setOnClickListener {
@@ -281,11 +235,9 @@ class FlashCardGameActivity :
             }
         }
 
-        modalBottomSheet = MiniGameSettingsSheet()
-
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             if (menuItem.itemId == R.id.mn_bt_settings) {
-                modalBottomSheet?.show(supportFragmentManager, MiniGameSettingsSheet.TAG)
+                MiniGameSettingsSheet.newInstance(FLASH_CARD_QUIZ).show(supportFragmentManager, MiniGameSettingsSheet.TAG)
                 true
             } else {
                 false
@@ -414,44 +366,6 @@ class FlashCardGameActivity :
     ) ?: CARD_ORIENTATION_FRONT_AND_BACK
 
     private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10
-
-    private fun onKnownButtonClicked() {
-        val card = binding.clOnScreenCardRoot
-        val displayMetrics = resources.displayMetrics
-        val cardWidth = card.width
-        val cardHeight = card.height
-        val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + binding.appBarLayout2.height
-        val currentX = card.x
-        val currentY = card.y
-        completeSwipeToRight(card, currentX)
-        onSwipeToRightComplete(
-            card,
-            cardStartX,
-            cardStartY,
-            (MIN_SWIPE_DISTANCE * (-10)).toFloat(),
-            currentY
-        )
-    }
-
-    private fun onKnownNotButtonClicked() {
-        val card = binding.clOnScreenCardRoot
-        val displayMetrics = resources.displayMetrics
-        val cardWidth = card.width
-        val cardHeight = card.height
-        val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-        val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2) + binding.appBarLayout2.height
-        val currentX = card.x
-        val currentY = card.y
-        completeSwipeToLeft(card, currentX)
-        onSwipeToLeftCompleted(
-            card,
-            cardStartX,
-            cardStartY,
-            (MIN_SWIPE_DISTANCE * 10).toFloat(),
-            currentY
-        )
-    }
 
     private fun onNoCardToRevise() {
         binding.lyOnNoMoreCardsErrorContainer.isVisible = true
@@ -606,222 +520,105 @@ class FlashCardGameActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun gameOn(card: ConstraintLayout) {
         card.setOnTouchListener { view, motionEvent ->
-            val displayMetrics = resources.displayMetrics
-            val cardWidth = view.width
-            val cardHeight = view.height
-            val cardStartX = (displayMetrics.widthPixels.toFloat() / 2) - (cardWidth / 2)
-            val cardStartY = (displayMetrics.heightPixels.toFloat() / 2) - (cardHeight / 2)  + binding.appBarLayout2.height
+            view.parent.requestDisallowInterceptTouchEvent(true)
 
             when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    dx = view.x - motionEvent.rawX
-                    dy = view.y - motionEvent.rawY
+                    isDragging = false
+                    dx = view.translationX - motionEvent.rawX
+                    dy = view.translationY - motionEvent.rawY
+
                 }
 
                 MotionEvent.ACTION_MOVE -> {
+                    if (abs(motionEvent.rawX + dx) > 10 || abs(motionEvent.rawY + dy) > 10) {
+                        isDragging = true
+                    }
                     onCardMoved(view, motionEvent)
                 }
 
                 MotionEvent.ACTION_UP -> {
-                    var currentX = view.x
-                    var currentY = view.y
+                    val currentX = view.translationX
                     when {
-                        currentX > MIN_SWIPE_DISTANCE && currentX <= 0 || currentX < (MIN_SWIPE_DISTANCE * -1) && currentX >= 0
-                            -> {
-                            flipCardOnClicked(view, cardStartX, cardStartY, currentX, currentY)
+                        currentX > MIN_SWIPE_DISTANCE && currentX <= 0 || currentX < -MIN_SWIPE_DISTANCE && currentX >= 0 -> {
+                            flipCardOnClicked(view)
                         }
 
-                        currentX < MIN_SWIPE_DISTANCE
-                            -> {
-                            onCardKnownNot(view, currentX, cardStartX, cardStartY, currentY)
+                        currentX < MIN_SWIPE_DISTANCE -> {
+                            onCardKnownNot(view)
+                        }
+                        currentX > -MIN_SWIPE_DISTANCE -> {
+                            onCardKnown(view)
                         }
 
-                        currentX > (MIN_SWIPE_DISTANCE * (-1))
-                            -> {
-                            onCardKnown(view, currentX, cardStartX, cardStartY, currentY)
-                        }
                     }
                 }
             }
-
-            return@setOnTouchListener true
+            true
         }
     }
 
     private fun onCardMoved(view: View, motionEvent: MotionEvent) {
-        view.animate()
-            .x(motionEvent.rawX + dx)
-            .y(motionEvent.rawY + dy)
-            .setDuration(0)
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationStart(animation: Animator) {
-                    when {
-                        (view.x > (MIN_SWIPE_DISTANCE * -1)) -> {
-                            isCardKnown(true)
-                        }
+        view.translationX = motionEvent.rawX + dx
+        view.translationY = motionEvent.rawY + dy
 
-                        (view.x < MIN_SWIPE_DISTANCE) -> {
-                            isCardKnown(false)
-                        }
-
-                        else -> {
-                            isCardKnown(null)
-                        }
-                    }
-                }
-            })
-            .start()
+        when {
+            view.translationX < -MIN_SWIPE_DISTANCE -> isCardKnown(false)
+            view.translationX > MIN_SWIPE_DISTANCE -> isCardKnown(true)
+            else -> isCardKnown(null)
+        }
     }
 
-    private fun flipCardOnClicked(
-        view: View,
-        cardStartX: Float,
-        cardStartY: Float,
-        currentX: Float,
-        currentY: Float
-    ) {
-        var currentX1 = currentX
-        var currentY1 = currentY
+    private fun flipCardOnClicked(view: View) {
         view.animate()
-            .x(cardStartX)
-            .y(cardStartY)
+            .translationX(0f)
+            .translationY(0f)
             .setDuration(150)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    if (currentX1 == view.x || currentY1 == view.y) {
+                    if (!isDragging) {
                         flipCard()
-                    } else {
-                        val deckColorCode =
-                            DeckColorCategorySelector().selectDeckColorStateListSurfaceContainerLow(
-                                this@FlashCardGameActivity,
-                                viewModel.deck?.deckBackground
-                            )
-                        binding.cvCardFront.backgroundTintList = deckColorCode
                     }
-                    currentX1 = 0f
-                    currentY1 = 0f
+                    isDragging = false
                 }
-            })
-            .start()
+            }).start()
     }
 
-    private fun onCardKnownNot(
-        view: View,
-        currentX: Float,
-        cardStartX: Float,
-        cardStartY: Float,
-        currentY: Float
-    ) {
-        var currentX1 = currentX
-        var currentY1 = currentY
-        completeSwipeToLeft(view, currentX1)
-        onSwipeToLeftCompleted(view, cardStartX, cardStartY, currentX1, currentY1)
-    }
-
-    private fun onSwipeToLeftCompleted(
-        view: View,
-        cardStartX: Float,
-        cardStartY: Float,
-        currentX1: Float,
-        currentY1: Float
-    ) {
-        var currentX11 = currentX1
-        var currentY11 = currentY1
-        lifecycleScope.launch {
-            delay(500)
-            view.animate()
-                .x(cardStartX)
-                .y(cardStartY)
-                .setDuration(0)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        if (currentX11 < MIN_SWIPE_DISTANCE) {
-                            if (!isFront) {
-                                initCardLayout()
-                            }
-                            if (viewModel.swipe(false)) {
-                                onQuizComplete()
-                            }
-                            flashCardProgressBarAdapter.notifyDataSetChanged()
-
-                            currentY11 = 0f
-                            currentX11 = 0f
-                        }
-                    }
-                })
-                .start()
-        }
-    }
-
-    private fun completeSwipeToLeft(view: View, currentX1: Float) {
-        val width = Resources.getSystem().displayMetrics.widthPixels
+    private fun onCardKnown(view: View) {
+        val screenWidth = resources.displayMetrics.widthPixels.toFloat()
         view.animate()
-            .x(currentX1 - width)
+            .translationX(screenWidth)
             .setDuration(250)
-            .start()
-        if (tts?.isSpeaking == true) {
-            stopReadingAllText()
-        }
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    if (viewModel.swipe(true)) onQuizComplete()
+                    resetCardPosition(view)
+                }
+            }).start()
+
+        if (tts?.isSpeaking == true) stopReadingAllText()
     }
 
-    private fun onCardKnown(
-        view: View,
-        currentX: Float,
-        cardStartX: Float,
-        cardStartY: Float,
-        currentY: Float
-    ) {
-        var currentX1 = currentX
-        var currentY1 = currentY
-        completeSwipeToRight(view, currentX1)
-        onSwipeToRightComplete(view, cardStartX, cardStartY, currentX1, currentY1)
-    }
-
-    private fun onSwipeToRightComplete(
-        view: View,
-        cardStartX: Float,
-        cardStartY: Float,
-        currentX1: Float,
-        currentY1: Float
-    ) {
-        var currentX11 = currentX1
-        var currentY11 = currentY1
-        lifecycleScope.launch {
-            delay(500)
-            view.animate()
-                .x(cardStartX)
-                .y(cardStartY)
-                .setDuration(0)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        if (currentX11 > (MIN_SWIPE_DISTANCE * (-1))) {
-                            if (!isFront) {
-                                initCardLayout()
-                            }
-                            if (viewModel.swipe(true)) {
-                                onQuizComplete()
-                            }
-                            flashCardProgressBarAdapter.notifyDataSetChanged()
-
-
-                            currentY11 = 0f
-                            currentX11 = 0f
-                        }
-                    }
-                })
-                .start()
-        }
-    }
-
-    private fun completeSwipeToRight(view: View, currentX1: Float) {
-        val width = Resources.getSystem().displayMetrics.widthPixels
+    private fun onCardKnownNot(view: View) {
+        val screenWidth = resources.displayMetrics.widthPixels.toFloat()
         view.animate()
-            .x(currentX1 + width)
+            .translationX(-screenWidth)
             .setDuration(250)
-            .start()
-        if (tts?.isSpeaking == true) {
-            stopReadingAllText()
-        }
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    if (viewModel.swipe(false)) onQuizComplete()
+                    resetCardPosition(view)
+                }
+            }).start()
+
+        if (tts?.isSpeaking == true) stopReadingAllText()
+    }
+
+    private fun resetCardPosition(view: View) {
+        view.translationX = 0f
+        view.translationY = 0f
+        if (!isFront) initCardLayout()
+        flashCardProgressBarAdapter.notifyDataSetChanged()
     }
 
     private fun isCardKnown(isKnown: Boolean?) {
@@ -850,7 +647,6 @@ class FlashCardGameActivity :
                 binding.cvCardBack.backgroundTintList = deckColorCode
             }
         }
-
     }
 
     private fun flipCard() {
@@ -1363,12 +1159,12 @@ class FlashCardGameActivity :
         binding.lyOnNoMoreCardsErrorContainer.isVisible = false
         binding.lyGameReviewContainer.isVisible = false
         initCardLayout()
-        viewModel.initCardList(cardList)
-        viewModel.initDeck(deck)
+//        viewModel.initCardList(cardList)
+//        viewModel.initDeck(deck)
         viewModel.updateCardToRevise(getCardCount())
-        if (initOriginalCardList) {
-            viewModel.initOriginalCardList(cardList)
-        }
+//        if (initOriginalCardList) {
+//            viewModel.initOriginalCardList(cardList)
+//        }
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
             setNavigationOnClickListener { finish() }

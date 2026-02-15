@@ -236,8 +236,7 @@ class QuizGameAdapter(
 
                 card.attemptTime == 0 -> {
                     binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    binding.tvHint.text =
-                        ContextCompat.getString(context, R.string.text_not_answered)
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_not_answered)
                     binding.tvHint.setTextColor(
                         MaterialColors.getColor(
                             itemView,
@@ -254,9 +253,8 @@ class QuizGameAdapter(
 
                 card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
                     binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-                    binding.tvHint.text =
-                        ContextCompat.getString(context, R.string.text_correct_answer_more)
-                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green500))
+                    binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.yellow500))
                 }
 
                 card.attemptTime > 0 && !card.isCorrectlyAnswered -> {
@@ -306,7 +304,7 @@ class QuizGameAdapter(
                 card.attemptTime > 0 && hasCardCorrectAnswer(card) && !card.isCorrectlyAnswered -> {
                     binding.tvHint.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
                     binding.tvHint.text = ContextCompat.getString(context, R.string.text_correct_answer_more)
-                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.green200))
+                    binding.tvHint.setTextColor(ContextCompat.getColor(context, R.color.yellow200))
                 }
 
                 card.attemptTime > 0 && !card.isCorrectlyAnswered -> {

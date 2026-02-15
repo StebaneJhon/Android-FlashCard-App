@@ -31,19 +31,29 @@ class ExportDeckDialog: DialogFragment() {
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
-        binding.btExport.setOnClickListener {
-            fileFormat = getFormat()
-            fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
+//        binding.btExport.setOnClickListener {
+//            fileFormat = getFormat()
+//            fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
+//
+//            val deckExportModel = DeckExportModel(fileFormat, fileContentSeparator, binding.swIncludeSubdecks.isChecked)
+//            sendDeckExportModel(CardFragment.REQUEST_EXPORT_DECK_CODE, deckExportModel)
+//        }
 
-            val deckExportModel = DeckExportModel(fileFormat, fileContentSeparator, binding.swIncludeSubdecks.isChecked)
-            sendDeckExportModel(CardFragment.REQUEST_EXPORT_DECK_CODE, deckExportModel)
-        }
-
-        binding.btCancel.setOnClickListener {
-            this.dismiss()
-        }
+//        binding.btCancel.setOnClickListener {
+//            this.dismiss()
+//        }
 
         builder.setView(binding.root)
+            .setPositiveButton(R.string.export) { _, _ ->
+                fileFormat = getFormat()
+                fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
+
+                val deckExportModel = DeckExportModel(fileFormat, fileContentSeparator, binding.swIncludeSubdecks.isChecked)
+                sendDeckExportModel(CardFragment.REQUEST_EXPORT_DECK_CODE, deckExportModel)
+            }
+            .setNegativeButton(R.string.bt_text_cancel) { dialog, _ ->
+                dialog.dismiss()
+            }
         return builder.create()
     }
 

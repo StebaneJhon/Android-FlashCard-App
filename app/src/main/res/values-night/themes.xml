@@ -466,7 +466,7 @@
         <item name="colorOnSurfaceVariant">?colorOnSurface</item>
         <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
         <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.App.Title.Text</item>
-        <item name="backgroundColor">?colorSurfaceContainerHighest</item>
+        <item name="backgroundColor">?colorSurfaceContainerLow</item>
         <item name="android:background">?colorSurfaceContainerLow</item>
     </style>
 
@@ -479,18 +479,10 @@
         <item name="fontFamily">@font/open_sans_bold</item>
     </style>
 
-    <!-- Rounded dialog theme -->
-    <style name="MaterialAlertDialog_rounded" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="shapeAppearanceOverlay">@style/DialogCorners</item>
-    </style>
-
     <style name="DialogCorners">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/card_radius</item>
+        <item name="cornerSize">@dimen/radius_base</item>
     </style>
-
-    <!-- PopUpMenu theme -->
-
 
     <!-- Toolbar theme -->
     <style name="Widget.App.Toolbar" parent="Widget.Material3.Toolbar">
@@ -503,22 +495,6 @@
     <style name="ThemeOverlay.App.Toolbar" parent="">
 
     </style>
-
-    <!-- Toolbar edit&add theme -->
-    <!--    <style name="Widget.App.Toolbar.Add.Edit.Card" parent="Widget.Material3.Toolbar">-->
-    <!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Toolbar</item>-->
-    <!--        <item name="titleTextColor">?attr/colorOnSurface</item>-->
-    <!--        <item name="subtitleTextColor">?attr/colorOnSurface</item>-->
-    <!--        <item name="titleTextAppearance">@style/TextAppearance.App.Medium</item>-->
-    <!--        <item name="actionMenuTextAppearance">@style/TextAppearance.App.Small</item>-->
-    <!--        <item name="actionMenuTextColor">@color/red950</item>-->
-    <!--        <item name="android:actionMenuTextColor">@color/red950</item>-->
-
-    <!--    </style>-->
-
-    <!--    <style name="ThemeOverlay.App.Toolbar.Add.Edit.Card" parent="">-->
-
-    <!--    </style>-->
 
 
     <!--Progress bar style-->
@@ -572,43 +548,6 @@
     <style name="Widget.App.MaterialDivider" parent="Widget.Material3.MaterialDivider">
         <item name="dividerColor">?colorSurfaceContainer</item>
     </style>
-
-    <!-- Settings buttons -->
-<!--    <style name="Widget.App.Settings.Button.Top" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Top</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.App.Settings.Button.Middle" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Middle</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.App.Settings.Button.Bottom" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Bottom</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="Widget.App.Settings.Button.Single" parent="Widget.Material3.Button">-->
-<!--        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Button</item>-->
-<!--        <item name="android:textAppearance">@style/TextAppearance.App.TitleMedium</item>-->
-<!--        <item name="shapeAppearance">@style/ShapeAppearance.App.Button.Single</item>-->
-<!--        <item name="iconSize">@dimen/icon_base</item>-->
-<!--    </style>-->
-
-<!--    <style name="ThemeOverlay.App.Button" parent="ThemeOverlay.Material3.Button">-->
-<!--        <item name="colorContainer">?colorSurfaceContainer</item>-->
-<!--        <item name="colorOnContainer">?colorOnSurface</item>-->
-<!--        <item name="android:padding">@dimen/space_lg</item>-->
-<!--        <item name="iconTint">?colorOnSurface</item>-->
-<!--        <item name="android:textAlignment">textStart</item>-->
-<!--    </style>-->
 
     <style name="Theme.NavigationdrawerViewTest.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

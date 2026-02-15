@@ -3,19 +3,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardBackgroundColor="?colorSurfaceContainerLow">
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardBackgroundColor="?colorSurfaceContainerLow"
+    android:orientation="vertical"
+    android:padding="@dimen/space_lg">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.App.TitleMedium"
+        android:textColor="?colorOnSurface"
+        tools:text="Title"/>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.App.TextInputLayout"
         android:id="@+id/til_level_repeat_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginTop="@dimen/space_md"
         app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
         app:hintTextAppearance="@style/TextAppearance.App.Hint"
         app:endIconMode="custom"
         app:endIconDrawable="@drawable/icon_help"
-        app:endIconTint="?colorOnSurface">
+        app:endIconTint="?colorOnSurface"
+        app:boxBackgroundColor="?colorSurfaceContainer">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/ti_level_repeat_day"
             android:layout_width="match_parent"

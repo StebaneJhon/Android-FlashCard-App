@@ -31,18 +31,16 @@ class ImportCardsFromDeviceDialog: DialogFragment() {
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
-        binding.btGetFile.setOnClickListener {
-            fileFormat = getFormat()
-            fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
-            val cardImportFromDeviceModel = CardImportFromDeviceModel(fileFormat, fileContentSeparator)
-            sendCardImportFromDeviceModel(NewCardDialog.REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE, cardImportFromDeviceModel)
-        }
-
-        binding.btCancel.setOnClickListener {
-            this.dismiss()
-        }
-
         builder.setView(binding.root)
+            .setNegativeButton(R.string.bt_text_cancel) {dialog, _ ->
+                dialog.dismiss()
+            }
+            .setPositiveButton(R.string.search_file) {_, _ ->
+                fileFormat = getFormat()
+                fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
+                val cardImportFromDeviceModel = CardImportFromDeviceModel(fileFormat, fileContentSeparator)
+                sendCardImportFromDeviceModel(NewCardDialog.REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE, cardImportFromDeviceModel)
+            }
         return builder.create()
     }
 
