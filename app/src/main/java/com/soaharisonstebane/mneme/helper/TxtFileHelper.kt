@@ -1,5 +1,7 @@
 package com.soaharisonstebane.mneme.helper
 
+import android.text.Html
+import android.text.Html.FROM_HTML_MODE_LEGACY
 import com.soaharisonstebane.mneme.backend.entities.Card
 import com.soaharisonstebane.mneme.backend.entities.CardContent
 import com.soaharisonstebane.mneme.backend.entities.CardDefinition
@@ -13,12 +15,13 @@ import com.soaharisonstebane.mneme.util.CardType.SINGLE_ANSWER_CARD
 import java.util.UUID
 
 fun cardToText(card: ExternalCardWithContentAndDefinitions, separator: String): String {
-    val content = card.contentWithDefinitions.content.contentText
+    val spannableContent = Html.fromHtml(card.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).trim()
     val definition = StringBuilder()
     card.contentWithDefinitions.definitions.forEach {
-        definition.append("${it.definitionText},")
+        val spannableDefinition = Html.fromHtml(it.definitionText, FROM_HTML_MODE_LEGACY).trim()
+        definition.append("${spannableDefinition},")
     }
-    return "$content $separator ${definition.deleteAt(definition.length.minus(1))}\n"
+    return "$spannableContent $separator ${definition.deleteAt(definition.length.minus(1))}\n"
 }
 
 fun textToImmutableCard(text: String, separator: String, deckId: String): CardWithContentAndDefinitions {
