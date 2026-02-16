@@ -73,8 +73,7 @@ class NewCardDialogViewModel(
         }
     }
 
-    private var _contentField =
-        MutableStateFlow<ContentFieldModel>(ContentFieldModel(null, null, null, null, false))
+    private var _contentField = MutableStateFlow<ContentFieldModel>(ContentFieldModel(null, null, null, null, false))
     val contentField: StateFlow<ContentFieldModel> = _contentField.asStateFlow()
 
     fun updateContentField(updatedContentField: ContentFieldModel) {

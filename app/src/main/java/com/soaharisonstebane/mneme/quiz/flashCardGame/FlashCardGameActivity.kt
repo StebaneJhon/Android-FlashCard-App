@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
@@ -59,6 +60,7 @@ import com.soaharisonstebane.mneme.util.ThemePicker
 import com.soaharisonstebane.mneme.util.UiState
 import com.google.android.material.color.MaterialColors
 import com.google.android.material.snackbar.Snackbar
+import com.soaharisonstebane.mneme.appView.CardFaceDialog
 import com.soaharisonstebane.mneme.backend.models.ExternalCardDefinition
 import com.soaharisonstebane.mneme.backend.models.ExternalCardWithContentAndDefinitions
 import com.soaharisonstebane.mneme.backend.models.ExternalDeck
@@ -155,7 +157,7 @@ class FlashCardGameActivity :
                 viewModel.initCardList(cardList)
                 viewModel.initOriginalCardList(cardList)
                 viewModel.initDeck(deck)
-                initFlashCard(cardList, deck, true)
+                initFlashCard(deck)
             } else {
                 onNoCardToRevise()
             }
@@ -674,6 +676,8 @@ class FlashCardGameActivity :
             frontAnim.start()
             true
         }
+        binding.btViewMore.isClickable = isFront
+        binding.btCardBackSpeak.isClickable = !isFront
         if (tts?.isSpeaking == true) {
             stopReadingAllText()
         }
@@ -734,6 +738,9 @@ class FlashCardGameActivity :
 
 //        binding.tvQuizFront.text = onScreenCards.top.cardContent?.content
         //binding.inFront.tvText.text = onScreenCards.top.contentWithDefinitions.content.contentText
+
+
+
         val contentText = onScreenCards.top.contentWithDefinitions.content.contentText
         val contentImage = onScreenCards.top.contentWithDefinitions.content.contentImage
         val contentAudio = onScreenCards.top.contentWithDefinitions.content.contentAudio
@@ -925,6 +932,49 @@ class FlashCardGameActivity :
                 }
             }
         }
+
+        val extraSpace = binding.btCardBackSpeak.height + resources.getDimension(R.dimen.space_md).times(2).toInt()
+
+        binding.cvCardFront.doOnLayout { card ->
+            val cardHeight = card.height
+            binding.containerFront.doOnLayout { content ->
+                val contentHeight = content.height + extraSpace
+                binding.btViewMore.isVisible = contentHeight > cardHeight
+            }
+        }
+
+        binding.cvCardBack.doOnLayout { card ->
+            val cardHeight = card.height
+            var definitionsHeight = 0
+            tvDefinitions.forEach { (container, _) ->
+                container.doOnLayout { c ->
+                    definitionsHeight += c.height + resources.getDimension(R.dimen.space_lg).toInt()
+                }
+            }
+            definitionsHeight += extraSpace
+            binding.btBackViewMore.isVisible = definitionsHeight  >= cardHeight
+        }
+
+        binding.btBackViewMore.setOnClickListener {
+            CardFaceDialog.newInstance(
+                definitionList = onScreenCards.top.contentWithDefinitions.definitions,
+                content = null
+            ).show(
+                supportFragmentManager,
+                CardFaceDialog.TAG
+            )
+        }
+
+        binding.btViewMore.setOnClickListener {
+            CardFaceDialog.newInstance(
+                definitionList = null,
+                content = onScreenCards.top.contentWithDefinitions.content
+            ).show(
+                supportFragmentManager,
+                CardFaceDialog.TAG
+            )
+        }
+
     }
 
 
@@ -1151,20 +1201,13 @@ class FlashCardGameActivity :
     fun isCorrect(index: Int?) = index == 1
 
     private fun initFlashCard(
-        cardList: MutableList<ExternalCardWithContentAndDefinitions>,
         deck: ExternalDeck,
-        initOriginalCardList: Boolean = false
     ) {
         isFlashCardGameScreenHidden(false)
         binding.lyOnNoMoreCardsErrorContainer.isVisible = false
         binding.lyGameReviewContainer.isVisible = false
         initCardLayout()
-//        viewModel.initCardList(cardList)
-//        viewModel.initDeck(deck)
         viewModel.updateCardToRevise(getCardCount())
-//        if (initOriginalCardList) {
-//            viewModel.initOriginalCardList(cardList)
-//        }
         viewModel.updateOnScreenCards()
         binding.topAppBar.apply {
             setNavigationOnClickListener { finish() }

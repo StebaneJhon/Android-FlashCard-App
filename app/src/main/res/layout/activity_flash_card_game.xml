@@ -177,6 +177,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_xxl"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -192,6 +193,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_3"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -207,6 +209,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_4"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -223,6 +226,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_5"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -239,6 +243,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_6"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -254,6 +259,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_7"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -269,6 +275,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_8"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -285,6 +292,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_9"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -300,6 +308,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/container_back_10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -315,6 +324,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="@dimen/space_md"
+                    android:layout_marginTop="@dimen/space_md"
                     app:layout_constraintBottom_toTopOf="@+id/tv_flip_hint"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -339,6 +349,29 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <FrameLayout
+                    android:visibility="gone"
+                    android:id="@+id/bt_back_view_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_bt_view_more"
+                    android:backgroundTint="?colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="?colorOnPrimary"
+                        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+                        android:textAlignment="center"
+                        android:layout_marginHorizontal="@dimen/space_lg"
+                        android:layout_marginVertical="@dimen/space_md"
+                        android:text="@string/view_more"/>
+
+                </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -422,6 +455,29 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
+
+                <FrameLayout
+                    android:id="@+id/bt_view_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_bt_view_more"
+                    android:backgroundTint="?colorPrimary"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="?colorOnPrimary"
+                        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+                        android:textAlignment="center"
+                        android:layout_marginHorizontal="@dimen/space_lg"
+                        android:layout_marginVertical="@dimen/space_md"
+                        android:text="@string/view_more"/>
+
+                </FrameLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>

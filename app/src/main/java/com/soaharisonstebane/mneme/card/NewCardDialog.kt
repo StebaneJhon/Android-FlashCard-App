@@ -428,8 +428,7 @@ class NewCardDialog(
         attachBottomSheetDialog = AttachBottomSheetDialog()
         scanBottomSheetDialog = ScanBottomSheetDialog()
 
-        val arrayAdapterSupportedLanguages =
-            ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
         val listPopupWindow = ListPopupWindow(appContext!!, null)
         listPopupWindow.setBackgroundDrawable(
             ResourcesCompat.getDrawable(
@@ -1162,12 +1161,54 @@ class NewCardDialog(
                     dialog?.dismiss()
                 }
                 .setNegativeButton(getString(R.string.bt_description_exit)) { _, _ ->
-                    newCardViewModel.definitionFields.value.forEach { fieldModel ->
-                        fieldModel.definitionImage?.let { image ->
-                            deleteImageFromInternalStorage(image.name)
+                    if (card != null && action == Constant.UPDATE) {
+                        newCardViewModel.definitionFields.value.forEachIndexed { index, model ->
+                            if (index < card!!.contentWithDefinitions.definitions.size) {
+                                if (card!!.contentWithDefinitions.definitions[index].definitionId == model.definitionId) {
+                                    model.definitionImage?.let { image ->
+                                        if (image.name != card!!.contentWithDefinitions.definitions[index].definitionImage?.name) {
+                                            deleteImageFromInternalStorage(image.name)
+                                        }
+                                    }
+                                    model.definitionAudio?.let { audio ->
+                                        if (audio.name != card!!.contentWithDefinitions.definitions[index].definitionAudio?.name) {
+                                            deleteAudioFromInternalStorage(audio)
+                                        }
+                                    }
+                                }
+                            } else {
+                                model.definitionImage?.let { image ->
+                                    deleteImageFromInternalStorage(image.name)
+                                }
+                                model.definitionAudio?.let { audio ->
+                                    deleteAudioFromInternalStorage(audio)
+                                }
+                            }
                         }
-                        fieldModel.definitionAudio?.let { audio ->
-                            deleteAudioFromInternalStorage(audio)
+                        newCardViewModel.contentField.value.contentImage?.let { image ->
+                            if (image.name != card!!.contentWithDefinitions.content.contentImage?.name) {
+                                deleteImageFromInternalStorage(image.name)
+                            }
+                        }
+                        newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                            if (audio.name != card!!.contentWithDefinitions.content.contentAudio?.name) {
+                                deleteAudioFromInternalStorage(audio)
+                            }
+                        }
+                    } else {
+                        newCardViewModel.definitionFields.value.forEach { fieldModel ->
+                            fieldModel.definitionImage?.let { image ->
+                                deleteImageFromInternalStorage(image.name)
+                            }
+                            fieldModel.definitionAudio?.let { audio ->
+                                deleteAudioFromInternalStorage(audio)
+                            }
+                        }
+                        newCardViewModel.contentField.value.contentImage?.let { image ->
+                                deleteImageFromInternalStorage(image.name)
+                        }
+                        newCardViewModel.contentField.value.contentAudio?.let { audio ->
+                                deleteAudioFromInternalStorage(audio)
                         }
                     }
                     sendCardsOnSave(newCardViewModel.getAddedCardSum())
@@ -1235,9 +1276,14 @@ class NewCardDialog(
         if (content.contentImage != null) {
             onSetContentFieldPhoto(content.contentImage!!.bmp!!)
             binding.lyContent.btContentDeleteImage.setOnClickListener {
-                if (deleteImageFromInternalStorage(content.contentImage!!.name)) {
+                if (card != null && action == Constant.UPDATE) {
                     newCardViewModel.deleteContentImageField()
                     onRemoveContentFieldPhoto()
+                } else {
+                    if (deleteImageFromInternalStorage(content.contentImage!!.name)) {
+                        newCardViewModel.deleteContentImageField()
+                        onRemoveContentFieldPhoto()
+                    }
                 }
             }
         } else {
@@ -1250,9 +1296,14 @@ class NewCardDialog(
                 playPauseContendAudio()
             }
             binding.lyContent.lyContentAudio.btDelete.setOnClickListener {
-                if (deleteAudioFromInternalStorage(content.contentAudio!!)) {
+                if (card != null && action == Constant.UPDATE) {
                     newCardViewModel.deleteContentAudioField()
                     onRemoveContentFieldAudio()
+                } else {
+                    if (deleteAudioFromInternalStorage(content.contentAudio!!)) {
+                        newCardViewModel.deleteContentAudioField()
+                        onRemoveContentFieldAudio()
+                    }
                 }
             }
         } else {
@@ -1358,10 +1409,14 @@ class NewCardDialog(
                     fieldView.ly.btDeleteField.visibility = View.VISIBLE
                     fieldView.ly.btDeleteField.setOnClickListener {
                         newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
-                            deleteImageFromInternalStorage(imageName)
+                            if (card == null && action == Constant.ADD) {
+                                deleteImageFromInternalStorage(imageName)
+                            }
                         }
                         newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
-                            deleteAudioFromInternalStorage(audioModel)
+                            if (card == null && action == Constant.ADD) {
+                                deleteAudioFromInternalStorage(audioModel)
+                            }
                         }
                         newCardViewModel.deleteDefinitionField(actualDefinitionFieldModel.definitionId)
 
@@ -1369,10 +1424,15 @@ class NewCardDialog(
                 }
 
                 fieldView.ly.btDeleteImage.setOnClickListener {
-                    newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
-                        if (deleteImageFromInternalStorage(imageName)) {
-                            newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
-                            onRemoveDefinitionFieldPhoto(fieldView)
+                    if (card != null && action == Constant.UPDATE) {
+                        newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
+                        onRemoveDefinitionFieldPhoto(fieldView)
+                    } else {
+                        newCardViewModel.getDefinitionFieldAt(index).definitionImage?.name?.let { imageName ->
+                            if (deleteImageFromInternalStorage(imageName)) {
+                                newCardViewModel.deleteDefinitionImageField(actualDefinitionFieldModel.definitionId)
+                                onRemoveDefinitionFieldPhoto(fieldView)
+                            }
                         }
                     }
                 }
@@ -1384,10 +1444,15 @@ class NewCardDialog(
                 }
 
                 fieldView.ly.lyContentAudio.btDelete.setOnClickListener {
-                    newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
-                        if (deleteAudioFromInternalStorage(audioModel)) {
-                            newCardViewModel.deleteDefinitionAudioField(actualDefinitionFieldModel.definitionId)
-                            onRemoveDefinitionFieldAudio(definitionFields[index])
+                    if (card != null && action == Constant.UPDATE) {
+                        newCardViewModel.deleteDefinitionAudioField(actualDefinitionFieldModel.definitionId)
+                        onRemoveDefinitionFieldAudio(definitionFields[index])
+                    } else {
+                        newCardViewModel.getDefinitionFieldAt(index).definitionAudio?.let { audioModel ->
+                            if (deleteAudioFromInternalStorage(audioModel)) {
+                                newCardViewModel.deleteDefinitionAudioField(actualDefinitionFieldModel.definitionId)
+                                onRemoveDefinitionFieldAudio(definitionFields[index])
+                            }
                         }
                     }
                 }
