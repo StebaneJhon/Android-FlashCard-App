@@ -108,13 +108,6 @@ class FlashCardGameViewModel(
         }
     }
 
-//    fun updateCardOnReviseMissedCards() {
-//        cardToRevise = missedCards.clone() as MutableList<ImmutableCard?>
-//        revisedCardsCount = cardToRevise?.size ?: 0
-//        missedCards.clear()
-//        missedCardsCount = 0
-//    }
-
     fun externalCardsToFlashCardCards(cards: List<ExternalCardWithContentAndDefinitions>): List<FlashCardCardModel> {
         val newList = mutableListOf<FlashCardCardModel>()
         cards.forEach { card ->
@@ -199,12 +192,6 @@ class FlashCardGameViewModel(
     fun getCurrentCardNumber() = currentCardPosition.plus(1)
 
     fun getMissedCardSum() = missedCardsCount
-
-//    fun getMissedCards(): MutableList<ImmutableCard?> {
-//        val newCards = arrayListOf<ImmutableCard?>()
-//        missedCards.forEach { immutableCard -> newCards.add(immutableCard) }
-//        return newCards
-//    }
 
     fun getUserAnswerAccuracy() = Calculations().percentageOfRest(cardToRevise.size, missedCardsCount)
 
@@ -319,7 +306,6 @@ class FlashCardGameViewModel(
     private fun onCardSwiped(isKnown: Boolean) {
         val card = cardToRevise[currentCardPosition]?.card
         if (card != null) {
-//            val newCard = spaceRepetitionHelper.rescheduleCard(card.card, isKnown)
             val newCard = spaceRepetitionHelper.rescheduleExternalCardWithContentAndDefinitions(card, isKnown)
             updateCard(newCard)
         }
@@ -328,7 +314,6 @@ class FlashCardGameViewModel(
     fun updateCard(
         card: ExternalCardWithContentAndDefinitions,
     ) = viewModelScope.launch {
-//        repository.updateCardWithContentAndDefinition(card)
         repository.updateCard(card.card.toLocal())
     }
 
@@ -381,7 +366,7 @@ class FlashCardGameViewModelFactory(private val repository: FlashCardRepository)
             @Suppress("UNCHECKED_CAST")
             return FlashCardGameViewModel(repository) as T
         }
-        throw throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 
 }

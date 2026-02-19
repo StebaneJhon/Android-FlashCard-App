@@ -1,7 +1,6 @@
 package com.soaharisonstebane.mneme.quiz.quizGame
 
 import android.animation.ArgbEvaluator
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -70,11 +69,8 @@ class QuizGameActivity :
     private val viewModel: TestQuizGameViewModel by viewModels {
         TestQuizGameViewModelFactory((application as FlashCardApplication).repository)
     }
-//    private var sharedPref: SharedPreferences? = null
-//    private var editor: SharedPreferences.Editor? = null
     private var miniGamePref: SharedPreferences? = null
     private var miniGamePrefEditor: SharedPreferences.Editor? = null
-    private var appTheme: String? = null
 
     private var deckWithCards: ExternalDeckWithCardsAndContentAndDefinitions? = null
     private lateinit var quizGameAdapter: QuizGameAdapter
@@ -100,36 +96,17 @@ class QuizGameActivity :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        sharedPref = getSharedPreferences("settingsPref", Context.MODE_PRIVATE)
-//        editor = sharedPref?.edit()
         miniGamePref = getSharedPreferences(
             FlashCardMiniGameRef.FLASH_CARD_MINI_GAME_REF,
-            Context.MODE_PRIVATE
+            MODE_PRIVATE
         )
-        val themePicker = ThemePicker()
         miniGamePrefEditor = miniGamePref?.edit()
-//        appTheme = sharedPref?.getString("themName", "WHITE THEM")
-//        val themRef = themePicker.selectTheme(appTheme)
 
         deckWithCards = intent?.parcelable(FlashCardGameActivity.DECK_ID_KEY)
 
         val deckColorCode = deckWithCards?.deck?.deckBackground
-        val theme = themePicker.selectThemeByDeckColorCode(deckColorCode)
+        val theme = ThemePicker().selectThemeByDeckColorCode(deckColorCode)
         setTheme(theme)
-
-//        if (deckColorCode.isNullOrBlank() && themRef != null) {
-//            setTheme(themRef)
-//        } else if (themRef != null && !deckColorCode.isNullOrBlank()) {
-//            val deckTheme = if (appTheme == DARK_THEME) {
-//                themePicker.selectDarkThemeByDeckColorCode(deckColorCode, themRef)
-//            } else {
-//                themePicker.selectThemeByDeckColorCode(deckColorCode, themRef)
-//            }
-//            setTheme(deckTheme)
-//        } else {
-//            setTheme(themePicker.getDefaultTheme())
-//        }
-
 
         binding = ActivityTestQuizGameBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -456,7 +433,6 @@ class QuizGameActivity :
     ) {
         when {
             player.hasPlayed() && !player.isPlaying() -> {
-                // Resume audio
                 view.btPlay.setIconResource(R.drawable.icon_pause)
                 player.play()
                 lifecycleScope.launch {
@@ -472,13 +448,11 @@ class QuizGameActivity :
             }
 
             player.hasPlayed() && player.isPlaying() -> {
-                // Pause audio
                 view.btPlay.setIconResource(R.drawable.icon_play)
                 player.pause()
             }
 
             !player.hasPlayed() && !player.isPlaying() -> {
-                // Play audio
                 view.btPlay.setIconResource(R.drawable.icon_pause)
                 val audioFile = File(this.filesDir, audio.name)
                 player.playFile(audioFile)
@@ -680,45 +654,6 @@ class QuizGameActivity :
                 startActivity(Intent(this@QuizGameActivity, MainActivity::class.java))
                 finish()
             }
-
-//            btRestartQuizWithPreviousCardsScoreLayout.setOnClickListener {
-//                restartQuiz()
-//            }
-//
-//            btRestartQuizWithAllCardsScoreLayout.setOnClickListener {
-//                completelyRestartQuiz()
-//            }
-
-//            if (missedCardsSum == 0) {
-//                btReviseMissedCardScoreLayout.isActivated = false
-//                btReviseMissedCardScoreLayout.isVisible = false
-//            } else {
-//                btReviseMissedCardScoreLayout.isActivated = true
-//                btReviseMissedCardScoreLayout.isVisible = true
-//                btReviseMissedCardScoreLayout.setOnClickListener {
-//                    viewModel.updateActualCardsWithMissedCards()
-//                    quizJob?.cancel()
-//                    quizJob = lifecycleScope.launch {
-//                        viewModel.getQuizGameCards()
-//                        viewModel.externalQuizGameCards.collect { state ->
-//                            when (state) {
-//                                is UiState.Error -> {
-//                                    onNoCardToRevise()
-//                                }
-//
-//                                is UiState.Loading -> {}
-//                                is UiState.Success -> {
-//                                    binding.gameReviewContainerMQ.visibility = View.GONE
-//                                    binding.vpCardHolder.visibility = View.VISIBLE
-//                                    binding.vpCardHolder.setCurrentItem(0, true)
-//                                    viewModel.resetLocalQuizGameCardsState()
-//                                    launchTestQuizGame(state.data)
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//            }
 
             if (viewModel.cardLeft() <= 0) {
                 btContinueQuizScoreLayout.visibility = View.GONE
@@ -942,30 +877,6 @@ class QuizGameActivity :
             )
         }
     }
-
-//    private fun onReading(
-//        position: Int,
-//        view: List<View>,
-//        onReadColor: Int
-//    ) {
-//        if (position == 0) {
-//            (view[position] as TextView).setTextColor(onReadColor)
-//        } else {
-//            (view[position] as MaterialButton).setTextColor(onReadColor)
-//        }
-//    }
-
-//    private fun onReadingStop(
-//        position: Int,
-//        view: List<View>,
-//        onReadColor: Int
-//    ) {
-//        if (position == 0) {
-//            (view[position] as TextView).setTextColor(onReadColor)
-//        } else {
-//            (view[position] as Tex).setTextColor(onReadColor)
-//        }
-//    }
 
     private fun onSpeak(
         params: Bundle,

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/cardFragment"
-        android:name="com.soaharisonstebane.mneme.card.CardFragment"
+        android:name="com.soaharisonstebane.mneme.home.CardFragment"
         android:label="fragment_card"
         tools:layout="@layout/fragment_card" />
     <fragment

@@ -63,45 +63,8 @@ class QuizGameAdapter(
     inner class TestQuizGameAdapterViewHolder(
         private val binding: LyCardTestBinding
     ) : RecyclerView.ViewHolder(binding.root) {
-
-//        private val flCardRoot: FrameLayout = view.findViewById(R.id.fl_card_root)
-//        private val cvCardContainer: MaterialCardView = view.findViewById(R.id.cv_card_container)
-//        private val cvCardContainerBack: MaterialCardView =
-//            view.findViewById(R.id.cv_card_container_back)
-//        private val tvCardType: TextView = view.findViewById(R.id.tv_card_type)
-//        private val tvCardTypeBack: TextView = view.findViewById(R.id.tv_card_type_back)
-//        private val btSpeak: MaterialButton = view.findViewById(R.id.bt_speak)
-//        private val btSpeakBack: Button = view.findViewById(R.id.bt_speak_back)
-//        private val inContent: TextView = view.findViewById(R.id.tv_content)
-//        private val tvDefinition: TextView = view.findViewById(R.id.tv_definition)
-//        private val tvHint: TextView = view.findViewById(R.id.tv_hint)
-//        private val frAlternative1: FrameLayout = view.findViewById(R.id.bt_alternative1)
-//        private val inAlternative1: View = view.findViewById(R.id.in_alternative1)
-//        private val frAlternative2: FrameLayout = view.findViewById(R.id.bt_alternative2)
-//        private val inAlternative2: View = view.findViewById(R.id.in_alternative2)
-//        private val frAlternative3: FrameLayout = view.findViewById(R.id.bt_alternative3)
-//        private val inAlternative3: View = view.findViewById(R.id.bt_alternative3)
-//        private val frAlternative4: FrameLayout = view.findViewById(R.id.bt_alternative4)
-//        private val inAlternative4: View = view.findViewById(R.id.in_alternative4)
-//        private val frAlternative5: FrameLayout = view.findViewById(R.id.bt_alternative5)
-//        private val inAlternative5: View = view.findViewById(R.id.in_alternative5)
-//        private val frAlternative6: FrameLayout = view.findViewById(R.id.bt_alternative6)
-//        private val inAlternative6: View = view.findViewById(R.id.in_alternative6)
-//        private val frAlternative7: FrameLayout = view.findViewById(R.id.bt_alternative7)
-//        private val inAlternative7: View = view.findViewById(R.id.in_alternative7)
-//        private val frAlternative8: FrameLayout = view.findViewById(R.id.bt_alternative8)
-//        private val inAlternative8: View = view.findViewById(R.id.in_alternative8)
-//        private val frAlternative9: FrameLayout = view.findViewById(R.id.bt_alternative9)
-//        private val inAlternative9: View = view.findViewById(R.id.in_alternative9)
-//        private val frAlternative10: FrameLayout = view.findViewById(R.id.bt_alternative10)
-//        private val inAlternative10: View = view.findViewById(R.id.in_alternative10)
         private lateinit var frontAnim: AnimatorSet
         private lateinit var backAnim: AnimatorSet
-
-//        private val btAlternatives = listOf(
-//            btAlternative1, btAlternative2, btAlternative3, btAlternative4, btAlternative5,
-//            btAlternative6, btAlternative7, btAlternative8, btAlternative9, btAlternative10,
-//        )
 
         private val alternatives = listOf(
             QuizAlternativeModel(container = binding.btAlternative1, view = binding.inAlternative1),
@@ -155,9 +118,7 @@ class QuizGameAdapter(
                 binding.inContent.llAudioContainer.visibility = View.GONE
             }
 
-//            tvContent.text = card.cardContent.contentText
             binding.tvCardType.text = card.cardType
-//            tvCardType.text = card.cardType
             bindHintOnLightTheme(card, context)
 
             if (card.cardType == SINGLE_ANSWER_CARD) {
@@ -375,41 +336,27 @@ class QuizGameAdapter(
             if (isCorrectlyAnswered) {
                 if (cardType == MULTIPLE_ANSWER_CARD) {
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box)
-        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box)
                 } else {
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_checked)
-        //                        button.icon = AppCompatResources.getDrawable(
-        //                            context,
-        //                            R.drawable.icon_radio_button_checked
-        //                        )
                 }
                 container.background.setTint(ContextCompat.getColor(context, R.color.green500))
-        //                    button.background.setTint(ContextCompat.getColor(context, R.color.green800))
-        //                    button.setStrokeColorResource(R.color.green50)
                 alternative.imgLeadingIcon.setColorFilter(
                     ContextCompat.getColor(context, R.color.green50),
                     PorterDuff.Mode.SRC_IN
                 )
-        //                    button.setIconTintResource(R.color.green50)
                 alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.green50))
             } else {
                 if (cardType == MULTIPLE_ANSWER_CARD) {
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
-        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
                 } else {
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
-        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                 }
                 container.background.setTint(ContextCompat.getColor(context, R.color.red500))
-        //                    button.background.setTint(ContextCompat.getColor(context, R.color.red800))
-        //                    button.setStrokeColorResource(R.color.red50)
                 alternative.imgLeadingIcon.setColorFilter(
                     ContextCompat.getColor(context, R.color.red50),
                     PorterDuff.Mode.SRC_IN
                 )
-        //                    button.setIconTintResource(R.color.red50)
                 alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
-        //                    button.setTextColor(ContextCompat.getColor(context, R.color.red50))
             }
         }
 
@@ -428,8 +375,6 @@ class QuizGameAdapter(
                 }
 
                 container.background.setTint(ContextCompat.getColor(context, R.color.green700))
-        //                    button.setStrokeColorResource(R.color.green500)
-        //                    button.setIconTintResource(R.color.green500)
                 alternative.imgLeadingIcon.setColorFilter(
                     ContextCompat.getColor(context, R.color.green50),
                     PorterDuff.Mode.SRC_IN
@@ -437,16 +382,11 @@ class QuizGameAdapter(
                 alternative.tvText.setTextColor(ContextCompat.getColor(context, R.color.red50))
             } else {
                 if (cardType == MULTIPLE_ANSWER_CARD) {
-        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_wrong)
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_wrong)
                 } else {
-        //                        button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_cancel)
                     alternative.imgLeadingIcon.setImageResource(R.drawable.icon_cancel)
                 }
                 container.background.setTint(ContextCompat.getColor(context, R.color.red700))
-        //                    button.background.setTint(ContextCompat.getColor(context, R.color.red50))
-        //                    button.setStrokeColorResource(R.color.red500)
-        //                    button.setIconTintResource(R.color.red500)
                 alternative.imgLeadingIcon.setColorFilter(
                     ContextCompat.getColor(context, R.color.red50),
                     PorterDuff.Mode.SRC_IN
@@ -463,46 +403,20 @@ class QuizGameAdapter(
         ) {
             if (cardType == MULTIPLE_ANSWER_CARD) {
                 view.imgLeadingIcon.setImageResource(R.drawable.icon_check_box_outline_blank)
-//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_check_box_outline_blank)
             } else {
                 view.imgLeadingIcon.setImageResource(R.drawable.icon_radio_button_unchecked)
-//                button.icon = AppCompatResources.getDrawable(context, R.drawable.icon_radio_button_unchecked)
             }
             container.background.setTint(MaterialColors.getColor(
                 context,
                 com.google.android.material.R.attr.colorSurfaceContainerLowest,
                 Color.GRAY
             ))
-//            button.background.setTint(
-//                MaterialColors.getColor(
-//                    context,
-//                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
-//                    Color.GRAY
-//                )
-//            )
-//            view.imgLeadingIcon.imageTintList = MaterialColors.getColorStateList(
-//                    context,
-//                    com.google.android.material.R.attr.colorOnSurface,
-//                    ContextCompat.getColorStateList(context, R.color.neutral950)!!
-//                )
 
             view.imgLeadingIcon.setColorFilter(MaterialColors.getColor(
                 view.imgLeadingIcon,
                 com.google.android.material.R.attr.colorOnSurface
             ))
             view.tvText.setTextColor(MaterialColors.getColor(view.tvText, com.google.android.material.R.attr.colorOnSurface))
-//                ContextCompat.getColor(context, R.color.red50),
-//                android.graphics.PorterDuff.Mode.SRC_IN
-//            button.iconTint = MaterialColors.getColorStateList(
-//                context,
-//                com.google.android.material.R.attr.colorOnSurface,
-//                ContextCompat.getColorStateList(context, R.color.neutral950)!!
-//            )
-//            button.strokeColor = MaterialColors.getColorStateList(
-//                context,
-//                com.google.android.material.R.attr.colorSurfaceContainer,
-//                ContextCompat.getColorStateList(context, R.color.neutral500)!!
-//            )
         }
 
         private fun bindAnswerAlternatives(
@@ -639,15 +553,6 @@ class QuizGameAdapter(
                             answer = card.cardDefinition[index],
                             cardOnClick = cardOnClick
                         )
-//                        materialButton.apply {
-//                            visibility = View.VISIBLE
-//                            text = card.cardDefinition[index].definition
-//                            onAlternativeClicked(
-//                                card = card,
-//                                answer = card.cardDefinition[index],
-//                                cardOnClick = cardOnClick
-//                            )
-//                        }
                         texts.add(
                             TextWithLanguageModel(
                                 card.cardDefinition[index].cardId,

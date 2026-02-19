@@ -33,7 +33,6 @@ class TestQuizGameViewModel(
     private val missedCards: ArrayList<ExternalCardWithContentAndDefinitions> = arrayListOf()
     var deck: ExternalDeck? = null
 
-    //    private var attemptTime = 0
     private val spaceRepetitionHelper = SpaceRepetitionAlgorithmHelper()
     private val roteLearningHelper = RoteLearningAlgorithmHelper()
     private var passedCards: Int = 0

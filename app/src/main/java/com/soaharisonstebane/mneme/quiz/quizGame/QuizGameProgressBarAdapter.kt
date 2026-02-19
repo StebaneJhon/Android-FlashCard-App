@@ -48,7 +48,7 @@ class QuizGameProgressBarAdapter(
 
     inner class QuizGameProgressBarAdapterViewHolder(view: View): RecyclerView.ViewHolder(view) {
 
-        val cardItem = view.findViewById<MaterialCardView>(R.id.cv_item_progression_single_bar)
+        val cardItem: MaterialCardView = view.findViewById(R.id.cv_item_progression_single_bar)
 
         fun bind(
             card: QuizGameCardModel,

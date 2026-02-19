@@ -52,22 +52,6 @@ class QuizModeBottomSheet(): BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.btWritingQuizGame.setOnClickListener {
-//            sendQuizMode(
-//                REQUEST_CODE_QUIZ_MODE,
-//                START_QUIZ_BUNDLE_KEY,
-//                WRITING_QUIZ
-//            )
-//        }
-//
-//        binding.btMatchingQuizGame.setOnClickListener {
-//            sendQuizMode(
-//                REQUEST_CODE_QUIZ_MODE,
-//                START_QUIZ_BUNDLE_KEY,
-//                MATCHING_QUIZ
-//            )
-//        }
-//
         binding.btFlashCardGame.setOnClickListener {
             sendQuizMode(
                 REQUEST_CODE_QUIZ_MODE,
@@ -83,22 +67,6 @@ class QuizModeBottomSheet(): BottomSheetDialogFragment() {
                 QUIZ
             )
         }
-
-//        binding.multiChoiceQuizButton.setOnClickListener {
-//            sendQuizMode(
-//                REQUEST_CODE_QUIZ_MODE,
-//                START_QUIZ_BUNDLE_KEY,
-//                MULTIPLE_CHOICE_QUIZ
-//            )
-//        }
-//
-//        binding.btTest.setOnClickListener {
-//            sendQuizMode(
-//                REQUEST_CODE_QUIZ_MODE,
-//                START_QUIZ_BUNDLE_KEY,
-//                TEST
-//            )
-//        }
 
     }
 

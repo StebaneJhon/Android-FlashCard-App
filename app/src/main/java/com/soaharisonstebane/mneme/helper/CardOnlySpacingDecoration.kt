@@ -5,7 +5,7 @@ import android.view.View
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.soaharisonstebane.mneme.card.CardsRecyclerViewAdapter
+import com.soaharisonstebane.mneme.home.CardsRecyclerViewAdapter
 import com.soaharisonstebane.mneme.util.ItemLayoutManager.GRID
 
 class CardOnlySpacingDecoration(

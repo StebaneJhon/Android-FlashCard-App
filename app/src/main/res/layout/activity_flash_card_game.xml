@@ -90,25 +90,6 @@
                     layout="@layout/ly_quiz_question" />
             </FrameLayout>
 
-<!--            <TextView-->
-<!--                android:visibility="gone"-->
-<!--                android:id="@+id/tvQuizBottom"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:fontFamily="@font/montserrat_bold"-->
-<!--                android:gravity="center"-->
-<!--                android:textAlignment="center"-->
-<!--                android:textColor="?colorOnSurface"-->
-<!--                app:autoSizeMaxTextSize="@dimen/text_xl3"-->
-<!--                app:autoSizeMinTextSize="@dimen/text_base"-->
-<!--                app:autoSizeStepGranularity="2sp"-->
-<!--                app:autoSizeTextType="uniform"-->
-<!--                app:layout_constraintBottom_toTopOf="@+id/tv_card_bottom_flip_hint"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toBottomOf="@+id/bt_card_bottom_speak"-->
-<!--                tools:text="1. What is the capital of Madagascar?" />-->
-
             <TextView
                 android:layout_margin="@dimen/space_md"
                 android:id="@+id/tv_card_bottom_flip_hint"
@@ -423,25 +404,6 @@
                         layout="@layout/ly_quiz_question" />
                 </FrameLayout>
 
-                <!--                <TextView-->
-                <!--                    android:visibility="gone"-->
-                <!--                    android:id="@+id/tv_quiz_front"-->
-                <!--                    android:layout_width="0dp"-->
-                <!--                    android:layout_height="0dp"-->
-                <!--                    android:fontFamily="@font/montserrat_bold"-->
-                <!--                    android:gravity="center"-->
-                <!--                    android:textAlignment="center"-->
-                <!--                    android:textColor="?colorOnSurface"-->
-                <!--                    app:autoSizeMaxTextSize="@dimen/text_xl3"-->
-                <!--                    app:autoSizeMinTextSize="@dimen/text_base"-->
-                <!--                    app:autoSizeStepGranularity="2sp"-->
-                <!--                    app:autoSizeTextType="uniform"-->
-                <!--                    app:layout_constraintBottom_toTopOf="@+id/tv_card_front_flip_hint"-->
-                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                    app:layout_constraintStart_toStartOf="parent"-->
-                <!--                    app:layout_constraintTop_toBottomOf="@+id/bt_card_front_speak"-->
-                <!--                    tools:text="1. What is the capital of Madagascar?" />-->
-
                 <TextView
                     android:id="@+id/tv_card_front_flip_hint"
                     android:layout_width="match_parent"
@@ -481,23 +443,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <!--        <Button-->
-        <!--            android:id="@+id/bt_iv_rewind"-->
-        <!--            style="?attr/materialIconButtonFilledTonalStyle"-->
-        <!--            android:alpha="0"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_alignParentStart="true"-->
-        <!--            android:backgroundTint="?colorSurfaceContainerLow"-->
-        <!--            android:contentDescription="@string/bt_rewind"-->
-        <!--            android:padding="@dimen/space_md"-->
-        <!--            app:icon="@drawable/icon_rewind"-->
-        <!--            app:iconTint="?colorPrimary"-->
-        <!--            app:rippleColor="?colorSurfaceContainerHighest"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent"-->
-        <!--            app:layout_constraintStart_toStartOf="parent" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

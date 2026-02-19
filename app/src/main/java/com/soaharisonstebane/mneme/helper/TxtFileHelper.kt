@@ -8,8 +8,8 @@ import com.soaharisonstebane.mneme.backend.entities.CardDefinition
 import com.soaharisonstebane.mneme.backend.entities.relations.CardContentWithDefinitions
 import com.soaharisonstebane.mneme.backend.entities.relations.CardWithContentAndDefinitions
 import com.soaharisonstebane.mneme.backend.models.ExternalCardWithContentAndDefinitions
-import com.soaharisonstebane.mneme.card.isCorrectRevers
-import com.soaharisonstebane.mneme.card.today
+import com.soaharisonstebane.mneme.home.isCorrectRevers
+import com.soaharisonstebane.mneme.home.today
 import com.soaharisonstebane.mneme.util.CardLevel.L1
 import com.soaharisonstebane.mneme.util.CardType.SINGLE_ANSWER_CARD
 import java.util.UUID

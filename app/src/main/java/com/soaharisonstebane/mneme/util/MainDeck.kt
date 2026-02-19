@@ -2,7 +2,7 @@ package com.soaharisonstebane.mneme.util
 
 import com.soaharisonstebane.mneme.backend.entities.Deck
 import com.soaharisonstebane.mneme.backend.models.toExternal
-import com.soaharisonstebane.mneme.card.today
+import com.soaharisonstebane.mneme.home.today
 
 class MainDeck {
     private val mainDeck = Deck(
