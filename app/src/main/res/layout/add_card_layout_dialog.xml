@@ -343,7 +343,7 @@
         android:layout_gravity="bottom"
         app:layout_behavior="com.google.android.material.behavior.HideViewOnScrollBehavior">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/docked_toolbar_child"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -353,52 +353,64 @@
             android:layout_gravity="bottom">
 
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_add_media"
-                    style="?attr/materialIconButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="48dp"
-                    android:contentDescription="@string/bt_text_translate"
-                    app:icon="@drawable/icon_attach"
-                    app:iconTint="?colorOnSurface"
-                    android:backgroundTint="?colorSurfaceContainerLow"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_add_media"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorSurfaceContainerLow"
+                android:contentDescription="@string/bt_text_translate"
+                android:minWidth="48dp"
+                app:icon="@drawable/icon_attach"
+                app:iconTint="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginVertical="@dimen/space_md"/>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_scan"
-                    style="?attr/materialIconButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="48dp"
-                    android:contentDescription="@string/add_card"
-                    app:icon="@drawable/icon_document_scanner"
-                    app:iconTint="?colorOnSurface"
-                    android:backgroundTint="?colorSurfaceContainerLow"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_scan"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorSurfaceContainerLow"
+                android:contentDescription="@string/add_card"
+                android:minWidth="48dp"
+                android:layout_marginVertical="@dimen/space_md"
+                app:icon="@drawable/icon_document_scanner"
+                app:iconTint="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bt_add_media" />
 
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/bt_translate"
-                    style="?attr/materialIconButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="48dp"
-                    android:contentDescription="@string/bt_description_button_speak"
-                    app:icon="@drawable/icon_translate"
-                    android:backgroundTint="?colorSurfaceContainerLow"
-                    android:enabled="false"
-                    android:clickable="false"/>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/bt_translate"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorSurfaceContainerLow"
+                android:clickable="false"
+                android:contentDescription="@string/bt_description_button_speak"
+                android:enabled="false"
+                android:minWidth="48dp"
+                android:layout_marginVertical="@dimen/space_md"
+                app:icon="@drawable/icon_translate"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bt_scan" />
 
-                <Button
-                    android:id="@+id/bt_format"
-                    style="?attr/materialIconButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="48dp"
-                    android:contentDescription="@string/format_text"
-                    app:icon="@drawable/icon_text_format"
-                    android:backgroundTint="?colorSurfaceContainerLow"
-                    android:enabled="false"
-                    android:clickable="false"/>
+            <Button
+                android:id="@+id/bt_format"
+                style="?attr/materialIconButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorSurfaceContainerLow"
+                android:clickable="false"
+                android:contentDescription="@string/format_text"
+                android:enabled="false"
+                android:minWidth="48dp"
+                android:layout_marginVertical="@dimen/space_md"
+                app:icon="@drawable/icon_text_format"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bt_translate" />
 
             <FrameLayout
                 android:visibility="gone"
@@ -444,7 +456,7 @@
                     app:useCompatPadding="false"/>
             </FrameLayout>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.dockedtoolbar.DockedToolbarLayout>
 

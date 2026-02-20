@@ -33,6 +33,8 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsetsController
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
@@ -53,6 +55,9 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
@@ -399,16 +404,6 @@ class NewCardDialog(
         setStyle(STYLE_NO_TITLE, R.style.QuizeoFullscreenDialogTheme)
     }
 
-    override fun onStart() {
-        super.onStart()
-        val dialog = dialog
-        if (dialog != null) {
-            val width = ViewGroup.LayoutParams.MATCH_PARENT
-            val height = ViewGroup.LayoutParams.MATCH_PARENT
-            dialog.window!!.setLayout(width, height)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -426,6 +421,22 @@ class NewCardDialog(
         super.onViewCreated(view, savedInstanceState)
 
         imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            dialog?.window?.let { window ->
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+            }
+
+            ViewCompat.setOnApplyWindowInsetsListener(binding.nestedScrollView) { v, insets ->
+                val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+                v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, imeInsets.bottom)
+                insets
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+        }
+
 
         initFields()
 
