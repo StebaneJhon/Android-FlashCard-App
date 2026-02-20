@@ -1,22 +1,35 @@
 package com.soaharisonstebane.mneme.home
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soaharisonstebane.mneme.R
+import com.soaharisonstebane.mneme.backend.FlashCardApplication
 import com.soaharisonstebane.mneme.databinding.BottomSheetDialogSortCardsPrefBinding
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
 import com.soaharisonstebane.mneme.util.CardSortOptions.SORT_CARD_ALPHABETICALLY
 import com.soaharisonstebane.mneme.util.CardSortOptions.SORT_CARD_BY_CREATION_DATE
 import com.soaharisonstebane.mneme.util.CardSortOptions.SORT_CARD_BY_LEVEL
+import kotlin.getValue
 
 class SortCardsBottomSheetDialog: BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetDialogSortCardsPrefBinding
     private val actualSortCardsPref: String by lazy {
         requireArguments().getString(ARG_SORT_CARD_PREF).orEmpty()
+    }
+
+    val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
     }
 
     companion object {
@@ -27,6 +40,12 @@ class SortCardsBottomSheetDialog: BottomSheetDialogFragment() {
         fun newInstance(actualSortCardsPref: String) = SortCardsBottomSheetDialog().apply {
             arguments = bundleOf(ARG_SORT_CARD_PREF to actualSortCardsPref)
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val viewTheme = deckPathViewModel.getViewTheme()
+        val contextThemeWrapper = ContextThemeWrapper(requireActivity(), viewTheme)
+        return BottomSheetDialog(contextThemeWrapper)
     }
 
     override fun onCreateView(

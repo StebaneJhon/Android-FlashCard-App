@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorSurfaceContainerLowest"
-    android:fitsSystemWindows="true"
     tools:context=".home.CardFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -98,8 +97,7 @@
         <LinearLayout
             android:id="@+id/docked_toolbar_child"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:baselineAligned="false"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
 

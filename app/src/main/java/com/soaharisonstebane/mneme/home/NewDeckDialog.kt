@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatDialogFragment
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,8 +22,11 @@ import com.soaharisonstebane.mneme.util.DeckAdditionAction.ADD
 import com.soaharisonstebane.mneme.helper.DeckColorCategorySelector
 import com.soaharisonstebane.mneme.helper.LanguageUtil
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.soaharisonstebane.mneme.backend.FlashCardApplication
 import com.soaharisonstebane.mneme.backend.models.ExternalDeck
 import com.soaharisonstebane.mneme.helper.AppThemeHelper
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
 import com.soaharisonstebane.mneme.util.ColorModel
 import com.soaharisonstebane.mneme.util.DeckColorPickerAdapter
 import kotlinx.coroutines.delay
@@ -29,6 +34,7 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
+import kotlin.getValue
 
 class NewDeckDialog(
     val deckToEdit: ExternalDeck?,
@@ -44,6 +50,11 @@ class NewDeckDialog(
 
     private val newDeckDialogViewModel: NewDeckDialogViewModel by viewModels()
 
+    val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
+    }
+
     companion object {
         const val TAG = "NewDeckDialog"
         const val SAVE_DECK_BUNDLE_KEY = "1"
@@ -53,10 +64,13 @@ class NewDeckDialog(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        _binding = AddDeckLayoutDialogBinding.inflate(LayoutInflater.from(context))
+        val contextThemeWrapper = ContextThemeWrapper(requireActivity(), deckPathViewModel.getViewTheme())
+        val themedInflater = LayoutInflater.from(contextThemeWrapper)
+
+        _binding = AddDeckLayoutDialogBinding.inflate(themedInflater)
 
         val builder = MaterialAlertDialogBuilder(
-            requireActivity(),
+            contextThemeWrapper,
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 

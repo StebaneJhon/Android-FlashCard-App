@@ -1,5 +1,6 @@
 package com.soaharisonstebane.mneme.home
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +9,17 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListPopupWindow
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soaharisonstebane.mneme.R
+import com.soaharisonstebane.mneme.backend.FlashCardApplication
 import com.soaharisonstebane.mneme.backend.models.ExternalDeck
 import com.soaharisonstebane.mneme.databinding.BottomSheetDialogCurrentDeckDetailsBinding
 import com.soaharisonstebane.mneme.util.ColorModel
@@ -24,6 +29,8 @@ import com.soaharisonstebane.mneme.util.DeckColorPickerAdapter
 import com.soaharisonstebane.mneme.helper.LanguageUtil
 import com.soaharisonstebane.mneme.util.MAIN_DECK_ID
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.getValue
@@ -45,6 +52,11 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
     private lateinit var contentLanguagePopupWindow: ListPopupWindow
     private lateinit var  definitionLanguagePopupWindow: ListPopupWindow
 
+    val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
+    }
+
     companion object {
         const val TAG = "CurrentDeckDetailsBottomSheetDialog"
         const val ARG_CURRENT_DECK = "current_deck"
@@ -55,26 +67,33 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
         }
     }
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val viewTheme = deckPathViewModel.getViewTheme()
+        val contextThemeWrapper = ContextThemeWrapper(requireActivity(), viewTheme)
+        return BottomSheetDialog(contextThemeWrapper)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = BottomSheetDialogCurrentDeckDetailsBinding.inflate(layoutInflater, container, false)
+        binding = BottomSheetDialogCurrentDeckDetailsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val themedContext = view.context
         val deckColorCategorySelector = DeckColorCategorySelector()
 
-        contentLanguagePopupWindow = ListPopupWindow(requireContext(), null, androidx.appcompat.R.attr.popupWindowStyle)
-        definitionLanguagePopupWindow = ListPopupWindow(requireContext(), null, androidx.appcompat.R.attr.popupWindowStyle)
+        contentLanguagePopupWindow = ListPopupWindow(themedContext, null, androidx.appcompat.R.attr.popupWindowStyle)
+        definitionLanguagePopupWindow = ListPopupWindow(themedContext, null, androidx.appcompat.R.attr.popupWindowStyle)
 
         lifecycleScope.launch {
             delay(50)
-            val colors =  when (AppThemeHelper.getSavedTheme(requireContext())) {
+            val colors =  when (AppThemeHelper.getSavedTheme(themedContext)) {
                 1 -> {
                     deckColorCategorySelector.getColors()
                 }
@@ -82,7 +101,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
                     deckColorCategorySelector.getDarkColors()
                 }
                 else -> {
-                    if (AppThemeHelper.isSystemDarkTheme(requireContext())) {
+                    if (AppThemeHelper.isSystemDarkTheme(themedContext)) {
                         deckColorCategorySelector.getDarkColors()
                     } else {
                         deckColorCategorySelector.getColors()
@@ -97,8 +116,8 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
 
         binding.btEditDeckName.apply {
             text = currentDeck.deckName
-            setOnClickListener {
-                if (currentDeck.deckId != MAIN_DECK_ID) {
+            setOnClickListener {               
+                 if (currentDeck.deckId != MAIN_DECK_ID) {
                     EditDeckNameDialog.newInstance(currentDeck.deckName).show(childFragmentManager, EditDeckNameDialog.TAG)
                     childFragmentManager.setFragmentResultListener(
                         EditDeckNameDialog.CURRENT_DECK_NAME_REQUEST_CODE,
@@ -111,12 +130,12 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
                         }
                     }
                 } else {
-                    Toast.makeText(context, getString(R.string.error_message_cannot_edit_main_deck_name), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(themedContext, getString(R.string.error_message_cannot_edit_main_deck_name), Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
-        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(themedContext, R.layout.dropdown_item, supportedLanguages)
         contentLanguagePopupWindow.apply {
             anchorView = binding.llContentLanguageContainer
             setAdapter(arrayAdapterSupportedLanguages)
@@ -169,7 +188,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
                 ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.filter_spinner_dropdown_background,
-                    requireActivity().theme
+                    themedContext.theme
                 )
             )
         }
@@ -179,7 +198,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
                 ResourcesCompat.getDrawable(
                     resources,
                     R.drawable.filter_spinner_dropdown_background,
-                    requireActivity().theme
+                    themedContext.theme
                 )
             )
         }
@@ -190,8 +209,9 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
         colors: List<ColorModel>,
         isItemsClickable: Boolean = true,
     ) {
+        val themedContext = binding.root.context
         deckColorPickerAdapter = DeckColorPickerAdapter(
-            context = requireContext(),
+            context = themedContext,
             listOfColors = colors,
             isItemsClickable = isItemsClickable,
             onColorClicked = { color ->
@@ -202,7 +222,7 @@ class CurrentDeckDetailsBottomSheetDialog: BottomSheetDialogFragment() {
         )
         binding.rvDeckColorPicker.apply {
             adapter = deckColorPickerAdapter
-            layoutManager = GridLayoutManager(requireContext(), 6, GridLayoutManager.VERTICAL, false)
+            layoutManager = GridLayoutManager(themedContext, 6, GridLayoutManager.VERTICAL, false)
             setHasFixedSize(true)
         }
     }

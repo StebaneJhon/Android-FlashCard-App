@@ -4,27 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:backgroundTint="?colorSurfaceContainerLowest"
     android:orientation="vertical"
     android:paddingBottom="@dimen/space_lg">
-
-    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-        android:id="@+id/drag_handle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:visibility="gone"
-        android:id="@+id/tv_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:fontFamily="@font/open_sans_bold"
-        android:text="@string/deck_details"
-        android:textAppearance="@style/TextAppearance.App.TitleMedium"
-        android:layout_marginBottom="@dimen/space_lg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -33,7 +14,8 @@
         android:textColor="?colorPrimary"
         android:textAppearance="@style/TextAppearance.App.TitleSmall"
         android:layout_marginHorizontal="@dimen/space_xxl"
-        android:layout_marginBottom="@dimen/space_lg"/>
+        android:layout_marginBottom="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_lg"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/bt_edit_deck_name"

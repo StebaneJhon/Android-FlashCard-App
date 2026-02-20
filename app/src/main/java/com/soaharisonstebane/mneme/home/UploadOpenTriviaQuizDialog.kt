@@ -5,18 +5,29 @@ import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.ArrayAdapter
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.soaharisonstebane.mneme.R
 import com.soaharisonstebane.mneme.databinding.LyDialogUploadDeckWithCardsBinding
 import com.soaharisonstebane.mneme.helper.OpenTriviaQuizCategoryHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.soaharisonstebane.mneme.backend.FlashCardApplication
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
+import kotlin.getValue
 
 class UploadOpenTriviaQuizDialog : DialogFragment() {
 
     private var _binding: LyDialogUploadDeckWithCardsBinding? = null
     private val binding get() = _binding!!
+
+    private val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
+    }
 
     companion object {
         const val OPEN_TRIVIA_QUIZ_MODEL_BUNDLE_KEY = "100"
@@ -25,10 +36,13 @@ class UploadOpenTriviaQuizDialog : DialogFragment() {
     @SuppressLint("UseGetLayoutInflater")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        _binding = LyDialogUploadDeckWithCardsBinding.inflate(LayoutInflater.from(context))
+        val contextThemeWrapper = ContextThemeWrapper(requireActivity(), deckPathViewModel.getViewTheme())
+        val themedInflater = LayoutInflater.from(contextThemeWrapper)
+
+        _binding = LyDialogUploadDeckWithCardsBinding.inflate(themedInflater)
 
         val builder = MaterialAlertDialogBuilder(
-            requireActivity(),
+                contextThemeWrapper,
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 

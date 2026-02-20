@@ -3,24 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/quizModeDialogRoot"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTint="?colorSurfaceContainerLowest"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:paddingBottom="@dimen/space_lg">
 
         <com.google.android.material.bottomsheet.BottomSheetDragHandleView
-            android:id="@+id/drag_handle"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_lg"
             android:layout_marginBottom="@dimen/space_lg"
             android:textAppearance="@style/TextAppearance.App.TitleMedium"
             android:text="@string/tv_quiz_mode_title"
-            android:textAlignment="textStart"
-            android:layout_marginHorizontal="@dimen/space_lg"/>
+            android:textAlignment="textStart"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_flash_card_game"
@@ -39,51 +37,6 @@
             android:layout_marginHorizontal="@dimen/space_lg"
             android:layout_marginBottom="@dimen/space_xxs"/>
 
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/multiChoiceQuizButton"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:backgroundTint="?colorSurfaceContainer"-->
-<!--            android:text="@string/multiple_choice_quiz_button_text"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            app:cornerRadius="@dimen/bt_radius"-->
-<!--            app:icon="@drawable/icon_quiz"-->
-<!--            app:iconTint="?colorOnSurface"-->
-<!--            app:iconGravity="start"-->
-<!--            app:iconPadding="@dimen/space_md"/>-->
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/bt_writing_quiz_game"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:backgroundTint="?colorSurfaceContainer"-->
-<!--            android:text="@string/bt_start_writing_quiz_game_text"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            app:cornerRadius="@dimen/bt_radius"-->
-<!--            app:icon="@drawable/icon_writing"-->
-<!--            app:iconTint="?colorOnSurface"-->
-<!--            app:iconGravity="start"-->
-<!--            app:iconPadding="@dimen/space_md"/>-->
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/bt_matching_quiz_game"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:backgroundTint="?colorSurfaceContainer"-->
-<!--            android:text="@string/bt_match_quiz_mode_text"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            app:cornerRadius="@dimen/bt_radius"-->
-<!--            app:icon="@drawable/icon_dashboard"-->
-<!--            app:iconTint="?colorOnSurface"-->
-<!--            app:iconGravity="start"-->
-<!--            app:iconPadding="@dimen/space_md"/>-->
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/bt_quiz"
             android:layout_width="match_parent"
@@ -99,20 +52,5 @@
             app:iconGravity="start"
             app:iconPadding="@dimen/space_md"
             android:layout_marginHorizontal="@dimen/space_lg"/>
-
-<!--        <com.google.android.material.button.MaterialButton-->
-<!--            android:id="@+id/bt_test"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="60dp"-->
-<!--            android:backgroundTint="?colorSurfaceContainer"-->
-<!--            android:text="@string/bt_text_test"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            app:cornerRadius="@dimen/bt_radius"-->
-<!--            app:icon="@drawable/icon_fire"-->
-<!--            app:iconTint="?colorOnSurface"-->
-<!--            app:iconGravity="start"-->
-<!--            app:iconPadding="@dimen/space_md"/>-->
 
 </LinearLayout>

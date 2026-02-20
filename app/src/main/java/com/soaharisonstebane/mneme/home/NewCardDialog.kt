@@ -29,6 +29,7 @@ import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
 import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -54,6 +55,7 @@ import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -103,6 +105,8 @@ import com.soaharisonstebane.mneme.util.ScanRef.IMAGE_FROM_GALERI_TO_TEXT
 import com.soaharisonstebane.mneme.util.UiState
 import com.soaharisonstebane.mneme.helper.parcelable
 import com.soaharisonstebane.mneme.helper.textToImmutableCard
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -112,6 +116,7 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.util.Locale
 import java.util.UUID
+import kotlin.getValue
 
 class NewCardDialog(
     private var card: ExternalCardWithContentAndDefinitions?,
@@ -145,6 +150,11 @@ class NewCardDialog(
             this,
             NewCardDialogViewModelFactory(openTriviaRepository, repository)
         )[NewCardDialogViewModel::class.java]
+    }
+
+    val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
     }
 
     private var uri: Uri? = null
@@ -404,7 +414,10 @@ class NewCardDialog(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = AddCardLayoutDialogBinding.inflate(inflater, container, false)
+        val viewTheme = deckPathViewModel.getViewTheme()
+        val contextThemeWrapper = ContextThemeWrapper(requireContext(), viewTheme)
+        val themeInflater = inflater.cloneInContext(contextThemeWrapper)
+        _binding = AddCardLayoutDialogBinding.inflate(themeInflater, container, false)
         appContext = activity?.applicationContext
         return binding.root
     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.InsetDrawable
 import android.util.TypedValue
+import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -25,6 +26,7 @@ import com.soaharisonstebane.mneme.R
 import com.soaharisonstebane.mneme.backend.models.ExternalDeck
 import com.soaharisonstebane.mneme.helper.AppThemeHelper
 import com.soaharisonstebane.mneme.helper.DeckColorCategorySelector
+import com.soaharisonstebane.mneme.util.ThemePicker
 
 
 class SubdeckRecyclerViewAdapter(
@@ -230,7 +232,13 @@ class SubdeckRecyclerViewAdapter(
             startQuizListener: (ExternalDeck) -> Unit,
             deck: ExternalDeck
         ) {
-            val popup = PopupMenu(context, v)
+            val popup = if (deck.deckBackground.isNullOrBlank()) {
+                PopupMenu(context, v)
+            } else {
+                val deckTheme = ThemePicker().selectThemeByDeckColorCode(deck.deckBackground)
+                val wrapper = ContextThemeWrapper(context, deckTheme)
+                PopupMenu(wrapper, v)
+            }
             popup.menuInflater.inflate(menuRes, popup.menu)
 
             if (popup.menu is MenuBuilder) {

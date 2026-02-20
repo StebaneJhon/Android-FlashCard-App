@@ -4,11 +4,16 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.soaharisonstebane.mneme.R
+import com.soaharisonstebane.mneme.backend.FlashCardApplication
 import com.soaharisonstebane.mneme.databinding.DialogExportDeckBinding
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
+import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
 
 class ExportDeckDialog: DialogFragment() {
 
@@ -19,15 +24,22 @@ class ExportDeckDialog: DialogFragment() {
     private var _binding: DialogExportDeckBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var fileFormat: String
-    lateinit var fileContentSeparator: String
+    private lateinit var fileFormat: String
+    private lateinit var fileContentSeparator: String
+    private val deckPathViewModel: DeckPathViewModel by activityViewModels {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        DeckPathViewModelFactory(repository)
+    }
 
     @SuppressLint("UseGetLayoutInflater")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = DialogExportDeckBinding.inflate(LayoutInflater.from(context))
+        val contextThemeWrapper = ContextThemeWrapper(requireActivity(), deckPathViewModel.getViewTheme())
+        val themedInflater = LayoutInflater.from(contextThemeWrapper)
+
+        _binding = DialogExportDeckBinding.inflate(themedInflater)
 
         val builder = MaterialAlertDialogBuilder(
-            requireActivity(),
+            contextThemeWrapper,
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
@@ -45,7 +57,7 @@ class ExportDeckDialog: DialogFragment() {
         return builder.create()
     }
 
-    fun getFormat() = when(binding.rgFormat.checkedRadioButtonId) {
+    private fun getFormat() = when(binding.rgFormat.checkedRadioButtonId) {
         R.id.rb_format_txt -> ".txt"
         else -> ".txt"
     }
