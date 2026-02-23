@@ -11,7 +11,6 @@ import android.speech.tts.UtteranceProgressListener
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -52,6 +51,7 @@ import com.soaharisonstebane.mneme.util.TextType.CONTENT
 import com.soaharisonstebane.mneme.util.TextType.DEFINITION
 import com.soaharisonstebane.mneme.util.TextWithLanguageModel
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.helper.showSnackbar
 import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.QUIZ
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -810,11 +810,7 @@ class QuizGameActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(
-                    this@QuizGameActivity,
-                    getString(R.string.error_read),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.root, binding.btRewind, R.string.error_read)
             }
         }
 
@@ -889,9 +885,9 @@ class QuizGameActivity :
         if (actualText.language.isNullOrBlank()) {
             languageUtil.detectLanguage(
                 text = actualText.text,
-                onError = {showSnackBar(R.string.error_message_error_while_detecting_language)},
-                onLanguageUnIdentified = {showSnackBar(R.string.error_message_can_not_identify_language)},
-                onLanguageNotSupported = {showSnackBar(R.string.error_message_language_not_supported)},
+                onError = {showSnackbar(binding.root, binding.btRewind, R.string.error_message_error_while_detecting_language)},
+                onLanguageUnIdentified = {showSnackbar(binding.root, binding.btRewind, R.string.error_message_can_not_identify_language)},
+                onLanguageNotSupported = {showSnackbar(binding.root, binding.btRewind, R.string.error_message_language_not_supported)},
                 onSuccess = { detectedLanguage ->
                     when (actualText.textType) {
                         CONTENT -> viewModel.updateCardContentLanguage(actualText.cardId, detectedLanguage)
@@ -919,16 +915,6 @@ class QuizGameActivity :
         tts?.setOnUtteranceProgressListener(speechListener)
     }
 
-    private fun showSnackBar(
-        @StringRes messageRes: Int
-    ) {
-        Snackbar.make(
-            binding.clQuizGameRoot,
-            getString(messageRes),
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
-
     private fun getCardCount() = miniGamePref?.getString(CARD_COUNT, "10")?.toInt() ?: 10
 
     override fun onInit(status: Int) {
@@ -938,7 +924,7 @@ class QuizGameActivity :
             }
 
             else -> {
-                Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                showSnackbar(binding.root, binding.btRewind, R.string.error_read)
             }
         }
     }

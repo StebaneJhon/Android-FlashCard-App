@@ -2,6 +2,7 @@ package com.soaharisonstebane.mneme.appView
 
 import android.app.Dialog
 import android.graphics.BitmapFactory
+import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Html.FROM_HTML_MODE_LEGACY
@@ -20,6 +21,7 @@ import com.soaharisonstebane.mneme.helper.AppMath
 import com.soaharisonstebane.mneme.helper.AudioModel
 import com.soaharisonstebane.mneme.helper.PhotoModel
 import com.soaharisonstebane.mneme.helper.playback.AndroidAudioPlayer
+import com.soaharisonstebane.mneme.home.AudioRecorderDialog
 import com.soaharisonstebane.mneme.quiz.flashCardGame.FlashcardContentLyModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,11 +33,20 @@ class CardFaceDialog: AppCompatDialogFragment() {
     private val binding get() = _binding!!
 
     private val definitionList: List<ExternalCardDefinition>? by lazy {
-        requireArguments().getParcelableArrayList(ARG_DEFINITION_LIST, ExternalCardDefinition::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireArguments().getParcelableArrayList(ARG_DEFINITION_LIST, ExternalCardDefinition::class.java)
+        } else {
+            requireArguments().getParcelableArrayList<ExternalCardDefinition>(ARG_DEFINITION_LIST)
+        }
     }
 
     private val content: ExternalCardContent? by lazy {
-        arguments?.getParcelable(ARG_CONTENT, ExternalCardContent::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            arguments?.getParcelable(ARG_CONTENT, ExternalCardContent::class.java)
+        } else {
+            arguments?.getParcelable<ExternalCardContent>(ARG_CONTENT)
+        }
+
     }
 
     private val player by lazy {

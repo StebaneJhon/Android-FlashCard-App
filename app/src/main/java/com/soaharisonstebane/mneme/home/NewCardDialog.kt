@@ -33,14 +33,12 @@ import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsetsController
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListPopupWindow
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -109,6 +107,7 @@ import com.soaharisonstebane.mneme.util.ScanRef.IMAGE_FROM_CAMERA_TO_TEXT
 import com.soaharisonstebane.mneme.util.ScanRef.IMAGE_FROM_GALERI_TO_TEXT
 import com.soaharisonstebane.mneme.util.UiState
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.helper.showSnackbar
 import com.soaharisonstebane.mneme.helper.textToImmutableCard
 import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
 import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
@@ -175,11 +174,7 @@ class NewCardDialog(
                         newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
                             when {
                                 activeFieldIndex == null -> {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.error_message_no_field_selected),
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
                                 }
 
                                 activeFieldIndex < 0 -> {
@@ -208,11 +203,7 @@ class NewCardDialog(
                         newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
                             when {
                                 activeFieldIndex == null -> {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.error_message_no_field_selected),
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
                                 }
 
                                 activeFieldIndex < 0 -> {
@@ -237,20 +228,12 @@ class NewCardDialog(
                 val result =
                     resultData.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
                 if (result?.get(0).isNullOrBlank()) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_message_no_text_detected),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_text_detected)
                 } else {
                     newCardViewModel.getActiveFieldIndex().let { activeFieldIndex ->
                         when {
                             activeFieldIndex == null -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.error_message_no_field_selected),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
                             }
 
                             activeFieldIndex < 0 -> {
@@ -264,11 +247,7 @@ class NewCardDialog(
                     }
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_message_no_text_detected),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_text_detected)
             }
         }
 
@@ -278,11 +257,7 @@ class NewCardDialog(
         if (isGranted) {
             openCamera()
         } else {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.error_message_permission_not_granted_camera),
-                Toast.LENGTH_LONG
-            ).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_permission_not_granted_camera)
         }
     }
 
@@ -291,11 +266,7 @@ class NewCardDialog(
             if (uri != null) {
                 val cards = textFromUriToImmutableCards(uri, ":")
                 newCardViewModel.insertCards(cards)
-                Toast.makeText(
-                    appContext,
-                    getString(R.string.message_cards_added, "${cards.size}"),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.root, binding.dockedToolbar, getString(R.string.message_cards_added, "${cards.size}"))
             }
         }
 
@@ -337,11 +308,7 @@ class NewCardDialog(
         if (isGranted) {
             attachPhotoFromCamera.launch()
         } else {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.error_message_permission_not_granted_camera),
-                Toast.LENGTH_LONG
-            ).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_permission_not_granted_camera)
         }
     }
 
@@ -382,7 +349,7 @@ class NewCardDialog(
                     }
                 }
             } else {
-                Toast.makeText(requireContext(), "Could not get image", Toast.LENGTH_LONG).show()
+                showSnackbar(binding.root, binding.dockedToolbar, R.string.could_not_get_image)
             }
         }
 
@@ -528,7 +495,7 @@ class NewCardDialog(
             if (newCardViewModel.getActiveFieldIndex() != null) {
                 binding.containerFormatOptions.visibility = View.VISIBLE
             } else {
-                Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
+                showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
             }
         }
 
@@ -575,7 +542,7 @@ class NewCardDialog(
                 )
             }
         } else {
-            Toast.makeText(context, getString(R.string.error_message_no_field_selected), Toast.LENGTH_LONG).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
         }
 
     }
@@ -777,11 +744,7 @@ class NewCardDialog(
                         if (newCardViewModel.getActiveFieldIndex() != null) {
                             onTakePhoto()
                         } else {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.error_message_no_field_selected),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
                         }
                     }
 
@@ -789,11 +752,7 @@ class NewCardDialog(
                         if (newCardViewModel.getActiveFieldIndex() != null) {
                             onPickPhoto()
                         } else {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.error_message_no_field_selected),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
                         }
                     }
 
@@ -835,11 +794,7 @@ class NewCardDialog(
                         val fieldIndex = newCardViewModel.getActiveFieldIndex()
                         when {
                             fieldIndex == null -> {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.error_message_no_field_selected),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
                             }
 
                             fieldIndex < 0 -> {
@@ -888,11 +843,7 @@ class NewCardDialog(
                 importCardsFromDeviceModel = result
                 openFile.launch(arrayOf("text/*"))
             } else {
-                Toast.makeText(
-                    appContext,
-                    getString(R.string.error_message_card_import_failed),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_card_import_failed)
             }
         }
     }
@@ -932,7 +883,7 @@ class NewCardDialog(
                                 }
                             }
                             binding.llAddCardProgressBar.visibility = View.GONE
-                            Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                            showSnackbar(binding.root, binding.dockedToolbar, message)
                         }
 
                         is UiState.Loading -> {
@@ -949,11 +900,7 @@ class NewCardDialog(
                             )
                             newCardViewModel.insertCards(newCards)
                             binding.llAddCardProgressBar.visibility = View.GONE
-                            Toast.makeText(
-                                appContext,
-                                getString(R.string.message_cards_added, "${newCards.size}"),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            showSnackbar(binding.root, binding.dockedToolbar, getString(R.string.message_cards_added, "${newCards.size}"))
                         }
                     }
                 }
@@ -1004,7 +951,7 @@ class NewCardDialog(
             File(appContext?.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "photo.jpg")
         return FileProvider.getUriForFile(
             requireContext(),
-            "com.ssoaharison.recall.FileProvider",
+            "com.soaharisonstebane.mneme.FileProvider",
             image
         )
     }
@@ -1062,17 +1009,13 @@ class NewCardDialog(
         recognizer.process(image)
             .addOnSuccessListener { visionText ->
                 if (visionText.text.isBlank()) {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_message_no_text_detected),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_text_detected)
                 } else {
                     onTextDetected(visionText.text)
                 }
             }
             .addOnFailureListener { e ->
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_LONG).show()
+                showSnackbar(binding.root, binding.dockedToolbar, e.message.toString())
             }
     }
 
@@ -1573,8 +1516,7 @@ class NewCardDialog(
             dismiss()
         } else {
             newCardViewModel.insertCard(newCard)
-            Toast.makeText(appContext, getString(R.string.message_card_added), Toast.LENGTH_LONG)
-                .show()
+            showSnackbar(binding.root, binding.dockedToolbar, getString(R.string.message_card_added))
         }
         initCardAdditionPanel()
         return true
@@ -1825,7 +1767,7 @@ class NewCardDialog(
                 micListener.launch(intent)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_LONG).show()
+                showSnackbar(binding.root, binding.dockedToolbar, e.message.toString())
             }
         }
     }
@@ -1917,11 +1859,7 @@ class NewCardDialog(
                         )
                     }
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.no_definition_found),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnackbar(binding.root, binding.dockedToolbar, R.string.no_definition_found)
                 }
             } else {
                 val field = newCardViewModel.getDefinitionFieldAt(selectedFieldPosition)
@@ -1959,11 +1897,7 @@ class NewCardDialog(
             }
 
         } else {
-            Toast.makeText(
-                appContext,
-                getString(R.string.error_message_no_field_selected),
-                Toast.LENGTH_SHORT
-            ).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
         }
 
     }
@@ -2138,11 +2072,7 @@ class NewCardDialog(
         if (newCardViewModel.getDefinitionFieldCount() < 10) {
             newCardViewModel.addDefinitionField(null)
         } else {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.error_message_max_10_definitions),
-                Toast.LENGTH_LONG
-            ).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_max_10_definitions)
         }
     }
 
@@ -2217,28 +2147,10 @@ class NewCardDialog(
                 }
             }
         } else {
-            Toast.makeText(
-                appContext,
-                getString(R.string.error_message_no_field_selected),
-                Toast.LENGTH_SHORT
-            ).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_no_field_selected)
         }
 
     }
-
-    fun onDeleteAudio(selectedFieldPosition: Int) {
-        //TODO: Implement Delete audio
-        if (selectedFieldPosition < 0) {
-            // TODO: Content field
-//            binding.lyContent.llContentContainerAudio.visibility = View.GONE
-        } else {
-            // TODO: Definition field
-//            selectedField.llContainerAudio.visibility = View.VISIBLE
-        }
-
-        Toast.makeText(appContext, "Delete audio in development", Toast.LENGTH_SHORT).show()
-    }
-
     fun onDeleteImage(fieldPosition: Int) {
         val imageName = if (fieldPosition == -1) {
             newCardViewModel.contentField.value.contentImage?.name
@@ -2278,7 +2190,7 @@ class NewCardDialog(
             appContext!!.deleteFile(audio.name)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(appContext, "Could not delete audio", Toast.LENGTH_SHORT).show()
+            showSnackbar(binding.root, binding.dockedToolbar, R.string.could_not_delete_audio)
             false
         }
     }

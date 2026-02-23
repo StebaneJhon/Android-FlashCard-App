@@ -349,4 +349,9 @@
     <string name="credits_title_leitner_system">Leitner System</string>
     <string name="update_box_level_title">Update %1$s</string>
     <string name="view_more">View more</string>
+    <string name="could_not_get_image">Could not get image</string>
+    <string name="could_not_delete_audio">Could not delete audio</string>
+    <string name="failed_to_update_at_box_level">Failed to update at box level</string>
+    <string name="repetition_day_level_must_be_inferior_to_the_next_repetition_day_level">Repetition day level must be inferior to the next repetition day level</string>
+    <string name="repetition_day_level_must_be_superior_to_the_next_previous_day_level">Repetition day level must be superior to the next previous day level</string>
 </resources>

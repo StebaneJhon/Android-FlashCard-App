@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.soaharisonstebane.mneme.R
 import com.soaharisonstebane.mneme.backend.models.ImmutableSpaceRepetitionBox
@@ -15,6 +14,7 @@ import com.soaharisonstebane.mneme.util.CardLevel.L1
 import com.soaharisonstebane.mneme.util.CardLevel.L7
 import com.soaharisonstebane.mneme.helper.SpaceRepetitionAlgorithmHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -69,7 +69,7 @@ class SettingsFragmentEditBoxLevelDialog(
                     val newRepeatInDay = ti?.text.toString().toInt()
                     updateBoxLevel(newRepeatInDay)
                 } else {
-                    Toast.makeText(appContext!!, "Failed to update at box level", Toast.LENGTH_LONG).show()
+                    parentFragment?.view?.let { Snackbar.make(it, R.string.failed_to_update_at_box_level, Snackbar.LENGTH_LONG).show() }
                 }
             }
 
@@ -82,8 +82,7 @@ class SettingsFragmentEditBoxLevelDialog(
             L1 -> {
                 val nextBoxLevelRepeatDay = boxLevelList[1].levelRepeatIn ?: 1
                 return if (newRepeatInDay > nextBoxLevelRepeatDay || newRepeatInDay < 0) {
-                    til?.error =
-                        "Repetition day level must be inferior to the next repetition day level"
+                    til?.error = getString(R.string.repetition_day_level_must_be_inferior_to_the_next_repetition_day_level)
                     false
                 } else {
                     true
@@ -93,8 +92,7 @@ class SettingsFragmentEditBoxLevelDialog(
                 val previousBoxLevelRepeatDay =
                     boxLevelList[boxLevelList.indexOf(boxLevel) - 1].levelRepeatIn
                 return if (newRepeatInDay < previousBoxLevelRepeatDay!!) {
-                    til?.error =
-                        "Repetition day level must be superior to the next previous day level"
+                    til?.error = getString(R.string.repetition_day_level_must_be_superior_to_the_next_previous_day_level)
                     false
                 } else {
                     true
@@ -109,13 +107,12 @@ class SettingsFragmentEditBoxLevelDialog(
                 when {
                     newRepeatInDay < previousBoxLevelRepeatDay!! -> {
                         til?.error =
-                            "Repetition day level must be superior to the next previous day level"
+                            getString(R.string.repetition_day_level_must_be_superior_to_the_next_previous_day_level)
                         return false
                     }
 
                     newRepeatInDay > nextBoxLevelRepeatDay!! -> {
-                        til?.error =
-                            "Repetition day level must be inferior to the next repetition day level"
+                        til?.error = getString(R.string.repetition_day_level_must_be_inferior_to_the_next_repetition_day_level)
                         return false
                     }
 

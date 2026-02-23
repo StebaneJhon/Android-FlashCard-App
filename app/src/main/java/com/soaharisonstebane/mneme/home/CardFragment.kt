@@ -14,14 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.StringRes
 import androidx.appcompat.widget.ListPopupWindow
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.drawerlayout.widget.DrawerLayout
@@ -64,7 +60,6 @@ import com.soaharisonstebane.mneme.util.CardSortOptions.SORT_CARD_BY_CREATION_DA
 import com.soaharisonstebane.mneme.util.CardSortOptions.SORT_PREF
 import com.soaharisonstebane.mneme.util.TextType.CONTENT
 import com.soaharisonstebane.mneme.util.TextType.DEFINITION
-import com.soaharisonstebane.mneme.util.ThemePicker
 import com.soaharisonstebane.mneme.helper.cardToText
 import com.soaharisonstebane.mneme.helper.parcelable
 import kotlinx.coroutines.Job
@@ -80,6 +75,7 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.ConcatAdapter
 import com.soaharisonstebane.mneme.backend.models.toLocal
 import com.soaharisonstebane.mneme.helper.CardOnlySpacingDecoration
+import com.soaharisonstebane.mneme.helper.showSnackbar
 import com.soaharisonstebane.mneme.quiz.flashCardGame.FlashCardGameActivity
 import com.soaharisonstebane.mneme.util.DeckRef.DECK_SORT_BY_CREATION_DATE
 import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
@@ -294,11 +290,7 @@ class CardFragment :
             deckPathViewModel.setCurrentDeck(path[1])
             switchTheme()
         } else {
-            Toast.makeText(
-                appContext,
-                getString(R.string.error_message_can_not_go_further),
-                Toast.LENGTH_LONG
-            ).show()
+            showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_can_not_go_further)
         }
     }
 
@@ -578,14 +570,14 @@ class CardFragment :
                     .setPositiveButton(getString(R.string.bt_text_delete)) { dialog, _ ->
                         cardViewModel.deleteSubdeck(deck)
                         dialog.dismiss()
-                        Toast.makeText(it, "Delete ${deck.deckName}", Toast.LENGTH_LONG).show()
+                        showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, "Delete ${deck.deckName}")
+
                     }
                     .show()
             }
         } else {
             cardViewModel.deleteSubdeck(deck)
-            Toast.makeText(requireContext(), "Delete ${deck.deckName}", Toast.LENGTH_LONG)
-                .show()
+            showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, "Delete ${deck.deckName}")
         }
     }
 
@@ -615,11 +607,7 @@ class CardFragment :
             val deckAndCards = cardViewModel.getDeckWithCardsOnStartQuiz(deck.deckId)
             binding.cardsActivityProgressBar.isVisible = false
             if (deckAndCards.cards.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_message_empty_deck),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_empty_deck)
             } else {
                 start(deckAndCards)
             }
@@ -811,9 +799,15 @@ class CardFragment :
             val languageUtil = LanguageUtil()
             languageUtil.detectLanguage(
                 text = textAndView.text.toString(),
-                onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
-                onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
-                onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
+                onError = {
+                    showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_error_while_detecting_language)
+                    },
+                onLanguageUnIdentified = {
+                    showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_can_not_identify_language)
+                },
+                onLanguageNotSupported = {
+                    showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_language_not_supported)
+                    },
                 onSuccess = { detectedLanguage ->
                     when (type) {
                         CONTENT -> cardViewModel.updateCardContentLanguage(
@@ -833,16 +827,6 @@ class CardFragment :
             readeText(textAndView, language)
         }
 
-    }
-
-    private fun showSnackBar(
-        @StringRes messageRes: Int
-    ) {
-        Snackbar.make(
-            binding.cardsActivityRoot,
-            getString(messageRes),
-            Snackbar.LENGTH_LONG
-        ).show()
     }
 
     private fun readeText(
@@ -901,19 +885,11 @@ class CardFragment :
             val result = bundle.getInt(NewCardDialog.SAVE_CARDS_BUNDLE_KEY)
             when {
                 result > 1 -> {
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.message_new_cards_added, "$result"),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, getString(R.string.message_new_cards_added, "$result"))
                 }
 
                 result == 1 -> {
-                    Toast.makeText(
-                        appContext,
-                        getString(R.string.message_new_card_added),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.message_new_card_added)
                 }
             }
         }
@@ -933,11 +909,7 @@ class CardFragment :
                 bundle.parcelable<CardWithContentAndDefinitions>(NewCardDialog.EDIT_CARD_BUNDLE_KEY)
             result?.let {
                 cardViewModel.updateCard(it)
-                Toast.makeText(
-                    appContext,
-                    getString(R.string.message_card_updated),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.message_card_updated)
             }
         }
     }
@@ -1010,26 +982,14 @@ class CardFragment :
                         }
                         outputStream.write(stringBuilder.toString().toByteArray())
                     }
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.message_cards_exported_successfully),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.message_cards_exported_successfully)
                 }
             } catch (e: FileNotFoundException) {
                 e.printStackTrace()
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_message_file_not_found),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_file_not_found)
             } catch (e: IOException) {
                 e.printStackTrace()
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_message_cards_exported_failed),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_message_cards_exported_failed)
             }
         }
     }
@@ -1039,10 +999,8 @@ class CardFragment :
             TextToSpeech.SUCCESS -> {
                 tts?.setSpeechRate(1.0f)
             }
-
             else -> {
-                Toast.makeText(appContext, getString(R.string.error_read), Toast.LENGTH_LONG)
-                    .show()
+                showSnackbar(binding.cardsActivityRoot, binding.dockedToolbar, R.string.error_read)
             }
         }
     }

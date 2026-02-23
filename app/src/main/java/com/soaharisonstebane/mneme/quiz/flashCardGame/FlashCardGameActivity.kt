@@ -19,9 +19,7 @@ import android.text.Html.FROM_HTML_MODE_LEGACY
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -68,6 +66,7 @@ import com.soaharisonstebane.mneme.util.TextType.CONTENT
 import com.soaharisonstebane.mneme.util.TextType.DEFINITION
 import com.soaharisonstebane.mneme.util.TextWithLanguageModel
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.helper.showSnackbar
 import com.soaharisonstebane.mneme.util.FlashCardMiniGameRef.FLASH_CARD_QUIZ
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -218,11 +217,7 @@ class FlashCardGameActivity :
                     initCardLayout()
                 }
             } else {
-                Toast.makeText(
-                    this,
-                    getString(R.string.error_message_previous_card),
-                    Toast.LENGTH_SHORT
-                ).show()
+                showSnackbar(binding.root, binding.btRewind, R.string.error_message_previous_card)
             }
         }
 
@@ -815,9 +810,9 @@ class FlashCardGameActivity :
                     val text = Html.fromHtml(onScreenCards.top.contentWithDefinitions.content.contentText, FROM_HTML_MODE_LEGACY).toString()
                     LanguageUtil().detectLanguage(
                         text = text,
-                        onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
-                        onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
-                        onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
+                        onError = { showSnackbar(binding.root, binding.btRewind, R.string.error_message_error_while_detecting_language) },
+                        onLanguageUnIdentified = { showSnackbar(binding.root, binding.btRewind, R.string.error_message_can_not_identify_language) },
+                        onLanguageNotSupported = { showSnackbar(binding.root, binding.btRewind, R.string.error_message_language_not_supported) },
                         onSuccess = { detectedLanguage ->
                             viewModel.updateCardContentLanguage(
                                 onScreenCards.top.card.cardId,
@@ -862,9 +857,9 @@ class FlashCardGameActivity :
                 if (language.isNullOrBlank()) {
                     LanguageUtil().detectLanguage(
                         text = Html.fromHtml(definitions.first(), FROM_HTML_MODE_LEGACY).toString(),
-                        onError = { showSnackBar(R.string.error_message_error_while_detecting_language) },
-                        onLanguageUnIdentified = { showSnackBar(R.string.error_message_can_not_identify_language) },
-                        onLanguageNotSupported = { showSnackBar(R.string.error_message_language_not_supported) },
+                        onError = { showSnackbar(binding.root, binding.btRewind, R.string.error_message_error_while_detecting_language) },
+                        onLanguageUnIdentified = { showSnackbar(binding.root, binding.btRewind, R.string.error_message_can_not_identify_language) },
+                        onLanguageNotSupported = { showSnackbar(binding.root, binding.btRewind, R.string.error_message_language_not_supported) },
                         onSuccess = { detectedLanguage ->
                             viewModel.updateCardDefinitionLanguage(
                                 cardId = onScreenCards.top.card.cardId,
@@ -945,17 +940,6 @@ class FlashCardGameActivity :
 
     }
 
-
-    private fun showSnackBar(
-        @StringRes messageRes: Int
-    ) {
-        Snackbar.make(
-            binding.clFlashCardRootView,
-            getString(messageRes),
-            Snackbar.LENGTH_LONG
-        ).show()
-    }
-
     private fun stopReading(views: List<TextView>) {
         tts?.stop()
         views.forEach { v ->
@@ -1027,11 +1011,7 @@ class FlashCardGameActivity :
             }
 
             override fun onError(utteranceId: String?) {
-                Toast.makeText(
-                    this@FlashCardGameActivity,
-                    getString(R.string.error_read),
-                    Toast.LENGTH_LONG
-                ).show()
+                showSnackbar(binding.root, binding.btRewind, R.string.error_read)
             }
         }
 
@@ -1194,7 +1174,7 @@ class FlashCardGameActivity :
             }
 
             else -> {
-                Toast.makeText(this, getString(R.string.error_read), Toast.LENGTH_LONG).show()
+                showSnackbar(binding.root, binding.btRewind, R.string.error_read)
             }
         }
     }
