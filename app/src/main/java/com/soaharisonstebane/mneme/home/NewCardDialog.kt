@@ -835,7 +835,7 @@ class NewCardDialog(
             ImportCardsFromDeviceDialog.CARDS_FROM_URI_REQUEST_CODE,
             this
         ) { _, bundle ->
-            val result = bundle.parcelable<CardImportFromDeviceModel>(ImportCardsFromDeviceDialog.EXPORT_CARD_FROM_DEVICE_BUNDLE_KEY)
+            val result = bundle.parcelableArrayList<CardWithContentAndDefinitions>(ImportCardsFromDeviceDialog.CARDS_FROM_URI_BUNDLE_CODE)
             if (result != null) {
                 newCardViewModel.insertCards(result)
                 showSnackbar(binding.root, binding.dockedToolbar, getString(R.string.message_cards_added, "${result.size}"))
