@@ -302,7 +302,7 @@ class CardsRecyclerViewAdapter(
                 boxLevels,
                 card?.card?.cardLevel!!
             )
-            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelName!!)
 //            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBackgroundLevelColor(actualBoxLevel.levelColor)
 //            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColor(actualBoxLevel.levelColor)
 //            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorVariant(actualBoxLevel.levelColor)
@@ -359,7 +359,7 @@ class CardsRecyclerViewAdapter(
         ) {
             val actualBoxLevel = spaceRepetitionAlgorithmHelper.getBoxLevelByStatus(boxLevels, card.card.cardLevel!!)
 //            val statusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
-            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelColor!!)
+            val cardBackgroundStatusColor = spaceRepetitionAlgorithmHelper.selectBoxLevelColor(actualBoxLevel?.levelName!!)
 //            contentTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLight(actualBoxLevel.levelColor)
 //            definitionTextColor = spaceRepetitionAlgorithmHelper.selectOnSurfaceColorLightVariant(actualBoxLevel.levelColor)
 

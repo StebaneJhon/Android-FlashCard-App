@@ -85,7 +85,6 @@ class UploadOpenTriviaQuizDialog : DialogFragment() {
             )
         }
 
-        binding.btBackToQuiz.setOnClickListener { dismiss() }
         binding.btUpload.setOnClickListener {
             if (checkForError()) {
                 val settingsModel = OpenTriviaQuizCategoryHelper()

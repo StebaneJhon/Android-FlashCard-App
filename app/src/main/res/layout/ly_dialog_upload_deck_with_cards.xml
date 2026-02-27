@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,32 +12,18 @@
         android:layout_height="match_parent"
         android:padding="@dimen/space_lg">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/bt_back_to_quiz"
-            style="?attr/materialIconButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/bt_description_exit"
-            app:icon="@drawable/icon_exit"
-            app:iconSize="25sp"
-            app:iconTint="?colorOnSurface"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <TextView
             android:id="@+id/textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
             android:fontFamily="@font/open_sans_bold"
             android:text="@string/title_dialog_upload_cards"
             android:textAlignment="textStart"
             android:textColor="?colorOnSurface"
             android:textSize="@dimen/text_base"
-            app:layout_constraintBottom_toBottomOf="@+id/bt_back_to_quiz"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/bt_back_to_quiz"
-            app:layout_constraintTop_toTopOf="@+id/bt_back_to_quiz" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <com.google.android.material.textfield.TextInputLayout
@@ -45,34 +32,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/category_field_hint"
-            android:layout_marginBottom="@dimen/space_xs"
+            android:textColor="?colorOnSurface"
             android:textColorHint="@color/neutral400"
             app:boxCornerRadiusBottomEnd="@dimen/ed_radius"
             app:boxCornerRadiusBottomStart="@dimen/ed_radius"
             app:boxCornerRadiusTopEnd="@dimen/ed_radius"
             app:boxCornerRadiusTopStart="@dimen/ed_radius"
+            app:endIconTint="?colorOnSurface"
+            android:layout_marginTop="@dimen/space_lg"
+            app:errorTextAppearance="@style/TextAppearance.App.BodySmall"
+            app:hintTextAppearance="@style/TextAppearance.App.Hint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
-            app:endIconTint="?colorOnSurface"
-            android:textColor="?colorOnSurface"
-            app:hintTextAppearance="@style/TextAppearance.App.Hint"
-            app:errorTextAppearance="@style/TextAppearance.App.BodySmall">
+            app:layout_constraintTop_toBottomOf="@+id/textView">
 
             <AutoCompleteTextView
                 android:id="@+id/tv_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"
-                android:text="Any"
-                android:textColor="?colorOnSurface"
-                android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                android:background="@null"
+                android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
                 android:ellipsize="end"
+                android:inputType="none"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:dropDownSelector="@drawable/filter_spinner_dropdown_background"
-                android:background="@null"
-                tools:ignore="LabelFor"/>
+                android:text="Any"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                android:textColor="?colorOnSurface"
+                tools:ignore="LabelFor" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

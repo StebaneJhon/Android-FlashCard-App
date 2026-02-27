@@ -80,11 +80,12 @@ object ThemeConst {
 object LevelColors {
     const val RED = "Red"
     const val ORANGE = "Orange"
-    const val BROWNE = "Brown"
-    const val YELLOW700 = "Yellow700"
-    const val YELLOW500 = "Yellow500"
-    const val GREEN500 = "Green500"
-    const val GREEN700 = "Green700"
+    const val YELLOW = "Yellow"
+    const val LIME = "Lime"
+    const val GREEN = "Green"
+    const val CYAN = "Cyan"
+    const val BLUE = "Blue"
+
 }
 
 object MatchQuizGameClickStatus {

@@ -34,25 +34,10 @@
                 android:layout_toEndOf="@+id/bt_exit"
                 android:textAppearance="@style/TextAppearance.App.TitleMedium"
                 app:layout_constraintBottom_toBottomOf="@+id/bt_exit"
-                app:layout_constraintEnd_toStartOf="@+id/bt_add_top"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/bt_exit"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="New deck" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/bt_add_top"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:contentDescription="@string/bt_add_deck"
-                app:icon="@drawable/icon_check"
-                app:iconTint="?colorOnSurface"
-                tools:ignore="RelativeOverlap"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/deckNameLY"

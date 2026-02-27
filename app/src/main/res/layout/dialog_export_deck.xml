@@ -6,18 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/space_lg">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/bt_dismiss"
-        style="?attr/materialIconButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/bt_description_exit"
-        app:icon="@drawable/icon_exit"
-        app:iconSize="25sp"
-        app:iconTint="?colorOnSurface"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="0dp"
@@ -26,24 +14,24 @@
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.App.TitleMedium"
         android:textColor="?colorOnSurface"
-        android:layout_marginEnd="@dimen/space_lg"
-        app:layout_constraintBottom_toBottomOf="@+id/bt_dismiss"
+        android:layout_margin="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bt_dismiss"
-        app:layout_constraintTop_toTopOf="@+id/bt_dismiss" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_title_format"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
         android:text="@string/format"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.App.TitleSmall"
         android:textColor="?colorOnSurface"
-        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bt_dismiss" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
     <RadioGroup
         android:id="@+id/rg_format"

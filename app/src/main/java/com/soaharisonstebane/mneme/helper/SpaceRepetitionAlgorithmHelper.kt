@@ -15,13 +15,13 @@ import com.soaharisonstebane.mneme.util.CardLevel.L4
 import com.soaharisonstebane.mneme.util.CardLevel.L5
 import com.soaharisonstebane.mneme.util.CardLevel.L6
 import com.soaharisonstebane.mneme.util.CardLevel.L7
-import com.soaharisonstebane.mneme.util.LevelColors.BROWNE
-import com.soaharisonstebane.mneme.util.LevelColors.GREEN500
-import com.soaharisonstebane.mneme.util.LevelColors.GREEN700
+import com.soaharisonstebane.mneme.util.LevelColors.BLUE
+import com.soaharisonstebane.mneme.util.LevelColors.CYAN
+import com.soaharisonstebane.mneme.util.LevelColors.GREEN
+import com.soaharisonstebane.mneme.util.LevelColors.LIME
 import com.soaharisonstebane.mneme.util.LevelColors.ORANGE
 import com.soaharisonstebane.mneme.util.LevelColors.RED
-import com.soaharisonstebane.mneme.util.LevelColors.YELLOW500
-import com.soaharisonstebane.mneme.util.LevelColors.YELLOW700
+import com.soaharisonstebane.mneme.util.LevelColors.YELLOW
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -68,65 +68,75 @@ class SpaceRepetitionAlgorithmHelper{
     private val colors = mapOf(
         RED to R.color.red600,
         ORANGE to R.color.orange600,
-        BROWNE to R.color.amber600,
-        YELLOW700 to R.color.yellow600,
-        YELLOW500 to R.color.lime600,
-        GREEN500 to R.color.green600,
-        GREEN700 to R.color.emerald600
+        YELLOW to R.color.yellow600,
+        LIME to R.color.lime600,
+        GREEN to R.color.green600,
+        CYAN to R.color.cyan600,
+        BLUE to R.color.blue600,
     )
 
     private val carBackgroundColors = mapOf(
         RED to R.color.red50,
         ORANGE to R.color.orange50,
-        BROWNE to R.color.amber50,
-        YELLOW700 to R.color.yellow50,
-        YELLOW500 to R.color.lime50,
-        GREEN500 to R.color.green50,
-        GREEN700 to R.color.emerald50
+        YELLOW to R.color.yellow50,
+        LIME to R.color.lime50,
+        GREEN to R.color.green50,
+        CYAN to R.color.cyan50,
+        BLUE to R.color.blue50,
     )
 
     private val cardOnSurfaceColors = mapOf(
         RED to R.color.red950,
         ORANGE to R.color.orange950,
-        BROWNE to R.color.amber950,
-        YELLOW700 to R.color.yellow950,
-        YELLOW500 to R.color.lime950,
-        GREEN500 to R.color.green950,
-        GREEN700 to R.color.emerald950
+        YELLOW to R.color.yellow950,
+        LIME to R.color.lime950,
+        GREEN to R.color.green950,
+        CYAN to R.color.cyan950,
+        BLUE to R.color.blue950,
     )
 
     private val cardOnSurfaceColorsVariant = mapOf(
         RED to R.color.red900,
         ORANGE to R.color.orange900,
-        BROWNE to R.color.amber900,
-        YELLOW700 to R.color.yellow900,
-        YELLOW500 to R.color.lime900,
-        GREEN500 to R.color.green900,
-        GREEN700 to R.color.emerald900
+        YELLOW to R.color.yellow900,
+        LIME to R.color.lime900,
+        GREEN to R.color.green900,
+        CYAN to R.color.cyan900,
+        BLUE to R.color.blue900,
     )
 
     private val cardOnSurfaceColorsLight = mapOf(
         RED to R.color.red50,
         ORANGE to R.color.orange50,
-        BROWNE to R.color.amber50,
-        YELLOW700 to R.color.yellow50,
-        YELLOW500 to R.color.lime50,
-        GREEN500 to R.color.green50,
-        GREEN700 to R.color.emerald50
+        YELLOW to R.color.yellow50,
+        LIME to R.color.lime50,
+        GREEN to R.color.green50,
+        CYAN to R.color.cyan50,
+        BLUE to R.color.blue50,
     )
 
     private val cardOnSurfaceColorsLightVariant = mapOf(
         RED to R.color.red100,
         ORANGE to R.color.orange100,
-        BROWNE to R.color.amber100,
-        YELLOW700 to R.color.yellow100,
-        YELLOW500 to R.color.lime100,
-        GREEN500 to R.color.green100,
-        GREEN700 to R.color.emerald100
+        YELLOW to R.color.yellow100,
+        LIME to R.color.lime100,
+        GREEN to R.color.green100,
+        CYAN to R.color.cyan100,
+        BLUE to R.color.blue100,
     )
 
-    fun selectBoxLevelColor(color: String): Int {
-        return colors.getOrDefault(color, R.color.red700)
+    fun selectBoxLevelColor(level: String): Int {
+        return when(level) {
+            L1 -> {colors.getOrDefault(RED, R.color.red600)}
+            L2 -> {colors.getOrDefault(ORANGE, R.color.orange600)}
+            L3 -> {colors.getOrDefault(YELLOW, R.color.yellow600)}
+            L4 -> {colors.getOrDefault(LIME, R.color.lime600)}
+            L5 -> {colors.getOrDefault(GREEN, R.color.green600)}
+            L6 -> {colors.getOrDefault(CYAN, R.color.cyan600)}
+            L7 -> {colors.getOrDefault(BLUE, R.color.blue600)}
+            else -> {colors.getOrDefault(RED, R.color.red600)}
+        }
+
     }
     fun selectBackgroundLevelColor(color: String): Int {
         return carBackgroundColors.getOrDefault(color, R.color.red100)
@@ -147,13 +157,13 @@ class SpaceRepetitionAlgorithmHelper{
 
     private fun getInitialSpaceRepetitionBox(): List<SpaceRepetitionBox> {
         return listOf(
-            SpaceRepetitionBox(null, L1, "Red", 0, revisionMargin(0)),
-            SpaceRepetitionBox(null, L2, "Orange", 1, revisionMargin(1)),
-            SpaceRepetitionBox(null, L3, "Brown", 2, revisionMargin(2)),
-            SpaceRepetitionBox(null, L4, "Yellow700", 4, revisionMargin(4)),
-            SpaceRepetitionBox(null, L5, "Yellow500", 7, revisionMargin(7)),
-            SpaceRepetitionBox(null, L6, "Green500", 14, revisionMargin(14)),
-            SpaceRepetitionBox(null, L7, "Green700", 31, revisionMargin(31)),
+            SpaceRepetitionBox(null, L1, RED, 0, revisionMargin(0)),
+            SpaceRepetitionBox(null, L2, ORANGE, 1, revisionMargin(1)),
+            SpaceRepetitionBox(null, L3, YELLOW, 2, revisionMargin(2)),
+            SpaceRepetitionBox(null, L4, LIME, 4, revisionMargin(4)),
+            SpaceRepetitionBox(null, L5, GREEN, 7, revisionMargin(7)),
+            SpaceRepetitionBox(null, L6, CYAN, 14, revisionMargin(14)),
+            SpaceRepetitionBox(null, L7, BLUE, 31, revisionMargin(31)),
         )
     }
 
@@ -381,23 +391,6 @@ class SpaceRepetitionAlgorithmHelper{
         val nextRevision = nextRevisionDate(card, isKnown, newStatus)
         val lastRevision = today()
         val nextForgettingDate = nextForgettingDate(card, isKnown, newStatus)
-//        return ImmutableCard(
-//            card.cardId,
-//            card.cardContent,
-//            card.cardDefinition,
-//            card.deckId,
-//            card.isFavorite,
-//            card.revisionTime,
-//            card.missedTime,
-//            card.creationDate,
-//            lastRevision,
-//            newStatus,
-//            nextForgettingDate,
-//            nextRevision,
-//            card.cardType,
-//            card.cardContentLanguage,
-//            card.cardDefinitionLanguage,
-//        )
 
         return Card(
             cardId = card.cardId,
@@ -444,24 +437,6 @@ class SpaceRepetitionAlgorithmHelper{
             card = updatedCard,
             contentWithDefinitions = contentWithDefinitions
         )
-//        return ImmutableCard(
-//            card.cardId,
-//            card.cardContent,
-//            card.cardDefinition,
-//            card.deckId,
-//            card.isFavorite,
-//            card.revisionTime,
-//            card.missedTime,
-//            card.creationDate,
-//            lastRevision,
-//            newStatus,
-//            nextForgettingDate,
-//            nextRevision,
-//            card.cardType,
-//            card.cardContentLanguage,
-//            card.cardDefinitionLanguage,
-//        )
-
         return updateCardWithContentAndDefinitions
     }
 

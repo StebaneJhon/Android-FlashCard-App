@@ -118,13 +118,9 @@ class NewDeckDialog(
                 setOnClickListener {
                     onUpdate(deckToEdit)
                 }
-                binding.btAddTop.setOnClickListener {
-                    onUpdate(deckToEdit)
-                }
             }
         } else {
             builder.setView(binding.root)
-//            binding.btAddCard.isVisible = true
             binding.tvTitle.text = getString(R.string.tv_add_new_deck)
             binding.btExit.setOnClickListener { dismiss() }
             binding.dialogPositiveBT.apply {
@@ -133,27 +129,6 @@ class NewDeckDialog(
                     onAdd(parentDeckId)
                 }
             }
-            binding.btAddTop.setOnClickListener {
-                onAdd(parentDeckId)
-            }
-//            binding.btAddCard.setOnClickListener {
-//                if (!checkError()) {
-//                    val newDeck = Deck(
-//                        deckId = UUID.randomUUID().toString(),
-//                        parentDeckId = parentDeckId,
-//                        deckName = binding.deckNameET.text.toString(),
-//                        deckDescription = binding.deckDescriptionET.text.toString(),
-//                        cardContentDefaultLanguage = binding.deckFirstLanguageET.text.toString(),
-//                        cardDefinitionDefaultLanguage = binding.deckSecondLanguageET.text.toString(),
-//                        deckColorCode = deckCategoryColor,
-//                        deckCategory = null,
-//                        isFavorite = 0,
-//                        deckCreationDate = now()
-//                    )
-//                    sendDeckOnSave(REQUEST_CODE, ADD_DECK_FORWARD_TO_CARD_ADDITION, newDeck)
-//                    dismiss()
-//                }
-//            }
         }
 
         lifecycleScope.launch {
