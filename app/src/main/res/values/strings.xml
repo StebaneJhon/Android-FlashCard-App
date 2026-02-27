@@ -354,4 +354,6 @@
     <string name="failed_to_update_at_box_level">Failed to update at box level</string>
     <string name="repetition_day_level_must_be_inferior_to_the_next_repetition_day_level">Repetition day level must be inferior to the next repetition day level</string>
     <string name="repetition_day_level_must_be_superior_to_the_next_previous_day_level">Repetition day level must be superior to the next previous day level</string>
+    <string name="preview">Preview</string>
+    <string name="import_cards_from_device">Import cards from device</string>
 </resources>

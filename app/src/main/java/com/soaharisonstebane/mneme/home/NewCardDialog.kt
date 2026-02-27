@@ -107,6 +107,7 @@ import com.soaharisonstebane.mneme.util.ScanRef.IMAGE_FROM_CAMERA_TO_TEXT
 import com.soaharisonstebane.mneme.util.ScanRef.IMAGE_FROM_GALERI_TO_TEXT
 import com.soaharisonstebane.mneme.util.UiState
 import com.soaharisonstebane.mneme.helper.parcelable
+import com.soaharisonstebane.mneme.helper.parcelableArrayList
 import com.soaharisonstebane.mneme.helper.showSnackbar
 import com.soaharisonstebane.mneme.helper.textToImmutableCard
 import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
@@ -135,7 +136,6 @@ class NewCardDialog(
     private var actualFieldLanguage: String? = null
     private var cardUploadingJob: Job? = null
     private val supportedLanguages = LanguageUtil().getSupportedLang()
-    private lateinit var importCardsFromDeviceModel: CardImportFromDeviceModel
     private lateinit var attachBottomSheetDialog: AttachBottomSheetDialog
     private lateinit var scanBottomSheetDialog: ScanBottomSheetDialog
 
@@ -261,12 +261,9 @@ class NewCardDialog(
         }
     }
 
-    private var openFile =
-        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    private var openFile = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
             if (uri != null) {
-                val cards = textFromUriToImmutableCards(uri, ":")
-                newCardViewModel.insertCards(cards)
-                showSnackbar(binding.root, binding.dockedToolbar, getString(R.string.message_cards_added, "${cards.size}"))
+                showCardImportFromDeviceDialog(uri)
             }
         }
 
@@ -821,7 +818,8 @@ class NewCardDialog(
             val result = bundle.getString(ImportCardsSourceDialog.IMPORT_CARDS_SOURCE_BUNDLE_KEY)
             when (result) {
                 ImportCardsSourceDialog.IMPORT_FROM_DEVICE -> {
-                    showCardImportFromDeviceDialog()
+                    //showCardImportFromDeviceDialog()
+                    openFile.launch(arrayOf("text/*"))
                 }
 
                 ImportCardsSourceDialog.IMPORT_FROM_OTHERS -> {
@@ -831,17 +829,16 @@ class NewCardDialog(
         }
     }
 
-    private fun showCardImportFromDeviceDialog() {
-        val cardImportFromDeviceDialog = ImportCardsFromDeviceDialog()
-        cardImportFromDeviceDialog.show(childFragmentManager, "Import card from device dialog")
+    private fun showCardImportFromDeviceDialog(uri: Uri) {
+        ImportCardsFromDeviceDialog.newInstance(uri).show(childFragmentManager, ImportCardsFromDeviceDialog.TAG)
         childFragmentManager.setFragmentResultListener(
-            REQUEST_CODE_IMPORT_CARD_FROM_DEVICE_SOURCE,
+            ImportCardsFromDeviceDialog.CARDS_FROM_URI_REQUEST_CODE,
             this
         ) { _, bundle ->
             val result = bundle.parcelable<CardImportFromDeviceModel>(ImportCardsFromDeviceDialog.EXPORT_CARD_FROM_DEVICE_BUNDLE_KEY)
             if (result != null) {
-                importCardsFromDeviceModel = result
-                openFile.launch(arrayOf("text/*"))
+                newCardViewModel.insertCards(result)
+                showSnackbar(binding.root, binding.dockedToolbar, getString(R.string.message_cards_added, "${result.size}"))
             } else {
                 showSnackbar(binding.root, binding.dockedToolbar, R.string.error_message_card_import_failed)
             }

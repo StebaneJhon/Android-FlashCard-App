@@ -11,13 +11,12 @@
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Import cards from device"
+        android:text="@string/import_cards_from_device"
         android:textAlignment="textStart"
         android:textAppearance="@style/TextAppearance.App.TitleMedium"
         android:textColor="?colorOnSurface"
         android:layout_margin="@dimen/space_lg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,5 +78,39 @@
             android:maxLines="5"
             android:textColor="?colorOnSurface"/>
     </com.google.android.material.textfield.TextInputLayout>
-    
+
+    <TextView
+        android:id="@+id/tv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/preview"
+        android:textAlignment="textStart"
+        android:textColor="?colorPrimary"
+        android:textAppearance="@style/TextAppearance.App.TitleSmall"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_lg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        app:layout_constraintTop_toBottomOf="@+id/tv_preview"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="..."
+        android:textAppearance="@style/TextAppearance.App.BodyMedium"
+        android:layout_marginHorizontal="@dimen/space_lg"
+        android:layout_marginTop="@dimen/space_lg"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rv_preview" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
