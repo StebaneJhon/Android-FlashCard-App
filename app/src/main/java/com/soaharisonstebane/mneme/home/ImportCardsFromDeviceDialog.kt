@@ -72,11 +72,20 @@ class ImportCardsFromDeviceDialog: DialogFragment() {
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
+        importCardsFromDeviceViewModel.onSeparatorChanged(
+            separator = ":",
+            uri = fileUri,
+            deckId = deckPathViewModel.currentDeck.value.deckId,
+            context = requireContext(),
+        )
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 importCardsFromDeviceViewModel.uiState.collect { uiState ->
                     if (uiState.cards.isNotEmpty()) {
-                        val previewAdapter = ImportedCardsFronDevicePreviewRecyclerViewAdapter(uiState.cards)
+                        val previewAdapter = ImportedCardsFronDevicePreviewRecyclerViewAdapter(
+                            if (uiState.cards.size > 5) uiState.cards.subList(0, 5) else uiState.cards
+                        )
                         binding.rvPreview.apply {
                             visibility = View.VISIBLE
                             layoutManager = LinearLayoutManager(requireContext())
@@ -86,25 +95,33 @@ class ImportCardsFromDeviceDialog: DialogFragment() {
                     } else {
                         binding.rvPreview.visibility = View.GONE
                     }
-                    importCardsFromDeviceViewModel.onSeparatorChanged(
-                        separator = uiState.separator,
-                        uri = fileUri,
-                        deckId = deckPathViewModel.currentDeck.value.deckId,
-                        context = requireContext(),
-                    )
+                    if (uiState.cards.size >= 5) {
+                        binding.tvCardsLeftSum.apply {
+                            text = getString(R.string.some_more_left, uiState.cards.size - 5)
+                            visibility = View.VISIBLE
+                        }
+                    } else {
+                        binding.tvCardsLeftSum.visibility = View.GONE
+                    }
                 }
             }
         }
 
         binding.tieSeparator.addTextChangedListener { text ->
             importCardsFromDeviceViewModel.updateSeparator(text.toString())
+            importCardsFromDeviceViewModel.onSeparatorChanged(
+                separator = text.toString(),
+                uri = fileUri,
+                deckId = deckPathViewModel.currentDeck.value.deckId,
+                context = requireContext(),
+            )
         }
 
         builder.setView(binding.root)
             .setNegativeButton(R.string.bt_text_cancel) {dialog, _ ->
                 dialog.dismiss()
             }
-            .setPositiveButton(R.string.search_file) {dialog, _ ->
+            .setPositiveButton(R.string.tx_import) {dialog, _ ->
                 if (importCardsFromDeviceViewModel.uiState.value.cards.isEmpty()) {
                     dialog.dismiss()
                 } else {

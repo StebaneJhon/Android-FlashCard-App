@@ -1,116 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:backgroundTint="?colorSurfaceContainerLowest"
-    android:paddingBottom="@dimen/space_lg">
+    android:backgroundTint="?colorSurfaceContainerLowest">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/import_cards_from_device"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.App.TitleMedium"
-        android:textColor="?colorOnSurface"
-        android:layout_margin="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_title_format"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/format"
-        android:textAlignment="textStart"
-        android:textColor="?colorPrimary"
-        android:textAppearance="@style/TextAppearance.App.TitleSmall"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/space_lg">
 
-    <RadioGroup
-        android:id="@+id/rg_format"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checkedButton="@+id/enabled_selected"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_format"
-        tools:layout_editor_absoluteX="8dp"
-        android:layout_marginHorizontal="@dimen/space_lg">
-        <RadioButton
-            android:id="@+id/rb_format_txt"
+        <TextView
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="true"
-            android:checked="true"
-            android:text="@string/txt"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium"/>
-    </RadioGroup>
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/space_lg"
+            android:text="@string/import_cards_from_device"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
+            android:textColor="?colorOnSurface"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.App.TextInputLayout"
-        android:id="@+id/til_separator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="?colorOnSurface"
-        app:hintTextAppearance="@style/TextAppearance.App.Hint"
-        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
-        android:layout_marginTop="@dimen/space_md"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        app:boxBackgroundColor="?colorSurfaceContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_format">
-
-        <com.google.android.material.textfield.TextInputEditText
-            style="@style/Widget.App.TextInputEditText"
-            android:id="@+id/tie_separator"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_separator"
+            style="@style/Widget.App.TextInputLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:textColor="?colorOnSurface"
+            app:boxBackgroundColor="?colorSurfaceContainer"
+            app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+            app:hintTextAppearance="@style/TextAppearance.App.Hint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tie_separator"
+                style="@style/Widget.App.TextInputEditText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/text_separator"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:text=":"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium"
+                android:textColor="?colorOnSurface" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/preview"
+            android:textAlignment="textStart"
+            android:textColor="?colorPrimary"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginTop="@dimen/space_lg"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_preview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            app:layout_constraintTop_toBottomOf="@+id/tv_preview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_cards_left_sum"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="..."
             android:textAppearance="@style/TextAppearance.App.BodyMedium"
-            android:hint="@string/text_separator"
-            android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:textColor="?colorOnSurface"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginTop="@dimen/space_lg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rv_preview" />
 
-    <TextView
-        android:id="@+id/tv_preview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/preview"
-        android:textAlignment="textStart"
-        android:textColor="?colorPrimary"
-        android:textAppearance="@style/TextAppearance.App.TitleSmall"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+    </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_preview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        app:layout_constraintTop_toBottomOf="@+id/tv_preview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="..."
-        android:textAppearance="@style/TextAppearance.App.BodyMedium"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_preview" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

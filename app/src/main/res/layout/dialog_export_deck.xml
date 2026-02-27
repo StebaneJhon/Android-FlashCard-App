@@ -1,114 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/space_lg">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/export_deck"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.App.TitleMedium"
-        android:textColor="?colorOnSurface"
-        android:layout_margin="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_title_format"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:text="@string/format"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.App.TitleSmall"
-        android:textColor="?colorPrimary"
-        android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title" />
+        android:orientation="vertical">
 
-    <RadioGroup
-        android:id="@+id/rg_format"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checkedButton="@+id/enabled_selected"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title_format"
-        tools:layout_editor_absoluteX="8dp">
-        <RadioButton
-            android:id="@+id/rb_format_txt"
+        <TextView
+            android:id="@+id/tv_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="true"
-            android:checked="true"
-            android:text="@string/txt" />
-    </RadioGroup>
+            android:layout_height="wrap_content"
+            android:text="@string/export_deck"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.TitleMedium"
+            android:textColor="?colorOnSurface"
+            android:layout_margin="@dimen/space_lg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.App.TextInputLayout"
-        android:id="@+id/til_separator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
-        app:hintTextAppearance="@style/TextAppearance.App.Hint"
-        app:boxBackgroundColor="?colorSurfaceContainer"
-        android:layout_marginTop="@dimen/space_sm"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_format">
-
-        <com.google.android.material.textfield.TextInputEditText
-            style="@style/Widget.App.TextInputEditText"
-            android:id="@+id/tie_separator"
+        <TextView
+            android:id="@+id/tv_title_format"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:hint="@string/text_separator"
-            android:inputType="textMultiLine"
-            android:maxLines="5"
-            android:textAppearance="@style/TextAppearance.App.BodyMedium" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:text="@string/format"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
+            android:textColor="?colorPrimary"
+            android:layout_marginTop="@dimen/space_lg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
-    <com.google.android.material.materialswitch.MaterialSwitch
-        android:id="@+id/sw_include_subdecks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:text="@string/include_subdecks"
-        android:textAppearance="@style/TextAppearance.App.TitleSmall"
-        style="@style/Widget.App.Switch"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        app:layout_constraintTop_toBottomOf="@+id/til_separator"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <RadioGroup
+            android:id="@+id/rg_format"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/enabled_selected"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title_format"
+            tools:layout_editor_absoluteX="8dp">
+            <RadioButton
+                android:id="@+id/rb_format_txt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="true"
+                android:checked="true"
+                android:text="@string/txt" />
+        </RadioGroup>
 
-    <TextView
-        android:id="@+id/tv_preview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        android:text="@string/preview"
-        android:textAlignment="textStart"
-        android:textAppearance="@style/TextAppearance.App.TitleSmall"
-        android:textColor="?colorPrimary"
-        android:layout_marginTop="@dimen/space_lg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sw_include_subdecks" />
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.App.TextInputLayout"
+            android:id="@+id/til_separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorTextAppearance="@style/TextAppearance.App.BodyMedium"
+            app:hintTextAppearance="@style/TextAppearance.App.Hint"
+            app:boxBackgroundColor="?colorSurfaceContainer"
+            android:layout_marginTop="@dimen/space_sm"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rg_format">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:text="@tools:sample/lorem/random"
-        android:layout_marginHorizontal="@dimen/space_lg"
-        app:layout_constraintTop_toBottomOf="@+id/tv_preview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+            <com.google.android.material.textfield.TextInputEditText
+                style="@style/Widget.App.TextInputEditText"
+                android:id="@+id/tie_separator"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@string/text_separator"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:text=":"
+                android:textAppearance="@style/TextAppearance.App.BodyMedium" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/sw_include_subdecks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checked="false"
+            android:text="@string/include_subdecks"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
+            style="@style/Widget.App.Switch"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            app:layout_constraintTop_toBottomOf="@+id/til_separator"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_preview_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:text="@string/preview"
+            android:textAlignment="textStart"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
+            android:textColor="?colorPrimary"
+            android:layout_marginTop="@dimen/space_lg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sw_include_subdecks" />
+
+        <TextView
+            android:id="@+id/tv_preview_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="@tools:sample/lorem/random"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            app:layout_constraintTop_toBottomOf="@+id/tv_preview_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_are_more_cards"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="..."
+            android:textAppearance="@style/TextAppearance.App.BodyMedium"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            app:layout_constraintTop_toBottomOf="@+id/tv_preview_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </LinearLayout>
     
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

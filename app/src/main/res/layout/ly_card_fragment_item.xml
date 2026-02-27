@@ -32,75 +32,6 @@
         </FrameLayout>
 
 
-<!--        <ImageView-->
-<!--            android:id="@+id/img_photo"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:background="@drawable/bg_card_top_element"-->
-<!--            android:clipToOutline="true"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:layout_marginBottom="@dimen/space_xs"-->
-<!--            android:src="@drawable/ic_launcher_background"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/ll_container_audio"/>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/ll_container_audio"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="@dimen/space_xs"-->
-<!--            android:layout_marginTop="@dimen/space_xs"-->
-<!--            android:background="@drawable/bg_radius_xs"-->
-<!--            android:backgroundTint="?colorSurfaceContainerHigh"-->
-<!--            android:gravity="center_vertical"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintBottom_toTopOf="@+id/tv_card_content"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent">-->
-
-<!--            <com.google.android.material.button.MaterialButton-->
-<!--                android:id="@+id/bt_play_audio"-->
-<!--                style="?attr/materialIconButtonFilledTonalStyle"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="@dimen/space_xs"-->
-<!--                android:backgroundTint="?colorPrimary"-->
-<!--                android:clickable="false"-->
-<!--                android:contentDescription="@string/bt_description_next"-->
-<!--                android:fontFamily="@font/open_sans"-->
-<!--                android:textColor="?colorSurfaceContainerLowest"-->
-<!--                app:icon="@drawable/icon_play"-->
-<!--                app:iconGravity="end"-->
-<!--                app:iconTint="?colorSurfaceContainerLowest"-->
-<!--                app:rippleColor="?colorSurfaceContainerHighest" />-->
-
-<!--            <com.google.android.material.slider.Slider-->
-<!--                android:id="@+id/slider_audio"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:value="20.0"-->
-<!--                android:valueFrom="0.0"-->
-<!--                android:valueTo="100.0" />-->
-<!--        </LinearLayout>-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_card_content"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintEnd_toStartOf="@+id/pupUpBT"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/ll_container_audio"-->
-<!--            tools:text="Init Deck" />-->
-
-
         <FrameLayout
             android:id="@+id/container_definition_1"
             android:layout_width="match_parent"
@@ -113,20 +44,6 @@
                 android:id="@+id/in_definition_1"
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_card_description1"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorPrimary"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/container_content"-->
-<!--            tools:text="Test deck description" />-->
 
         <FrameLayout
             android:visibility="gone"
@@ -142,21 +59,6 @@
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
 
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description2"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/container_definition_1"-->
-<!--            tools:text="Test deck description" />-->
-
         <FrameLayout
             android:visibility="gone"
             android:id="@+id/container_definition_3"
@@ -170,22 +72,6 @@
                 android:id="@+id/in_definition_3"
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
-
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description3"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description2"-->
-<!--            tools:text="Test deck description" />-->
-
 
         <FrameLayout
             android:visibility="gone"
@@ -201,21 +87,6 @@
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
 
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description4"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description3"-->
-<!--            tools:text="Test deck description" />-->
-
         <FrameLayout
             android:visibility="gone"
             android:id="@+id/container_definition_5"
@@ -229,22 +100,6 @@
                 android:id="@+id/in_definition_5"
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
-
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description5"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description4"-->
-<!--            tools:text="Test deck description" />-->
-
 
         <FrameLayout
             android:visibility="gone"
@@ -260,22 +115,6 @@
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
 
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description6"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description5"-->
-<!--            tools:text="Test deck description" />-->
-
-
         <FrameLayout
             android:visibility="gone"
             android:id="@+id/container_definition_7"
@@ -289,21 +128,6 @@
                 android:id="@+id/in_definition_7"
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
-
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description7"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description6"-->
-<!--            tools:text="Test deck description" />-->
 
         <FrameLayout
             android:visibility="gone"
@@ -319,21 +143,6 @@
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
 
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description8"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description7"-->
-<!--            tools:text="Test deck description" />-->
-
         <FrameLayout
             android:visibility="gone"
             android:id="@+id/container_definition_9"
@@ -348,21 +157,6 @@
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
 
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description9"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description8"-->
-<!--            tools:text="Test deck description" />-->
-
         <FrameLayout
             android:visibility="gone"
             android:id="@+id/container_definition_10"
@@ -376,21 +170,6 @@
                 android:id="@+id/in_definition_10"
                 layout="@layout/ly_card_definition" />
         </FrameLayout>
-
-<!--        <TextView-->
-<!--            android:visibility="gone"-->
-<!--            android:id="@+id/tv_card_description10"-->
-<!--            android:layout_width="0dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:fontFamily="@font/open_sans"-->
-<!--            android:textAlignment="textStart"-->
-<!--            android:textColor="?colorOnSurface"-->
-<!--            android:textSize="@dimen/text_sm"-->
-<!--            android:layout_marginTop="@dimen/space_xxs"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@+id/tv_card_description9"-->
-<!--            tools:text="Test deck description" />-->
 
         <TextView
             android:id="@+id/tv_card_description_error"

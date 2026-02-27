@@ -456,16 +456,10 @@ class NewCardDialog(
 
         binding.tabAddNewUpdateCard.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.save -> {
-                    onPositiveAction()
-                    true
-                }
-
                 R.id.bt_import_card -> {
                     showCardImportSourceDialog()
                     true
                 }
-
                 else -> false
             }
         }
@@ -818,7 +812,6 @@ class NewCardDialog(
             val result = bundle.getString(ImportCardsSourceDialog.IMPORT_CARDS_SOURCE_BUNDLE_KEY)
             when (result) {
                 ImportCardsSourceDialog.IMPORT_FROM_DEVICE -> {
-                    //showCardImportFromDeviceDialog()
                     openFile.launch(arrayOf("text/*"))
                 }
 

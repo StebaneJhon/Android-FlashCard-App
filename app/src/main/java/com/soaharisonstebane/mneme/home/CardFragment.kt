@@ -464,8 +464,7 @@ class CardFragment :
             CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_REQUEST_CODE,
             this
         ) { _, bundle ->
-            val data =
-                bundle.parcelable<ExternalDeck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
+            val data = bundle.parcelable<ExternalDeck>(CurrentDeckDetailsBottomSheetDialog.CURRENT_DECK_DETAILS_BUNDLE_KEY)
             data?.let { updatedDeck ->
                 cardViewModel.updateDeck(updatedDeck.toLocal())
                 deckPathViewModel.setCurrentDeck(updatedDeck)
@@ -476,15 +475,23 @@ class CardFragment :
     }
 
     private fun showExportDeckDialog() {
-        val exportDeckDialog = ExportDeckDialog()
-        exportDeckDialog.show(childFragmentManager, "Export deck dialog")
-        childFragmentManager.setFragmentResultListener(
-            REQUEST_EXPORT_DECK_CODE,
-            this
-        ) { _, bundle ->
-            deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
-            createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
+        lifecycleScope.launch {
+            val allCards = cardViewModel.getDeckAndSubdecksCards(cardViewModel.getActualDeck().deckId)
+           if (allCards.size > 5) {
+               ExportDeckDialog.newInstance(allCards.subList(0, 5), true).show(childFragmentManager, "Export deck dialog")
+           } else {
+               ExportDeckDialog.newInstance(allCards, false).show(childFragmentManager, "Export deck dialog")
+           }
+
+            childFragmentManager.setFragmentResultListener(
+                REQUEST_EXPORT_DECK_CODE,
+                this@CardFragment
+            ) { _, bundle ->
+                deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
+                createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
+            }
         }
+
     }
 
 

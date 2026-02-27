@@ -283,7 +283,6 @@
     <string name="txt_file_only">.txt file only</string>
     <string name="others">Others</string>
     <string name="from_open_trivia_database">From Open Trivia database.</string>
-    <string name="search_file">Search File</string>
     <string name="error_message_card_import_failed">Card import failed</string>
     <string name="message_cards_exported_successfully">Cards exported successfully.</string>
     <string name="error_message_file_not_found">File not found.</string>
@@ -356,4 +355,6 @@
     <string name="repetition_day_level_must_be_superior_to_the_next_previous_day_level">Repetition day level must be superior to the next previous day level</string>
     <string name="preview">Preview</string>
     <string name="import_cards_from_device">Import cards from device</string>
+    <string name="some_more_left">and %1$d more.</string>
+    <string name="tx_import">Import</string>
 </resources>
