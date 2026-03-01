@@ -74,7 +74,7 @@ class NewDeckDialog(
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
-        val arrayAdapterSupportedLanguages = ArrayAdapter(requireContext(), R.layout.dropdown_item, supportedLanguages)
+        val arrayAdapterSupportedLanguages = ArrayAdapter(binding.root.context, R.layout.dropdown_item, supportedLanguages)
         binding.deckFirstLanguageET.apply {
             setAdapter(arrayAdapterSupportedLanguages)
             setDropDownBackgroundDrawable(

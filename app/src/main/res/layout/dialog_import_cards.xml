@@ -26,6 +26,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/tv_text_separator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_separator"
+            android:textAlignment="textStart"
+            android:textColor="?colorPrimary"
+            android:textAppearance="@style/TextAppearance.App.TitleSmall"
+            android:layout_marginHorizontal="@dimen/space_lg"
+            android:layout_marginBottom="@dimen/space_md"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_separator" />
+
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_separator"
             style="@style/Widget.App.TextInputLayout"
