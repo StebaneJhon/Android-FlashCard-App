@@ -330,12 +330,12 @@ class QuizGameActivity :
                     }
                     binding.btRewind.apply {
                         if (position > 0) {
-                            isActivated = true
+                            isEnabled = true
                             isClickable = true
-                            backgroundTintList = MaterialColors
+                            backgroundTintList =MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorPrimaryFixed,
+                                    androidx.appcompat.R.attr.colorPrimary,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral700
                                     )!!
@@ -343,23 +343,13 @@ class QuizGameActivity :
                             iconTint = MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorSurfaceContainerLowest,
+                                    com.google.android.material.R.attr.colorOnPrimary,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral50
                                     )!!
                                 )
-                            setTextColor(
-                                MaterialColors
-                                    .getColorStateList(
-                                        this@QuizGameActivity,
-                                        com.google.android.material.R.attr.colorSurfaceContainerLowest,
-                                        ContextCompat.getColorStateList(
-                                            this@QuizGameActivity, R.color.neutral50
-                                        )!!
-                                    )
-                            )
                         } else {
-                            isActivated = false
+                            isEnabled = false
                             isClickable = false
                             backgroundTintList = MaterialColors
                                 .getColorStateList(
@@ -372,22 +362,11 @@ class QuizGameActivity :
                             iconTint = MaterialColors
                                 .getColorStateList(
                                     this@QuizGameActivity,
-                                    com.google.android.material.R.attr.colorPrimaryFixed,
+                                    com.google.android.material.R.attr.colorSurfaceContainer,
                                     ContextCompat.getColorStateList(
                                         this@QuizGameActivity, R.color.neutral700
                                     )!!
                                 )
-
-                            setTextColor(
-                                MaterialColors
-                                    .getColorStateList(
-                                        this@QuizGameActivity,
-                                        com.google.android.material.R.attr.colorPrimaryFixed,
-                                        ContextCompat.getColorStateList(
-                                            this@QuizGameActivity, R.color.neutral700
-                                        )!!
-                                    )
-                            )
                         }
                     }
 
@@ -740,7 +719,7 @@ class QuizGameActivity :
 
     private fun isRewindButtonActive(isActive: Boolean) {
         binding.btRewind.isClickable = isActive
-        binding.btRewind.isActivated = isActive
+        binding.btRewind.isEnabled = isActive
     }
 
     private fun onNoCardToRevise() {

@@ -424,7 +424,6 @@ class QuizGameAdapter(
             cardOnClick: (QuizGameCardDefinitionModel) -> Unit
         ) {
             if (card.cardType == SINGLE_ANSWER_CARD) {
-
                 binding.flCardRoot.isClickable = true
                 alternatives.forEach { alternative ->
                     alternative.container.visibility = View.GONE
@@ -602,11 +601,14 @@ class QuizGameAdapter(
                 backAnim.setTarget(binding.cvCardContainerBack)
                 frontAnim.start()
                 backAnim.start()
+                binding.cvCardContainerBack.bringToFront()
             } else {
                 frontAnim.setTarget(binding.cvCardContainerBack)
                 backAnim.setTarget(binding.cvCardContainer)
                 frontAnim.start()
                 backAnim.start()
+                binding.cvCardContainer.bringToFront()
+
             }
         }
 

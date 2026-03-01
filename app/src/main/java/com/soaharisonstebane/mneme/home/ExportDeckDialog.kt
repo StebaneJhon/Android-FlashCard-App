@@ -2,23 +2,20 @@ package com.soaharisonstebane.mneme.home
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.soaharisonstebane.mneme.R
 import com.soaharisonstebane.mneme.backend.FlashCardApplication
-import com.soaharisonstebane.mneme.backend.models.ExternalCardWithContentAndDefinitions
 import com.soaharisonstebane.mneme.databinding.DialogExportDeckBinding
 import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModel
 import com.soaharisonstebane.mneme.mainActivity.DeckPathViewModelFactory
@@ -28,36 +25,30 @@ class ExportDeckDialog: DialogFragment() {
 
     private var _binding: DialogExportDeckBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var fileFormat: String
-    private lateinit var fileContentSeparator: String
     private val deckPathViewModel: DeckPathViewModel by activityViewModels {
         val repository = (requireActivity().application as FlashCardApplication).repository
         DeckPathViewModelFactory(repository)
     }
 
-    private val exportDeckViewModel: ExportDeckViewModel by viewModels()
-
-    private val cards: List<ExternalCardWithContentAndDefinitions> by lazy {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireArguments().getParcelableArrayList(ARG_CARDS, ExternalCardWithContentAndDefinitions::class.java)!!
-        } else {
-            @Suppress("DEPRECATION")
-            requireArguments().getParcelableArrayList<ExternalCardWithContentAndDefinitions>(ARG_CARDS)!!
-        }
+    private val exportDeckViewModel: ExportDeckViewModel by lazy {
+        val repository = (requireActivity().application as FlashCardApplication).repository
+        ViewModelProvider(this, ExportDeckViewModelFactory(repository))[ExportDeckViewModel::class.java]
     }
 
-    private val areMoreCards: Boolean by lazy {
-        requireArguments().getBoolean(ARG_ARE_MORE_CARDS)
+
+
+    private val deckId: String by lazy {
+        requireArguments().getString(ARG_DECK_ID)!!
     }
+
 
     companion object {
-        const val EXPORT_DECK_BUNDLE_KEY = "100"
-        const val ARG_CARDS = "arg_cards"
-        const val ARG_ARE_MORE_CARDS = "arg_are_more_cards"
+        const val SEPARATOR_BUNDLE_KEY = "100"
+        const val CARDS_TO_BE_EXPORTED_BUNDLE_KEY = "1000"
+        const val ARG_DECK_ID = "arg_deck_id"
 
-        fun newInstance(cards: List<ExternalCardWithContentAndDefinitions>, areMoreCards: Boolean) = ExportDeckDialog().apply {
-            arguments = bundleOf(ARG_CARDS to ArrayList(cards), ARG_ARE_MORE_CARDS to areMoreCards)
+        fun newInstance(deckId: String) = ExportDeckDialog().apply {
+            arguments = bundleOf(ARG_DECK_ID to deckId)
         }
 
     }
@@ -74,29 +65,31 @@ class ExportDeckDialog: DialogFragment() {
             R.style.ThemeOverlay_App_MaterialAlertDialog
         )
 
-        binding.tvAreMoreCards.isVisible = areMoreCards
+        binding.inWarning.tvWarning.text = getString(R.string.warning_export_deck)
 
-        exportDeckViewModel.setPreviewText(cards, ":")
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
+                exportDeckViewModel.initCardsToExport(requireContext(), deckId)
                 exportDeckViewModel.uiState.collect { uiState ->
                     binding.tvPreviewText.text =  uiState.preview
+                    binding.swIncludeSubdecks.isChecked = uiState.includeSubdecks
                 }
             }
         }
 
         binding.tieSeparator.addTextChangedListener { text ->
-            exportDeckViewModel.onSeparatorChanged(text.toString(), cards)
+            exportDeckViewModel.onSeparatorChanged(text.toString())
+        }
+
+        binding.swIncludeSubdecks.setOnCheckedChangeListener { _, isChecked ->
+            exportDeckViewModel.onIncludeSubdecksChanged(requireContext(), deckId, isChecked)
         }
 
         builder.setView(binding.root)
-            .setPositiveButton(R.string.export) { _, _ ->
-                fileFormat = getFormat()
-                fileContentSeparator = if (!binding.tieSeparator.text.isNullOrBlank()) { binding.tieSeparator.text.toString() } else ":"
-
-                val deckExportModel = DeckExportModel(fileFormat, fileContentSeparator, binding.swIncludeSubdecks.isChecked)
-                sendDeckExportModel(CardFragment.REQUEST_EXPORT_DECK_CODE, deckExportModel)
+            .setPositiveButton(R.string.export) { dialog, _ ->
+                sendCardsAndSeparator()
+                dialog.dismiss()
             }
             .setNegativeButton(R.string.bt_text_cancel) { dialog, _ ->
                 dialog.dismiss()
@@ -104,20 +97,14 @@ class ExportDeckDialog: DialogFragment() {
         return builder.create()
     }
 
-    private fun getFormat() = when(binding.rgFormat.checkedRadioButtonId) {
-        R.id.rb_format_txt -> ".txt"
-        else -> ".txt"
-    }
-
-    private fun sendDeckExportModel(
-        requestCode: String,
-        deckExportModel: DeckExportModel
-    ) {
+    private fun sendCardsAndSeparator() {
         parentFragmentManager.setFragmentResult(
-            requestCode,
-            bundleOf(EXPORT_DECK_BUNDLE_KEY to deckExportModel)
+            CardFragment.REQUEST_EXPORT_DECK_CODE,
+            bundleOf(
+                SEPARATOR_BUNDLE_KEY to exportDeckViewModel.uiState.value.separator,
+                CARDS_TO_BE_EXPORTED_BUNDLE_KEY to exportDeckViewModel.cards.value,
+            )
         )
-        this.dismiss()
     }
 
 }

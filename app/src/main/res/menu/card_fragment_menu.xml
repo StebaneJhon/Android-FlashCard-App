@@ -2,37 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!--    <item-->
-<!--        android:visible="false"-->
-<!--        android:id="@+id/search_deck_menu"-->
-<!--        android:title="@string/search_deck_title"-->
-<!--        android:contentDescription="@string/search_deck_title"-->
-<!--        android:icon="@drawable/icon_search"-->
-<!--        android:iconTint="?colorOnSurface"-->
-<!--        app:showAsAction="ifRoom" />-->
-
-<!--    <item-->
-<!--        android:id="@+id/search_deck_menu"-->
-<!--        android:title="@string/search_deck_title"-->
-<!--        android:contentDescription="@string/search_deck_title"-->
-<!--        android:icon="@drawable/icon_download"-->
-<!--        android:iconTint="?colorOnSurface"-->
-<!--        app:showAsAction="ifRoom" />-->
-
-
-<!--    <item-->
-<!--        android:id="@+id/view_deck_menu"-->
-<!--        android:icon="@drawable/icon_grid_view"-->
-<!--        android:iconTint="?colorOnSurface"-->
-<!--        android:title="@string/bt_change_view"-->
-<!--        android:contentDescription="@string/bt_change_view"-->
-<!--        app:showAsAction="ifRoom" />-->
-
     <item
         android:id="@+id/mb_export_deck"
-        android:icon="@drawable/icon_download"
+        android:icon="@drawable/icon_upload"
         android:iconTint="?colorOnSurface"
-        android:title="@string/bt_text_settings"
+        android:title="@string/export_deck"
         android:contentDescription="@string/export_deck"
         app:showAsAction="ifRoom" />
 
@@ -41,7 +15,7 @@
         android:icon="@drawable/icon_more"
         android:iconTint="?colorOnSurface"
         android:title="@string/deck_details"
-        android:contentDescription="@string/export_deck"
+        android:contentDescription="@string/deck_details"
         app:showAsAction="ifRoom" />
 
 </menu>

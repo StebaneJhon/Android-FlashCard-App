@@ -75,6 +75,7 @@ import androidx.core.content.edit
 import androidx.recyclerview.widget.ConcatAdapter
 import com.soaharisonstebane.mneme.backend.models.toLocal
 import com.soaharisonstebane.mneme.helper.CardOnlySpacingDecoration
+import com.soaharisonstebane.mneme.helper.parcelableArrayList
 import com.soaharisonstebane.mneme.helper.showSnackbar
 import com.soaharisonstebane.mneme.quiz.flashCardGame.FlashCardGameActivity
 import com.soaharisonstebane.mneme.util.DeckRef.DECK_SORT_BY_CREATION_DATE
@@ -101,7 +102,8 @@ class CardFragment :
     private val supportedLanguages = LanguageUtil().getSupportedLang()
     private lateinit var arrayAdapterSupportedLanguages: ArrayAdapter<String>
     private lateinit var listPopupWindow: ListPopupWindow
-    var deckExportModel: DeckExportModel? = null
+    var exportCardsSeparator: String? = null
+    var cardsToBeExported: List<ExternalCardWithContentAndDefinitions>? = null
     var lastPlayedAudioFile: AudioModel? = null
     var lastPlayedAudioViw: LinearLayout? = null
 
@@ -125,14 +127,15 @@ class CardFragment :
     private var createFile = registerForActivityResult(
         ActivityResultContracts.CreateDocument("text/plain")
     ) { uri ->
-        if (uri != null && deckExportModel != null) {
+
+        if (uri != null && cardsToBeExported != null && exportCardsSeparator != null) {
             cardsToTextToUri(
-                cardViewModel.getActualDeck().deckId,
-                uri,
-                deckExportModel?.separator!!,
-                deckExportModel?.includeSubdecks!!
+                cards = cardsToBeExported!!,
+                uri = uri,
+                separator = exportCardsSeparator!!
             )
         }
+
     }
 
     private lateinit var sortCardsBottomSheetDialog: SortCardsBottomSheetDialog
@@ -309,8 +312,7 @@ class CardFragment :
                     binding.rvDeckPath.apply {
                         adapter = recyclerViewAdapterDeckPath
                         setHasFixedSize(true)
-                        layoutManager =
-                            LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
+                        layoutManager = LinearLayoutManager(appContext, RecyclerView.HORIZONTAL, true)
                     }
                 }
             }
@@ -476,19 +478,14 @@ class CardFragment :
 
     private fun showExportDeckDialog() {
         lifecycleScope.launch {
-            val allCards = cardViewModel.getDeckAndSubdecksCards(cardViewModel.getActualDeck().deckId)
-           if (allCards.size > 5) {
-               ExportDeckDialog.newInstance(allCards.subList(0, 5), true).show(childFragmentManager, "Export deck dialog")
-           } else {
-               ExportDeckDialog.newInstance(allCards, false).show(childFragmentManager, "Export deck dialog")
-           }
-
+            ExportDeckDialog.newInstance(cardViewModel.getActualDeck().deckId).show(childFragmentManager, "Export deck dialog")
             childFragmentManager.setFragmentResultListener(
                 REQUEST_EXPORT_DECK_CODE,
                 this@CardFragment
             ) { _, bundle ->
-                deckExportModel = bundle.parcelable<DeckExportModel>(ExportDeckDialog.EXPORT_DECK_BUNDLE_KEY)
-                createFile.launch("${cardViewModel.getActualDeck().deckName}${deckExportModel?.format}")
+                exportCardsSeparator = bundle.getString(ExportDeckDialog.SEPARATOR_BUNDLE_KEY)
+                cardsToBeExported = bundle.parcelableArrayList(ExportDeckDialog.CARDS_TO_BE_EXPORTED_BUNDLE_KEY)
+                createFile.launch("${cardViewModel.getActualDeck().deckName}.txt")
             }
         }
 
@@ -967,24 +964,17 @@ class CardFragment :
     }
 
     private fun cardsToTextToUri(
-        deckId: String,
         uri: Uri,
+        cards: List<ExternalCardWithContentAndDefinitions>,
         separator: String,
-        includeSubdecks: Boolean
     ) {
         lifecycleScope.launch {
             val stringBuilder = StringBuilder()
             try {
                 appContext?.contentResolver?.openFileDescriptor(uri, "w")?.use { fd ->
                     FileOutputStream(fd.fileDescriptor).use { outputStream ->
-
-                        val cards = if (includeSubdecks) {
-                            cardViewModel.getDeckAndSubdecksCards(deckId)
-                        } else {
-                            cardViewModel.getCards(deckId, requireContext())
-                        }
                         cards.forEach { card ->
-                            val newLine = cardToText(card!!, separator)
+                            val newLine = cardToText(card, separator)
                             stringBuilder.append(newLine)
                         }
                         outputStream.write(stringBuilder.toString().toByteArray())
@@ -1000,6 +990,7 @@ class CardFragment :
             }
         }
     }
+
 
     override fun onInit(status: Int) {
         when (status) {

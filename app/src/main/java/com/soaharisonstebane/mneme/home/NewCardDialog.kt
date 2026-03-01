@@ -1202,6 +1202,8 @@ class NewCardDialog(
         binding.lyContent.tieContentText.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 enableFormatButton(true)
+                enableMediaButton(true)
+                enableScanButton(true)
                 onFieldFocused(
                     fieldViewContainer = binding.lyContent.llContentField,
                     v = v,
@@ -1215,6 +1217,8 @@ class NewCardDialog(
                 }
             } else {
                 enableFormatButton(false)
+                enableMediaButton(false)
+                enableScanButton(false)
                 onFieldFocused(
                     fieldViewContainer = binding.lyContent.llContentField,
                     v = v,
@@ -1276,7 +1280,17 @@ class NewCardDialog(
 
     private fun enableFormatButton(enable: Boolean) {
         binding.btFormat.isEnabled = enable
-        binding.btFormat.isEnabled = enable
+        binding.btFormat.isClickable = enable
+    }
+
+    private fun enableScanButton(enable: Boolean) {
+        binding.btScan.isEnabled = enable
+        binding.btScan.isClickable = enable
+    }
+
+    private fun enableMediaButton(enable: Boolean) {
+        binding.btAddMedia.isEnabled = enable
+        binding.btAddMedia.isClickable = enable
     }
 
     private fun displayDefinitionFields(fields: List<DefinitionFieldModel>) {
@@ -1319,6 +1333,8 @@ class NewCardDialog(
                 fieldView.ly.tieText.setOnFocusChangeListener { v, hasFocus ->
                     if (hasFocus) {
                         enableFormatButton(true)
+                        enableMediaButton(true)
+                        enableScanButton(true)
                         if (newCardViewModel.hasContentText()) {
                             enableTranslateButton(true)
                         } else {
@@ -1332,6 +1348,8 @@ class NewCardDialog(
                         newCardViewModel.changeFieldFocus(index)
                     } else {
                         enableFormatButton(false)
+                        enableMediaButton(false)
+                        enableScanButton(false)
                         onFieldFocused(
                             fieldViewContainer = fieldView.ly.clContainerField,
                             v = v,

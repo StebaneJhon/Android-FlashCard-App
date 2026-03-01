@@ -35,7 +35,7 @@
                 app:layout_constraintTop_toTopOf="@+id/bt_speak_back"
                 tools:text="Flash Card" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/bt_speak_back"
                 style="?attr/materialIconButtonStyle"
                 android:layout_width="@dimen/icon_base"

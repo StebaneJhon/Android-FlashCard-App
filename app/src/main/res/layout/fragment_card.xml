@@ -209,7 +209,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/space_xl"
-            android:text="@string/add_subdeck"
+            android:text="@string/bt_add_deck"
             android:layout_marginEnd="@dimen/space_lg"/>
 
         <Button

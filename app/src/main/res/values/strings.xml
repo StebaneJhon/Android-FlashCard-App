@@ -357,4 +357,5 @@
     <string name="import_cards_from_device">Import cards from device</string>
     <string name="some_more_left">and %1$d more.</string>
     <string name="tx_import">Import</string>
+    <string name="warning_export_deck">This does not export images, audio and text format.</string>
 </resources>
